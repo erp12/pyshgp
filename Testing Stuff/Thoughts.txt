@@ -1,0 +1,8 @@
+Use these as tests:
+===============
+
+knapsack problem (Zitzler and Thiele 1999)
+
+Test functions for optimization
+https://en.wikipedia.org/wiki/Test_functions_for_optimization
+Sphere Model

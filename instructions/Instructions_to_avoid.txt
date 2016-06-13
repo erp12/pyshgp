@@ -1,0 +1,6 @@
+Instructions that cannot currently be implemented
+=================================================
+
+Requires changes to pysh_plush_translation.py
+- noop_delete_prev_paren_pair
+- noop_open_paren

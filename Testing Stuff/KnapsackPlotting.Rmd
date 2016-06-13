@@ -1,0 +1,44 @@
+---
+title: "Knapsack Lexicase vs NSGA2"
+output: html_document
+---
+
+```{r, include=FALSE}
+library(plotly)
+
+
+Knapsack.Data <- read.csv('E:/Drive_EdEdEd/Research/Pysh/KnapsackData.csv',
+                          header = TRUE)
+
+m <- list(
+  size = 14, opacity = 0.7
+)
+f <- list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#000000"
+)
+x <- list(
+  title = "Total Value in Knapsack",
+  titlefont = f
+)
+y <- list(
+  title = "Total weight in Knapsack",
+  titlefont = f
+)
+
+
+
+p <- plot_ly(Knapsack.Data,
+             x = Avg.Val,
+             y = Avg.Weight,
+             mode = "markers",
+             color = Selection,
+             colors = c("red", "blue"),
+             marker = m) %>%
+  layout(xaxis = x, yaxis = y)
+```
+```{r, include=TRUE, echo=FALSE, warning=FALSE}
+p
+```
+

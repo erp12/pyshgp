@@ -26,7 +26,6 @@ def adder(pysh_type):
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_add',
-                                                    pysh_type,
                                                     add,
                                                     stack_types = [pysh_type])
     return instruction
@@ -46,7 +45,6 @@ def subtracter(pysh_type):
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_sub',
-                                                    pysh_type,
                                                     sub,
                                                     stack_types = [pysh_type])
     return instruction
@@ -66,7 +64,6 @@ def multiplier(pysh_type):
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_mult',
-                                                    pysh_type,
                                                     mult,
                                                     stack_types = [pysh_type])
     return instruction
@@ -81,14 +78,13 @@ def divider(pysh_type):
     '''
     def div(state):
         if len(state.stacks[pysh_type])>1:
-            if state.stacks[pysh_type].stack_ref(type, 0, state) != 0:
+            if state.stacks[pysh_type].stack_ref(0) != 0:
                 new_num = state.stacks[pysh_type].stack_ref(1) / state.stacks[pysh_type].stack_ref(0)
                 new_num = pysh_utils.keep_number_reasonable(new_num)
                 state.stacks[pysh_type].pop_item()
                 state.stacks[pysh_type].pop_item()
                 state.stacks[pysh_type].push_item(new_num)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_div',
-                                                    pysh_type,
                                                     div,
                                                     stack_types = [pysh_type])
     return instruction
@@ -102,14 +98,13 @@ def modder(pysh_type):
     '''
     def mod(state):
         if len(state.stacks[pysh_type])>1:
-            if state.stacks[pysh_type].stack_ref(type, 0, state) != 0:
+            if state.stacks[pysh_type].stack_ref(0) != 0:
                 new_num = state.stacks[pysh_type].stack_ref(1) % state.stacks[pysh_type].stack_ref(0)
                 new_num = pysh_utils.keep_number_reasonable(new_num)
                 state.stacks[pysh_type].pop_item()
                 state.stacks[pysh_type].pop_item()
                 state.stacks[pysh_type].push_item(new_num)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_mod',
-                                                    pysh_type,
                                                     mod,
                                                     stack_types = [pysh_type])
     return instruction
@@ -126,9 +121,8 @@ def less_than(pysh_type):
             new_bool = state.stacks[pysh_type].stack_ref(1) < state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
-            state.stacks['_bool'].push_item(new_num)
+            state.stacks['_bool'].push_item(new_bool)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_lt',
-                                                    pysh_type,
                                                     lt,
                                                     stack_types = [pysh_type, '_bool'])
     return instruction
@@ -145,9 +139,8 @@ def less_than_equal(pysh_type):
             new_bool = state.stacks[pysh_type].stack_ref(1) <= state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
-            state.stacks['_bool'].push_item(new_num)
+            state.stacks['_bool'].push_item(new_bool)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_lte',
-                                                    pysh_type,
                                                     lte,
                                                     stack_types = [pysh_type, '_bool'])
     return instruction
@@ -164,9 +157,8 @@ def greater_than(pysh_type):
             new_bool = state.stacks[pysh_type].stack_ref(1) > state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
-            state.stacks['_bool'].push_item(new_num)
+            state.stacks['_bool'].push_item(new_bool)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_gt',
-                                                    pysh_type,
                                                     gt,
                                                     stack_types = [pysh_type, '_bool'])
     return instruction
@@ -183,9 +175,8 @@ def greater_than_equal(pysh_type):
             new_bool = state.stacks[pysh_type].stack_ref(1) > state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
-            state.stacks['_bool'].push_item(new_num)
+            state.stacks['_bool'].push_item(new_bool)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_gte',
-                                                    pysh_type,
                                                     gte,
                                                     stack_types = [pysh_type, '_bool'])
     return instruction
@@ -203,7 +194,6 @@ def minner(pysh_type):
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_min',
-                                                    pysh_type,
                                                     min_pysh,
                                                     stack_types = [pysh_type])
     return instruction
@@ -221,7 +211,6 @@ def maxer(pysh_type):
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_max',
-                                                    pysh_type,
                                                     max_pysh,
                                                     stack_types = [pysh_type])
     return instruction
@@ -238,7 +227,6 @@ def incrementer(pysh_type):
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_inc',
-                                                    pysh_type,
                                                     inc,
                                                     stack_types = [pysh_type])
     return instruction
@@ -255,7 +243,6 @@ def decrementer(pysh_type):
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_dec',
-                                                    pysh_type,
                                                     dec,
                                                     stack_types = [pysh_type])
     return instruction

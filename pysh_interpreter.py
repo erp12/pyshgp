@@ -9,11 +9,13 @@ import time
 
 
 import pysh_state
-import registered_instructions
-import pysh_globals
 import pysh_utils
+import pysh_random
 
+import pysh_globals as g
 from instructions import *
+from instructions import registered_instructions
+
 
 class Pysh_Interpreter:
     '''
@@ -41,7 +43,7 @@ class Pysh_Interpreter:
             for i in instruction:
                 self.state.stacks['_exec'].push_item(i)
         elif pysh_type == False:
-            raise Error("Attempted to evaluate something that isn't an instruction or literal.") 
+            raise Exception("Attempted to evaluate something that isn't an instruction or literal.") 
         else:
             self.state.stacks[pysh_type].push_item(instruction)
     
@@ -53,13 +55,13 @@ class Pysh_Interpreter:
         '''        
         iteration = 1
         time_limit = 0
-        if pysh_globals.global_evalpush_time_limit != 0:
-            time_limit = time.time() + pysh_globals.global_evalpush_time_limit
+        if g.global_evalpush_time_limit != 0:
+            time_limit = time.time() + g.global_evalpush_time_limit
         
         while len(self.state.stacks['_exec']) > 0:        
             
             # Check for adnormal stops            
-            if iteration > pysh_globals.global_evalpush_limit:
+            if iteration > g.global_evalpush_limit:
                 self.status = '_evalpush_limit_reached'
                 break
             if time_limit != 0 and time.time() > time_limit:
@@ -89,13 +91,11 @@ class Pysh_Interpreter:
         self.state.stacks['_exec'].push_item(code)
         self.eval_push(print_steps)
         
-        self.state.pretty_print()
-        
         
         
 #pi = Pysh_Interpreter()
 #print( registered_instructions.registered_instructions )
 
 #test_program_1 = [1, 2, '_integer_add']
-
+#test_program_2 = pysh_random.
 #pi.run_push(test_program_1)

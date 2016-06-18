@@ -4,6 +4,8 @@ import csv
 
 import numpy
 
+from scoop import futures
+
 from deap import algorithms
 from deap import base
 from deap import creator
@@ -49,18 +51,21 @@ pset.addPrimitive(if_then_else, 3)
 pset.addTerminal(1)
 pset.addTerminal(0)
 
-creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("FitnessMax", base.Fitness, weights=(1.0,)*len(outputs))
 creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
+toolbox.register("map", futures.map)
 toolbox.register("expr", gp.genFull, pset=pset, min_=2, max_=4)
 toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("compile", gp.compile, pset=pset)
 
 def evalMultiplexer(individual):
+    #print('|')
     func = toolbox.compile(expr=individual)
-    return sum(func(*in_) == out for in_, out in zip(inputs, outputs)),
+    case_bools = list(func(*in_) == out for in_, out in zip(inputs, outputs))
+    return [ int(x) for x in case_bools ]
 
 toolbox.register("evaluate", evalMultiplexer)
 toolbox.register("select", pysh_tools.lexicase_selection)
@@ -69,16 +74,16 @@ toolbox.register("expr_mut", gp.genGrow, min_=0, max_=2)
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
 
 def main():
-#    random.seed(10)
-    #logbook = tools.Logbook()
+    # random.seed(10)
+    # logbook = tools.Logbook()
 
-    pop = toolbox.population(n=40)
+    pop = toolbox.population(n=20)
     hof = tools.HallOfFame(1)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("avg", numpy.mean)
-    stats.register("std", numpy.std)
-    stats.register("min", numpy.min)
-    stats.register("max", numpy.max)
+    stats.register("avg", lambda fit: numpy.mean(numpy.mean(fit, axis = 0)))
+    stats.register("std", lambda fit: numpy.std(numpy.mean(fit, axis = 0)))
+    stats.register("min", lambda fit: numpy.min(numpy.mean(fit, axis = 0)))
+    stats.register("max", lambda fit: numpy.max(numpy.mean(fit, axis = 0)))
     
     result = algorithms.eaSimple(pop, toolbox, 0.8, 0.1, 50, stats, halloffame=hof)
     best_population = result[0]

@@ -6,14 +6,15 @@ Created on Sun Jun  5 13:29:14 2016
 """
 import random
 
-import registered_instructions
+from instructions import *
+from instructions import registered_instructions 
 
 pysh_types = ["_exec",
               "_integer",
               "_float",
               "_string",
-              "_bool"]
-              
+              "_bool",
+              "_code"]          
               
 # These definitions are used by instructions to keep computed values within limits
 # or when using random instructions.
@@ -65,3 +66,5 @@ pysh_argmap = {
 
 
 }
+
+# print pysh_argmap['atom_generators']

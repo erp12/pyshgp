@@ -6,11 +6,10 @@ Created on Sun Jun 6 2016
 """
 import random
 
-import pysh_globals as g
 import pysh_utils as u
+import pysh_globals as g
 import pysh_instruction
 import pysh_plush_translation
-
 
 class Plush_Instruction:
 	'''
@@ -20,6 +19,12 @@ class Plush_Instruction:
 		self.instruction = instruction
 		self.closes = closes
 		self.silent = silent
+
+	def __repr__(self):
+		if type(self.instruction).__name__ == pysh_instruction.Pysh_Instruction.__name__:
+			return "PLUSH_" + self.instruction.name
+		else:
+			return "LITERAL_" + type(self.instruction).__name__ + "_" + str(self.instruction)
 
 
 
@@ -53,6 +58,8 @@ def random_plush_instruction(atom_generators):
 	Returns a random Plush_Instruction object given the atom_generators 
 	and the required epigenetic-markers.
 	'''
+	#print "HIT", atom_generators
+
 	markers = g.pysh_argmap['epigenetic_markers']
 	markers.append('_instruction')
 
@@ -71,7 +78,7 @@ def random_plush_instruction(atom_generators):
 			else:
 				raise Exception("Encountered strange _instruction epigenetic marker.")
 		elif m == '_close':
-			random_closes(g.pysh_argmap['close_parens_probabilities'])
+			new_plush_instruction.closes = random_closes(g.pysh_argmap['close_parens_probabilities'])
 		elif m == '_silent':
 			if random.random() > g.pysh_argmap['silent_instruction_probability']:
 				new_plush_instruction.silent = True
@@ -79,6 +86,7 @@ def random_plush_instruction(atom_generators):
 				new_plush_instruction.silent = False
 		else:
 			raise Exception("Unknown epigenetic marker type.")
+	return new_plush_instruction
 
 def random_plush_genome_with_size(genome_size, atom_generators):
 	'''
@@ -90,7 +98,7 @@ def random_plush_genome_with_size(genome_size, atom_generators):
 		genome.append(random_plush_instruction(atom_generators))
 	return genome
 
-def random_plush_genome(max_genome_size, atom_generators):
+def random_plush_genome(max_genome_size, atom_generators = g.pysh_argmap['atom_generators']):
 	'''
 	Returns a random Plush genome with size limited by max_genome_size.
 	'''
@@ -109,4 +117,3 @@ def random_push_code(max_points, atom_generators = g.pysh_argmap['atom_generator
 	max_genome_size = max(int(max_points /  2), 1)
 	return pysh_plush_translation.translate_plush_genome_to_push_program(random_plush_genome(max_genome_size, atom_generators))
 	
-

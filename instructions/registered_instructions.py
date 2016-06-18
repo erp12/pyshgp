@@ -21,3 +21,11 @@ def register_instruction(instruction):
 		warnings.warn('Duplicate instructions registered: ' + instruction.name + '. Duplicate ignored.')
 	else:
 		registered_instructions.append(instruction)
+
+
+def get_instruction_by_name(name):
+	instr = filter(lambda x: x.name == name, registered_instructions)
+	if len(instr) == 0:
+		return None;
+	else:
+		return instr[0]

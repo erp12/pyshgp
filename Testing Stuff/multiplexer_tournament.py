@@ -4,6 +4,8 @@ import csv
 
 import numpy
 
+#from scoop import futures
+
 from deap import algorithms
 from deap import base
 from deap import creator
@@ -51,6 +53,7 @@ creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
+#toolbox.register("map", futures.map)
 toolbox.register("expr", gp.genFull, pset=pset, min_=2, max_=4)
 toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
@@ -58,7 +61,7 @@ toolbox.register("compile", gp.compile, pset=pset)
 
 def evalMultiplexer(individual):
     func = toolbox.compile(expr=individual)
-    return sum(func(*in_) == out for in_, out in zip(inputs, outputs)),
+    return float(sum(func(*in_) == out for in_, out in zip(inputs, outputs)))/len(outputs),
 
 toolbox.register("evaluate", evalMultiplexer)
 toolbox.register("select", tools.selTournament, tournsize=7)
@@ -69,7 +72,7 @@ toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
 def main():
 #    random.seed(10)
 
-    pop = toolbox.population(n=40)
+    pop = toolbox.population(n=20)
     hof = tools.HallOfFame(1)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
     stats.register("avg", numpy.mean)

@@ -4,3 +4,12 @@ Instructions that cannot currently be implemented
 Requires changes to pysh_plush_translation.py
 - noop_delete_prev_paren_pair
 - noop_open_paren
+
+
+
+Instructions to come back to
+============================
+
+- trig functions
+- number from string
+- boolean from integer

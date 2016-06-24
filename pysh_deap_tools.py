@@ -7,6 +7,8 @@ Created on Sun May 22 20:24:23 2016
 import random
 import numpy
 
+from scoop import futures
+
 #####################
 # Utility Functions #
 #####################
@@ -60,7 +62,7 @@ def lexicase_selection(individuals, k):
             if fit_weights[cases[0]] > 0:
                 f = max
             
-            best_val_for_case = f(map(lambda x: x.fitness.values[cases[0]], individuals)) 
+            best_val_for_case = f(futures.map(lambda x: x.fitness.values[cases[0]], individuals)) 
             
             candidates = list(filter(lambda x: x.fitness.values[cases[0]] == best_val_for_case, individuals))
             cases.pop(0)

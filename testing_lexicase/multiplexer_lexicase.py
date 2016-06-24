@@ -1,3 +1,4 @@
+import sys
 import random
 import operator
 import csv
@@ -69,27 +70,26 @@ def evalMultiplexer(individual):
 
 toolbox.register("evaluate", evalMultiplexer)
 toolbox.register("select", pysh_tools.lexicase_selection)
+#toolbox.register("select", tools.selTournament, tournsize=7)
 toolbox.register("mate", gp.cxOnePoint)
 toolbox.register("expr_mut", gp.genGrow, min_=0, max_=2)
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
 
-def main():
-    # random.seed(10)
-    # logbook = tools.Logbook()
-
+def run_evo(run_num):
     pop = toolbox.population(n=20)
     hof = tools.HallOfFame(1)
     stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("avg", lambda fit: numpy.mean(numpy.mean(fit, axis = 0)))
-    stats.register("std", lambda fit: numpy.std(numpy.mean(fit, axis = 0)))
-    stats.register("min", lambda fit: numpy.min(numpy.mean(fit, axis = 0)))
-    stats.register("max", lambda fit: numpy.max(numpy.mean(fit, axis = 0)))
+    stats.register("avg", lambda fit: numpy.mean(numpy.mean(fit, axis = 1)))
+    stats.register("std", lambda fit: numpy.std(numpy.mean(fit, axis = 1)))
+    stats.register("min", lambda fit: numpy.min(numpy.mean(fit, axis = 1)))
+    stats.register("max", lambda fit: numpy.max(numpy.mean(fit, axis = 1)))
+    #stats.register("foo", lambda fit: len(numpy.mean(fit, axis = 1)))
     
     result = algorithms.eaSimple(pop, toolbox, 0.8, 0.1, 50, stats, halloffame=hof)
     best_population = result[0]
     logbook = result[1]
 
-    with open('multiplexer_lexicase_log.csv', 'w') as csvfile:
+    with open('run_logs/multiplexer_lexicase_log_' + str(run_num) + '.csv', 'w') as csvfile:
         fieldnames = ['nevals', 'gen', 'avg', 'std', 'min', 'max']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -99,5 +99,12 @@ def main():
 
     return pop, stats, hof
 
+def main():
+    num_runs = int(sys.argv[1])
+    for i in range(num_runs):
+        print "Starting run:", i
+        run_evo(i)
+
 if __name__ == "__main__":
     main()
+

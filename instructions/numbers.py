@@ -5,7 +5,6 @@ Created on Sun Jun  5 14:54:49 2016
 @author: Eddie
 """
 import math
-import os
 
 import pysh_state
 import pysh_instruction

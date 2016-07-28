@@ -25,7 +25,7 @@ def odd_error_func(program):
 		interpreter = pysh_interpreter.Pysh_Interpreter()
 		interpreter.reset_pysh_state()
 		
-		# Push in input number		
+		# Push input number		
 		interpreter.state.stacks["_integer"].push_item(i)
 		interpreter.state.stacks["_input"].push_item(i)
 
@@ -35,8 +35,6 @@ def odd_error_func(program):
 		prog_output = interpreter.state.stacks["_boolean"].stack_ref(0)
 		#compare to target output
 		target_output = bool(i % 2)
-		
-		#print prog_output, target_output
 
 		if prog_output == target_output:
 			errors.append(0)
@@ -52,10 +50,10 @@ def test_odd_solution():
 	print "Errors:", errors
 
 odd_params = {
-	"atom_generators" : registered_instructions.registered_instructions + 
-                        [lambda: random.randint(0, 100),
-                         lambda: random.random(),
-                         "_in1"]
+	"atom_generators" : registered_instructions.registered_instructions +	# Use all possible instructions,
+                        [lambda: random.randint(0, 100),					# and some integers
+                         lambda: random.random(),							# and some floats
+                         "_in1"]											# and an input instruction that pushes the input to the _integer stack.
 }
 
 if __name__ == "__main__":

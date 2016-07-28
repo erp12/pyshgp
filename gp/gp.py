@@ -137,7 +137,7 @@ def evolution(error_function, problem_params):
 
 		# Select parents and mate them to create offspring
 		print "Performing selection and variation."
-		selction_func = go.lexicase_selection
+		selction_func = sel.lexicase_selection
 		if evolutionary_params["selection_methlod"] == "tournament":
 			selection_func = sel.tournament_selection
 		offspring = []

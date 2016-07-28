@@ -27,7 +27,7 @@ class Pysh_Input_Instruction(Pysh_Instruction):
     which are generated based on initial state for the _input stack.
     '''
 
-	def __init__(self, name):
+    def __init__(self, name):
 		Pysh_Instruction.__init__(self, name, None)
 		self.name = name
 		self.func = name

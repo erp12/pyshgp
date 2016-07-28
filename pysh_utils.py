@@ -4,6 +4,7 @@ Created on Sun Jun  5 15:36:03 2016
 
 @author: Eddie
 """
+import math
 
 import pysh_globals as g
 
@@ -31,10 +32,11 @@ def recognize_pysh_type(thing):
     elif type(thing) is str:
         return '_string'
     elif type(thing) is bool:
-        return '_bool'
+        return '_boolean'
     elif type(thing) is list:
         return '_list'
     else:
+        print "Could not find pysh type for", thing, "of type", type(thing)
         return False
     
         
@@ -87,7 +89,8 @@ def count_points(tree):
             remaining = remaining[0] + remaining[1:]
             total += 1
     return total
-    
+
+
 
 def reductions(f, l):
     '''
@@ -159,18 +162,21 @@ def open_close_sequence_to_list(sequence):
                 result.append(rest[0])
                 rest.pop(0)
         return result
-
-
-
 # print open_close_sequence_to_list(["_open", 1, 2, "_open", 'a', 'b', "_open", 'c', "_close", "_open", "_open", 'd', "_close", "_close", 'e', "_close", "_close"])
 # print open_close_sequence_to_list(["_open", 1, "_close", "_open", 2, "_close"])
 # print open_close_sequence_to_list(["_open", "_open", 1, "_close", "_open", 2, "_close", "_close"])
 
 
-
-
-
-
+def merge_dicts(*dict_args):
+    '''
+    Given any number of dicts, shallow copy and merge into a new dict,
+    precedence goes to key value pairs in latter dicts.
+    Taken From: http://stackoverflow.com/a/26853961/4297413 Thanks to Aaron Hall
+    '''
+    result = {}
+    for dictionary in dict_args:
+        result.update(dictionary)
+    return result
 
 
 

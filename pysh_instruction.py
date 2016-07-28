@@ -6,6 +6,10 @@ Created on Sun Jun  5 13:39:36 2016
 """
 
 class Pysh_Instruction(object):
+    '''
+    Holds information about a push instruction. Can be found in a
+    Push program.
+    '''
     
     def __init__(self, name, func, stack_types = [], parentheses = 0):
         self.name = name
@@ -16,5 +20,15 @@ class Pysh_Instruction(object):
         
     def __repr__(self):
         return self.name
-    
-    
+
+class Pysh_Input_Instruction(Pysh_Instruction):
+    '''
+    Subclass secific to storing information about input instructions
+    which are generated based on initial state for the _input stack.
+    '''
+
+	def __init__(self, name):
+		Pysh_Instruction.__init__(self, name, None)
+		self.name = name
+		self.func = name
+		self.stack_types = '_input'

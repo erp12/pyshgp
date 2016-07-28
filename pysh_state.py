@@ -30,5 +30,3 @@ class Pysh_State:
         for t in g.pysh_types:
             print(self.stacks[t].pysh_type, ":", self.stacks[t])
             
-#ps = Pysh_State()
-#ps.pretty_print()

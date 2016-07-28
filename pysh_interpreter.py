@@ -15,11 +15,12 @@ import pysh_random
 import pysh_globals as g
 from instructions import *
 from instructions import registered_instructions
+from instructions import input_output
 
 
 class Pysh_Interpreter:
     '''
-    
+    Object that can run Push programs.
     '''
     
     def __init__(self):
@@ -35,9 +36,12 @@ class Pysh_Interpreter:
             return
         pysh_type = pysh_utils.recognize_pysh_type(instruction)
         if pysh_type == '_instruction':
-            instruction_obj = list(filter(lambda x: x.name == instruction[1:],
-                                          registered_instructions.registered_instructions))[0]
-            instruction_obj.func(self.state)
+            if instruction.startswith("_in") and not instruction.startswith("_int"):
+                input_output.handle_input_instruction(instruction, self.state)
+            else:
+                instruction_obj = list(filter(lambda x: x.name == instruction[1:],
+                                              registered_instructions.registered_instructions))[0]
+                instruction_obj.func(self.state)
         elif pysh_type == '_list':
             instruction.reverse()
             for i in instruction:
@@ -87,15 +91,7 @@ class Pysh_Interpreter:
         pushing/popping. The resulting push state will map :termination to :normal if termination was 
         normal, or :abnormal otherwise.
         '''
-        self.reset_pysh_state()
         self.state.stacks['_exec'].push_item(code)
         self.eval_push(print_steps)
-        
-        
-        
-#pi = Pysh_Interpreter()
-#print( registered_instructions.registered_instructions )
-
-#test_program_1 = [1, 2, '_integer_add']
-#test_program_2 = pysh_random.
-#pi.run_push(test_program_1)
+        if print_steps:
+            print "=== Finished Push Execution ==="

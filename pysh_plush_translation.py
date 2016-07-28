@@ -42,7 +42,7 @@ def delete_prev_paren_pair(prog):
 	new_prog.reverse()
 	return new_prog
 
-def translate_plush_genome_to_push_program(genome):
+def translate_plush_genome_to_push_program(genome, max_points):
 	'''
 	Takes as input of a Plush genome and translates it to the correct Push program with
 	balanced parens. The linear Plush genome is made up of a list of instruction
@@ -63,7 +63,6 @@ def translate_plush_genome_to_push_program(genome):
 
 	looping = True
 	while looping:
-		#print "p:", prog
 		# Check if need to add close parens here
 		if 0 < num_parens_here:
 			if len(paren_stack) == 0:
@@ -97,11 +96,12 @@ def translate_plush_genome_to_push_program(genome):
 				new_paren_stack = ['_close_open'] * (number_paren_groups - 1)
 				new_paren_stack += ['_close']
 				new_paren_stack += paren_stack
-				#print "HIT 1:", gn[0], " || ", new_paren_stack
 				
 			if 0 >= number_paren_groups:
 				if type(gn[0].instruction).__name__ == pysh_instruction.Pysh_Instruction.__name__:
 					prog.append('_' + gn[0].instruction.name)
+				elif type(gn[0].instruction).__name__ == pysh_instruction.Pysh_Input_Instruction.__name__:
+					prog.append(gn[0].instruction.name)
 				else:
 					prog.append(gn[0].instruction)
 			else: 
@@ -110,8 +110,8 @@ def translate_plush_genome_to_push_program(genome):
 			gn = gn[1:]
 			paren_stack = new_paren_stack
 
-	if u.count_points(translated_program) > g.pysh_argmap['max_points']:
-		print "Too main points!"
+	if u.count_points(translated_program) > max_points:
+		print "Too many points! Max is:", max_points
 		return [] # Translates to an empty programs if program exceeds max-points
 	else:
 		#print "After:", translated_program

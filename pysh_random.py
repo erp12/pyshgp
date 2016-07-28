@@ -10,21 +10,7 @@ import pysh_utils as u
 import pysh_globals as g
 import pysh_instruction
 import pysh_plush_translation
-
-class Plush_Instruction:
-	'''
-	Object representing a plush instruction.
-	'''
-	def __init__(self, instruction = None, closes = None, silent = None):
-		self.instruction = instruction
-		self.closes = closes
-		self.silent = silent
-
-	def __repr__(self):
-		if type(self.instruction).__name__ == pysh_instruction.Pysh_Instruction.__name__:
-			return "PLUSH_" + self.instruction.name
-		else:
-			return "LITERAL_" + type(self.instruction).__name__ + "_" + str(self.instruction)
+import plush_instruction as pl
 
 
 
@@ -53,67 +39,68 @@ def random_closes(close_parens_probabilities):
 		del probabilities[0]
 	return parens
 
-def random_plush_instruction(atom_generators):
+def random_plush_instruction(evo_params):
 	'''
 	Returns a random Plush_Instruction object given the atom_generators 
 	and the required epigenetic-markers.
 	'''
-	#print "HIT", atom_generators
-
-	markers = g.pysh_argmap['epigenetic_markers']
+	markers = evo_params["epigenetic_markers"]
 	markers.append('_instruction')
 
-	new_plush_instruction = Plush_Instruction()
+	new_plush_gene = pl.Plush_Gene()
 	for m in markers:
 		if m == '_instruction':
-			element = random.choice(atom_generators)
+			element = random.choice(evo_params["atom_generators"])
 			if type(element).__name__ == pysh_instruction.Pysh_Instruction.__name__:
-				new_plush_instruction.instruction = element # It's an instruction!
+				new_plush_gene.instruction = element # It's an instruction!
 			elif callable(element): # It's a function
 				fn_element = element() 
 				if callable(fn_element): # It's another function!
-					new_plush_instruction.instruction = fn_element()
+					new_plush_gene.instruction = fn_element()
 				else:
-					new_plush_instruction.instruction = fn_element 
+					new_plush_gene.instruction = fn_element 
+			elif type(element) == str and element.startswith("_in") and not element.startswith("_int"):
+			     # Its an input instruction!
+			     new_plush_gene.instruction = pysh_instruction.Pysh_Input_Instruction(element)
 			else:
 				raise Exception("Encountered strange _instruction epigenetic marker.")
 		elif m == '_close':
-			new_plush_instruction.closes = random_closes(g.pysh_argmap['close_parens_probabilities'])
+			new_plush_gene.closes = random_closes(evo_params['close_parens_probabilities'])
 		elif m == '_silent':
-			if random.random() > g.pysh_argmap['silent_instruction_probability']:
-				new_plush_instruction.silent = True
+			if random.random() > evo_params['silent_instruction_probability']:
+				new_plush_gene.silent = True
 			else:
-				new_plush_instruction.silent = False
+				new_plush_gene.silent = False
 		else:
 			raise Exception("Unknown epigenetic marker type.")
-	return new_plush_instruction
+	return new_plush_gene
 
-def random_plush_genome_with_size(genome_size, atom_generators):
+def random_plush_genome_with_size(genome_size, evo_params):
 	'''
 	Returns a random Plush genome (aka list of Plush_Instruction objects)
 	containing the given number of points.
 	'''
 	genome = []
 	for i in range(genome_size):
-		genome.append(random_plush_instruction(atom_generators))
+		genome.append(random_plush_instruction(evo_params))
 	return genome
 
-def random_plush_genome(max_genome_size, atom_generators = g.pysh_argmap['atom_generators']):
+def random_plush_genome(evo_params):
 	'''
 	Returns a random Plush genome with size limited by max_genome_size.
 	'''
-	genome_size = random.randint(1, max_genome_size)
-	return random_plush_genome_with_size(genome_size, atom_generators)
+	genome_size = random.randint(1, evo_params["max_genome_initial_size"])
+	return random_plush_genome_with_size(genome_size, evo_params)
 
 
 #################################
 # random push code generator
 
 
-def random_push_code(max_points, atom_generators = g.pysh_argmap['atom_generators']):
+def random_push_code(max_points, evo_params):
 	'''
 	Returns a random Push expression with size limited by max_points.
 	'''
 	max_genome_size = max(int(max_points /  2), 1)
-	return pysh_plush_translation.translate_plush_genome_to_push_program(random_plush_genome(max_genome_size, atom_generators))
+	return pysh_plush_translation.translate_plush_genome_to_push_program(random_plush_genome(max_genome_size, evo_params))
 	

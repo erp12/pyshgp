@@ -6,9 +6,9 @@ Created on Sun Jun  5 14:54:49 2016
 """
 import math
 
-import pysh_state
-import pysh_instruction
-import pysh_utils
+from .. import pysh_state
+from .. import pysh_instruction
+from .. import pysh_utils
 
 import registered_instructions
 
@@ -120,10 +120,10 @@ def less_than(pysh_type):
             new_bool = state.stacks[pysh_type].stack_ref(1) < state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
-            state.stacks['_bool'].push_item(new_bool)
+            state.stacks['_boolean'].push_item(new_bool)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_lt',
                                                     lt,
-                                                    stack_types = [pysh_type, '_bool'])
+                                                    stack_types = [pysh_type, '_boolean'])
     return instruction
 registered_instructions.register_instruction(less_than('_integer'))
 registered_instructions.register_instruction(less_than('_float'))
@@ -138,10 +138,10 @@ def less_than_equal(pysh_type):
             new_bool = state.stacks[pysh_type].stack_ref(1) <= state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
-            state.stacks['_bool'].push_item(new_bool)
+            state.stacks['_boolean'].push_item(new_bool)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_lte',
                                                     lte,
-                                                    stack_types = [pysh_type, '_bool'])
+                                                    stack_types = [pysh_type, '_boolean'])
     return instruction
 registered_instructions.register_instruction(less_than_equal('_integer'))
 registered_instructions.register_instruction(less_than_equal('_float'))
@@ -156,10 +156,10 @@ def greater_than(pysh_type):
             new_bool = state.stacks[pysh_type].stack_ref(1) > state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
-            state.stacks['_bool'].push_item(new_bool)
+            state.stacks['_boolean'].push_item(new_bool)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_gt',
                                                     gt,
-                                                    stack_types = [pysh_type, '_bool'])
+                                                    stack_types = [pysh_type, '_boolean'])
     return instruction
 registered_instructions.register_instruction(greater_than('_integer'))
 registered_instructions.register_instruction(greater_than('_float'))
@@ -174,10 +174,10 @@ def greater_than_equal(pysh_type):
             new_bool = state.stacks[pysh_type].stack_ref(1) > state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
-            state.stacks['_bool'].push_item(new_bool)
+            state.stacks['_boolean'].push_item(new_bool)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_gte',
                                                     gte,
-                                                    stack_types = [pysh_type, '_bool'])
+                                                    stack_types = [pysh_type, '_boolean'])
     return instruction
 registered_instructions.register_instruction(greater_than_equal('_integer'))
 registered_instructions.register_instruction(greater_than_equal('_float'))
@@ -248,7 +248,86 @@ def decrementer(pysh_type):
 registered_instructions.register_instruction(decrementer('_integer'))
 registered_instructions.register_instruction(decrementer('_float'))
 
+def float_sin(state):
+    '''
+
+    '''
+    if len(state.stacks['_float']) > 0:
+        new_float = math.sin(state.stacks['_float'].stack_ref(0))
+        state.stacks['_float'].pop_item()
+        state.stacks['_float'].push_item(new_float)
+float_sin_instruction = pysh_instruction.Pysh_Instruction('float_sin',
+                                                          float_sin,
+                                                          stack_types = ['_float'])
+registered_instructions.register_instruction(float_sin_instruction)
+
+def float_cos(state):
+    '''
+
+    '''
+    if len(state.stacks['_float']) > 0:
+        new_float = math.cos(state.stacks['_float'].stack_ref(0))
+        state.stacks['_float'].pop_item()
+        state.stacks['_float'].push_item(new_float)
+float_cos_instruction = pysh_instruction.Pysh_Instruction('float_cos',
+                                                          float_cos,
+                                                          stack_types = ['_float'])
+registered_instructions.register_instruction(float_cos_instruction)
 
 
+def float_tan(state):
+    '''
+
+    '''
+    if len(state.stacks['_float']) > 0:
+        new_float = math.tan(state.stacks['_float'].stack_ref(0))
+        state.stacks['_float'].pop_item()
+        state.stacks['_float'].push_item(new_float)
+float_tan_instruction = pysh_instruction.Pysh_Instruction('float_tan',
+                                                          float_tan,
+                                                          stack_types = ['_float'])
+registered_instructions.register_instruction(float_tan_instruction)
 
 
+def integer_from_float(state):
+    if len(state.stacks['_float']) > 0:
+        new_int = int(state.stacks['_float'].stack_ref(0))
+        state.stacks['_float'].pop_item()
+        state.stacks['_integer'].push_item(new_int)
+int_from_float_instrc = pysh_instruction.Pysh_Instruction('integer_from_float',
+                                                          integer_from_float,
+                                                          stack_types = ['_integer', '_float'])
+registered_instructions.register_instruction(int_from_float_instrc)
+
+
+def integer_from_boolean(state):
+    if len(state.stacks['_boolean']) > 0:
+        new_int = int(state.stacks['_boolean'].stack_ref(0))
+        state.stacks['_boolean'].pop_item()
+        state.stacks['_integer'].push_item(new_int)
+int_from_boolean_instrc = pysh_instruction.Pysh_Instruction('integer_from_boolean',
+                                                            integer_from_boolean,
+                                                            stack_types = ['_integer', '_boolean'])
+registered_instructions.register_instruction(int_from_boolean_instrc)
+
+
+def float_from_integer(state):
+    if len(state.stacks['_integer']) > 0:
+        new_float = float(state.stacks['_integer'].stack_ref(0))
+        state.stacks['_integer'].pop_item()
+        state.stacks['_float'].push_item(new_float)
+float_from_int_instrc = pysh_instruction.Pysh_Instruction('float_from_integer',
+                                                          float_from_integer,
+                                                          stack_types = ['_float', '_integer'])
+registered_instructions.register_instruction(float_from_int_instrc)
+
+
+def float_from_boolean(state):
+    if len(state.stacks['_boolean']) > 0:
+        new_float = float(state.stacks['_boolean'].stack_ref(0))
+        state.stacks['_boolean'].pop_item()
+        state.stacks['_float'].push_item(new_float)
+float_from_bool_instrc = pysh_instruction.Pysh_Instruction('foat_from_boolean',
+                                                           float_from_boolean,
+                                                           stack_types = ['_float', '_boolean'])
+registered_instructions.register_instruction(float_from_bool_instrc)

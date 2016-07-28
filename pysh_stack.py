@@ -28,7 +28,10 @@ class Pysh_Stack(list):
         elif len(self) == 0:
             return '_no_stack_item'
         else:
-            return self[position]
+            return self[(len(self) - 1) - position]
         
-    def stack_assoc(self, value, position):
+    def stack_insert(self, position, value):
         self.insert(position, value)
+
+    def stack_flush(self):
+        self = Pysh_Stack(self.pysh_type)

@@ -5,9 +5,8 @@ Created on Sun Jun  17, 2016
 @author: Eddie
 """
 
-import pysh_state
-import pysh_instruction
-import pysh_utils
+from .. import pysh_state
+from .. import pysh_instruction
 
 import registered_instructions
 

@@ -14,4 +14,5 @@ modules = glob.glob(dirname(__file__)+"/*.py")
 l = [ basename(f)[:-3] for f in modules if isfile(f)]
 l.remove('__init__')
 l.remove('registered_instructions')
+l.remove('input_output')
 __all__ = l

@@ -8,28 +8,75 @@ More information about PushGP can be found here: http://faculty.hampshire.edu/ls
 
 For the most cutting edge PushGP framework, see the [Clojure](https://clojure.org/) implementaion called [Clojush](https://github.com/lspector/Clojush).
 
-## How to Use Pysh 2
-Unlike the first implementation of [Pysh](https://github.com/erp12/PyshGP), Pysh2 is intended to be integrated with [DEAP](https://github.com/DEAP/deap). 
+## How to Use Pysh2
+
+### Example Usage
+```python
+import copy
+import random
+
+from ..gp import gp
+from .. import pysh_interpreter
+from ..instructions import *
+from ..instructions import registered_instructions 
+
+'''
+This problem evolves a program to determine if a number is odd or not.
+'''
+
+def odd_error_func(program):
+	errors = []
+
+	for i in range(9):
+		prog = copy.deepcopy(program)
+		# Create the push interpreter
+		interpreter = pysh_interpreter.Pysh_Interpreter()
+		interpreter.reset_pysh_state()
+		
+		# Push input number		
+		interpreter.state.stacks["_integer"].push_item(i)
+		interpreter.state.stacks["_input"].push_item(i)
+
+		# Run program
+		interpreter.run_push(prog)
+		# Get output
+		prog_output = interpreter.state.stacks["_boolean"].stack_ref(0)
+		#compare to target output
+		target_output = bool(i % 2)
+
+		if prog_output == target_output:
+			errors.append(0)
+		else:
+			errors.append(1)
+
+	return errors
+	
+odd_params = {
+"atom_generators" : registered_instructions.registered_instructions +	# Use all possible instructions,
+                      [lambda: random.randint(0, 100),					# and some integers
+                       lambda: random.random(),							# and some floats
+                       "_in1"]}											# and an input instruction that pushes the input to the _integer stack.
+
+if __name__ == "__main__":
+	gp.evolution(odd_error_func, odd_params)
+```
 
 More demonstrations of this coming soon.
 
-## Other Additions
-- Lexicase Selection
-- Epsilon Lexicase Selection
 
 ## Current State of Pysh2
 
 Pysh2 is currently under active development.
-
-#### Completed Features
-- Push Interpreter
-- Plush genome to push program translation
-- Lexicase Selection
+Feel free to submit a pull request if you have any additions to make.
 
 #### In Progress Features
-- Random code generation
-- Full instruction set from [Clojush](https://github.com/lspector/Clojush)
-- Epsilon Lexicase Selection
+-	Add tournament selection
+-	Add input instructions
+-	String instructions
+-	More benchmark problems
+-	Utility functions to filter registered instructions by type
 
 #### Future Features
-- Itegration with DEAP
+-	Add parallel evaluation
+-	Add compatibility with python 3
+

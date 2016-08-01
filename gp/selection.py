@@ -34,9 +34,15 @@ def lexicase_selection(individuals, k):
     
     return selected_individuals
 
-def tournament_selection(individuals, k):
-	'''
-	Returns k individuals that do the best out of their respective tournament.
-	'''
-	raise Exception("tournament_selection not implemented yet!")
-
+def tournament_selection(individuals, k, tournament_size):
+    '''
+    Returns k individuals that do the best out of their respective tournament.
+    '''
+    selected_individuals = []
+    for i in range(k):
+        tournament = []
+        for i in range(tournament_size):
+            tournament.append(random.choice(individuals))
+        tournament = sorted(tournament, key=lambda ind: ind.get_total_error())
+        selected_individuals.append(tournament[0])
+    return selected_individuals

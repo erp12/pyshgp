@@ -70,7 +70,7 @@ default_evolutionary_params = {
 "silent_instruction_probability" : 0.2, # If :silent is used as an epigenetic-marker, this is the probability of random instructions having :silent be true
 
 # Program Simplification
-"final_simplification_steps" : 5000, # The number of simplification steps that will happen upon finding a solution.
+"final_simplification_steps" : 10000, # The number of simplification steps that will happen upon finding a solution.
 
 # Monitoring Evolution
 "things_to_monitor" : {"best_total_error" : True,
@@ -118,7 +118,7 @@ def evolution(error_function, problem_params):
 	"""
 	#print evolutionary_params
 	evolutionary_params = u.merge_dicts(default_evolutionary_params, problem_params)
-	
+
 	# Create Initial Population
 	population = []
 	for i in range(evolutionary_params["population_size"]):
@@ -177,6 +177,11 @@ def evolution(error_function, problem_params):
 			print 
 			simp.auto_simplify(solutions[0], error_function, evolutionary_params["final_simplification_steps"])
 			break # Finish evolutionary run
+
+		if g == evolutionary_params['max_generations'] - 1:
+			print 'Best program in final generation:'
+			print population[0].get_program()
+			print 'Errors:', population[0].get_errors()
 
 
 

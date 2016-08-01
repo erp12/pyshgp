@@ -28,7 +28,7 @@ class Pysh_Input_Instruction(Pysh_Instruction):
     '''
 
     def __init__(self, name):
-		Pysh_Instruction.__init__(self, name, None)
-		self.name = name
-		self.func = name
-		self.stack_types = '_input'
+        Pysh_Instruction.__init__(self, name, None)
+        self.name = name
+        self.func = name
+        self.stack_types = '_input'

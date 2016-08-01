@@ -28,5 +28,5 @@ class Pysh_State:
         Prints state of all stacks in the pysh_state
         '''
         for t in g.pysh_types:
-            print(self.stacks[t].pysh_type, ":", self.stacks[t])
+            print self.stacks[t].pysh_type, ":", self.stacks[t]
             

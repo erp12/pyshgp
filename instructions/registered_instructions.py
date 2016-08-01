@@ -24,6 +24,8 @@ def register_instruction(instruction):
 
 
 def get_instruction_by_name(name):
+	if name[0] == "_":
+		name = name[1:]
 	instr = filter(lambda x: x.name == name, registered_instructions)
 	if len(instr) == 0:
 		return None;

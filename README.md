@@ -11,6 +11,9 @@ For the most cutting edge PushGP framework, see the [Clojure](https://clojure.or
 ## How to Use Pysh2
 
 ### Example Usage
+To try the odd example, run `python -m pysh.problems.odd` in the directory above the pysh directory.
+
+Odd problem source:
 ```python
 import copy
 import random

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Pysh documentation build configuration file, created by
-# sphinx-quickstart on Tue Aug  2 12:31:54 2016.
+# sphinx-quickstart on Tue Aug  2 13:20:31 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -34,7 +34,6 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
 ]
 

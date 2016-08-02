@@ -1,5 +1,5 @@
 .. Pysh documentation master file, created by
-   sphinx-quickstart on Tue Aug  2 12:31:54 2016.
+   sphinx-quickstart on Tue Aug  2 13:20:31 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 

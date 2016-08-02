@@ -9,6 +9,14 @@ Look how easy it is to use:
     # Get your stuff done
     project.do_stuff()
 
+
+Push Genetic Programming
+------------------------
+
+Push is programming language that plays nice with evolutionay computing / genetic programming. It is a stack-based language that features 1 stack per data type, including code. Programs are represented by lists of instructions, which modify the values on the stacks. Instuctions are executed in order.
+
+
+
 Features
 --------
 

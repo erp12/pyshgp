@@ -1,5 +1,5 @@
 # Pysh2
-Push Genetic Programming in Python.
+Push Genetic Programming in Python. For the most complete documentation, refer to the [ReadTheDocs](http://pysh2.readthedocs.io/en/latest/index.html).
 
 ## Push Genetic Programming
 Push is programming language that plays nice with evolutionay computing / genetic programming. It is a stack-based language that features 1 stack per data type, including code. Programs are represented by lists of instructions, which modify the values on the stacks. Instuctions are executed in order.
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 	gp.evolution(odd_error_func, odd_params)
 ```
 
-More demonstrations of this coming soon.
+More demonstrations of this can be found on [Pysh's ReadTheDocs page](http://pysh2.readthedocs.io/en/latest/index.html).
 
 
 ## Current State of Pysh2
@@ -73,9 +73,8 @@ Pysh2 is currently under active development.
 Feel free to submit a pull request if you have any additions to make.
 
 #### In Progress Features
--	Add tournament selection
--	Add input instructions
--	String instructions
+-	More complete string instructions
+-   Add string mutation to Uniform Mutation algorithm
 -	More benchmark problems
 -	Utility functions to filter registered instructions by type
 

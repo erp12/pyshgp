@@ -6,16 +6,15 @@
 
 
 
-.. _pysh:
-
 ****
 Pysh
 ****
 
 Push Genetic Programming in Python
 
+
 Push Genetic Programming
-------------------------
+========================
 
 Push is programming language that plays nice with evolutionay computing / genetic programming. It is a stack-based language that features 1 stack per data type, including code. Programs are represented by lists of instructions, which modify the values on the stacks. Instuctions are executed in order.
 
@@ -24,19 +23,11 @@ More information about PushGP can be found `here <http://faculty.hampshire.edu/l
 For the most cutting edge PushGP framework, see the `Clojure <https://clojure.org/>`_ implementaion called `Clojush <https://github.com/lspector/Clojush>`_.
 
 
-.. _usage:
-
-
-
-.. _examples:
-
-Examples
-========
+Examples / Usage
+================
 
 * :doc:`Odd <Odd>`
 * :doc:`Integer Regression <Integer_Regression>`
-
-
 
 
 To run the Pysh examples, simply run one of the following commands from the directory you have placed your pysh folder.::
@@ -67,13 +58,4 @@ Future Features
 
 * Add parallel evaluation (using SCOOP)
 * Add compatibility with python 3
-
-
-
-.. toctree::
-   :maxdepth: 2
-
-   Evolutionary_Parameters
-   Instructions
-   Examples
 

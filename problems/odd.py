@@ -39,7 +39,6 @@ def odd_error_func(program):
 			errors.append(0)
 		else:
 			errors.append(1)
-
 	return errors
 
 odd_params = {
@@ -58,6 +57,7 @@ def test_odd_solution():
 
 
 if __name__ == "__main__":
+	print odd_params['atom_generators']
 	gp.evolution(odd_error_func, odd_params)
 	#test_odd_solution()
 

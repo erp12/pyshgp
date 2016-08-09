@@ -41,7 +41,7 @@ default_evolutionary_params = {
 #############
 # SELECTION #
 #############
-"selection_methlod" : "lexicase", # Options are 'lexicase' or 'tournament';
+"selection_method" : "lexicase", # Options are 'lexicase' or 'tournament';
 
 # Arguments related to Tournament Selection
 "tournament_size" : 7, # If using tournament selection, the size of the tournaments
@@ -138,7 +138,7 @@ def evolution(error_function, problem_params):
 		# Select parents and mate them to create offspring
 		print "Performing selection and variation."
 		selction_func = sel.lexicase_selection
-		if evolutionary_params["selection_methlod"] == "tournament":
+		if evolutionary_params["selection_method"] == "tournament":
 			selection_func = sel.tournament_selection
 		offspring = []
 		for i in range(len(population)):

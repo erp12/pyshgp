@@ -13,13 +13,12 @@ class Pysh_Instruction(object):
     
     def __init__(self, name, func, stack_types = [], parentheses = 0):
         self.name = name
-        #self.pysh_type = pysh_type
         self.func = func
         self.stack_types = stack_types
         self.parentheses = parentheses # Specifies parens group. (0, 1, 2, ... etc)
         
     def __repr__(self):
-        return self.name
+        return self.name + "_INSTR"
 
 class Pysh_Input_Instruction(Pysh_Instruction):
     '''

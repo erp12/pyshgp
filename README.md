@@ -67,7 +67,7 @@ if __name__ == "__main__":
 More demonstrations of this can be found on [Pysh's ReadTheDocs page](http://pysh2.readthedocs.io/en/latest/index.html).
 
 
-## Current State of Pysh2
+## Current State of Pysh
 
 Pysh2 is currently under active development.
 Feel free to submit a pull request if you have any additions to make.

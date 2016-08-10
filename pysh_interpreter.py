@@ -47,7 +47,7 @@ class Pysh_Interpreter:
             for i in instruction:
                 self.state.stacks['_exec'].push_item(i)
         elif pysh_type == False:
-            raise Exception("Attempted to evaluate something that isn't an instruction or literal.") 
+            raise Exception("Attempted to evaluate " + str(instruction) + " of type " + str(type(instruction)) + ". It isn't an instruction string or literal.") 
         else:
             self.state.stacks[pysh_type].push_item(instruction)
     

@@ -98,11 +98,11 @@ def reductions(f, l):
     per reduce) of coll by f, starting with init.
     '''
     result = []
-    for i in range(len(l)-1):
-        if i > 0:
+    for i in range(len(l)):
+        if i == 0:
             result.append(l[i])
         else:
-            result.append(f(l[i], l[i + 1]))
+            result.append(f(result[-1], l[i]))
     return result
 
 
@@ -112,25 +112,6 @@ def reductions(f, l):
 #     else:
 #         return lst
 
-# def open_close_sequence_to_list(sequence):
-#     if not type(sequence) == list:
-#         return sequence
-#     elif len(sequence) == 0:
-#         return []
-#     else:
-#         opens = len(filter(lambda x: x == '_open', sequence))
-#         closes = len(filter(lambda x: x == '_close', sequence))
-#         if not opens == closes:
-#             raise Exception("open-close sequence must have equal numbers of :open and :close; this one does not:\n", sequence)
-
-#         lst = []
-#         for el in sequence:
-            
-
-#         if len(l) == 1:
-#             return l[0]
-#         else:
-#             return l
 
 def get_matcing_close_index(sequence):
     i = None
@@ -178,5 +159,9 @@ def merge_dicts(*dict_args):
         result.update(dictionary)
     return result
 
-
+def ensure_list(thing):
+    if type(thing) == list:
+        return thing
+    else:
+        return [thing]
 

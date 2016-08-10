@@ -116,6 +116,8 @@ def evolution(error_function, problem_params):
 	"""
 	Basic evolutionary loop.
 	"""
+	print "Starting GP Run"
+
 	#print evolutionary_params
 	evolutionary_params = u.merge_dicts(default_evolutionary_params, problem_params)
 

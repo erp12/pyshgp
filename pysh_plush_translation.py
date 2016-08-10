@@ -55,24 +55,23 @@ def translate_plush_genome_to_push_program(genome, max_points):
 	#raise Exception("translate_plush_genome_to_push_program() not ready for use. Just use Plush genomes.")
 	#return
 
-	translated_program = None
-	prog = []
-	gn = genome
-	num_parens_here = 0
-	paren_stack = []
+	translated_program = None # The program being built after being translated from open-close sequence.
+	prog = [] # The open-close being built. 
+	gn = genome # The linear Plush genome being translated. List of Plush_Gene objects.
+	num_parens_here = 0 # The number of parens that still need to be added at this location.
+	paren_stack = [] # Whenever an instruction requires parens grouping, it will push either _close or _close-open on this stack. This will indicate what to insert in the program the next time a paren is indicated by the _close key in the instruction map.
 
 	looping = True
 	while looping:
 		# Check if need to add close parens here
 		if 0 < num_parens_here:
-			if len(paren_stack) == 0:
-				pass
-			elif paren_stack[0] == '_close':
-				prog += ['_close']
-			elif paren_stack[0] == '_close_open':
-				prog += ['_close', '_open']
-			else:
-				raise Exception('Something bad found on paren_stack!')
+			if len(paren_stack) > 0:
+				if paren_stack[0] == '_close':
+					prog += ['_close']
+				elif paren_stack[0] == '_close_open':
+					prog += ['_close', '_open']
+				else:
+					raise Exception('Something bad found on paren_stack!')
 			num_parens_here -= 1
 			paren_stack = paren_stack[1:]
 		# Check if at end of program but still need to add parens

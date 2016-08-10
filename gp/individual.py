@@ -18,7 +18,6 @@ class Individual:
 		self.errors = []
 		self.total_error = None
 
-
 	def get_genome(self):
 		return self.genome
 

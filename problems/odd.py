@@ -29,7 +29,7 @@ def odd_error_func(program):
 		interpreter.state.stacks["_integer"].push_item(i)
 		interpreter.state.stacks["_input"].push_item(i)
 		# Run program
-		interpreter.run_push(prog, True)
+		interpreter.run_push(prog)
 		# Get output
 		prog_output = interpreter.state.stacks["_boolean"].stack_ref(0)
 		#compare to target output
@@ -56,6 +56,6 @@ def test_odd_solution():
 
 
 if __name__ == "__main__":
-	#gp.evolution(odd_error_func, odd_params)
-	test_odd_solution()
+	gp.evolution(odd_error_func, odd_params)
+	#test_odd_solution()
 

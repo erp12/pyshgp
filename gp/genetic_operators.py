@@ -7,7 +7,7 @@ Created on 5/50/2016
 import math
 import random
 
-from .. import plush_instruction as pl
+from .. import plush_gene as pl
 from .. import pysh_random
 
 #############

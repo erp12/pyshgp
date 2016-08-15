@@ -10,7 +10,7 @@ import pysh_utils as u
 import pysh_globals as g
 import pysh_instruction
 import pysh_plush_translation
-import plush_instruction as pl
+import plush_gene as pl
 
 
 

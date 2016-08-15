@@ -36,10 +36,11 @@ def error_func(program):
 		interpreter.run_push(prog)
 		# Get output
 		top_int = interpreter.state.stacks["_integer"].stack_ref(0)
-		#compare to target output
-		target_int = target_function(x)
 
 		if type(top_int) == int:
+			# compare to target output
+			target_int = target_function(x)
+			# calculate error
 			errors.append(abs(top_int - target_int))
 		else:
 			errors.append(1000)

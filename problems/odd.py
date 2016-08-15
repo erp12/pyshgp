@@ -19,7 +19,7 @@ This problem evolves a program to determine if a number is odd or not.
 def odd_error_func(program):
 	errors = []
 
-	for i in range(9):
+	for i in range(10):
 		prog = copy.deepcopy(program)
 		# Create the push interpreter
 		interpreter = pysh_interpreter.Pysh_Interpreter()
@@ -29,7 +29,7 @@ def odd_error_func(program):
 		interpreter.state.stacks["_integer"].push_item(i)
 		interpreter.state.stacks["_input"].push_item(i)
 		# Run program
-		interpreter.run_push(prog)
+		interpreter.run_push(prog, True)
 		# Get output
 		prog_output = interpreter.state.stacks["_boolean"].stack_ref(0)
 		#compare to target output
@@ -49,14 +49,13 @@ odd_params = {
 }
 
 def test_odd_solution():
-	#prog_lst = ["_in1", "_integer_add"]
-	prog_lst = ['_exec_stack_depth', '_in1', '_float_dup', '_float_sub', '_string_empty', '_exec_yankdup', '_float_stack_depth', '_foat_from_boolean', '_string_stack_depth', '_integer_gte', '_in1', '_float_dup', '_float_sub', '_string_empty', '_exec_yankdup', '_float_stack_depth', '_foat_from_boolean', '_string_stack_depth', '_integer_gte', '_code_shove', '_foat_from_boolean', '_string_stack_depth', '_float_lt', 3, '_boolean_xor', '_boolean_xor', '_integer_yank', '_integer_gte']
+	prog_lst = ['_exec_do*times', ['_integer_empty']]
 	prog = gp.load_program_from_list(prog_lst)
 	errors = odd_error_func(prog)
 	print "Errors:", errors
 
 
 if __name__ == "__main__":
-	gp.evolution(odd_error_func, odd_params)
-	#test_odd_solution()
+	#gp.evolution(odd_error_func, odd_params)
+	test_odd_solution()
 

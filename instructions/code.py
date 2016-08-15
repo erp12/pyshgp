@@ -108,7 +108,7 @@ code_do_star_instruction = pysh_instruction.Pysh_Instruction('code_do*',
 registered_instructions.register_instruction(code_do_star_instruction)
 
 
-def code_do_Range(state):
+def code_do_range(state):
 	if len(state.stacks['_code']) > 0 and len(state.stacks['_code']) > 1:
 		to_do = state.stacks['_code'].stack_ref(0)
 		current_index = state.stacks['_integer'].stack_ref(1)
@@ -210,3 +210,78 @@ exec_do_count_intruction = pysh_instruction.Pysh_Instruction('exec_do*count',
 												  			 stack_types = ['_exec', '_integer'],
 												  			 parentheses = 1)
 registered_instructions.register_instruction(exec_do_count_intruction)
+
+
+def code_do_times(state):
+	if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].stack_ref(0) < 1 or len(state.stacks['_code']) == 0):
+		to_push = [0,
+		           state.stacks['_integer'].stack_ref(0) - 1,
+		           '_code_quote',
+		           ['_integer_pop'] + u.ensure_list(state.stacks['_exec'].stack_ref(0)),
+		           '_code_do*range']
+		state.stacks['_code'].pop_item()
+		state.stacks['_integer'].pop_item()
+		state.stacks['_exec'].push_item(to_push)
+code_do_times_intruction = pysh_instruction.Pysh_Instruction('code_do*times',
+												  			 code_do_times,
+												  			 stack_types = ['_code', '_integer'])
+registered_instructions.register_instruction(code_do_times_intruction)
+
+
+def exec_do_times(state):
+	'''
+	differs from code.do*times only in the source of the code and the recursive call
+	'''
+	if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].stack_ref(0) < 1 or len(state.stacks['_exec']) == 0):
+		to_push = [0, 
+				   state.stacks['_integer'].stack_ref(0) - 1, 
+				   '_exec_do*range',
+				   ['_integer_pop'] + u.ensure_list(state.stacks['_exec'].stack_ref(0))]
+		state.stacks['_exec'].pop_item()
+		state.stacks['_integer'].pop_item()
+		state.stacks['_exec'].push_item(to_push)
+	return state
+
+exec_do_times_intruction = pysh_instruction.Pysh_Instruction('exec_do*times',
+												  			 exec_do_times,
+												  			 stack_types = ['_exec', '_integer'],
+												  			 parentheses = 1)
+registered_instructions.register_instruction(exec_do_times_intruction)
+
+
+def exec_while(state):
+	if len(state.stacks['_exec']) > 0:
+		if len(state.stacks['_boolean']) == 0:
+			state.stacks['_exec'].pop_item()
+		elif not state.stacks['_boolean'].stack_ref(0):
+			state.stacks['_exec'].pop_item()
+			state.stacks['_boolean'].pop_item()
+		else:
+			block = state.stacks['_exec'].stack_ref(0)
+			state.stacks['_exec'].push_item('_exec_while')
+			state.stacks['_exec'].push_item(block)
+			state.stacks['_boolean'].pop_item()
+	return state
+exec_while_intruction = pysh_instruction.Pysh_Instruction('exec_while',
+												  	      exec_while,
+												  		  stack_types = ['_exec', '_boolean'],
+												  		  parentheses = 1)
+registered_instructions.register_instruction(exec_while_intruction)
+
+
+def exec_do_while(state):
+	if len(state.stacks['_exec']) > 0:
+			block = state.stacks['_exec'].stack_ref(0)
+			state.stacks['_exec'].push_item('_exec_while')
+			state.stacks['_exec'].push_item(block)
+	return state
+exec_do_while_intruction = pysh_instruction.Pysh_Instruction('exec_do*while',
+															 exec_do_while,
+															 stack_types = ['_exec', '_boolean'],
+															 parentheses = 1)
+registered_instructions.register_instruction(exec_do_while_intruction)
+
+
+
+# Code Map
+

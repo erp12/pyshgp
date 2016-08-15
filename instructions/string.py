@@ -52,21 +52,70 @@ def string_concat(state):
 string_concat_instruction = pysh_instruction.Pysh_Instruction('string_concat',
 															   string_concat,
 															   stack_types = ['_string'])
+registered_instructions.register_instruction(string_concat_instruction)
 
 
-# def string_head(state):
+def string_head(state):
+	if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
+		s = state.stacks['_string'].stack_ref(0)
+		i = state.stacks['_integer'].stack_ref(0)
+		state.stacks['_string'].pop_item()
+		state.stacks['_integer'].pop_item()
+		state.stacks['_string'].push_item(s[:i])
+	return state
+string_head_instruction = pysh_instruction.Pysh_Instruction('string_head',
+															 string_head,
+															 stack_types = ['_string', '_integer'])
+registered_instructions.register_instruction(string_head_instructions)
+
+
+def string_tail(state):
+	if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
+		s = state.stacks['_string'].stack_ref(0)
+		i = state.stacks['_integer'].stack_ref(0)
+		state.stacks['_string'].pop_item()
+		state.stacks['_integer'].pop_item()
+		state.stacks['_string'].push_item(s[-i:])
+	return state
+string_tail_instruction = pysh_instruction.Pysh_Instruction('string_tail',
+															 string_tail,
+															 stack_types = ['_string', '_integer'])
+registered_instructions.register_instruction(string_head_instructions)
+
+def string_substring(state):
+	if len(state.stacks['_string']) > 1 and len(state.stacks['_integer']) > 0:
+		s = state.stacks['_string'].stack_ref(0)
+		start_index = state.stacks['_integer'].stack_ref(0)
+		end_index = 
+		state.stacks['_string'].pop_item()
+		state.stacks['_integer'].pop_item()
+		state.stacks['_string'].push_item(s[-i:])
+	return state
+string_tail_instruction = pysh_instruction.Pysh_Instruction('string_tail',
+															 string_tail,
+															 stack_types = ['_string', '_integer'])
+registered_instructions.register_instruction(string_head_instructions)
+
+# def string_split_at_index(state):
+#	pass
+
+# def string_split_at_str(state):
+#	pass
+
+# def string_split_at_space(state):
+#	pass
+
+# def string_length(state):
+#	pass
+
+# def string_reverse(state):
 # 	pass
 
-# def string_tail(state):
-# 	pass
-
-# def string_substring(state):
-# 	pass
 
 
-
-
-
+# string_emptystring
+# string_contains # True if top string is a substring of second string; false otherwise
+# string_replace # In third string on stack, replaces all occurences of second string with first string
 
 
 

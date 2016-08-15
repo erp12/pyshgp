@@ -4,7 +4,10 @@ Created on 5/20/2016
 
 @author: Eddie
 """
+import sys
 import random
+import warnings
+from collections import defaultdict
 
 from .. import pysh_random
 from .. import pysh_globals as g
@@ -36,7 +39,7 @@ default_evolutionary_params = {
 # genetic operators to produce a child.
 # More coming soon!
 "genetic_operator_probabilities" : {"alternation" : 0.7,
-									"uniform_mutation" : 0.1},
+									"uniform_mutation" : 0.2},
 
 #############
 # SELECTION #
@@ -82,6 +85,19 @@ default_evolutionary_params = {
 }
 
 
+def grab_command_line_params(evolutionary_params):
+	'''
+	Loads parameters from command line and overwrites the problem specific / default
+	parameter values.
+	'''
+	for arg in sys.argv:
+		if arg.startswith('--'):
+			(param,val) = arg.split("=")
+			if not (param[2:] in evolutionary_params):
+				print"WARNING:", "Unknown evolutionary parameter", param[2:], ". Still added to parameters."
+			val = u.safe_cast_arg(val)
+			evolutionary_params[param[2:]] = val
+
 
 def load_program_from_list(lst, atom_generators = default_evolutionary_params["atom_generators"]):
 	"""
@@ -116,10 +132,15 @@ def evolution(error_function, problem_params):
 	"""
 	Basic evolutionary loop.
 	"""
-	print "Starting GP Run"
+	print "Starting GP Run With Parameters:"
 
-	#print evolutionary_params
 	evolutionary_params = u.merge_dicts(default_evolutionary_params, problem_params)
+	grab_command_line_params(evolutionary_params)
+
+	for keys,values in evolutionary_params.items():
+		print(keys),
+		print(values)
+	print
 
 	# Create Initial Population
 	population = []

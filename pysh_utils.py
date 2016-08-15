@@ -8,6 +8,16 @@ import math
 
 import pysh_globals as g
 
+def safe_cast_arg(arg, typ = int):
+    try:
+        return typ(arg)
+    except Exception, e:
+        if typ == int:
+            safe_cast_arg(arg, float)
+        elif typ == float:
+            safe_cast_arg(arg, bool)
+        else:
+            return str(arg)
 
 def flatten_all(lst):
     result = []

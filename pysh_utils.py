@@ -61,6 +61,11 @@ def keep_number_reasonable(n):
         n = -g.max_number_magnitude
     return n
 
+def normalize_genetic_operator_probabilities(gen_op_dict):
+    tot = sum(gen_op_dict.values())
+    new_probs = map(lambda x: round(x / tot, 4), gen_op_dict.values())
+    return dict(zip(gen_op_dict.keys(), new_probs))
+
 def count_parens(tree):
     '''
     Returns the number of paren pairs in tree.

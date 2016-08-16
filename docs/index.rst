@@ -35,6 +35,8 @@ To run the Pysh examples, simply run one of the following commands from the dire
 	python -m pysh.problems.odd
 	python -m pysh.problems.simple_regression
 
+To learn more about changing the evolutionary parameters for a genetic programming run, see the `evolutionary parameters documentation <Evolutionary_Parameters.html>`_.
+
 For a more in depth explanation of Pysh's usage, see the examples page.
 
 

@@ -9,10 +9,10 @@ def best_total_error(population):
 	return sorted(population, key=lambda ind: ind.get_total_error())[0].get_total_error()
 
 def average_total_error(population):
-	return sum(map(lambda ind: ind.get_total_error(), population)) / len(population)
+	return round(sum(map(lambda ind: ind.get_total_error(), population)) / float(len(population)), 3)
 
 def average_genome_size(population):
-	return sum(map(lambda ind: len(ind.get_genome()), population)) / len(population)
+	return round(sum(map(lambda ind: len(ind.get_genome()), population)) / float(len(population)), 3)
 
 def smallest_genome_size(population):
 	return min(map(lambda ind: len(ind.get_genome()), population))

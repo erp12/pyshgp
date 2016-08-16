@@ -1,7 +1,7 @@
 
-***
+******************
 Integer Regression
-***
+******************
 
 The goal of the Integer Regression problem is to evolve a program that mathmatical function that will perform the same computation as a target function. This problem only deals with integers to keep the search space much smaller, compared to other symbolic regression problems.
 

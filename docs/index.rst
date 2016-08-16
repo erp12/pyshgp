@@ -1,9 +1,9 @@
-.. Pysh documentation master file, created by
-   sphinx-quickstart on Tue Aug  2 13:20:31 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
+.. sidebar:: Useful Links
 
+	* `Evolutionary Parameters <Evolutionary_Parameters.html>`_
+	* `Instruction Set <Instructions.html>`_
+	* `Examples <Examples.html>`_
 
 
 ****
@@ -26,19 +26,17 @@ For the most cutting edge PushGP framework, see the `Clojure <https://clojure.or
 Examples / Usage
 ================
 
-* :doc:`Odd <Odd>`
-* :doc:`Integer Regression <Integer_Regression>`
+* `Odd <Odd>`_
+* `Integer Regression <Integer_Regression>`_
 
 
-To run the Pysh examples, simply run one of the following commands from the directory you have placed your pysh folder.::
+To run the Pysh examples, simply run one of the following commands from the directory into which you have placed your pysh folder.::
 
 	python -m pysh.problems.odd
 	python -m pysh.problems.simple_regression
 
 For a more in depth explanation of Pysh's usage, see the examples page.
 
-
-.. _roadmap:
 
 Roadmap
 =======
@@ -58,4 +56,9 @@ Future Features
 
 * Add parallel evaluation (using SCOOP)
 * Add compatibility with python 3
+
+.. _Evolutionary Parameters: Evolutionary_Parameters.html
+.. _Instruction Set: Instructions.html
+.. _Examples: Examples.html
+
 

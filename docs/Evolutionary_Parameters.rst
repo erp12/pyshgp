@@ -1,6 +1,45 @@
+.. sidebar:: Useful Links
+
+	* `Evolutionary Parameters <Evolutionary_Parameters.html>`_
+	* `Instruction Set <Instructions.html>`_
+	* `Examples <Examples.html>`_
+
 ************************
 Parameters For Evolution
 ************************
+
+Setting Parameter Values
+########################
+
+Pysh supports 3 different ways to set the evolutionary parameters for a Pysh GP run.
+
+1. Inside the problem file:
+"""""""""""""""""""""""""""
+	
+A dictionary of problem specific values for evolutionary parameters can be set in the problem file, alongside the error function. This dictionary can overwrite the defaults of every evolutionary parameter, or only a subset. This diction is passed to the ``gp.evolution()`` function in the ``gp/gp.py`` file. Evolutionary parameters set in this way will be overwritten by corrisponding parameters passed from the command line.
+
+For examples on how to do this, refer to the Pysh `examples <Examples.html>`_ documentation, such as `Odd <Odd.html>`_ and `Integer Regression <Integer_Regression>`_.
+
+2. From the command line:
+"""""""""""""""""""""""""
+
+Pysh supports passing evolutionary parameters from the command line. To run the example `Odd <Odd.html>`_ problem with a population size of 777, the following command could be run::
+
+	python -m pysh.problems.odd --population_size=777
+
+When setting evolutionary params in this way, each parameter must be set with its own flag. Each flag must start with two dashes and contain no spaces. Following the two dashes, each flag must have the parameter name, and equals sign, and the new value for the parameter in that order.
+
+Setting parameters from the command line will overwrite Pysh default parameter values and paramters set in the problem file. They will also only be used on the one run which they were set for.
+	
+
+3. Change Pysh defaults:
+""""""""""""""""""""""""
+
+The dictionary of default evolutionary paramters exists in ``gp/gp.py``, and can be edited directly. This will change the default value of the parameter for all runs, of all problems. Parameters set in this way will be overwritten by problem file parameters, and command line arguments.
+
+
+Parameter Descriptions
+######################
 
 error_threshold                                       
 """""""""""""""

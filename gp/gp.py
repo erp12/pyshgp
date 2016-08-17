@@ -25,8 +25,8 @@ import evolution_monitors as monitor
 
 default_evolutionary_params = {
 "error_threshold" : 0, # If any total error of individual is below this, that is considered a solution
-"population_size" : 300, # Size of the population at each generation
-"max_generations" : 100, # Max generations before evoluion stops. Will stop sooner if solution is found
+"population_size" : 1000, # Size of the population at each generation
+"max_generations" : 1001, # Max generations before evoluion stops. Will stop sooner if solution is found
 "max_genome_initial_size" : 50, # Maximum size of random genomes generated for initial population
 "max_points" : 200, # Maximum size of push genomes and push programs, as counted by points in the program. <- Might not be implemented correctly yet
 
@@ -82,7 +82,7 @@ default_evolutionary_params = {
 					   "average_genome_size" : True,
 					   "smallest_genome_size" : True,
 					   "largest_genome_size" : True,
-					   "unique_genome_count" : False}
+					   "unique_program_count" : True}
 }
 
 

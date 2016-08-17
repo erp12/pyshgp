@@ -55,7 +55,7 @@ problem_params = {
                          lambda: random.randint(0, 10),
                          "_in1"],
     "epigenetic_markers" : [],
-    "parent_selection" : "tournament",
+    "selection_method" : "tournament",
     "genetic_operator_probabilities" : {"alternation" : 0.5,
 										"uniform_mutation" : 0.5},
 }

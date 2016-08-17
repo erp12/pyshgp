@@ -5,6 +5,7 @@ Created on 5/20/2016
 @author: Eddie
 """
 import sys
+import datetime
 import random
 import warnings
 from collections import defaultdict
@@ -22,6 +23,10 @@ import individual as ind
 import genetic_operators as go
 import selection as sel
 import evolution_monitors as monitor
+
+timings = {	"count":0,
+			"evaluation":0,
+			"genetics":0}
 
 default_evolutionary_params = {
 "error_threshold" : 0, # If any total error of individual is below this, that is considered a solution
@@ -129,6 +134,11 @@ def evaluate_population(population, error_function):
 			ind.set_errors(errors)
 
 
+def log_timings(stage, start, end):
+	start = (start-datetime.datetime(1970,1,1)).total_seconds()
+	end = (end-datetime.datetime(1970,1,1)).total_seconds()
+	timings[stage] += (end - start)
+
 
 def evolution(error_function, problem_params):
 	"""
@@ -156,16 +166,22 @@ def evolution(error_function, problem_params):
 
 	
 	# Evaluate initial population to get their error vectors
+	start_time = datetime.datetime.now()
 	evaluate_population(population, error_function)
+	end_time = datetime.datetime.now()
+	log_timings("evaluation", start_time, end_time)
+
 	# Sort the population
 	population = sorted(population, key=lambda ind: ind.get_total_error())
 
 	for g in range(evolutionary_params["max_generations"]):
 		print
 		print "Starting Generation:", g
+		timings["count"] += 1
 
 		# Select parents and mate them to create offspring
 		print "Performing selection and variation."
+		start_time = datetime.datetime.now()
 		selction_func = sel.lexicase_selection
 		if evolutionary_params["selection_method"] == "tournament":
 			selection_func = sel.tournament_selection
@@ -175,6 +191,7 @@ def evolution(error_function, problem_params):
 		# Calculate number of children that should be made from each genetic operator
 		num_offspring_each_gen_op = dict(map(lambda k: (k, int(round(evolutionary_params["genetic_operator_probabilities"][k] * evolutionary_params["population_size"]))),
 											 evolutionary_params["genetic_operator_probabilities"]))
+		
 		# For each operator or operator combination
 		for k in num_offspring_each_gen_op.keys():
 			# For each child that should be made by k
@@ -198,9 +215,15 @@ def evolution(error_function, problem_params):
 					else:
 						raise Exception("Tried to perform unknown genetic operator " + str(op))
 				offspring.append(child)
+		end_time = datetime.datetime.now()
+		log_timings("genetics", start_time, end_time)
 
 		print "Evaluating new individuals in population."
+		start_time = datetime.datetime.now()
 		evaluate_population(offspring, error_function)
+		end_time = datetime.datetime.now()
+		log_timings("evaluation", start_time, end_time)
+		
 		print "Installing next generation."
 		population = offspring
 		population = sorted(population, key=lambda ind: ind.get_total_error())
@@ -225,4 +248,9 @@ def evolution(error_function, problem_params):
 			print 'Best program in final generation:'
 			print population[0].get_program()
 			print 'Errors:', population[0].get_errors()
+
+	print
+	print "Timings:"
+	print "Average Generation Evalutation", timings["evaluation"] / float(timings["count"])
+	print "Average Generation Genetics", timings["genetics"] / float(timings["count"])
 

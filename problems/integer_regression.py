@@ -36,10 +36,11 @@ def error_func(program):
 		interpreter.run_push(prog)
 		# Get output
 		top_int = interpreter.state.stacks["_integer"].stack_ref(0)
-		#compare to target output
-		target_int = target_function(x)
 
 		if type(top_int) == int:
+			# compare to target output
+			target_int = target_function(x)
+			# calculate error
 			errors.append(abs(top_int - target_int))
 		else:
 			errors.append(1000)
@@ -54,7 +55,7 @@ problem_params = {
                          lambda: random.randint(0, 10),
                          "_in1"],
     "epigenetic_markers" : [],
-    "parent_selection" : "tournament",
+    "selection_method" : "tournament",
     "genetic_operator_probabilities" : {"alternation" : 0.5,
 										"uniform_mutation" : 0.5},
 }

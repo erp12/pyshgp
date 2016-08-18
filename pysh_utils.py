@@ -8,6 +8,16 @@ import math
 
 import pysh_globals as g
 
+def safe_cast_arg(arg, typ = int):
+    try:
+        return typ(arg)
+    except Exception, e:
+        if typ == int:
+            safe_cast_arg(arg, float)
+        elif typ == float:
+            safe_cast_arg(arg, bool)
+        else:
+            return str(arg)
 
 def flatten_all(lst):
     result = []
@@ -50,6 +60,11 @@ def keep_number_reasonable(n):
     elif n < -g.max_number_magnitude:
         n = -g.max_number_magnitude
     return n
+
+def normalize_genetic_operator_probabilities(gen_op_dict):
+    tot = sum(gen_op_dict.values())
+    new_probs = map(lambda x: round(x / tot, 4), gen_op_dict.values())
+    return dict(zip(gen_op_dict.keys(), new_probs))
 
 def count_parens(tree):
     '''

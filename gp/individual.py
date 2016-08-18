@@ -41,4 +41,8 @@ class Individual:
 	def __repr__(self):
 		return "Pysh_Individual"
 
+	def __eq__(self, other):
+		print "USING IT"
+		return str(self.genome) == str(other.get_genome())
+
 

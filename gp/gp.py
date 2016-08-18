@@ -22,11 +22,12 @@ import individual as ind
 import genetic_operators as go
 import selection as sel
 import evolution_monitors as monitor
+import reporting
 
 default_evolutionary_params = {
 "error_threshold" : 0, # If any total error of individual is below this, that is considered a solution
 "population_size" : 1000, # Size of the population at each generation
-"max_generations" : 1001, # Max generations before evoluion stops. Will stop sooner if solution is found
+"max_generations" : 1000, # Max generations before evoluion stops. Will stop sooner if solution is found
 "max_genome_initial_size" : 50, # Maximum size of random genomes generated for initial population
 "max_points" : 200, # Maximum size of push genomes and push programs, as counted by points in the program. <- Might not be implemented correctly yet
 
@@ -82,7 +83,10 @@ default_evolutionary_params = {
 					   "average_genome_size" : True,
 					   "smallest_genome_size" : True,
 					   "largest_genome_size" : True,
-					   "unique_program_count" : True}
+					   "unique_program_count" : True},
+
+# End of run plots
+"reports" : {"plot_piano_roll" : True}
 }
 
 
@@ -126,6 +130,7 @@ def evaluate_population(population, error_function):
 	for ind in population:
 		if ind.get_errors() == []:
 			errors = error_function(ind.get_program())
+			reporting.total_errors_in_evalutaion_order.append(sum(errors))
 			ind.set_errors(errors)
 
 
@@ -225,4 +230,7 @@ def evolution(error_function, problem_params):
 			print 'Best program in final generation:'
 			print population[0].get_program()
 			print 'Errors:', population[0].get_errors()
+
+	print "Generating End of Run Reports"
+	reporting.plot_piano_roll()
 

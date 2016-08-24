@@ -70,6 +70,15 @@ def alternation(parent_1, parent_2, evo_params):
 # Mutations #
 #############
 
+def string_tweak(s, evo_params):
+	new_s = ""
+	for c in s:
+		if random.random() < evo_params['uniform_mutation_string_char_change_rate']:
+			new_s += random.choice(['\t', '\n'] + map(chr, range(32, 127)))
+		else:
+			new_s += c
+	return new_s
+
 def instruction_mutator(evo_params):
 	return pysh_random.random_plush_instruction(evo_params)
 
@@ -81,6 +90,8 @@ def constant_mutator(token, evo_params):
 		new_token.instruction = perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const)
 	elif type(const) == int:
 		new_token.instruction = round(perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const))
+	elif type(const) == str:
+		new_token.instruction = string_tweak(const, evo_params)
 	elif type(const) == bool:
 		random.choice([True, False])
 	else:

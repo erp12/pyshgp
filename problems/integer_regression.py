@@ -57,7 +57,7 @@ problem_params = {
     "epigenetic_markers" : [],
     "selection_method" : "tournament",
     "genetic_operator_probabilities" : {"alternation" : 0.5,
-										"uniform_mutation" : 0.5},
+										"uniform_mutation" : 0.5}
 }
 
 

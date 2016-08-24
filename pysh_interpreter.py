@@ -39,8 +39,10 @@ class Pysh_Interpreter:
             if instruction.startswith("_in") and not instruction.startswith("_int"):
                 input_output.handle_input_instruction(instruction, self.state)
             else:
-                instruction_obj = list(filter(lambda x: x.name == instruction[1:],
-                                              registered_instructions.registered_instructions))[0]
+                mathcing_instructions = list(filter(lambda x: x.name == instruction[1:], registered_instructions.registered_instructions))
+                if len(mathcing_instructions) == 0:
+                    raise Exception("No matching instructions: " + instruction)
+                instruction_obj = mathcing_instructions[0]
                 instruction_obj.func(self.state)
         elif pysh_type == '_list':
             instruction.reverse()

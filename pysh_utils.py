@@ -33,7 +33,7 @@ def recognize_pysh_type(thing):
     '''
     If thing is a literal, return its type -- otherwise return False.
     '''
-    if type(thing) is str and thing[0] == '_':
+    if type(thing) is str and len(thing) > 0 and thing[0] == '_':
         return '_instruction'
     elif type(thing) is int:
         return '_integer'

@@ -25,9 +25,9 @@ def lexicase_selection(individuals, k):
         random.shuffle(cases)
         
         while len(cases) > 0 and len(candidates) > 1:
-            best_val_for_case = min(map(lambda ind: ind.get_errors()[cases[0]], individuals))
+            best_val_for_case = min(map(lambda ind: ind.get_errors()[cases[0]], candidates))
             
-            candidates = list(filter(lambda ind: ind.get_errors()[cases[0]] == best_val_for_case, individuals))
+            candidates = list(filter(lambda ind: ind.get_errors()[cases[0]] == best_val_for_case, candidates))
             cases.pop(0)
                      
         selected_individuals.append(random.choice(candidates))

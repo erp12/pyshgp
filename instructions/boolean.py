@@ -16,7 +16,6 @@ boolean_and_intruction = pysh_instruction.Pysh_Instruction('boolean_and',
 registered_instructions.register_instruction(boolean_and_intruction)
 
 
-
 def boolean_or(state):
 	if len(state.stacks['_boolean']) > 1:
 		result = state.stacks['_boolean'].stack_ref(0) or state.stacks['_boolean'].stack_ref(1)

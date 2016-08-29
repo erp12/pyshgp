@@ -59,9 +59,7 @@ problem_params = {
     "genetic_operator_probabilities" : {"alternation" : 0.5,
 										"uniform_mutation" : 0.5},
 	"alternation_rate" : 0.1,
-	"uniform_mutation_rate" : 0.1,
-	"population_size" : 300,
-	"max_generations" : 300
+	"uniform_mutation_rate" : 0.1
 }
 
 

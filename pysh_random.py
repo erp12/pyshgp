@@ -63,7 +63,8 @@ def random_plush_instruction(evo_params):
 			     # Its an input instruction!
 			     new_plush_gene.instruction = pysh_instruction.Pysh_Input_Instruction(element)
 			else:
-				raise Exception("Encountered strange _instruction epigenetic marker: " + element)
+				print element
+				raise Exception("Encountered strange _instruction epigenetic marker: " + str(element))
 		elif m == '_close':
 			new_plush_gene.closes = random_closes(evo_params['close_parens_probabilities'])
 		elif m == '_silent':

@@ -4,6 +4,8 @@ Created on Sun Jun 6 2016
 
 @author: Eddie
 """
+import copy
+
 import pysh_utils as u
 import pysh_globals as g
 import pysh_instruction
@@ -97,14 +99,9 @@ def translate_plush_genome_to_push_program(genome, max_points):
 				new_paren_stack += paren_stack
 				
 			if 0 >= number_paren_groups:
-				if type(gn[0].instruction).__name__ == pysh_instruction.Pysh_Instruction.__name__:
-					prog.append('_' + gn[0].instruction.name)
-				elif type(gn[0].instruction).__name__ == pysh_instruction.Pysh_Input_Instruction.__name__:
-					prog.append(gn[0].instruction.name)
-				else:
-					prog.append(gn[0].instruction)
+				prog.append(gn[0].instruction)
 			else: 
-				prog += ['_' + gn[0].instruction.name, '_open']
+				prog += [gn[0].instruction, '_open']
 			num_parens_here = gn[0].closes
 			gn = gn[1:]
 			paren_stack = new_paren_stack

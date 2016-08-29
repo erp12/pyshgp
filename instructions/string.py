@@ -15,6 +15,10 @@ string_from_integer_intruction = pysh_instruction.Pysh_Instruction('string_from_
 												  					string_from_integer,
 												  					stack_types = ['_string', '_integer'])
 registered_instructions.register_instruction(string_from_integer_intruction)
+#<instr_open>
+#<instr_name>string_from_integer
+#<instr_desc>Casts the top integer to a string and pushes the result onto the string stack.
+#<instr_close>
 
 
 def string_from_float(state):
@@ -27,6 +31,10 @@ string_from_float_intruction = pysh_instruction.Pysh_Instruction('string_from_fl
 												  					string_from_float,
 												  					stack_types = ['_string', '_float'])
 registered_instructions.register_instruction(string_from_float_intruction)
+#<instr_open>
+#<instr_name>string_from_float
+#<instr_desc>Casts the top float to a string and pushes the result onto the string stack.
+#<instr_close>
 
 
 def string_from_boolean(state):
@@ -39,6 +47,10 @@ string_from_boolean_intruction = pysh_instruction.Pysh_Instruction('string_from_
 												  					string_from_boolean,
 												  					stack_types = ['_string', '_boolean'])
 registered_instructions.register_instruction(string_from_boolean_intruction)
+#<instr_open>
+#<instr_name>string_from_boolean
+#<instr_desc>Casts the top boolean to a string and pushes the result onto the string stack.
+#<instr_close>
 
 
 def string_concat(state):
@@ -53,6 +65,10 @@ string_concat_instruction = pysh_instruction.Pysh_Instruction('string_concat',
 															   string_concat,
 															   stack_types = ['_string'])
 registered_instructions.register_instruction(string_concat_instruction)
+#<instr_open>
+#<instr_name>string_concat
+#<instr_desc>Pops top 2 strings, and pushes result of concatenating those strings to the string stack.
+#<instr_close>
 
 
 def string_head(state):
@@ -93,7 +109,10 @@ def string_split_at_str(state):
 	if len(state.stacks['_string']) > 1:
 		split_on = state.stacks['_string'].stack_ref(1)
 		split_this = state.stacks['_string'].stack_ref(0)
-		new_strings = split_this.split(split_on)
+		if split_on == "":
+			new_strings = split_this
+		else:
+			new_strings = split_this.split(split_on)
 		state.stacks['_string'].pop_item()
 		state.stacks['_string'].pop_item()
 		for s in new_strings:
@@ -133,7 +152,7 @@ registered_instructions.register_instruction(string_length_instruction)
 
 
 def string_reverse(state):
-	if len(state.stacks['_sting']) > 0:
+	if len(state.stacks['_string']) > 0:
 		s = state.stacks['_string'].stack_ref(0)
 		s = s[::-1]
 		state.stacks['_string'].pop_item()
@@ -148,8 +167,11 @@ registered_instructions.register_instruction(string_reverse_instruction)
 def string_char_at(state):
 	if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
 		s = state.stacks['_string'].stack_ref(0)
-		i = state.stacks['_integer'].stack_ref(0) % len(s)
-		c = s[i]
+		if len(s) == 0:
+			c = ''
+		else:
+			i = state.stacks['_integer'].stack_ref(0) % len(s)
+			c = s[i]
 		state.stacks['_string'].pop_item()
 		state.stacks['_integer'].pop_item()
 		state.stacks['_string'].push_item(c)

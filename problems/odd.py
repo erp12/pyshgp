@@ -49,7 +49,8 @@ odd_params = {
 }
 
 def test_odd_solution():
-	prog_lst = ['_exec_do*times', ['_integer_empty']]
+	#print registered_instructions.registered_instructions
+	prog_lst = [2, '_integer_mod', 1, '_integer_eq']
 	prog = gp.load_program_from_list(prog_lst)
 	errors = odd_error_func(prog)
 	print "Errors:", errors

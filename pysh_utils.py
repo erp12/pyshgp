@@ -6,6 +6,7 @@ Created on Sun Jun  5 15:36:03 2016
 """
 import math
 
+import pysh_instruction as instr
 import pysh_globals as g
 
 def safe_cast_arg(arg, typ = int):
@@ -33,7 +34,9 @@ def recognize_pysh_type(thing):
     '''
     If thing is a literal, return its type -- otherwise return False.
     '''
-    if type(thing) is str and len(thing) > 0 and thing[0] == '_':
+    if type(thing) == instr.Pysh_Input_Instruction:
+        return '_input_instruction'
+    elif type(thing) == instr.Pysh_Instruction:
         return '_instruction'
     elif type(thing) is int:
         return '_integer'

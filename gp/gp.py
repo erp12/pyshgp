@@ -76,7 +76,7 @@ default_evolutionary_params = {
 "silent_instruction_probability" : 0.2, # If :silent is used as an epigenetic-marker, this is the probability of random instructions having :silent be true
 
 # Program Simplification
-"final_simplification_steps" : 10000, # The number of simplification steps that will happen upon finding a solution.
+"final_simplification_steps" : 5000, # The number of simplification steps that will happen upon finding a solution.
 
 # Monitoring Evolution
 "things_to_monitor" : {"best_total_error" : True,
@@ -87,7 +87,7 @@ default_evolutionary_params = {
 					   "unique_program_count" : True},
 
 # End of run plots
-"reports" : {"plot_piano_roll" : True}
+"reports" : {"plot_piano_roll" : False}
 }
 
 
@@ -115,13 +115,14 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
 		if type(el) == int or type(el) == float or type(el) == bool:
 			program.append(el)
 		elif type(el) == str:
-			matching_intstructions = filter(lambda x: x.name == el, registered_instructions.registered_instructions)
+			matching_intstructions = filter(lambda x: x.name == el[1:], registered_instructions.registered_instructions)
 			if len(matching_intstructions) > 0:
 				program.append(matching_intstructions[0])
 			else:
 				program.append(el)
 		elif type(el) == list:
 			program.append(load_program_from_list(el))
+	print "Loaded Program: ", program
 	return program
 
 def evaluate_population(population, error_function):
@@ -233,5 +234,6 @@ def evolution(error_function, problem_params):
 			print 'Errors:', population[0].get_errors()
 
 	print "Generating End of Run Reports"
-	reporting.plot_piano_roll()
+	if evolutionary_params["reports"]["plot_piano_roll"]:
+		reporting.plot_piano_roll()
 

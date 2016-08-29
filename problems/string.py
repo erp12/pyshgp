@@ -23,22 +23,6 @@ def string_difference(s1, s2):
 		char_lvl_diff += int(not c1 == c2)
 	return char_lvl_diff + abs(len(s1) - len(s2))
 
-# def string_char_counts_difference(s1, s2):
-# 	'''
-# 	Returns the summed length of the strings, minus 2 for each character that the strings have in common.
-# 	For example, string_char_counts_difference of 'abcd' and 'pabja' would be 5.
-# 	'''
-# 	if len(s1) == 0:
-# 		return len(s2)
-# 	else:
-# 		first_char = s1[0]
-# 		remove_from_s2 = string_remove_char(s2, first_char)
-# 		if remove_from_s2 == None:
-# 			return string_char_counts_difference(s1[1:], s2) + 1
-# 		else:
-# 			return string_char_counts_difference(s1[1:], remove_from_s2)
-
-
 def string_char_counts_difference(s1, s2):
 	'''
 	'''
@@ -61,7 +45,7 @@ def random_str():
 
 def string_error_func(program):
 	inputs = ["abcde", "", "E", "Hi", "Tom", "leprechaun", "zoomzoomzoom", 
-				"qwertyuiopasd", "GallopTrotCanter", "Quinona"]
+				"qwertyuiopasd", "GallopTrotCanter", "Quinona", "_abc"]
 	errors = []
 
 	for inpt in inputs:
@@ -103,8 +87,8 @@ string_params = {
 	"population_size" : 500,
 	"max_generations" : 200,
 	"epigenetic_markers" : [],
-    "genetic_operator_probabilities" : {"alternation" : 1,
-										"uniform_mutation" : 0},
+    "genetic_operator_probabilities" : {"alternation" : 0.5,
+										"uniform_mutation" : 0.5},
 	"uniform_mutation_constant_tweak_rate" : 0.8
 }
 

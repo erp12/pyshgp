@@ -34,16 +34,13 @@ class Pysh_Interpreter:
     def execute_instruction(self, instruction):
         if instruction is None:
             return
+        if callable(instruction):
+            instruction = instruction()
         pysh_type = pysh_utils.recognize_pysh_type(instruction)
         if pysh_type == '_instruction':
-            if instruction.startswith("_in") and not instruction.startswith("_int"):
-                input_output.handle_input_instruction(instruction, self.state)
-            else:
-                mathcing_instructions = list(filter(lambda x: x.name == instruction[1:], registered_instructions.registered_instructions))
-                if len(mathcing_instructions) == 0:
-                    raise Exception("No matching instructions: " + instruction)
-                instruction_obj = mathcing_instructions[0]
-                instruction_obj.func(self.state)
+            instruction.func(self.state)
+        elif pysh_type == '_input_instruction':
+            input_output.handle_input_instruction(instruction, self.state)
         elif pysh_type == '_list':
             instruction.reverse()
             for i in instruction:

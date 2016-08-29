@@ -84,7 +84,9 @@ default_evolutionary_params = {
 					   "average_genome_size" : True,
 					   "smallest_genome_size" : True,
 					   "largest_genome_size" : True,
-					   "unique_program_count" : True},
+					   "unique_program_count" : True,
+					   "unique_error_vectors" : True
+					   },
 
 # End of run plots
 "reports" : {"plot_piano_roll" : False}

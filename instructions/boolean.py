@@ -1,7 +1,9 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from .. import pysh_state
 from .. import pysh_instruction
 
-import registered_instructions
+from . import registered_instructions
 
 def boolean_and(state):
 	if len(state.stacks['_boolean']) > 1:

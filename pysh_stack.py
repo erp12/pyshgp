@@ -4,6 +4,8 @@ Created on Sun Jun  5 13:18:57 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 
 class Pysh_Stack(list):
     

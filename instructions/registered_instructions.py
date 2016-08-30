@@ -4,6 +4,8 @@ Created on Sun Jun  5 18:24:31 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 
 import warnings
 
@@ -26,7 +28,7 @@ def register_instruction(instruction):
 def get_instruction_by_name(name):
 	if name[0] == "_":
 		name = name[1:]
-	instr = filter(lambda x: x.name == name, registered_instructions)
+	instr = list(filter(lambda x: x.name == name, registered_instructions))
 	if len(instr) == 0:
 		raise Exception("No registered instruction with name: " + name)
 	else:

@@ -4,12 +4,14 @@ Created on July 23, 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import copy
 
 from .. import pysh_state
 from .. import pysh_instruction
 
-import registered_instructions
+from . import registered_instructions
 
 def popper(pysh_type):
     '''
@@ -191,7 +193,7 @@ def yanker(pysh_type):
         if a or b:
             raw_index = state.stacks['_integer'].stack_ref(0)
             state.stacks['_integer'].pop_item()
-            actual_index = max(0, min(raw_index, len(state.stacks[pysh_type]) - 1))
+            actual_index = int(max(0, min(raw_index, len(state.stacks[pysh_type]) - 1)))
             item = state.stacks[pysh_type].stack_ref(actual_index)
             del state.stacks[pysh_type][actual_index]
             state.stacks[pysh_type].push_item(item)
@@ -222,7 +224,7 @@ def yankduper(pysh_type):
         if a or b:
             raw_index = state.stacks['_integer'].stack_ref(0)
             state.stacks['_integer'].pop_item()
-            actual_index = max(0, min(raw_index, len(state.stacks[pysh_type]) - 1))
+            actual_index = int(max(0, min(raw_index, len(state.stacks[pysh_type]) - 1)))
             item = state.stacks[pysh_type].stack_ref(actual_index)
             state.stacks[pysh_type].push_item(item)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_yankdup',
@@ -253,7 +255,7 @@ def shover(pysh_type):
             state.stacks['_integer'].pop_item()
             item = state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
-            actual_index = max(0, min(raw_index, len(state.stacks[pysh_type])))
+            actual_index = int(max(0, min(raw_index, len(state.stacks[pysh_type]))))
             state.stacks[pysh_type].stack_insert(actual_index, item)
     instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_shove',
                                                     shove,

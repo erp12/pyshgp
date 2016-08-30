@@ -4,10 +4,12 @@ Created on Sun Jun  5 13:27:39 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+__metaclass__ = type
 
-import pysh_stack
-        
-import pysh_globals as g
+
+from . import pysh_stack 
+from . import pysh_globals as g
 
 '''
 Object containing the entire push state. 
@@ -28,5 +30,5 @@ class Pysh_State:
         Prints state of all stacks in the pysh_state
         '''
         for t in g.pysh_types:
-            print self.stacks[t].pysh_type, ":", self.stacks[t]
+            print(self.stacks[t].pysh_type, ":", self.stacks[t])
             

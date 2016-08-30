@@ -4,13 +4,16 @@ Created on 7/29/2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math
 import copy
 import random
 
 from ..gp import gp
 from .. import pysh_interpreter
-from ..instructions import *
+from .. import pysh_instruction
+from ..instructions import boolean, code, common, numbers, string
 from ..instructions import registered_instructions as ri
 
 '''
@@ -53,7 +56,7 @@ problem_params = {
 						 ri.get_instruction_by_name("integer_add"),
 						 ri.get_instruction_by_name("integer_sub"),
                          lambda: random.randint(0, 10),
-                         "_in1"],
+                         pysh_instruction.Pysh_Input_Instruction("_in1")],
     "epigenetic_markers" : [],
     "selection_method" : "tournament",
     "genetic_operator_probabilities" : {"alternation" : 0.5,

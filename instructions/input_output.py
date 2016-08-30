@@ -4,6 +4,8 @@ Created on July 24, 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import copy
 
 from .. import pysh_state

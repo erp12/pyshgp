@@ -4,13 +4,15 @@ Created on 5/22/2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import copy
 import random
 
-import pysh_utils as u
+from . import pysh_utils as u
 
 def auto_simplify(individual, error_function, steps):
-	print "Autosimplifying program of size:", u.count_points(individual.get_program())
+	print("Autosimplifying program of size:", u.count_points(individual.get_program()))
 
 	for step in range(steps):
 		old_genome = individual.get_genome()
@@ -35,5 +37,5 @@ def auto_simplify(individual, error_function, steps):
 		if not new_error == initial_error_vector:
 			individual.set_genome(old_genome)
 
-	print "Finished simplifying program. New size:", u.count_points(individual.get_program())
-	print individual.get_program()
+	print("Finished simplifying program. New size:", u.count_points(individual.get_program()))
+	print(individual.get_program())

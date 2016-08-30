@@ -4,6 +4,8 @@ Created on 5/26/2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import random
 
 
@@ -25,7 +27,7 @@ def lexicase_selection(individuals, k):
         random.shuffle(cases)
         
         while len(cases) > 0 and len(candidates) > 1:
-            best_val_for_case = min(map(lambda ind: ind.get_errors()[cases[0]], candidates))
+            best_val_for_case = min(list(map(lambda ind: ind.get_errors()[cases[0]], candidates)))
             
             candidates = list(filter(lambda ind: ind.get_errors()[cases[0]] == best_val_for_case, candidates))
             cases.pop(0)
@@ -43,7 +45,7 @@ def tournament_selection(individuals, k, tournament_size):
         tournament = []
         for i in range(tournament_size):
             tournament.append(random.choice(individuals))
-        min_error_in_tourn = min(map(lambda ind: ind.get_total_error(), tournament))
-        best_in_tourn = filter(lambda ind: ind.get_total_error() == min_error_in_tourn, tournament)
+        min_error_in_tourn = min(list(map(lambda ind: ind.get_total_error(), tournament)))
+        best_in_tourn = list(filter(lambda ind: ind.get_total_error() == min_error_in_tourn, tournament))
         selected_individuals.append(best_in_tourn[0])
     return selected_individuals

@@ -4,11 +4,13 @@ Created on Sun Jun 6 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import copy
 
-import pysh_utils as u
-import pysh_globals as g
-import pysh_instruction
+from . import pysh_utils as u
+from . import pysh_globals as g
+from . import pysh_instruction
 
 def delete_prev_paren_pair(prog):
 	'''
@@ -54,19 +56,17 @@ def translate_plush_genome_to_push_program(genome, max_points):
 	If the end of the program is reached but parens are still needed (as indicated by
 	the paren-stack), parens are added until the paren-stack is empty.
 	'''
-	#raise Exception("translate_plush_genome_to_push_program() not ready for use. Just use Plush genomes.")
-	#return
 
 	translated_program = None # The program being built after being translated from open-close sequence.
 	prog = [] # The open-close being built. 
 	gn = genome # The linear Plush genome being translated. List of Plush_Gene objects.
 	num_parens_here = 0 # The number of parens that still need to be added at this location.
-	paren_stack = [] # Whenever an instruction requires parens grouping, it will push either _close or _close-open on this stack. This will indicate what to insert in the program the next time a paren is indicated by the _close key in the instruction map.
+	paren_stack = [] # Whenever an instruction requires parens grouping, it will push either _close or _close-open on this stack. This will indicate what to insert in the program the next time a paren is indicated by the _close key in the instruction.
 
 	looping = True
 	while looping:
 		# Check if need to add close parens here
-		if 0 < num_parens_here:
+		if num_parens_here != None and 0 < num_parens_here:
 			if len(paren_stack) > 0:
 				if paren_stack[0] == '_close':
 					prog += ['_close']
@@ -107,7 +107,7 @@ def translate_plush_genome_to_push_program(genome, max_points):
 			paren_stack = new_paren_stack
 
 	if u.count_points(translated_program) > max_points:
-		print "Too many points! Max is:", max_points
+		print("Too many points! Max is:", max_points)
 		return [] # Translates to an empty programs if program exceeds max-points
 	else:
 		return translated_program

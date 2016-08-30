@@ -52,7 +52,6 @@ In Progress Features
 
 * Improve runtime of push program evaluation.
 * Implement utility functions to filter registered instructions by type.
-* Implement support for python 3 and 2.
 * Add remaining code instructions.
 * Finish instruction set documentation.
 

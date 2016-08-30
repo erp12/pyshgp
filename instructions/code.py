@@ -108,7 +108,7 @@ ri.register_instruction(code_cons_instruction)
 def code_do(state):
 	if len(state.stacks['_code']) > 0:
 		top_code = state.stacks['_code'].stack_ref(0)
-		state.stacks['_exec'].push_item('_code_pop')
+		state.stacks['_exec'].push_item(lambda: ri.get_instruction_by_name('_code_pop'))
 		state.stacks['_exec'].push_item(top_code)
 	return state
 code_do_instruction = pysh_instruction.Pysh_Instruction('code_do',

@@ -4,6 +4,8 @@ Created on Sun Jun  5 13:39:36 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+__metaclass__ = type
 
 class Pysh_Instruction(object):
     '''

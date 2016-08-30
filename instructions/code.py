@@ -4,12 +4,14 @@ Created on Sun Jun  17, 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 
 from .. import pysh_state
 from .. import pysh_instruction
 from .. import pysh_utils as u
 
-import registered_instructions as ri
+from . import registered_instructions as ri
 
 
 exec_noop_instruction = pysh_instruction.Pysh_Instruction('exec_noop',

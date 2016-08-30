@@ -4,12 +4,15 @@ Created on 5/21/2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import copy
 import random
 
 from ..gp import gp
 from .. import pysh_interpreter
-from ..instructions import *
+from .. import pysh_instruction
+from ..instructions import boolean, code, common, numbers, string
 from ..instructions import registered_instructions 
 
 '''
@@ -45,15 +48,15 @@ odd_params = {
 	"atom_generators" : registered_instructions.registered_instructions +	# Use all possible instructions,
                         [lambda: random.randint(0, 100),					# and some integers
                          lambda: random.random(),							# and some floats
-                         "_in1"]											# and an input instruction that pushes the input to the _integer stack.
+                         pysh_instruction.Pysh_Input_Instruction("_in1")]											# and an input instruction that pushes the input to the _integer stack.
 }
 
 def test_odd_solution():
-	#print registered_instructions.registered_instructions
+	#print(registered_instructions.registered_instructions)
 	prog_lst = [2, '_integer_mod', 1, '_integer_eq']
 	prog = gp.load_program_from_list(prog_lst)
 	errors = odd_error_func(prog)
-	print "Errors:", errors
+	print("Errors:", errors)
 
 
 if __name__ == "__main__":

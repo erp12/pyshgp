@@ -4,13 +4,15 @@ Created on Sun Jun  5 14:54:49 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math
 
 from .. import pysh_state
 from .. import pysh_instruction
 from .. import pysh_utils
 
-import registered_instructions
+from . import registered_instructions
 
 
 def adder(pysh_type):
@@ -78,7 +80,7 @@ def divider(pysh_type):
     def div(state):
         if len(state.stacks[pysh_type])>1:
             if state.stacks[pysh_type].stack_ref(0) != 0:
-                new_num = state.stacks[pysh_type].stack_ref(1) / state.stacks[pysh_type].stack_ref(0)
+                new_num = state.stacks[pysh_type].stack_ref(1) // state.stacks[pysh_type].stack_ref(0)
                 new_num = pysh_utils.keep_number_reasonable(new_num)
                 state.stacks[pysh_type].pop_item()
                 state.stacks[pysh_type].pop_item()

@@ -26,6 +26,8 @@ For the most cutting edge PushGP framework, see the `Clojure <https://clojure.or
 Examples / Usage
 ================
 
+Pysh is compatable with Python 2.7 and Python 3.5.
+
 * `Odd <Odd>`_
 * `Integer Regression <Integer_Regression>`_
 
@@ -37,7 +39,7 @@ To run the Pysh examples, simply run one of the following commands from the dire
 
 To learn more about changing the evolutionary parameters for a genetic programming run, see the `evolutionary parameters documentation <Evolutionary_Parameters.html>`_.
 
-For a more in depth explanation of Pysh's usage, see the examples page.
+For a more in depth explanation of Pysh's usage, see the `examples page <Examples.html>`_.
 
 
 Roadmap
@@ -48,19 +50,16 @@ Pysh is currently under active development. Feel free to submit a pull request i
 In Progress Features
 --------------------
 
-* More complete string instructions
-* Add string mutation to Uniform Mutation algorithm
-* Implement utility functions to filter registered instructions by type
+* Improve runtime of push program evaluation.
+* Implement utility functions to filter registered instructions by type.
+* Implement support for python 3 and 2.
+* Add remaining code instructions.
+* Finish instruction set documentation.
 
 
 Future Features
 ---------------
 
-* Add parallel evaluation (using SCOOP)
-* Add compatibility with python 3
-
-.. _Evolutionary Parameters: Evolutionary_Parameters.html
-.. _Instruction Set: Instructions.html
-.. _Examples: Examples.html
-
+* Add parallel evaluation (using SCOOP?).
+* Improve Pysh genome simplification (borrow from Clojush).
 

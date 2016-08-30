@@ -4,6 +4,9 @@ Created on 5/50/2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+__metaclass__ = type
+
 from .. import pysh_plush_translation as tran
 
 class Individual:
@@ -41,8 +44,7 @@ class Individual:
 	def __repr__(self):
 		return "Pysh_Individual"
 
-	def __eq__(self, other):
-		print "USING IT"
-		return str(self.genome) == str(other.get_genome())
+	# def __eq__(self, other):
+	# 	return str(self.genome) == str(other.get_genome())
 
 

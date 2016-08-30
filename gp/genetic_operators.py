@@ -4,6 +4,8 @@ Created on 5/50/2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math
 import random
 
@@ -74,7 +76,7 @@ def string_tweak(s, evo_params):
 	new_s = ""
 	for c in s:
 		if random.random() < evo_params['uniform_mutation_string_char_change_rate']:
-			new_s += random.choice(['\t', '\n'] + map(chr, range(32, 127)))
+			new_s += random.choice(['\t', '\n'] + list(map(chr, range(32, 127))))
 		else:
 			new_s += c
 	return new_s
@@ -116,7 +118,7 @@ def uniform_mutation(genome, evo_params):
 	mutated using a constant mutator (which varies depending on the type of the
 	token), and otherwise is replaced with a random instruction.
 	"""
-	new_genome = map(lambda gene: token_mutator(gene, evo_params), genome)
+	new_genome = list(map(lambda gene: token_mutator(gene, evo_params), genome))
 	return new_genome
 
 

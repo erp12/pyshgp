@@ -4,6 +4,8 @@ Created on 5/20/2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import sys
 import datetime
 
@@ -16,15 +18,14 @@ from .. import pysh_globals as g
 from .. import pysh_utils as u
 from .. import pysh_simplification as simp
 from .. import pysh_instruction as instr
-from ..instructions import *
+from ..instructions import boolean, code, common, numbers, string, input_output
 from ..instructions import registered_instructions 
-from ..instructions import input_output
 
-import individual as ind
-import genetic_operators as go
-import selection as sel
-import evolution_monitors as monitor
-import reporting
+from . import individual as ind
+from . import genetic_operators as go
+from . import selection as sel
+from . import evolution_monitors as monitor
+from . import reporting
 
 
 default_evolutionary_params = {
@@ -106,7 +107,7 @@ def grab_command_line_params(evolutionary_params):
 		if arg.startswith('--'):
 			(param,val) = arg.split("=")
 			if not (param[2:] in evolutionary_params):
-				print"WARNING:", "Unknown evolutionary parameter", param[2:], ". Still added to parameters."
+				print("WARNING:", "Unknown evolutionary parameter", param[2:], ". Still added to parameters.")
 			val = u.safe_cast_arg(val)
 			evolutionary_params[param[2:]] = val
 
@@ -121,14 +122,14 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
 		if type(el) == int or type(el) == float or type(el) == bool:
 			program.append(el)
 		elif type(el) == str:
-			matching_intstructions = filter(lambda x: x.name == el[1:], registered_instructions.registered_instructions)
+			matching_intstructions = list(filter(lambda x: x.name == el[1:], registered_instructions.registered_instructions))
 			if len(matching_intstructions) > 0:
 				program.append(matching_intstructions[0])
 			else:
 				program.append(el)
 		elif type(el) == list:
 			program.append(load_program_from_list(el))
-	print "Loaded Program: ", program
+	print("Loaded Program: ", program)
 	return program
 
 def evaluate_population(population, error_function):
@@ -145,7 +146,7 @@ def evolution(error_function, problem_params):
 	"""
 	Basic evolutionary loop.
 	"""
-	print "Starting GP Run With Parameters:"
+	print("Starting GP Run With Parameters:")
 
 	# Get the params for the run
 	evolutionary_params = u.merge_dicts(default_evolutionary_params, problem_params)
@@ -153,13 +154,13 @@ def evolution(error_function, problem_params):
 	evolutionary_params['genetic_operator_probabilities'] = u.normalize_genetic_operator_probabilities(evolutionary_params['genetic_operator_probabilities'])
 	
 	# Print the params for the run
-	for keys,values in evolutionary_params.items():
-		print(keys),
-		print(values)
-	print
+	for key,value in evolutionary_params.items():
+		print(key, end = ": ")
+		print(value)
+	print()
 
 	# Create Initial Population
-	print "Creating Initial Population"
+	print("Creating Initial Population")
 	population = []
 	for i in range(evolutionary_params["population_size"]):
 		rand_genome = pysh_random.random_plush_genome(evolutionary_params)
@@ -176,11 +177,11 @@ def evolution(error_function, problem_params):
 	population = sorted(population, key=lambda ind: ind.get_total_error())
 
 	for g in range(evolutionary_params["max_generations"]):
-		print
-		print "Starting Generation:", g
+		print()
+		print("Starting Generation:", g)
 
 		# Select parents and mate them to create offspring
-		print "Performing selection and variation."
+		print("Performing selection and variation.")
 		start_time = datetime.datetime.now()
 		selction_func = sel.lexicase_selection
 		if evolutionary_params["selection_method"] == "tournament":
@@ -218,13 +219,13 @@ def evolution(error_function, problem_params):
 		end_time = datetime.datetime.now()
 		reporting.log_timings("genetics", start_time, end_time)
 
-		print "Evaluating new individuals in population."
+		print("Evaluating new individuals in population.")
 		start_time = datetime.datetime.now()
 		evaluate_population(offspring, error_function)
 		end_time = datetime.datetime.now()
 		reporting.log_timings("evaluation", start_time, end_time)
 		
-		print "Installing next generation."
+		print("Installing next generation.")
 		population = offspring
 		population = sorted(population, key=lambda ind: ind.get_total_error())
 		
@@ -232,28 +233,28 @@ def evolution(error_function, problem_params):
 		monitor.print_monitors(population, evolutionary_params["things_to_monitor"])
 
 		# Check for any solutions
-		solutions = filter(lambda ind: ind.get_total_error() <= evolutionary_params["error_threshold"], population)
+		solutions = list(filter(lambda ind: ind.get_total_error() <= evolutionary_params["error_threshold"], population))
 		if len(solutions) > 0:
-			print "Solution Found:"
-			print
-			print "Program:"
-			print solutions[0].get_program()
-			print "Genome:"
-			print solutions[0].get_genome()
-			print 
+			print("Solution Found:")
+			print()
+			print("Program:")
+			print(solutions[0].get_program())
+			print("Genome:")
+			print(solutions[0].get_genome())
+			print()
 			simp.auto_simplify(solutions[0], error_function, evolutionary_params["final_simplification_steps"])
 			break # Finish evolutionary run
 
 		if g == evolutionary_params['max_generations'] - 1:
-			print 'Best program in final generation:'
-			print population[0].get_program()
-			print 'Errors:', population[0].get_errors()
+			print('Best program in final generation:')
+			print(population[0].get_program())
+			print('Errors:', population[0].get_errors())
 
-	print
-	print "Generating End of Run Reports"
+	print()
+	print("Generating End of Run Reports")
 	if evolutionary_params["reports"]["timings"]:
 		reporting.print_timings()
-	print
+	print()
 	if evolutionary_params["reports"]["plot_piano_roll"]:
 		reporting.plot_piano_roll()
 

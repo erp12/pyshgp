@@ -1,10 +1,20 @@
+# _*_ coding: utf_8 _*_
+"""
+Created on 7/25/2016
+
+@author: Eddie
+"""
+
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math
 import random
 import collections
 
 from ..gp import gp
 from .. import pysh_interpreter
-from ..instructions import *
+from .. import pysh_instruction
+from ..instructions import boolean, code, common, numbers, string
 from ..instructions import registered_instructions as ri
 
 '''
@@ -70,7 +80,7 @@ def string_error_func(program):
 	return errors
 
 string_params = {
-	"atom_generators" : ["_in1",
+	"atom_generators" : [pysh_instruction.Pysh_Input_Instruction("_in1"),
 						 ri.get_instruction_by_name("string_length"),
 						 ri.get_instruction_by_name("string_head"),
 						 ri.get_instruction_by_name("string_concat"),

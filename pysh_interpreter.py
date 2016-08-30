@@ -4,18 +4,19 @@ Created on Sun Jun  5 15:26:32 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+__metaclass__ = type
+
 
 import time
 
-
-import pysh_state
-import pysh_utils
-import pysh_random
-
-import pysh_globals as g
-from instructions import *
-from instructions import registered_instructions
-from instructions import input_output
+from . import pysh_state
+from . import pysh_utils
+from . import pysh_random
+from . import pysh_globals as g
+from .instructions import boolean, code, common, input_output, numbers, string
+from .instructions import registered_instructions
+from .instructions import input_output
 
 
 class Pysh_Interpreter:
@@ -93,4 +94,4 @@ class Pysh_Interpreter:
         self.state.stacks['_exec'].push_item(code)
         self.eval_push(print_steps)
         if print_steps:
-            print "=== Finished Push Execution ==="
+            print("=== Finished Push Execution ===")

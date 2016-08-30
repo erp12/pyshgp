@@ -4,13 +4,15 @@ Created on Sun Jun 6 2016
 
 @author: Eddie
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import random
 
-import pysh_utils as u
-import pysh_globals as g
-import pysh_instruction
-import pysh_plush_translation
-import plush_gene as pl
+from . import pysh_utils as u
+from . import pysh_globals as g
+from . import pysh_instruction
+from . import pysh_plush_translation
+from . import plush_gene as pl
 
 
 
@@ -59,11 +61,11 @@ def random_plush_instruction(evo_params):
 					new_plush_gene.instruction = fn_element()
 				else:
 					new_plush_gene.instruction = fn_element 
-			elif type(element) == str and element.startswith("_in") and not element.startswith("_int"):
+			elif type(element) == pysh_instruction.Pysh_Input_Instruction:
 			     # Its an input instruction!
-			     new_plush_gene.instruction = pysh_instruction.Pysh_Input_Instruction(element)
+			     new_plush_gene.instruction = element
 			else:
-				print element
+				print(type(element))
 				raise Exception("Encountered strange _instruction epigenetic marker: " + str(element))
 		elif m == '_close':
 			new_plush_gene.closes = random_closes(evo_params['close_parens_probabilities'])

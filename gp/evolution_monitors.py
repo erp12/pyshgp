@@ -25,6 +25,9 @@ def unique_program_count(population):
 	programs_set = {str(ind.get_program()) for ind in population}
 	return len(programs_set)
 
+def unique_error_vectors(population):
+	error_vectors = map(lambda ind: ind.get_errors(), population)
+	return len([list(x) for x in set(tuple(x) for x in error_vectors)])
 #
 
 def print_monitors(population, monitors_dict):
@@ -43,3 +46,5 @@ def print_monitors(population, monitors_dict):
 		print "Largest Genome Size:", largest_genome_size(population)
 	if monitors_dict["unique_program_count"]:
 		print "Number of Unique Programs:", unique_program_count(population), "/", len(population)
+	if monitors_dict["unique_error_vectors"]:
+		print "Number of Unique Error Vectors:", unique_error_vectors(population), "/", len(population)

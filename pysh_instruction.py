@@ -31,3 +31,6 @@ class Pysh_Input_Instruction(Pysh_Instruction):
         self.name = name
         self.func = name
         self.stack_types = '_input'
+
+    def __repr__(self):
+        return self.name + "_INPT_INSTR"

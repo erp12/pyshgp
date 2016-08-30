@@ -10,14 +10,19 @@
 ```
 
 
-# Computational Timings
+## Computational Timings
 
-## Odd, Population Size = 1000
+### Odd, Population Size = 1000
 
-Average time to evaluate a generation: 9 to 13 seconds
-Average time to apply genetic operators on a generation: ~12 seconds
+Average time to evaluate a generation: 6.1
+Average time to apply genetic operators on a generation: 3.2
 
-## Integer Regression, Population Size = 1000
+### Integer Regression, Population Size = 1000
 
-Average time to evaluate a generation:
-Average time to apply genetic operators on a generation:
+Average time to evaluate a generation: 2.5
+Average time to apply genetic operators on a generation: 45.1
+
+### String Problem, Population Size = 500
+
+Average Evaluation Timing of Generation: 0.7
+Average Selection/Variations Timing of Generation: 1.7

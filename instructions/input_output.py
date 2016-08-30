@@ -12,13 +12,13 @@ from .. import pysh_utils as u
 
 
 
-def handle_input_instruction(instruction_name, state):
+def handle_input_instruction(instruction, state):
 	'''
 	Allows Push to handle inN instructions, e.g. in2, using things from the input
 	stack. We can tell whether a particular inN instruction is valid if N-1
 	values are on the input stack.
 	'''
-	input_depth = int(instruction_name.split("in")[1]) - 1
+	input_depth = int(instruction.name.split("in")[1]) - 1
 	input_value = state.stacks['_input'].stack_ref(input_depth)
 	pysh_type = u.recognize_pysh_type(input_value)
 

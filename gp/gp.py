@@ -6,6 +6,7 @@ Created on 5/20/2016
 """
 import sys
 import datetime
+
 import random
 import warnings
 from collections import defaultdict
@@ -23,15 +24,13 @@ import individual as ind
 import genetic_operators as go
 import selection as sel
 import evolution_monitors as monitor
+import reporting
 
-timings = {	"count":0,
-			"evaluation":0,
-			"genetics":0}
 
 default_evolutionary_params = {
 "error_threshold" : 0, # If any total error of individual is below this, that is considered a solution
 "population_size" : 1000, # Size of the population at each generation
-"max_generations" : 1001, # Max generations before evoluion stops. Will stop sooner if solution is found
+"max_generations" : 1000, # Max generations before evoluion stops. Will stop sooner if solution is found
 "max_genome_initial_size" : 50, # Maximum size of random genomes generated for initial population
 "max_points" : 200, # Maximum size of push genomes and push programs, as counted by points in the program. <- Might not be implemented correctly yet
 
@@ -72,6 +71,7 @@ default_evolutionary_params = {
 "uniform_mutation_constant_tweak_rate" : 0.5, # The probability of using a constant mutation instead of simply replacing the token with a random instruction during uniform mutation
 "uniform_mutation_float_gaussian_standard_deviation" : 1.0, # The standard deviation used when tweaking float constants with Gaussian noise
 "uniform_mutation_int_gaussian_standard_deviation" : 1, # The standard deviation used when tweaking integer constants with Gaussian noise
+"uniform_mutation_string_char_change_rate" : 0.1,
 
 # Epignenetics
 "epigenetic_markers" : ["_close"], # A vector of the epigenetic markers that should be used in the individuals. Implemented options include: :close, :silent
@@ -79,7 +79,7 @@ default_evolutionary_params = {
 "silent_instruction_probability" : 0.2, # If :silent is used as an epigenetic-marker, this is the probability of random instructions having :silent be true
 
 # Program Simplification
-"final_simplification_steps" : 10000, # The number of simplification steps that will happen upon finding a solution.
+"final_simplification_steps" : 5000, # The number of simplification steps that will happen upon finding a solution.
 
 # Monitoring Evolution
 "things_to_monitor" : {"best_total_error" : True,
@@ -87,7 +87,13 @@ default_evolutionary_params = {
 					   "average_genome_size" : True,
 					   "smallest_genome_size" : True,
 					   "largest_genome_size" : True,
-					   "unique_program_count" : True}
+					   "unique_program_count" : True,
+					   "unique_error_vectors" : True
+					   },
+
+# End of run plots
+"reports" : {"timings" : True,
+			 "plot_piano_roll" : False}
 }
 
 
@@ -115,13 +121,14 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
 		if type(el) == int or type(el) == float or type(el) == bool:
 			program.append(el)
 		elif type(el) == str:
-			matching_intstructions = filter(lambda x: x.name == el, registered_instructions.registered_instructions)
+			matching_intstructions = filter(lambda x: x.name == el[1:], registered_instructions.registered_instructions)
 			if len(matching_intstructions) > 0:
 				program.append(matching_intstructions[0])
 			else:
 				program.append(el)
 		elif type(el) == list:
 			program.append(load_program_from_list(el))
+	print "Loaded Program: ", program
 	return program
 
 def evaluate_population(population, error_function):
@@ -131,14 +138,8 @@ def evaluate_population(population, error_function):
 	for ind in population:
 		if ind.get_errors() == []:
 			errors = error_function(ind.get_program())
+			reporting.total_errors_in_evalutaion_order.append(sum(errors))
 			ind.set_errors(errors)
-
-
-def log_timings(stage, start, end):
-	start = (start-datetime.datetime(1970,1,1)).total_seconds()
-	end = (end-datetime.datetime(1970,1,1)).total_seconds()
-	timings[stage] += (end - start)
-
 
 def evolution(error_function, problem_params):
 	"""
@@ -169,7 +170,7 @@ def evolution(error_function, problem_params):
 	start_time = datetime.datetime.now()
 	evaluate_population(population, error_function)
 	end_time = datetime.datetime.now()
-	log_timings("evaluation", start_time, end_time)
+	reporting.log_timings("evaluation", start_time, end_time)
 
 	# Sort the population
 	population = sorted(population, key=lambda ind: ind.get_total_error())
@@ -177,7 +178,6 @@ def evolution(error_function, problem_params):
 	for g in range(evolutionary_params["max_generations"]):
 		print
 		print "Starting Generation:", g
-		timings["count"] += 1
 
 		# Select parents and mate them to create offspring
 		print "Performing selection and variation."
@@ -216,13 +216,13 @@ def evolution(error_function, problem_params):
 						raise Exception("Tried to perform unknown genetic operator " + str(op))
 				offspring.append(child)
 		end_time = datetime.datetime.now()
-		log_timings("genetics", start_time, end_time)
+		reporting.log_timings("genetics", start_time, end_time)
 
 		print "Evaluating new individuals in population."
 		start_time = datetime.datetime.now()
 		evaluate_population(offspring, error_function)
 		end_time = datetime.datetime.now()
-		log_timings("evaluation", start_time, end_time)
+		reporting.log_timings("evaluation", start_time, end_time)
 		
 		print "Installing next generation."
 		population = offspring
@@ -250,7 +250,10 @@ def evolution(error_function, problem_params):
 			print 'Errors:', population[0].get_errors()
 
 	print
-	print "Timings:"
-	print "Average Generation Evalutation", timings["evaluation"] / float(timings["count"])
-	print "Average Generation Genetics", timings["genetics"] / float(timings["count"])
+	print "Generating End of Run Reports"
+	if evolutionary_params["reports"]["timings"]:
+		reporting.print_timings()
+	print
+	if evolutionary_params["reports"]["plot_piano_roll"]:
+		reporting.plot_piano_roll()
 

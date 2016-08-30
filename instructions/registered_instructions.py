@@ -28,6 +28,6 @@ def get_instruction_by_name(name):
 		name = name[1:]
 	instr = filter(lambda x: x.name == name, registered_instructions)
 	if len(instr) == 0:
-		return None;
+		raise Exception("No registered instruction with name: " + name)
 	else:
 		return instr[0]

@@ -43,6 +43,7 @@ def tournament_selection(individuals, k, tournament_size):
         tournament = []
         for i in range(tournament_size):
             tournament.append(random.choice(individuals))
-        tournament = sorted(tournament, key=lambda ind: ind.get_total_error())
-        selected_individuals.append(tournament[0])
+        min_error_in_tourn = min(map(lambda ind: ind.get_total_error(), tournament))
+        best_in_tourn = filter(lambda ind: ind.get_total_error() == min_error_in_tourn, tournament)
+        selected_individuals.append(best_in_tourn[0])
     return selected_individuals

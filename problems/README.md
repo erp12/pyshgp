@@ -9,10 +9,20 @@
 
 ```
 
-### String Problem Notes:
 
-Clojush finds solutions in 10 - 30 generations using only alternation
-Pysh finds solutions in 30 - 130 generations using only alternation
+## Computational Timings
 
+### Odd, Population Size = 1000
 
+Average time to evaluate a generation: 6.1
+Average time to apply genetic operators on a generation: 3.2
 
+### Integer Regression, Population Size = 1000
+
+Average time to evaluate a generation: 2.5
+Average time to apply genetic operators on a generation: 45.1
+
+### String Problem, Population Size = 500
+
+Average Evaluation Timing of Generation: 0.7
+Average Selection/Variations Timing of Generation: 1.7

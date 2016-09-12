@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Pysh Instruction Set &mdash; Pysh 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Pysh 0.1 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Pysh
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <!-- Local TOC -->
+                <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Pysh Instruction Set</a><ul>
+<li><a class="reference internal" href="#boolean-and">boolean_and</a></li>
+<li><a class="reference internal" href="#boolean-or">boolean_or</a></li>
+<li><a class="reference internal" href="#boolean-not">boolean_not</a></li>
+<li><a class="reference internal" href="#boolean-xor">boolean_xor</a></li>
+<li><a class="reference internal" href="#boolean-invert-first-then-and">boolean_invert_first_then_and</a></li>
+<li><a class="reference internal" href="#boolean-invert-second-then-and">boolean_invert_second_then_and</a></li>
+<li><a class="reference internal" href="#exec-do-range">exec_do*range</a></li>
+<li><a class="reference internal" href="#exec-do-count">exec_do*count</a></li>
+<li><a class="reference internal" href="#exec-pop">exec_pop</a></li>
+<li><a class="reference internal" href="#integer-pop">integer_pop</a></li>
+<li><a class="reference internal" href="#float-pop">float_pop</a></li>
+<li><a class="reference internal" href="#code-pop">code_pop</a></li>
+<li><a class="reference internal" href="#boolean-pop">boolean_pop</a></li>
+<li><a class="reference internal" href="#string-pop">string_pop</a></li>
+<li><a class="reference internal" href="#exec-dup">exec_dup</a></li>
+<li><a class="reference internal" href="#integer-dup">integer_dup</a></li>
+<li><a class="reference internal" href="#float-dup">float_dup</a></li>
+<li><a class="reference internal" href="#code-dup">code_dup</a></li>
+<li><a class="reference internal" href="#boolean-dup">boolean_dup</a></li>
+<li><a class="reference internal" href="#string-dup">string_dup</a></li>
+<li><a class="reference internal" href="#exec-swap">exec_swap</a></li>
+<li><a class="reference internal" href="#integer-swap">integer_swap</a></li>
+<li><a class="reference internal" href="#float-swap">float_swap</a></li>
+<li><a class="reference internal" href="#code-swap">code_swap</a></li>
+<li><a class="reference internal" href="#boolean-swap">boolean_swap</a></li>
+<li><a class="reference internal" href="#string-swap">string_swap</a></li>
+<li><a class="reference internal" href="#exec-rot">exec_rot</a></li>
+<li><a class="reference internal" href="#integer-rot">integer_rot</a></li>
+<li><a class="reference internal" href="#float-rot">float_rot</a></li>
+<li><a class="reference internal" href="#code-rot">code_rot</a></li>
+<li><a class="reference internal" href="#boolean-rot">boolean_rot</a></li>
+<li><a class="reference internal" href="#string-rot">string_rot</a></li>
+<li><a class="reference internal" href="#exec-flush">exec_flush</a></li>
+<li><a class="reference internal" href="#integer-flush">integer_flush</a></li>
+<li><a class="reference internal" href="#float-flush">float_flush</a></li>
+<li><a class="reference internal" href="#code-flush">code_flush</a></li>
+<li><a class="reference internal" href="#boolean-flush">boolean_flush</a></li>
+<li><a class="reference internal" href="#string-flush">string_flush</a></li>
+<li><a class="reference internal" href="#exec-eq">exec_eq</a></li>
+<li><a class="reference internal" href="#integer-eq">integer_eq</a></li>
+<li><a class="reference internal" href="#float-eq">float_eq</a></li>
+<li><a class="reference internal" href="#code-eq">code_eq</a></li>
+<li><a class="reference internal" href="#boolean-eq">boolean_eq</a></li>
+<li><a class="reference internal" href="#string-eq">string_eq</a></li>
+<li><a class="reference internal" href="#exec-stack-depth">exec_stack_depth</a></li>
+<li><a class="reference internal" href="#integer-stack-depth">integer_stack_depth</a></li>
+<li><a class="reference internal" href="#float-stack-depth">float_stack_depth</a></li>
+<li><a class="reference internal" href="#code-stack-depth">code_stack_depth</a></li>
+<li><a class="reference internal" href="#boolean-stack-depth">boolean_stack_depth</a></li>
+<li><a class="reference internal" href="#string-stack-depth">string_stack_depth</a></li>
+<li><a class="reference internal" href="#exec-yank">exec_yank</a></li>
+<li><a class="reference internal" href="#integer-yank">integer_yank</a></li>
+<li><a class="reference internal" href="#float-yank">float_yank</a></li>
+<li><a class="reference internal" href="#code-yank">code_yank</a></li>
+<li><a class="reference internal" href="#boolean-yank">boolean_yank</a></li>
+<li><a class="reference internal" href="#string-yank">string_yank</a></li>
+<li><a class="reference internal" href="#exec-yankdup">exec_yankdup</a></li>
+<li><a class="reference internal" href="#integer-yankdup">integer_yankdup</a></li>
+<li><a class="reference internal" href="#float-yankdup">float_yankdup</a></li>
+<li><a class="reference internal" href="#code-yankdup">code_yankdup</a></li>
+<li><a class="reference internal" href="#boolean-yankdup">boolean_yankdup</a></li>
+<li><a class="reference internal" href="#string-yankdup">string_yankdup</a></li>
+<li><a class="reference internal" href="#exec-shove">exec_shove</a></li>
+<li><a class="reference internal" href="#integer-shove">integer_shove</a></li>
+<li><a class="reference internal" href="#float-shove">float_shove</a></li>
+<li><a class="reference internal" href="#code-shove">code_shove</a></li>
+<li><a class="reference internal" href="#boolean-shove">boolean_shove</a></li>
+<li><a class="reference internal" href="#string-shove">string_shove</a></li>
+<li><a class="reference internal" href="#exec-empty">exec_empty</a></li>
+<li><a class="reference internal" href="#integer-empty">integer_empty</a></li>
+<li><a class="reference internal" href="#float-empty">float_empty</a></li>
+<li><a class="reference internal" href="#code-empty">code_empty</a></li>
+<li><a class="reference internal" href="#boolean-empty">boolean_empty</a></li>
+<li><a class="reference internal" href="#string-empty">string_empty</a></li>
+<li><a class="reference internal" href="#integer-add">integer_add</a></li>
+<li><a class="reference internal" href="#float-add">float_add</a></li>
+<li><a class="reference internal" href="#integer-sub">integer_sub</a></li>
+<li><a class="reference internal" href="#float-sub">float_sub</a></li>
+<li><a class="reference internal" href="#integer-mult">integer_mult</a></li>
+<li><a class="reference internal" href="#float-mult">float_mult</a></li>
+<li><a class="reference internal" href="#integer-div">integer_div</a></li>
+<li><a class="reference internal" href="#float-div">float_div</a></li>
+<li><a class="reference internal" href="#integer-mod">integer_mod</a></li>
+<li><a class="reference internal" href="#float-mod">float_mod</a></li>
+<li><a class="reference internal" href="#integer-lt">integer_lt</a></li>
+<li><a class="reference internal" href="#float-lt">float_lt</a></li>
+<li><a class="reference internal" href="#integer-lte">integer_lte</a></li>
+<li><a class="reference internal" href="#float-lte">float_lte</a></li>
+<li><a class="reference internal" href="#integer-gt">integer_gt</a></li>
+<li><a class="reference internal" href="#float-gt">float_gt</a></li>
+<li><a class="reference internal" href="#integer-gte">integer_gte</a></li>
+<li><a class="reference internal" href="#float-gte">float_gte</a></li>
+<li><a class="reference internal" href="#integer-min">integer_min</a></li>
+<li><a class="reference internal" href="#float-min">float_min</a></li>
+<li><a class="reference internal" href="#integer-max">integer_max</a></li>
+<li><a class="reference internal" href="#float-max">float_max</a></li>
+<li><a class="reference internal" href="#integer-inc">integer_inc</a></li>
+<li><a class="reference internal" href="#float-inc">float_inc</a></li>
+<li><a class="reference internal" href="#integer-dec">integer_dec</a></li>
+<li><a class="reference internal" href="#float-dec">float_dec</a></li>
+<li><a class="reference internal" href="#float-sin">float_sin</a></li>
+<li><a class="reference internal" href="#float-cos">float_cos</a></li>
+<li><a class="reference internal" href="#float-tan">float_tan</a></li>
+<li><a class="reference internal" href="#integer-from-float">integer_from_float</a></li>
+<li><a class="reference internal" href="#integer-from-boolean">integer_from_boolean</a></li>
+<li><a class="reference internal" href="#float-from-integer">float_from_integer</a></li>
+<li><a class="reference internal" href="#foat-from-boolean">foat_from_boolean</a></li>
+<li><a class="reference internal" href="#string-from-integer">string_from_integer</a></li>
+<li><a class="reference internal" href="#string-from-float">string_from_float</a></li>
+<li><a class="reference internal" href="#string-from-boolean">string_from_boolean</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Pysh</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Pysh Instruction Set</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Instructions.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="sidebar">
+<p class="first sidebar-title">Useful Links</p>
+<ul class="last simple">
+<li><a class="reference external" href="Evolutionary_Parameters.html">Evolutionary Parameters</a></li>
+<li><a class="reference external" href="Instructions.html">Instruction Set</a></li>
+<li><a class="reference external" href="Examples.html">Examples</a></li>
+</ul>
+</div>
+<div class="section" id="pysh-instruction-set">
+<h1>Pysh Instruction Set<a class="headerlink" href="#pysh-instruction-set" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="boolean-and">
+<h2>boolean_and<a class="headerlink" href="#boolean-and" title="Permalink to this headline">¶</a></h2>
+<p>Pushes the logical AND of the top two BOOLEANs.</p>
+</div>
+<div class="section" id="boolean-or">
+<h2>boolean_or<a class="headerlink" href="#boolean-or" title="Permalink to this headline">¶</a></h2>
+<p>Pushes the logical OR of the top two BOOLEANs.</p>
+</div>
+<div class="section" id="boolean-not">
+<h2>boolean_not<a class="headerlink" href="#boolean-not" title="Permalink to this headline">¶</a></h2>
+<p>Pushes the logical NOT of the top BOOLEAN.</p>
+</div>
+<div class="section" id="boolean-xor">
+<h2>boolean_xor<a class="headerlink" href="#boolean-xor" title="Permalink to this headline">¶</a></h2>
+<p>Pushes the logical XOR of the top two BOOLEANs.</p>
+</div>
+<div class="section" id="boolean-invert-first-then-and">
+<h2>boolean_invert_first_then_and<a class="headerlink" href="#boolean-invert-first-then-and" title="Permalink to this headline">¶</a></h2>
+<p>Pushes the logical AND of the top two BOOLEANs, with the fist argument inverted.</p>
+</div>
+<div class="section" id="boolean-invert-second-then-and">
+<h2>boolean_invert_second_then_and<a class="headerlink" href="#boolean-invert-second-then-and" title="Permalink to this headline">¶</a></h2>
+<p>Pushes the logical AND of the top two BOOLEANs, with the second argument inverted.</p>
+</div>
+<div class="section" id="exec-do-range">
+<h2>exec_do*range<a class="headerlink" href="#exec-do-range" title="Permalink to this headline">¶</a></h2>
+<p>An iteration instruction that executes the top item on the EXEC stack a number of times that depends on the top two integers, while also pushing the loop counter onto the INTEGER stack for possible access during the execution of the body of the loop. The top integer is the &#8220;destination index&#8221; and the second integer is the &#8220;current index.&#8221; First the code and the integer arguments are saved locally and popped. Then the integers are compared. If the integers are equal then the current index is pushed onto the INTEGER stack and the code (which is the &#8220;body&#8221; of the loop) is pushed onto the EXEC stack for subsequent execution. If the integers are not equal then the current index will still be pushed onto the INTEGER stack but two items will be pushed onto the EXEC stack.</p>
+</div>
+<div class="section" id="exec-do-count">
+<h2>exec_do*count<a class="headerlink" href="#exec-do-count" title="Permalink to this headline">¶</a></h2>
+<p>An iteration instruction that performs a loop (the body of which is taken from the EXEC stack) the number of times indicated by the INTEGER argument, pushing an index (which runs from zero to one less than the number of iterations) onto the INTEGER stack prior to each execution of the loop body.</p>
+</div>
+<div class="section" id="exec-pop">
+<h2>exec_pop<a class="headerlink" href="#exec-pop" title="Permalink to this headline">¶</a></h2>
+<p>Pops the EXEC stack. This may be thought of as a &#8220;DONT&#8221; instruction.</p>
+</div>
+<div class="section" id="integer-pop">
+<h2>integer_pop<a class="headerlink" href="#integer-pop" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-pop">
+<h2>float_pop<a class="headerlink" href="#float-pop" title="Permalink to this headline">¶</a></h2>
+<p>Pops the INTEGER stack.</p>
+</div>
+<div class="section" id="code-pop">
+<h2>code_pop<a class="headerlink" href="#code-pop" title="Permalink to this headline">¶</a></h2>
+<p>Pops the CODE stack.</p>
+</div>
+<div class="section" id="boolean-pop">
+<h2>boolean_pop<a class="headerlink" href="#boolean-pop" title="Permalink to this headline">¶</a></h2>
+<p>Pops the BOOLEAN stack.</p>
+</div>
+<div class="section" id="string-pop">
+<h2>string_pop<a class="headerlink" href="#string-pop" title="Permalink to this headline">¶</a></h2>
+<p>Pops the STRING stack.</p>
+</div>
+<div class="section" id="exec-dup">
+<h2>exec_dup<a class="headerlink" href="#exec-dup" title="Permalink to this headline">¶</a></h2>
+<p>Duplicates the top item on the EXEC stack. Does not pop its argument. This may be thought of as a &#8220;DO TWICE&#8221; instruction.</p>
+</div>
+<div class="section" id="integer-dup">
+<h2>integer_dup<a class="headerlink" href="#integer-dup" title="Permalink to this headline">¶</a></h2>
+<p>Duplicates the top item on the INTEGER stack. Does not pop its argument.</p>
+</div>
+<div class="section" id="float-dup">
+<h2>float_dup<a class="headerlink" href="#float-dup" title="Permalink to this headline">¶</a></h2>
+<p>Duplicates the top item on the FLOAT stack. Does not pop its argument.</p>
+</div>
+<div class="section" id="code-dup">
+<h2>code_dup<a class="headerlink" href="#code-dup" title="Permalink to this headline">¶</a></h2>
+<p>Duplicates the top item on the CODE stack. Does not pop its argument.</p>
+</div>
+<div class="section" id="boolean-dup">
+<h2>boolean_dup<a class="headerlink" href="#boolean-dup" title="Permalink to this headline">¶</a></h2>
+<p>Duplicates the top item on the BOOLEAN stack. Does not pop its argument.</p>
+</div>
+<div class="section" id="string-dup">
+<h2>string_dup<a class="headerlink" href="#string-dup" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="exec-swap">
+<h2>exec_swap<a class="headerlink" href="#exec-swap" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-swap">
+<h2>integer_swap<a class="headerlink" href="#integer-swap" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-swap">
+<h2>float_swap<a class="headerlink" href="#float-swap" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="code-swap">
+<h2>code_swap<a class="headerlink" href="#code-swap" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="boolean-swap">
+<h2>boolean_swap<a class="headerlink" href="#boolean-swap" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-swap">
+<h2>string_swap<a class="headerlink" href="#string-swap" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="exec-rot">
+<h2>exec_rot<a class="headerlink" href="#exec-rot" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-rot">
+<h2>integer_rot<a class="headerlink" href="#integer-rot" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-rot">
+<h2>float_rot<a class="headerlink" href="#float-rot" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="code-rot">
+<h2>code_rot<a class="headerlink" href="#code-rot" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="boolean-rot">
+<h2>boolean_rot<a class="headerlink" href="#boolean-rot" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-rot">
+<h2>string_rot<a class="headerlink" href="#string-rot" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="exec-flush">
+<h2>exec_flush<a class="headerlink" href="#exec-flush" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-flush">
+<h2>integer_flush<a class="headerlink" href="#integer-flush" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-flush">
+<h2>float_flush<a class="headerlink" href="#float-flush" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="code-flush">
+<h2>code_flush<a class="headerlink" href="#code-flush" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="boolean-flush">
+<h2>boolean_flush<a class="headerlink" href="#boolean-flush" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-flush">
+<h2>string_flush<a class="headerlink" href="#string-flush" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="exec-eq">
+<h2>exec_eq<a class="headerlink" href="#exec-eq" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-eq">
+<h2>integer_eq<a class="headerlink" href="#integer-eq" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-eq">
+<h2>float_eq<a class="headerlink" href="#float-eq" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="code-eq">
+<h2>code_eq<a class="headerlink" href="#code-eq" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="boolean-eq">
+<h2>boolean_eq<a class="headerlink" href="#boolean-eq" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-eq">
+<h2>string_eq<a class="headerlink" href="#string-eq" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="exec-stack-depth">
+<h2>exec_stack_depth<a class="headerlink" href="#exec-stack-depth" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-stack-depth">
+<h2>integer_stack_depth<a class="headerlink" href="#integer-stack-depth" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-stack-depth">
+<h2>float_stack_depth<a class="headerlink" href="#float-stack-depth" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="code-stack-depth">
+<h2>code_stack_depth<a class="headerlink" href="#code-stack-depth" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="boolean-stack-depth">
+<h2>boolean_stack_depth<a class="headerlink" href="#boolean-stack-depth" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-stack-depth">
+<h2>string_stack_depth<a class="headerlink" href="#string-stack-depth" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="exec-yank">
+<h2>exec_yank<a class="headerlink" href="#exec-yank" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-yank">
+<h2>integer_yank<a class="headerlink" href="#integer-yank" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-yank">
+<h2>float_yank<a class="headerlink" href="#float-yank" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="code-yank">
+<h2>code_yank<a class="headerlink" href="#code-yank" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="boolean-yank">
+<h2>boolean_yank<a class="headerlink" href="#boolean-yank" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-yank">
+<h2>string_yank<a class="headerlink" href="#string-yank" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="exec-yankdup">
+<h2>exec_yankdup<a class="headerlink" href="#exec-yankdup" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-yankdup">
+<h2>integer_yankdup<a class="headerlink" href="#integer-yankdup" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-yankdup">
+<h2>float_yankdup<a class="headerlink" href="#float-yankdup" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="code-yankdup">
+<h2>code_yankdup<a class="headerlink" href="#code-yankdup" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="boolean-yankdup">
+<h2>boolean_yankdup<a class="headerlink" href="#boolean-yankdup" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-yankdup">
+<h2>string_yankdup<a class="headerlink" href="#string-yankdup" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="exec-shove">
+<h2>exec_shove<a class="headerlink" href="#exec-shove" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-shove">
+<h2>integer_shove<a class="headerlink" href="#integer-shove" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-shove">
+<h2>float_shove<a class="headerlink" href="#float-shove" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="code-shove">
+<h2>code_shove<a class="headerlink" href="#code-shove" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="boolean-shove">
+<h2>boolean_shove<a class="headerlink" href="#boolean-shove" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-shove">
+<h2>string_shove<a class="headerlink" href="#string-shove" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="exec-empty">
+<h2>exec_empty<a class="headerlink" href="#exec-empty" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-empty">
+<h2>integer_empty<a class="headerlink" href="#integer-empty" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-empty">
+<h2>float_empty<a class="headerlink" href="#float-empty" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="code-empty">
+<h2>code_empty<a class="headerlink" href="#code-empty" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="boolean-empty">
+<h2>boolean_empty<a class="headerlink" href="#boolean-empty" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-empty">
+<h2>string_empty<a class="headerlink" href="#string-empty" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-add">
+<h2>integer_add<a class="headerlink" href="#integer-add" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-add">
+<h2>float_add<a class="headerlink" href="#float-add" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-sub">
+<h2>integer_sub<a class="headerlink" href="#integer-sub" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-sub">
+<h2>float_sub<a class="headerlink" href="#float-sub" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-mult">
+<h2>integer_mult<a class="headerlink" href="#integer-mult" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-mult">
+<h2>float_mult<a class="headerlink" href="#float-mult" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-div">
+<h2>integer_div<a class="headerlink" href="#integer-div" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-div">
+<h2>float_div<a class="headerlink" href="#float-div" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-mod">
+<h2>integer_mod<a class="headerlink" href="#integer-mod" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-mod">
+<h2>float_mod<a class="headerlink" href="#float-mod" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-lt">
+<h2>integer_lt<a class="headerlink" href="#integer-lt" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-lt">
+<h2>float_lt<a class="headerlink" href="#float-lt" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-lte">
+<h2>integer_lte<a class="headerlink" href="#integer-lte" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-lte">
+<h2>float_lte<a class="headerlink" href="#float-lte" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-gt">
+<h2>integer_gt<a class="headerlink" href="#integer-gt" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-gt">
+<h2>float_gt<a class="headerlink" href="#float-gt" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-gte">
+<h2>integer_gte<a class="headerlink" href="#integer-gte" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-gte">
+<h2>float_gte<a class="headerlink" href="#float-gte" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-min">
+<h2>integer_min<a class="headerlink" href="#integer-min" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-min">
+<h2>float_min<a class="headerlink" href="#float-min" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-max">
+<h2>integer_max<a class="headerlink" href="#integer-max" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-max">
+<h2>float_max<a class="headerlink" href="#float-max" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-inc">
+<h2>integer_inc<a class="headerlink" href="#integer-inc" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-inc">
+<h2>float_inc<a class="headerlink" href="#float-inc" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-dec">
+<h2>integer_dec<a class="headerlink" href="#integer-dec" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-dec">
+<h2>float_dec<a class="headerlink" href="#float-dec" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-sin">
+<h2>float_sin<a class="headerlink" href="#float-sin" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-cos">
+<h2>float_cos<a class="headerlink" href="#float-cos" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-tan">
+<h2>float_tan<a class="headerlink" href="#float-tan" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-from-float">
+<h2>integer_from_float<a class="headerlink" href="#integer-from-float" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="integer-from-boolean">
+<h2>integer_from_boolean<a class="headerlink" href="#integer-from-boolean" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="float-from-integer">
+<h2>float_from_integer<a class="headerlink" href="#float-from-integer" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="foat-from-boolean">
+<h2>foat_from_boolean<a class="headerlink" href="#foat-from-boolean" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-from-integer">
+<h2>string_from_integer<a class="headerlink" href="#string-from-integer" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-from-float">
+<h2>string_from_float<a class="headerlink" href="#string-from-float" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="string-from-boolean">
+<h2>string_from_boolean<a class="headerlink" href="#string-from-boolean" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Edward Pantridge.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

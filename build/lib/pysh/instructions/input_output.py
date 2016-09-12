@@ -7,8 +7,8 @@ Created on July 24, 2016
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from .. import pysh_state
-from .. import pysh_instruction
-from .. import pysh_utils as u
+from .. import instruction as instr
+from .. import utils as u
 
 
 
@@ -18,7 +18,7 @@ def handle_input_instruction(instruction, state):
 	stack. We can tell whether a particular inN instruction is valid if N-1
 	values are on the input stack.
 	'''
-	input_depth = int(instruction.name.split("in")[1]) - 1
+	input_depth = int(instruction.name.split("input")[1]) - 1
 	input_value = state.stacks['_input'].stack_ref(input_depth)
 	pysh_type = u.recognize_pysh_type(input_value)
 

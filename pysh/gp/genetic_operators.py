@@ -85,20 +85,22 @@ def instruction_mutator(evo_params):
 	return pysh_random.random_plush_instruction(evo_params)
 
 def constant_mutator(token, evo_params):
-	new_token = pl.Plush_Gene()
+	if pl.plush_gene_is_literal(token):
+		const = pl.plush_gene_get_instruction(token)
+		instruction = None
 
-	const = token.instruction
-	if type(const) == float:
-		new_token.instruction = perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const)
-	elif type(const) == int:
-		new_token.instruction = round(perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const))
-	elif type(const) == str:
-		new_token.instruction = string_tweak(const, evo_params)
-	elif type(const) == bool:
-		random.choice([True, False])
+		if type(const) == float:
+			instruction = perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const)
+		elif type(const) == int:
+			instruction = round(perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const))
+		elif type(const) == str:
+			instruction = string_tweak(const, evo_params)
+		elif type(const) == bool:
+			instruction = random.choice([True, False])
+		return pl.make_plush_gene(instruction, True, token[2], token[3])
 	else:
-		new_token = instruction_mutator(evo_params)
-	return new_token
+		return instruction_mutator(evo_params)
+
 
 def token_mutator(token, evo_params):
 	new_token = token

@@ -7,7 +7,7 @@ Created on July 23, 2016
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from .. import pysh_state
-from .. import pysh_instruction
+from .. import instruction as instr
 
 from . import registered_instructions
 
@@ -19,7 +19,7 @@ def popper(pysh_type):
     def pop(state):
         if len(state.stacks[pysh_type]) > 0:
             state.stacks[pysh_type].pop_item()
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_pop',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_pop',
                                                     pop,
                                                     stack_types = [pysh_type])
     if pysh_type == '_exec':
@@ -41,7 +41,7 @@ def duper(pysh_type):
     def dup(state):
         if len(state.stacks[pysh_type])>0:
             state.stacks[pysh_type].push_item(state.stacks[pysh_type].top_item())
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_dup',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_dup',
                                                     dup,
                                                     stack_types = [pysh_type])
     if pysh_type == '_exec':
@@ -68,7 +68,7 @@ def swapper(pysh_type):
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(first_item)
             state.stacks[pysh_type].push_item(second_item)
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_swap',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_swap',
                                                     swap,
                                                     stack_types = [pysh_type])
     if pysh_type == '_exec':
@@ -98,7 +98,7 @@ def rotter(pysh_type):
             state.stacks[pysh_type].push_item(second_item)
             state.stacks[pysh_type].push_item(first_item)
             state.stacks[pysh_type].push_item(third_item)
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_rot',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_rot',
                                                     rot,
                                                     stack_types = [pysh_type])
     if pysh_type == '_exec':
@@ -118,7 +118,7 @@ def flusher(pysh_type):
     '''
     def flush(state):
         state.stacks[pysh_type].stack_flush()
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_flush',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_flush',
                                                     flush,
                                                     stack_types = [pysh_type])
     return instruction
@@ -142,7 +142,7 @@ def eqer(pysh_type):
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
             state.stacks['_boolean'].push_item(first_item == second_item)
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_eq',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_eq',
                                                     eq,
                                                     stack_types = [pysh_type])
     if pysh_type == '_exec':
@@ -166,7 +166,7 @@ def stackdepther(pysh_type):
     def stackdepth(state):
         depth = len(state.stacks[pysh_type])
         state.stacks['_integer'].push_item(depth)
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_stack_depth',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_stack_depth',
                                                     stackdepth,
                                                     stack_types = [pysh_type])
     if not pysh_type == '_integer':
@@ -195,7 +195,7 @@ def yanker(pysh_type):
             item = state.stacks[pysh_type].stack_ref(actual_index)
             del state.stacks[pysh_type][actual_index]
             state.stacks[pysh_type].push_item(item)
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_yank',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_yank',
                                                     yank,
                                                     stack_types = [pysh_type])
     if pysh_type == '_exec':
@@ -225,7 +225,7 @@ def yankduper(pysh_type):
             actual_index = int(max(0, min(raw_index, len(state.stacks[pysh_type]) - 1)))
             item = state.stacks[pysh_type].stack_ref(actual_index)
             state.stacks[pysh_type].push_item(item)
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_yankdup',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_yankdup',
                                                     yankdup,
                                                     stack_types = [pysh_type])
     if pysh_type == '_exec':
@@ -255,7 +255,7 @@ def shover(pysh_type):
             state.stacks[pysh_type].pop_item()
             actual_index = int(max(0, min(raw_index, len(state.stacks[pysh_type]))))
             state.stacks[pysh_type].stack_insert(actual_index, item)
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_shove',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_shove',
                                                     shove,
                                                     stack_types = [pysh_type])
     if pysh_type == '_exec':
@@ -277,7 +277,7 @@ def emptyer(pysh_type):
     '''
     def empty(state):
         state.stacks['_boolean'].push_item(len(state.stacks[pysh_type])==0)
-    instruction = pysh_instruction.Pysh_Instruction(pysh_type[1:] + '_empty',
+    instruction = instr.Pysh_Instruction(pysh_type[1:] + '_empty',
                                                     empty,
                                                     stack_types = [pysh_type])
     if not pysh_type == '_boolean':

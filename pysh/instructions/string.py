@@ -1,8 +1,8 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from .. import pysh_state
-from .. import pysh_instruction
-from .. import pysh_utils
+from .. import instruction as instr
+from .. import utils as u
 
 from . import registered_instructions
 
@@ -13,7 +13,7 @@ def string_from_integer(state):
 		state.stacks['_integer'].pop_item()
 		state.stacks['_string'].push_item(str(top_int))
 	return state
-string_from_integer_intruction = pysh_instruction.Pysh_Instruction('string_from_integer',
+string_from_integer_intruction = instr.Pysh_Instruction('string_from_integer',
 												  					string_from_integer,
 												  					stack_types = ['_string', '_integer'])
 registered_instructions.register_instruction(string_from_integer_intruction)
@@ -29,7 +29,7 @@ def string_from_float(state):
 		state.stacks['_float'].pop_item()
 		state.stacks['_string'].push_item(str(top_float))
 	return state
-string_from_float_intruction = pysh_instruction.Pysh_Instruction('string_from_float',
+string_from_float_intruction = instr.Pysh_Instruction('string_from_float',
 												  					string_from_float,
 												  					stack_types = ['_string', '_float'])
 registered_instructions.register_instruction(string_from_float_intruction)
@@ -45,7 +45,7 @@ def string_from_boolean(state):
 		state.stacks['_boolean'].pop_item()
 		state.stacks['_string'].push_item(str(top_float))
 	return state
-string_from_boolean_intruction = pysh_instruction.Pysh_Instruction('string_from_boolean',
+string_from_boolean_intruction = instr.Pysh_Instruction('string_from_boolean',
 												  					string_from_boolean,
 												  					stack_types = ['_string', '_boolean'])
 registered_instructions.register_instruction(string_from_boolean_intruction)
@@ -63,7 +63,7 @@ def string_concat(state):
 		state.stacks['_string'].pop_item()
 		state.stacks['_string'].push_item(s1 + s2)
 	return state
-string_concat_instruction = pysh_instruction.Pysh_Instruction('string_concat',
+string_concat_instruction = instr.Pysh_Instruction('string_concat',
 															   string_concat,
 															   stack_types = ['_string'])
 registered_instructions.register_instruction(string_concat_instruction)
@@ -81,10 +81,14 @@ def string_head(state):
 		state.stacks['_integer'].pop_item()
 		state.stacks['_string'].push_item(s[:i])
 	return state
-string_head_instruction = pysh_instruction.Pysh_Instruction('string_head',
+string_head_instruction = instr.Pysh_Instruction('string_head',
 															 string_head,
 															 stack_types = ['_string', '_integer'])
 registered_instructions.register_instruction(string_head_instruction)
+#<instr_open>
+#<instr_name>string_head
+#<instr_desc>Pushed a string of the first i chars in s. i is top integer. s is top string.
+#<instr_close>
 
 
 def string_tail(state):
@@ -95,17 +99,33 @@ def string_tail(state):
 		state.stacks['_integer'].pop_item()
 		state.stacks['_string'].push_item(s[-i:])
 	return state
-string_tail_instruction = pysh_instruction.Pysh_Instruction('string_tail',
+string_tail_instruction = instr.Pysh_Instruction('string_tail',
 															 string_tail,
 															 stack_types = ['_string', '_integer'])
 registered_instructions.register_instruction(string_tail_instruction)
+#<instr_open>
+#<instr_name>string_tail
+#<instr_desc>Pushed a string of the last i chars in s. i is top integer. s is top string.
+#<instr_close>
 
-# def string_split_at_index(state):
-# 	if len(state.stacks['_string']) > 0 and
-# 		len(state.stacks['_integer']) > 0:
-# 		s = state.stacks['_string'].stack_ref(0)
-# 		i = state.stacks['_integer'].stack_ref(0)
-# 		s_head = 
+def string_split_at_index(state):
+	if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
+		s = state.stacks['_string'].stack_ref(0)
+		i = state.stacks['_integer'].stack_ref(0)
+		s_head = s[:i]
+		s_tail = s[i:]
+		state.stacks['_string'].pop_item()
+		state.stacks['_string'].push_item(s_head)
+		state.stacks['_string'].push_item(s_tail)
+	return state
+string_split_at_index_instruction = instr.Pysh_Instruction('string_split_at_index',
+																	  string_split_at_index,
+																	  stack_types = ['_string', '_integer'])
+#<instr_open>
+#<instr_name>string_split_at_index
+#<instr_desc>Pushes 2 strings from top string being split at index given by top integer.
+#<instr_close>
+
 
 def string_split_at_str(state):
 	if len(state.stacks['_string']) > 1:
@@ -120,10 +140,14 @@ def string_split_at_str(state):
 		for s in new_strings:
 			state.stacks['_string'].push_item(s)
 	return state
-string_split_at_str_instruction = pysh_instruction.Pysh_Instruction('string_split_at_str',
+string_split_at_str_instruction = instr.Pysh_Instruction('string_split_at_str',
 																	string_split_at_str,
 																	stack_types = ['_string'])
 registered_instructions.register_instruction(string_split_at_str_instruction)
+#<instr_open>
+#<instr_name>string_split_at_str
+#<instr_desc>Pushes 2 strings from top string being split on second string.
+#<instr_close>
 
 
 def string_split_at_space(state):
@@ -134,23 +158,31 @@ def string_split_at_space(state):
 		for s in new_strings:
 			state.stacks['_string'].push_item(s)
 	return state
-string_split_at_space_instruction = pysh_instruction.Pysh_Instruction('string_split_at_space',
+string_split_at_space_instruction = instr.Pysh_Instruction('string_split_at_space',
 																		string_split_at_space,
 																		stack_types = ['_string'])
 registered_instructions.register_instruction(string_split_at_space_instruction)
+#<instr_open>
+#<instr_name>string_split_at_space
+#<instr_desc>Pushes all strings resulting from spliting top string on space characters.
+#<instr_close>
 
 
 def string_length(state):
 	if len(state.stacks['_string']) > 0:
 		new_int = len(state.stacks['_string'].stack_ref(0))
-		new_int = pysh_utils.keep_number_reasonable(new_int)
+		new_int = u.keep_number_reasonable(new_int)
 		state.stacks['_string'].pop_item()
 		state.stacks['_integer'].push_item(new_int)
 	return state
-string_length_instruction = pysh_instruction.Pysh_Instruction('string_length',
+string_length_instruction = instr.Pysh_Instruction('string_length',
 																string_length,
 																stack_types = ['_string', '_integer'])
 registered_instructions.register_instruction(string_length_instruction)
+#<instr_open>
+#<instr_name>string_length
+#<instr_desc>Pushes integer equal to length of top string.
+#<instr_close>
 
 
 def string_reverse(state):
@@ -160,10 +192,14 @@ def string_reverse(state):
 		state.stacks['_string'].pop_item()
 		state.stacks['_string'].push_item(s)
 	return state
-string_reverse_instruction = pysh_instruction.Pysh_Instruction('string_reverse',
+string_reverse_instruction = instr.Pysh_Instruction('string_reverse',
 																string_reverse,
 																stack_types = ['_string'])
 registered_instructions.register_instruction(string_reverse_instruction)
+#<instr_open>
+#<instr_name>string_reverse
+#<instr_desc>Pushes top string reversed.
+#<instr_close>
 
 
 def string_char_at(state):
@@ -178,10 +214,14 @@ def string_char_at(state):
 		state.stacks['_integer'].pop_item()
 		state.stacks['_string'].push_item(c)
 	return state
-string_char_at_instruction = pysh_instruction.Pysh_Instruction('string_char_at',
+string_char_at_instruction = instr.Pysh_Instruction('string_char_at',
 																string_char_at,
 																stack_types = ['_string', '_integer'])
 registered_instructions.register_instruction(string_char_at_instruction)
+#<instr_open>
+#<instr_name>string_char_at
+#<instr_desc>Pushes string of character in top string at index given by top integer.
+#<instr_close>
 
 
 def string_emptystring(state):
@@ -193,10 +233,14 @@ def string_emptystring(state):
 		else:
 			state.stacks['_boolean'].push_item(False)
 	return state
-string_emptystring_instruction = pysh_instruction.Pysh_Instruction('string_emptystring',
+string_emptystring_instruction = instr.Pysh_Instruction('string_emptystring',
 																	string_emptystring,
 																	stack_types = ['_string', '_boolean'])
 registered_instructions.register_instruction(string_emptystring_instruction)	
+#<instr_open>
+#<instr_name>string_emptystring
+#<instr_desc>Pushes True if top string is an emptry string. Pushes False otherwise.
+#<instr_close>
 
 
 def string_contains(state): 
@@ -211,10 +255,14 @@ def string_contains(state):
 		state.stacks['_string'].pop_item()
 		state.stacks['_boolean'].push_item(new_bool)
 	return state
-string_contains_instruction = pysh_instruction.Pysh_Instruction('string_contains',
+string_contains_instruction = instr.Pysh_Instruction('string_contains',
 																string_contains,
 																stack_types = ['_string', '_boolean'])
 registered_instructions.register_instruction(string_contains_instruction)
+#<instr_open>
+#<instr_name>string_contains
+#<instr_desc>Pushes True is second string is a substring of top string. Pushes False otherwise.
+#<instr_close>
 
 
 def string_replace(state):
@@ -231,7 +279,11 @@ def string_replace(state):
 		state.stacks['_string'].pop_item()
 		state.stacks['_string'].push_item(new_string)
 	return state
-string_replace_instruction = pysh_instruction.Pysh_Instruction('string_replace',
+string_replace_instruction = instr.Pysh_Instruction('string_replace',
 																string_replace,
 																stack_types = ['_string'])
 registered_instructions.register_instruction(string_replace_instruction)
+#<instr_open>
+#<instr_name>string_replace
+#<instr_desc>Replaces all instances of second string with the top string in the third string. Pushes the result.
+#<instr_close>

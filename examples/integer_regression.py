@@ -7,12 +7,11 @@ Created on 7/29/2016
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math
-import copy
 import random
 
 from pysh.gp import gp
 from pysh import pysh_interpreter
-from pysh import pysh_instruction
+from pysh import instruction
 from pysh.instructions import boolean, code, common, numbers, string
 from pysh.instructions import registered_instructions as ri
 
@@ -27,7 +26,6 @@ def error_func(program):
 	errors = []
 
 	for x in range(9):
-		prog = copy.deepcopy(program)
 		# Create the push interpreter
 		interpreter = pysh_interpreter.Pysh_Interpreter()
 		interpreter.reset_pysh_state()
@@ -36,7 +34,7 @@ def error_func(program):
 		interpreter.state.stacks["_integer"].push_item(x)
 		interpreter.state.stacks["_input"].push_item(x)
 		# Run program
-		interpreter.run_push(prog)
+		interpreter.run_push(program)
 		# Get output
 		top_int = interpreter.state.stacks["_integer"].stack_ref(0)
 
@@ -51,12 +49,12 @@ def error_func(program):
 	return errors
 
 problem_params = {
-	"atom_generators" : [ri.get_instruction_by_name("integer_div"),
-						 ri.get_instruction_by_name("integer_mult"),
-						 ri.get_instruction_by_name("integer_add"),
-						 ri.get_instruction_by_name("integer_sub"),
-                         lambda: random.randint(0, 10),
-                         pysh_instruction.Pysh_Input_Instruction("_in1")],
+	"atom_generators" : {"integer_div" : ri.get_instruction_by_name("integer_div"),
+						 "integer_mult" : ri.get_instruction_by_name("integer_mult"),
+						 "integer_add" : ri.get_instruction_by_name("integer_add"),
+						 "integer_sub" : ri.get_instruction_by_name("integer_sub"),
+                         "f1" : lambda: random.randint(0, 10),
+                         "_input1" : pysh_instruction.Pysh_Input_Instruction("_input1")},
     "epigenetic_markers" : [],
     "selection_method" : "tournament",
     "genetic_operator_probabilities" : {"alternation" : 0.5,

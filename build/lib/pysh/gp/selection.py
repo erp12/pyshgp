@@ -36,6 +36,35 @@ def lexicase_selection(individuals, k):
     
     return selected_individuals
 
+def epsilon_lexicase_selection(individuals, k, epsilon = None):
+    """
+    Returns an individual that does the best on the fitness cases when considered one at a
+    time in random order.
+    http://faculty.hampshire.edu/lspector/pubs/lexicase-IEEE-TEC.pdf
+    """
+    selected_individuals = []    
+    
+    for i in range(k):        
+        candidates = individuals
+        cases = list(range(len(individuals[0].get_errors())))
+        random.shuffle(cases)
+        
+        while len(cases) > 0 and len(candidates) > 1:
+            errors_for_this_case = [ind.get_errors()[cases[0]] for ind in candidates]
+            best_val_for_case = min(errors_for_this_case)
+
+            if epsilon == None:
+                median_val = np.median(errors_for_this_case)
+                median_absolute_deviation = np.median([abs(x - median_val) for x in errors_for_this_case])
+                epsilon = median_absolute_deviation
+            
+            candidates = [ind for ind in candidates if ind.get_errors()[cases[0]] < best_val_for_case + epsilon]
+            cases.pop(0)
+                     
+        selected_individuals.append(random.choice(candidates))
+    
+    return selected_individuals
+
 def tournament_selection(individuals, k, tournament_size):
     '''
     Returns k individuals that do the best out of their respective tournament.

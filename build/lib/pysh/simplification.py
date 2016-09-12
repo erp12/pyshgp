@@ -6,10 +6,11 @@ Created on 5/22/2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import copy
 import random
+import copy
 
-from . import pysh_utils as u
+from . import utils as u
+from . import plush_gene as pl
 
 def auto_simplify(individual, error_function, steps):
 	print("Autosimplifying program of size:", u.count_points(individual.get_program()))
@@ -24,17 +25,17 @@ def auto_simplify(individual, error_function, steps):
 			genes_to_silence.append(random.randint(0,len(individual.get_genome())-1))
 
 		# Silence the gene(s)
-		new_genome = copy.deepcopy(individual.get_genome())
+		new_genome = copy.copy(individual.get_genome())
 		for i in genes_to_silence:
-			if not new_genome[i].silent:
-				new_genome[i].silent = True
+			if not pl.plush_gene_is_silent(new_genome[i]):
+				new_genome[i] = pl.make_plush_gene(new_genome[i][0], new_genome[i][1], new_genome[i][2], True)
 
 		# Make sure the program still performs the same
 		individual.set_genome(new_genome)
 		new_error = error_function(individual.get_program())
 
 		# reset genes if no improvment was made
-		if not new_error == initial_error_vector:
+		if not new_error <= initial_error_vector:
 			individual.set_genome(old_genome)
 
 	print("Finished simplifying program. New size:", u.count_points(individual.get_program()))

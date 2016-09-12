@@ -9,9 +9,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import copy
 import random
 
+import pysh
+import pysh.instruction as instr
+import pysh.utils as u
+import pysh.pysh_interpreter as interp
 from pysh.gp import gp
-from pysh import pysh_interpreter
-from pysh import pysh_instruction
 from pysh.instructions import boolean, code, common, numbers, string
 from pysh.instructions import registered_instructions 
 
@@ -23,16 +25,15 @@ def odd_error_func(program):
 	errors = []
 
 	for i in range(10):
-		prog = copy.deepcopy(program)
 		# Create the push interpreter
-		interpreter = pysh_interpreter.Pysh_Interpreter()
+		interpreter = interp.Pysh_Interpreter()
 		interpreter.reset_pysh_state()
 		
 		# Push input number		
 		interpreter.state.stacks["_integer"].push_item(i)
 		interpreter.state.stacks["_input"].push_item(i)
 		# Run program
-		interpreter.run_push(prog)
+		interpreter.run_push(program)
 		# Get output
 		prog_output = interpreter.state.stacks["_boolean"].stack_ref(0)
 		#compare to target output
@@ -45,10 +46,10 @@ def odd_error_func(program):
 	return errors
 
 odd_params = {
-	"atom_generators" : registered_instructions.registered_instructions +	# Use all possible instructions,
-                        [lambda: random.randint(0, 100),					# and some integers
-                         lambda: random.random(),							# and some floats
-                         pysh_instruction.Pysh_Input_Instruction("_in1")]											# and an input instruction that pushes the input to the _integer stack.
+	"atom_generators" : u.merge_dicts(registered_instructions.registered_instructions,			# Use all possible instructions,
+					                  {"f1" : lambda: random.randint(0, 100),					# and some integers
+									   "f2" : lambda: random.random(),							# and some floats
+									    "_input1" : instr.Pysh_Input_Instruction("_input1")})	# and an input instruction that pushes the input to the _integer stack.
 }
 
 def test_odd_solution():

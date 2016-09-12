@@ -12,24 +12,22 @@ import warnings
 '''
 List of all registered push instructions.
 '''
-registered_instructions = []
-
+registered_instructions = {}
 
 def register_instruction(instruction):
 	'''
 	Registers an instruction, excluding duplicates.
 	'''   
-	if len([x for x in registered_instructions if x.name == instruction.name]) > 0:
+	if instruction.name in registered_instructions:
 		warnings.warn('Duplicate instructions registered: ' + instruction.name + '. Duplicate ignored.')
 	else:
-		registered_instructions.append(instruction)
+		registered_instructions[instruction.name] = instruction
 
 
 def get_instruction_by_name(name):
 	if name[0] == "_":
 		name = name[1:]
-	instr = [x for x in registered_instructions if x.name == name]
-	if len(instr) == 0:
-		raise Exception("No registered instruction with name: " + name)
+	if name in registered_instructions:
+		return registered_instructions[name]
 	else:
-		return instr[0]
+		raise Exception("No registered instruction with name: " + name)

@@ -6,9 +6,11 @@ Created on Sun Jun 6 2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from . import pysh_utils as u
+from . import utils as u
 from . import pysh_globals as g
-from . import pysh_instruction
+from . import instruction
+from . import plush_gene as pl
+from .instructions import registered_instructions as ri
 
 def delete_prev_paren_pair(prog):
 	'''
@@ -82,13 +84,20 @@ def translate_plush_genome_to_push_program(genome, max_points):
 			translated_program = u.open_close_sequence_to_list(prog)
 			looping = False
 		# Check for silenced instruction
-		elif gn[0].silent:
+		elif pl.plush_gene_is_silent(gn[0]):
 			gn.pop(0)
 		# If here, ready for next instruction
 		else:
+			instr = pl.plush_gene_get_instruction(gn[0])
+			if not pl.plush_gene_is_literal(gn[0]):
+				if instr[:6] == '_input':
+					instr = instruction.Pysh_Input_Instruction(instr)
+				else:
+					instr = ri.get_instruction_by_name(instr)
+
 			number_paren_groups = 0
-			if type(gn[0].instruction).__name__ == pysh_instruction.Pysh_Instruction.__name__:
-				number_paren_groups = gn[0].instruction.parentheses
+			if type(instr).__name__ == instruction.Pysh_Instruction.__name__:
+				number_paren_groups = instr.parentheses
 
 			new_paren_stack = paren_stack
 			if 0 < number_paren_groups:
@@ -97,10 +106,10 @@ def translate_plush_genome_to_push_program(genome, max_points):
 				new_paren_stack += paren_stack
 				
 			if 0 >= number_paren_groups:
-				prog.append(gn[0].instruction)
+				prog.append(instr)
 			else: 
-				prog += [gn[0].instruction, '_open']
-			num_parens_here = gn[0].closes
+				prog += [instr, '_open']
+			num_parens_here = pl.plush_gene_get_closes(gn[0])
 			gn = gn[1:]
 			paren_stack = new_paren_stack
 

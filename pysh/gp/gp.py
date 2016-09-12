@@ -15,9 +15,9 @@ from collections import defaultdict
 
 from .. import pysh_random
 from .. import pysh_globals as g
-from .. import pysh_utils as u
-from .. import pysh_simplification as simp
-from .. import pysh_instruction as instr
+from .. import utils as u
+from .. import simplification as simp
+from .. import instruction as instr
 from ..instructions import boolean, code, common, numbers, string, input_output
 from ..instructions import registered_instructions 
 
@@ -36,9 +36,9 @@ default_evolutionary_params = {
 "max_points" : 200, # Maximum size of push genomes and push programs, as counted by points in the program. <- Might not be implemented correctly yet
 
 # The instructions that pushgp will use in random code generation
-"atom_generators" : registered_instructions.registered_instructions + 
-                    [lambda: random.randint(0, 100),
-                     lambda: random.random()],
+"atom_generators" : u.merge_dicts(registered_instructions.registered_instructions,
+ 								  {"f1" : lambda: random.randint(0, 100),
+ 								   "f2" : lambda: random.random()}),
 
 # Probabilities of parents from previous generation undergoing each
 # genetic operators to produce a child.
@@ -171,6 +171,7 @@ def evolution(error_function, problem_params):
 	population = generate_random_population(evolutionary_params)
 	
 	# Evaluate initial population to get their error vectors
+	print("Evaluating Initial Population")
 	start_time = datetime.datetime.now()
 	evaluate_population(population, error_function)
 	end_time = datetime.datetime.now()

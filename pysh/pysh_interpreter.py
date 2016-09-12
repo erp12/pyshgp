@@ -11,7 +11,7 @@ __metaclass__ = type
 import time
 
 from . import pysh_state
-from . import pysh_utils
+from . import utils
 from . import pysh_random
 from . import pysh_globals as g
 from .instructions import boolean, code, common, input_output, numbers, string
@@ -37,7 +37,7 @@ class Pysh_Interpreter:
             return
         if callable(instruction):
             instruction = instruction()
-        pysh_type = pysh_utils.recognize_pysh_type(instruction)
+        pysh_type = utils.recognize_pysh_type(instruction)
         if pysh_type == '_instruction':
             instruction.func(self.state)
         elif pysh_type == '_input_instruction':

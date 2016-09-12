@@ -6,14 +6,12 @@ Created on Sun Jun 6 2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from inspect import isfunction
-
 import random
 import numpy.random as rand
 
-from . import pysh_utils as u
+from . import utils as u
 from . import pysh_globals as g
-from . import pysh_instruction
+from . import instruction
 from . import pysh_plush_translation
 from . import plush_gene as pl
 
@@ -45,56 +43,57 @@ def random_closes(close_parens_probabilities):
 	return parens
 
 
-def atom_to_plush_gene(atom, evo_params):
+def atom_to_plush_gene(atom_name, evo_params):
 	'''
 	'''
-	gene = pl.Plush_Gene()
+	instruction = None
+	is_literal = False
+	closes = None
+	silent = None
 
-	markers = evo_params["epigenetic_markers"]
+	markers = evo_params["epigenetic_markers"][:]
 	markers.append('_instruction')
 
 	for m in markers:
 		if m == '_instruction':
+			atom = evo_params['atom_generators'][atom_name]
 			if callable(atom): # It's a function
 				fn_element = atom() 
 				if callable(fn_element): # It's another function!
-					gene.instruction = fn_element()
+					instruction = fn_element()
 				else:
-					gene.instruction = fn_element 
-			elif atom.atom_type == 0:
-				# It's an instruction!
-				gene.instruction = atom 
-			elif atom.atom_type == 1:
-			     # Its an input instruction!
-			     gene.instruction = atom
+					instruction = fn_element 
+				is_literal = True
 			else:
-				raise Exception("Encountered strange _instruction epigenetic marker: " + str(atom))
+				instruction = atom_name
+				#raise Exception("Encountered strange _instruction epigenetic marker: " + str(atom))
 		elif m == '_close':
-			gene.closes = random_closes(evo_params['close_parens_probabilities'])
-			#pass
+			closes = random_closes(evo_params['close_parens_probabilities'])
 		elif m == '_silent':
 			if random.random() > evo_params['silent_instruction_probability']:
-				gene.silent = True
+				silent = True
 			else:
-			 	gene.silent = False
-			#pass
+			 	silent = False
 		else:
-			raise Exception("Unknown epigenetic marker type.")
-	return gene
+			raise Exception("Unknown epigenetic marker type: " + str(m))
+	return pl.make_plush_gene(instruction, is_literal, closes, silent)
+
 
 def random_plush_instruction(evo_params):
 	'''
 	Returns a random Plush_Instruction object given the atom_generators 
 	and the required epigenetic-markers.
 	'''
-	atom = random.choice(evo_params["atom_generators"])
+	atom = random.choice(list(evo_params["atom_generators"].keys()))
 	return atom_to_plush_gene(atom, evo_params)
+
 
 def random_plush_genome_with_size(genome_size, evo_params):
 	'''
 	'''
-	atoms = rand.choice(evo_params["atom_generators"], size=genome_size)
+	atoms = rand.choice(list(evo_params["atom_generators"].keys()), size=genome_size)
 	return [atom_to_plush_gene(atom, evo_params) for atom in atoms]
+
 
 def random_plush_genome(evo_params):
 	'''
@@ -102,6 +101,7 @@ def random_plush_genome(evo_params):
 	'''
 	genome_size = random.randint(1, evo_params["max_genome_initial_size"])
 	return random_plush_genome_with_size(genome_size, evo_params)
+
 
 
 #################################

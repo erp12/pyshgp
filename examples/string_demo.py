@@ -13,7 +13,7 @@ import random
 import collections
 
 from pysh import pysh_interpreter
-from pysh import pysh_instruction
+from pysh import instruction as instr
 from pysh.gp import gp
 from pysh.instructions import boolean, code, common, numbers, string
 from pysh.instructions import registered_instructions as ri
@@ -81,20 +81,20 @@ def string_error_func(program):
 	return errors
 
 string_params = {
-	"atom_generators" : [pysh_instruction.Pysh_Input_Instruction("_in1"),
-						 ri.get_instruction_by_name("string_length"),
-						 ri.get_instruction_by_name("string_head"),
-						 ri.get_instruction_by_name("string_concat"),
-						 ri.get_instruction_by_name("string_stack_depth"),
-						 ri.get_instruction_by_name("string_swap"),
-						 ri.get_instruction_by_name("string_dup"),
-						 ri.get_instruction_by_name("integer_add"),
-						 ri.get_instruction_by_name("integer_sub"),
-						 ri.get_instruction_by_name("integer_dup"),
-						 ri.get_instruction_by_name("integer_swap"),
-						 ri.get_instruction_by_name("integer_stack_depth"),
-						 lambda: random.randint(0, 10),
-						 lambda: random_str()],
+	"atom_generators" : {"_input1" 	           : instr.Pysh_Input_Instruction("_input1"),
+						 "string_length"       : ri.get_instruction_by_name("string_length"),
+						 "string_head" 	       : ri.get_instruction_by_name("string_head"),
+						 "string_concat"       : ri.get_instruction_by_name("string_concat"),
+						 "string_stack_depth"  : ri.get_instruction_by_name("string_stack_depth"),
+						 "string_swap" 	       : ri.get_instruction_by_name("string_swap"),
+						 "string_dup"          : ri.get_instruction_by_name("string_dup"),
+						 "integer_add"         : ri.get_instruction_by_name("integer_add"),
+						 "integer_sub"         : ri.get_instruction_by_name("integer_sub"),
+						 "integer_dup"         : ri.get_instruction_by_name("integer_dup"),
+						 "integer_swap"        : ri.get_instruction_by_name("integer_swap"),
+						 "integer_stack_depth" : ri.get_instruction_by_name("integer_stack_depth"),
+						 "f1"                  : lambda: random.randint(0, 10),
+						 "f2"                  : lambda: random_str()},
 	"population_size" : 500,
 	"max_generations" : 200,
 	"epigenetic_markers" : [],

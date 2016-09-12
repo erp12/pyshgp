@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import math
 
-from . import pysh_instruction as instr
+from . import instruction as instr
 from . import pysh_globals as g
 
 def safe_cast_arg(arg, typ = int):

@@ -26,7 +26,7 @@ def target_function(x):
 def error_func(program):
 	errors = []
 
-	for x in np.arange(-1.0, 1.0, 0.1):
+	for x in np.arange(-2.0, 2.0, 0.1):
 		x = float(x)
 		# Create the push interpreter
 		interpreter = pysh_interpreter.Pysh_Interpreter()
@@ -52,7 +52,7 @@ def error_func(program):
 
 problem_params = {
 	"error_threshold" : 0.01,
-	"population_size" : 10000,
+	"population_size" : 2000,
 	"atom_generators" : {"float_div"    : ri.get_instruction_by_name("float_div"),
 						 "float_mult"   : ri.get_instruction_by_name("float_mult"),
 						 "float_sub"    : ri.get_instruction_by_name("float_sub"),

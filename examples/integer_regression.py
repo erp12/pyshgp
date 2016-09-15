@@ -25,7 +25,7 @@ def target_function(x):
 def error_func(program):
 	errors = []
 
-	for x in range(9):
+	for x in range(20):
 		# Create the push interpreter
 		interpreter = pysh_interpreter.Pysh_Interpreter()
 		interpreter.reset_pysh_state()
@@ -54,9 +54,9 @@ problem_params = {
 						 "integer_add" : ri.get_instruction_by_name("integer_add"),
 						 "integer_sub" : ri.get_instruction_by_name("integer_sub"),
                          "f1" : lambda: random.randint(0, 10),
-                         "_input1" : pysh_instruction.Pysh_Input_Instruction("_input1")},
+                         "_input1" : instruction.Pysh_Input_Instruction("_input1")},
     "epigenetic_markers" : [],
-    "selection_method" : "tournament",
+    "selection_method" : "epsilon_lexicase",
     "genetic_operator_probabilities" : {"alternation" : 0.5,
 										"uniform_mutation" : 0.5},
 	"alternation_rate" : 0.1,

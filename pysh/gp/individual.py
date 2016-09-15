@@ -7,6 +7,8 @@ Created on 5/50/2016
 from __future__ import absolute_import, division, print_function, unicode_literals
 __metaclass__ = type
 
+#import uuid
+
 from .. import pysh_plush_translation as tran
 
 class Individual:
@@ -16,6 +18,7 @@ class Individual:
 	
 	def __init__(self, genome, evo_params):
 		self.genome = genome
+		#self.uuid = uuid.uuid4()
 		self.max_points = evo_params["max_points"]
 		self.program = tran.translate_plush_genome_to_push_program(genome, self.max_points)
 		self.errors = []

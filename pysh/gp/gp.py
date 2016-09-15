@@ -8,10 +8,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import sys
 import datetime
-
 import random
 import warnings
 from collections import defaultdict
+#from joblib import Parallel, delayed
+#from pathos.multiprocessing import ProcessingPool as Pool
 
 from .. import pysh_random
 from .. import pysh_globals as g
@@ -94,7 +95,11 @@ default_evolutionary_params = {
 
 # End of run plots
 "reports" : {"timings" : True,
-			 "plot_piano_roll" : False}
+			 "plot_piano_roll" : False},
+
+#
+"max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
+#"pool" : None # If max_workers > 1, this is the Pool()
 }
 
 
@@ -110,6 +115,15 @@ def grab_command_line_params(evolutionary_params):
 				print("WARNING:", "Unknown evolutionary parameter", param[2:], ". Still added to parameters.")
 			val = u.safe_cast_arg(val)
 			evolutionary_params[param[2:]] = val
+
+def init_executor(params):
+	from pathos.multiprocessing import ProcessingPool as Pool
+
+	if params["max_workers"] == None:
+		params["pool"] = Pool()
+	else:
+		params['pool'] = Pool(params["max_workers"])
+	#pass
 
 
 def load_program_from_list(lst, atom_generators = default_evolutionary_params["atom_generators"]):
@@ -139,27 +153,92 @@ def generate_random_population(evolutionary_params):
 		population.append(individual.Individual(rand_genome, evolutionary_params))
 	return population
 
-def evaluate_population(population, error_function):
+def evaluate_individual(ind, error_function):
+	if ind.get_errors() == []:
+		errors = error_function(ind.get_program())
+		reporting.total_errors_in_evalutaion_order.append(sum(errors))
+		ind.set_errors(errors)
+	return ind
+
+
+def evaluate_population(population, error_function, evolutionary_params):
 	"""
 	Updates the errors of the population.
 	"""
-	for ind in population:
-		if ind.get_errors() == []:
-			errors = error_function(ind.get_program())
-			reporting.total_errors_in_evalutaion_order.append(sum(errors))
-			ind.set_errors(errors)
+	if evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1:
+		# pathos.multiprocessing
+		pool = evolutionary_params['pool']
+		return pool.map(evaluate_individual, population, [error_function]*len(population))
+
+		# Joblib
+		# n_jobs = -1
+		# if not evolutionary_params["max_workers"] == None:
+		# 	n_jobs = evolutionary_params["max_workers"]
+		# return Parallel(n_jobs=n_jobs, backend="threading")(delayed(evaluate_individual)(ind, error_function) for ind in population)
+	else:
+		return list(map(evaluate_individual, population, [error_function]*len(population)))
+
+def produce_child(population, selection_func, genetic_operators, evolutionary_params):
+	'''
+	'''
+	child = selection_func(population, 1)[0]
+	ops = genetic_operators.split(" & ")
+	for op in ops:
+		if op == "alternation":
+			# Apply alternation
+			other_parent = selection_func(population, 1)[0]
+			child_genome = go.alternation(child.get_genome(), 
+										  other_parent.get_genome(), 
+										  evolutionary_params)
+			child = individual.Individual(child_genome, evolutionary_params)
+		elif op == "uniform_mutation":
+			# Apply uniform mutation
+			child_genome = go.uniform_mutation(child.get_genome(), evolutionary_params)
+			child = individual.Individual(child_genome, evolutionary_params)
+		else:
+			raise Exception("Tried to perform unknown genetic operator " + str(op))
+	return child
+
+def genetics(population, evolutionary_params):
+	'''
+	'''
+	start_time = datetime.datetime.now()
+
+	selection_func = sel.lexicase_selection
+	if evolutionary_params["selection_method"] == "tournament":
+		selection_func = sel.tournament_selection
+
+	# Create next generation
+	offspring = []
+	# Calculate number of children that should be made from each genetic operator
+	num_offspring_each_gen_op = dict([(k, int(round(evolutionary_params["genetic_operator_probabilities"][k] * evolutionary_params["population_size"]))) for k in evolutionary_params["genetic_operator_probabilities"]])
+	# For each operator or operator combination
+	for k in num_offspring_each_gen_op.keys():
+		# For each child that should be made by k
+		for i in range(num_offspring_each_gen_op[k]):
+			offspring.append(produce_child(population, selection_func, k, evolutionary_params))
+
+	end_time = datetime.datetime.now()
+	reporting.log_timings("genetics", start_time, end_time)
+	return offspring
+
 
 def evolution(error_function, problem_params):
 	"""
 	Basic evolutionary loop.
-	"""
-	print("Starting GP Run With Parameters:")
+	"""	
 
 	# Get the params for the run
 	evolutionary_params = u.merge_dicts(default_evolutionary_params, problem_params)
 	grab_command_line_params(evolutionary_params)
 	evolutionary_params['genetic_operator_probabilities'] = u.normalize_genetic_operator_probabilities(evolutionary_params['genetic_operator_probabilities'])
-	
+
+	# Prepare for multi-threading if specified by user
+	if evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1:
+		print("Preparing Pysh for parellel evaluations")
+		init_executor(evolutionary_params)
+
+	print("Starting GP Run With Parameters:")
 	# Print the params for the run
 	for key,value in evolutionary_params.items():
 		print(key, end = ": ")
@@ -173,7 +252,7 @@ def evolution(error_function, problem_params):
 	# Evaluate initial population to get their error vectors
 	print("Evaluating Initial Population")
 	start_time = datetime.datetime.now()
-	evaluate_population(population, error_function)
+	population = evaluate_population(population, error_function, evolutionary_params)
 	end_time = datetime.datetime.now()
 	reporting.log_timings("evaluation", start_time, end_time)
 
@@ -186,45 +265,11 @@ def evolution(error_function, problem_params):
 
 		# Select parents and mate them to create offspring
 		print("Performing selection and variation.")
-		start_time = datetime.datetime.now()
-		selction_func = sel.lexicase_selection
-		if evolutionary_params["selection_method"] == "tournament":
-			selection_func = sel.tournament_selection
-
-		# Create next generation
-		offspring = []
-		# Calculate number of children that should be made from each genetic operator
-		num_offspring_each_gen_op = dict([(k, int(round(evolutionary_params["genetic_operator_probabilities"][k] * evolutionary_params["population_size"]))) for k in evolutionary_params["genetic_operator_probabilities"]])
-		
-		# For each operator or operator combination
-		for k in num_offspring_each_gen_op.keys():
-			# For each child that should be made by k
-			for i in range(num_offspring_each_gen_op[k]):
-				# Set child as a clone of the first parents	
-				child = selction_func(population, 1)[0]
-				# Split opts string by ' & ' to get list of individual operators
-				opts = k.split(" & ")
-				for op in opts:
-					if op == "alternation":
-						# Apply alternation
-						other_parent = selction_func(population, 1)[0]
-						child_genome = go.alternation(child.get_genome(), 
-													  other_parent.get_genome(), 
-													  evolutionary_params)
-						child = individual.Individual(child_genome, evolutionary_params)
-					elif op == "uniform_mutation":
-						# Apply uniform mutation
-						child_genome = go.uniform_mutation(child.get_genome(), evolutionary_params)
-						child = individual.Individual(child_genome, evolutionary_params)
-					else:
-						raise Exception("Tried to perform unknown genetic operator " + str(op))
-				offspring.append(child)
-		end_time = datetime.datetime.now()
-		reporting.log_timings("genetics", start_time, end_time)
+		offspring = genetics(population, evolutionary_params)
 
 		print("Evaluating new individuals in population.")
 		start_time = datetime.datetime.now()
-		evaluate_population(offspring, error_function)
+		offspring = evaluate_population(offspring, error_function, evolutionary_params)
 		end_time = datetime.datetime.now()
 		reporting.log_timings("evaluation", start_time, end_time)
 		

@@ -15,6 +15,7 @@ pysh/gp/evolution_monitors.py
 pysh/gp/genetic_operators.py
 pysh/gp/gp.py
 pysh/gp/individual.py
+pysh/gp/map_reduce_run.py
 pysh/gp/reporting.py
 pysh/gp/selection.py
 pysh/instructions/__init__.py

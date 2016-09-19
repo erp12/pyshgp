@@ -36,3 +36,16 @@ Average Selection/Variations Timing of Generation: 1.681
 
 Average Evaluation Timing of Generation: 4.681
 Average Selection/Variations Timing of Generation: 1.563
+
+
+### RSWN
+
+#### With concurrent
+
+Average Evaluation Timing of Generation: 17.376
+Average Selection/Variations Timing of Generation: 3.265
+
+#### Without concurrent
+
+Average Evaluation Timing of Generation: 31.837
+Average Selection/Variations Timing of Generation: 3.575

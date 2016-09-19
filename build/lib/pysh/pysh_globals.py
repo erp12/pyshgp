@@ -14,7 +14,8 @@ pysh_types = ["_exec",
               "_string",
               "_boolean",
               "_code",
-              '_input']          
+              "_input",
+              "_output"]          
               
 # These definitions are used by instructions to keep computed values within limits
 # or when using random instructions.

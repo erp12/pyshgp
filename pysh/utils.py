@@ -45,7 +45,7 @@ def recognize_pysh_type(thing):
         return '_integer'
     elif type(thing) is float:
         return '_float'
-    elif type(thing) is str:
+    elif type(thing) is str or type(thing) is unicode:
         return '_string'
     elif type(thing) is bool:
         return '_boolean'

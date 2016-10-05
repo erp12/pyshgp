@@ -15,11 +15,11 @@ pysh/gp/evolution_monitors.py
 pysh/gp/genetic_operators.py
 pysh/gp/gp.py
 pysh/gp/individual.py
-pysh/gp/map_reduce_run.py
 pysh/gp/reporting.py
 pysh/gp/selection.py
 pysh/instructions/__init__.py
 pysh/instructions/boolean.py
+pysh/instructions/char.py
 pysh/instructions/code.py
 pysh/instructions/common.py
 pysh/instructions/input_output.py

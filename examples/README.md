@@ -2,9 +2,13 @@
 
 ## Odd
 
-``` python
-['_code_stack_depth', '_exec_do*range', ['_exec_empty', '_integer_yankdup']]
+```
+CLOJUSH:
+(boolean_stackdepth exec_do*range (exec_if () (exec_empty code_null code_quote ())))
+(boolean_stackdepth code_stackdepth boolean_frominteger code_fromboolean exec_do*range (exec_when (boolean_empty code_empty)))
 
+PYSH:
+['_code_stack_depth', '_exec_do*range', ['_exec_empty', '_integer_yankdup']]
 ['_exec_do*times', ['_integer_empty']]
 
 ```
@@ -49,3 +53,8 @@ Average Selection/Variations Timing of Generation: 3.265
 
 Average Evaluation Timing of Generation: 31.837
 Average Selection/Variations Timing of Generation: 3.575
+
+#### Solutions
+
+Clojush found following solution at generation 45
+`(\space in1 \newline string_replacechar print_string \space in1 string_removechar char_allfromstring char_stackdepth)`

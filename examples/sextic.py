@@ -64,7 +64,7 @@ problem_params = {
                          "f1"           : lambda: float(random.randint(0, 21) - 10),
                          "_input1"      : instruction.Pysh_Input_Instruction("_input1")},
     "epigenetic_markers" : [],
-    "selection_method" : "epsilon_lexicase_selection",
+    "selection_method" : "epsilon_lexicase",
     "genetic_operator_probabilities" : {"alternation" : 0.5,
 										"uniform_mutation" : 0.5},
 	"uniform_mutation_constant_tweak_rate" : 0.1,

@@ -53,7 +53,7 @@ def RSWN_test_cases(inputs):
 	return list(map(lambda inpt: [inpt, [str.replace(inpt, " ", "\n"), len(list(filter(lambda x: not x == " ", inpt)))]], inputs))
 
 def make_RSWN_error_func_from_cases(train_cases, test_cases):
-	def actual_RSWN_func(program, data_cases = "train", print_outputs = False):
+	def actual_RSWN_func(program, data_cases = "train", print_outputs = False, debug = False):
 		errors = []
 
 		cases = train_cases
@@ -66,7 +66,7 @@ def make_RSWN_error_func_from_cases(train_cases, test_cases):
 			interpreter.reset_pysh_state()
 			interpreter.state.stacks["_input"].push_item(io_pair[0])
 			interpreter.state.stacks["_output"].push_item("")
-			interpreter.run_push(program)
+			interpreter.run_push(program, debug)
 			str_result = interpreter.state.stacks["_string"].stack_ref(0)
 			int_result = interpreter.state.stacks["_integer"].stack_ref(0)
 
@@ -100,6 +100,7 @@ RSWN_params = {
 									   ri.get_instructions_by_pysh_type("_integer"),
 									   ri.get_instructions_by_pysh_type("_boolean"),
 									   ri.get_instructions_by_pysh_type("_string"),
+									   ri.get_instructions_by_pysh_type("_char"),
 									   ri.get_instructions_by_pysh_type("_exec"),
 									   ri.get_instructions_by_pysh_type("_print")
 									   ),
@@ -117,7 +118,18 @@ RSWN_params = {
 	"final-report-simplifications" : 5000
 }
 
+def test_RSWN_solution(err_func):
+	#print(registered_instructions.registered_instructions)
+	prog_lst = [" ", '_input1', "\n", '_string_replacechar', '_print_string', ' ', '_input1', '_string_removechar', '_char_allfromstring', '_char_stackdepth']
+	prog = gp.load_program_from_list(prog_lst)
+	errors = err_func(prog, debug = True)
+	print("Errors:", errors)
+
+
 if __name__ == "__main__":
 	train_and_test = get_RSWN_train_and_test()
 	#print(train_and_test)
-	gp.evolution(make_RSWN_error_func_from_cases(train_and_test[0], train_and_test[1]), RSWN_params)
+	#gp.evolution(make_RSWN_error_func_from_cases(train_and_test[0], train_and_test[1]), RSWN_params)
+
+	test_RSWN_solution(make_RSWN_error_func_from_cases(train_and_test[0], train_and_test[1]))
+

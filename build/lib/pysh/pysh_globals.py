@@ -12,6 +12,7 @@ pysh_types = ["_exec",
               "_integer",
               "_float",
               "_string",
+              "_char",
               "_boolean",
               "_code",
               "_input",
@@ -34,4 +35,4 @@ max_points_in_random_expressions = 50 # The maximum length of code created by th
 
 global_evalpush_limit = 150 # The number of Push instructions that can be evaluated before stopping evaluation
 global_evalpush_time_limit = 0 # The time in nanoseconds that a program can evaluate before stopping, 0 means no time limit
-
+global_max_points = 200 # Maximum size of push programs and push code, as counted by points in the program. Also, the maximum size of code that can appear on the exec or code stacks.

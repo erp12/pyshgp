@@ -105,4 +105,3 @@ string_params = {
 
 if __name__ == "__main__":
 	gp.evolution(string_error_func, string_params)
-	#gp.evolution(string_error_func, string_params)

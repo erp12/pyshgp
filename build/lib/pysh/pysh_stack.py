@@ -11,6 +11,8 @@ class Pysh_Stack(list):
     
     def __init__(self, string_of_type):
         self.pysh_type = string_of_type
+        if string_of_type == "_output":
+            self.push_item("")
         
     def push_item(self, value):
         self.append(value)

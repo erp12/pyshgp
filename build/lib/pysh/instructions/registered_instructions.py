@@ -31,3 +31,7 @@ def get_instruction_by_name(name):
 		return registered_instructions[name]
 	else:
 		raise Exception("No registered instruction with name: " + name)
+
+
+def get_instructions_by_pysh_type(pysh_type):
+	return {k:v for (k,v) in registered_instructions.items() if pysh_type in v.stack_types}

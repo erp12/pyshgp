@@ -19,6 +19,7 @@ pysh/gp/reporting.py
 pysh/gp/selection.py
 pysh/instructions/__init__.py
 pysh/instructions/boolean.py
+pysh/instructions/char.py
 pysh/instructions/code.py
 pysh/instructions/common.py
 pysh/instructions/input_output.py

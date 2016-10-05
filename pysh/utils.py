@@ -7,6 +7,7 @@ Created on Sun Jun  5 15:36:03 2016
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math
+import random
 
 from . import instruction as instr
 from . import pysh_globals as g
@@ -44,7 +45,7 @@ def recognize_pysh_type(thing):
         return '_integer'
     elif type(thing) is float:
         return '_float'
-    elif type(thing) is str:
+    elif type(thing) is str or type(thing) is unicode:
         return '_string'
     elif type(thing) is bool:
         return '_boolean'
@@ -183,4 +184,55 @@ def ensure_list(thing):
         return thing
     else:
         return [thing]
+
+def levenshtein_distance(s1, s2):
+    '''
+    Big thank to: https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
+    '''
+    if len(s1) < len(s2):
+        return levenshtein_distance(s2, s1)
+
+    # len(s1) >= len(s2)
+    if len(s2) == 0:
+        return len(s1)
+
+    previous_row = range(len(s2) + 1)
+    for i, c1 in enumerate(s1):
+        current_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            insertions = previous_row[j + 1] + 1 # j+1 instead of j since previous_row and current_row are one character longer
+            deletions = current_row[j] + 1       # than s2
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+    
+    return previous_row[-1]
+
+def test_and_train_data_from_domains(domains):
+    '''
+    Takes a list of domains and creates a set of (random) train inputs and a set of test
+    inputs based on the domains. Returns [train test]. A program should not
+    be considered a solution unless it is perfect on both the train and test cases.
+    '''
+    train_set = []
+    test_set = []
+
+    for d in domains:
+        num_train = d["train_test_split"][0]
+        num_test = d["train_test_split"][1]
+
+        inpts = d["inputs"]
+        if callable(inpts):
+            inpts = [inpts() for x in range(num_train+num_test)]
+        else:
+            inpts = inpts[:]
+
+        random.shuffle(list(inpts))
+        train_set += inpts[:num_train]
+        test_set += inpts[-num_test:]
+
+    return [train_set, test_set]
+
+
+
 

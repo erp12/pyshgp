@@ -7,8 +7,8 @@ Created on Sun Jun  5 15:26:32 2016
 from __future__ import absolute_import, division, print_function, unicode_literals
 __metaclass__ = type
 
-
 import time
+import copy # <- This one is actually needed.
 
 from . import pysh_state
 from . import utils
@@ -91,7 +91,9 @@ class Pysh_Interpreter:
         pushing/popping. The resulting push state will map :termination to :normal if termination was 
         normal, or :abnormal otherwise.
         '''
-        self.state.stacks['_exec'].push_item(code)
+        # If you don't copy the code, the reference to the program will be reverse and other bad things.
+        code_copy = copy.deepcopy(code)
+        self.state.stacks['_exec'].push_item(code_copy)
         self.eval_push(print_steps)
         if print_steps:
             print("=== Finished Push Execution ===")

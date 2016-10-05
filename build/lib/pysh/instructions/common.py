@@ -26,11 +26,40 @@ def popper(pysh_type):
         instruction.parentheses = 1
     return instruction
 registered_instructions.register_instruction(popper('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(popper('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(popper('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(popper('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(popper('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(popper('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(popper('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 
 
 def duper(pysh_type):
@@ -48,11 +77,40 @@ def duper(pysh_type):
         instruction.parentheses = 1
     return instruction
 registered_instructions.register_instruction(duper('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(duper('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(duper('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(duper('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(duper('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(duper('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(duper('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 
 
 def swapper(pysh_type):
@@ -75,11 +133,41 @@ def swapper(pysh_type):
         instruction.parentheses = 2
     return instruction
 registered_instructions.register_instruction(swapper('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(swapper('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(swapper('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(swapper('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(swapper('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(swapper('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(swapper('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+
 
 
 def rotter(pysh_type):
@@ -105,11 +193,40 @@ def rotter(pysh_type):
         instruction.parentheses = 3
     return instruction
 registered_instructions.register_instruction(rotter('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(rotter('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(rotter('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(rotter('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(rotter('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(rotter('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(rotter('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 
 
 def flusher(pysh_type):
@@ -123,11 +240,40 @@ def flusher(pysh_type):
                                                     stack_types = [pysh_type])
     return instruction
 registered_instructions.register_instruction(flusher('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(flusher('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(flusher('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(flusher('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(flusher('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(flusher('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(flusher('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 
 
 def eqer(pysh_type):
@@ -151,11 +297,40 @@ def eqer(pysh_type):
         instruction.stack_types.append('_boolean')
     return instruction
 registered_instructions.register_instruction(eqer('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(eqer('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(eqer('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(eqer('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(eqer('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(eqer('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(eqer('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 
 
 def stackdepther(pysh_type):
@@ -173,11 +348,40 @@ def stackdepther(pysh_type):
         instruction.stack_types.append('_integer')
     return instruction
 registered_instructions.register_instruction(stackdepther('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(stackdepther('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(stackdepther('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(stackdepther('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(stackdepther('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(stackdepther('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(stackdepther('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 
 
 def yanker(pysh_type):
@@ -204,11 +408,40 @@ def yanker(pysh_type):
         instruction.stack_types.append('_integer')
     return instruction
 registered_instructions.register_instruction(yanker('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yanker('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yanker('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yanker('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yanker('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yanker('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(yanker('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 
 
 def yankduper(pysh_type):
@@ -234,11 +467,41 @@ def yankduper(pysh_type):
         instruction.stack_types.append('_integer')
     return instruction
 registered_instructions.register_instruction(yankduper('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yankduper('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yankduper('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yankduper('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yankduper('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(yankduper('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(yankduper('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+
 
 def shover(pysh_type):
     '''
@@ -264,11 +527,40 @@ def shover(pysh_type):
         instruction.stack_types.append('_integer')
     return instruction
 registered_instructions.register_instruction(shover('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(shover('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(shover('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(shover('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(shover('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(shover('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(shover('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 
 
 def emptyer(pysh_type):
@@ -284,8 +576,37 @@ def emptyer(pysh_type):
         instruction.stack_types.append('_boolean')
     return instruction
 registered_instructions.register_instruction(emptyer('_exec'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(emptyer('_integer'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(emptyer('_float'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(emptyer('_code'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(emptyer('_boolean'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
 registered_instructions.register_instruction(emptyer('_string'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>
+registered_instructions.register_instruction(emptyer('_char'))
+#<instr_open>
+#<instr_name>
+#<instr_desc>
+#<instr_close>

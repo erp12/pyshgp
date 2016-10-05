@@ -26,7 +26,7 @@ def target_function(x):
 def error_func(program):
 	errors = []
 
-	for x in np.arange(-1.0, 1.0, 0.1):
+	for x in np.arange(-2.0, 2.0, 0.1):
 		x = float(x)
 		# Create the push interpreter
 		interpreter = pysh_interpreter.Pysh_Interpreter()
@@ -52,7 +52,7 @@ def error_func(program):
 
 problem_params = {
 	"error_threshold" : 0.01,
-	"population_size" : 10000,
+	"population_size" : 2000,
 	"atom_generators" : {"float_div"    : ri.get_instruction_by_name("float_div"),
 						 "float_mult"   : ri.get_instruction_by_name("float_mult"),
 						 "float_sub"    : ri.get_instruction_by_name("float_sub"),
@@ -64,7 +64,7 @@ problem_params = {
                          "f1"           : lambda: float(random.randint(0, 21) - 10),
                          "_input1"      : instruction.Pysh_Input_Instruction("_input1")},
     "epigenetic_markers" : [],
-    "selection_method" : "epsilon_lexicase_selection",
+    "selection_method" : "epsilon_lexicase",
     "genetic_operator_probabilities" : {"alternation" : 0.5,
 										"uniform_mutation" : 0.5},
 	"uniform_mutation_constant_tweak_rate" : 0.1,

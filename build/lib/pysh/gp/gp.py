@@ -22,7 +22,6 @@ from ..instructions import registered_instructions
 
 from . import individual
 from . import genetic_operators as go
-from . import selection as sel
 from . import evolution_monitors as monitor
 from . import reporting
 
@@ -44,7 +43,8 @@ default_evolutionary_params = {
 # More coming soon!
 "genetic_operator_probabilities" : {"alternation" : 0.7,
                                     "uniform_mutation" : 0.1,
-                                    "alternation & uniform_mutation" : 0.2},
+                                    "alternation & uniform_mutation" : 0.2,
+                                    "uniform_close_mutation" : 0.0},
 
 #############
 # SELECTION #
@@ -76,6 +76,10 @@ default_evolutionary_params = {
 "uniform_mutation_int_gaussian_standard_deviation" : 1, # The standard deviation used when tweaking integer constants with Gaussian noise
 "uniform_mutation_string_char_change_rate" : 0.1,
 
+# Arguments related to uniform close mutation
+"uniform_close_mutation_rate" : 0.1, # The probability of each :close being incremented or decremented during uniform close mutation.
+"close_increment_rate" : 0.2, # The probability of making an increment change to :close during uniform close mutation, as opposed to a decrement change.
+
 # Epignenetics
 "epigenetic_markers" : ["_close"], # A vector of the epigenetic markers that should be used in the individuals. Implemented options include: :close, :silent
 "close_parens_probabilities" : [0.772, 0.206, 0.021, 0.001], # A vector of the probabilities for the number of parens ending at that position.         
@@ -101,7 +105,6 @@ default_evolutionary_params = {
 #
 "max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
 }
-
 
 def grab_command_line_params(evolutionary_params):
     '''
@@ -135,7 +138,8 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
     for el in lst:
         if type(el) == int or type(el) == float or type(el) == bool:
             program.append(el)
-        elif type(el) == str:
+        elif type(el) == str or type(el) == unicode:
+            el = str(el)
             if el[:6] == "_input":
                 inpt_num = int(el[6:])
                 program.append(instr.Pysh_Input_Instruction("_input" + str(inpt_num)))
@@ -176,49 +180,6 @@ def evaluate_population(population, error_function, evolutionary_params):
     else:
         return list(map(evaluate_individual, population, [error_function]*len(population)))
 
-def produce_child(population, genetic_operators, evolutionary_params):
-    '''
-    Returns one offspring individual.
-    '''
-    child = sel.selection(population, evolutionary_params)[0]
-    ops = genetic_operators.split(" & ")
-    for op in ops:
-        if op == "alternation":
-            # Apply alternation
-            other_parent = sel.selection(population, evolutionary_params)[0]
-            child_genome = go.alternation(child.get_genome(), 
-                                          other_parent.get_genome(), 
-                                          evolutionary_params)
-            child = individual.Individual(child_genome, evolutionary_params)
-        elif op == "uniform_mutation":
-            # Apply uniform mutation
-            child_genome = go.uniform_mutation(child.get_genome(), evolutionary_params)
-            child = individual.Individual(child_genome, evolutionary_params)
-        else:
-            raise Exception("Tried to perform unknown genetic operator " + str(op))
-    return child
-
-def genetics(population, evolutionary_params):
-    '''
-    Returns the next generation (unevaluated)
-    '''
-    start_time = datetime.datetime.now()
-
-    # Create next generation
-    offspring = []
-    # Calculate number of children that should be made from each genetic operator
-    num_offspring_each_gen_op = dict([(k, int(round(evolutionary_params["genetic_operator_probabilities"][k] * evolutionary_params["population_size"]))) for k in evolutionary_params["genetic_operator_probabilities"]])
-   
-    # For each operator or operator combination
-    for op in num_offspring_each_gen_op.keys():
-        # For each child that should be made by `op`
-        for i in range(num_offspring_each_gen_op[op]):
-            offspring.append(produce_child(population, op, evolutionary_params))
-
-    end_time = datetime.datetime.now()
-    reporting.log_timings("genetics", start_time, end_time)
-    return offspring
-
 def evolution(error_function, problem_params):
     """
     Basic evolutionary loop.
@@ -238,10 +199,14 @@ def evolution(error_function, problem_params):
         init_executor(evolutionary_params)
 
     print("Starting GP Run With Parameters:")
+    print()
     # Print the params for the run
     for key,value in evolutionary_params.items():
         print(key, end = ": ")
-        print(value)
+        if key == "atom_generators":
+            print(list(value.keys()))
+        else:
+            print(value)
     print()
 
     # Create Initial Population
@@ -264,8 +229,10 @@ def evolution(error_function, problem_params):
 
         # Select parents and mate them to create offspring
         print("Performing selection and variation.")
-        #offspring = genetics(population, evolutionary_params)
-        offspring = genetics(population, evolutionary_params)
+        start_time = datetime.datetime.now()
+        offspring = go.genetics(population, evolutionary_params)
+        end_time = datetime.datetime.now()
+        reporting.log_timings("genetics", start_time, end_time)
 
         print("Evaluating new individuals in population.")
         start_time = datetime.datetime.now()

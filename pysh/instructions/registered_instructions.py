@@ -35,3 +35,14 @@ def get_instruction_by_name(name):
 
 def get_instructions_by_pysh_type(pysh_type):
 	return {k:v for (k,v) in registered_instructions.items() if pysh_type in v.stack_types}
+
+
+class instruction_looker_upper():
+	def __init__(self, instruction_name):
+		self.instruction_name = instruction_name
+
+	def __call__(self):
+		return get_instruction_by_name(self.instruction_name)
+
+	def __repr__(self):
+		return self.instruction_name[1:] + "_LOOKUP"

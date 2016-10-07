@@ -6,6 +6,7 @@ Created on Sun Jun  5 15:36:03 2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import sys
 import math
 import random
 
@@ -45,7 +46,9 @@ def recognize_pysh_type(thing):
         return '_integer'
     elif type(thing) is float:
         return '_float'
-    elif type(thing) is str or type(thing) is unicode:
+    elif sys.version_info[0] == 3 and (type(thing) is str or type(thing) is bytes):
+        return '_string'
+    elif sys.version_info[0] == 2 and (type(thing) is str or type(thing) is unicode):
         return '_string'
     elif type(thing) is bool:
         return '_boolean'

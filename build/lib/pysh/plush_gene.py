@@ -9,28 +9,6 @@ __metaclass__ = type
 
 from . import instruction
 
-# class Plush_Gene:
-# 	'''
-# 	Object representing a plush instruction that can be found in a linear
-# 	plush genome.
-# 	'''
-# 	def __init__(self, instruction = None, is_literal = False, closes = None, silent = None):
-# 		self.instruction = instruction
-# 		self.closes = closes
-# 		self.silent = silent
-# 		self.is_literal = is_literal
-
-# 	def __repr__(self):
-# 		if not self.is_literal:
-# 			s = "PLUSH_" + self.instruction 
-# 			if self.silent:
-# 				s += "_SILENT"
-# 			return s
-# 		else:
-# 			return "LITERAL_" + type(self.instruction).__name__ + "_" + str(self.instruction)
-
-
-
 def make_plush_gene(instruction, is_literal = False, closes = None, silent = None):
 	return (instruction, is_literal, closes, silent)
 

@@ -79,6 +79,9 @@ def tournament_selection(individuals, tournament_size, k = 1):
     return selected_individuals
 
 
+#############################
+# Master Selection Function #
+#############################
 
 def selection(population, evolutionary_params, k = 1):
     if evolutionary_params["selection_method"] == "lexicase":

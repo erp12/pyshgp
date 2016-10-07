@@ -111,7 +111,8 @@ RSWN_params = {
 	"max_generations" : 300,
     "genetic_operator_probabilities" : {"alternation" : 0.2,
 										"uniform_mutation" : 0.2,
-										"alternation & uniform_mutation" : 0.5},
+										"alternation & uniform_mutation" : 0.5,
+										"uniform_close_mutation" : 0.1},
 	"alternation-rate" : 0.01,
 	"alignment-deviation" : 10,
 	"uniform-mutation-rate" : 0.01,
@@ -129,7 +130,7 @@ def test_RSWN_solution(err_func):
 if __name__ == "__main__":
 	train_and_test = get_RSWN_train_and_test()
 	#print(train_and_test)
-	#gp.evolution(make_RSWN_error_func_from_cases(train_and_test[0], train_and_test[1]), RSWN_params)
+	gp.evolution(make_RSWN_error_func_from_cases(train_and_test[0], train_and_test[1]), RSWN_params)
 
-	test_RSWN_solution(make_RSWN_error_func_from_cases(train_and_test[0], train_and_test[1]))
+	#test_RSWN_solution(make_RSWN_error_func_from_cases(train_and_test[0], train_and_test[1]))
 

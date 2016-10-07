@@ -138,7 +138,7 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
     for el in lst:
         if type(el) == int or type(el) == float or type(el) == bool:
             program.append(el)
-        elif type(el) == str or type(el) == unicode:
+        elif (sys.version_info[0] == 3 and (type(el) is str or type(el) is bytes)) or (sys.version_info[0] == 2 and (type(el) is str or type(el) is unicode)):
             el = str(el)
             if el[:6] == "_input":
                 inpt_num = int(el[6:])
@@ -151,7 +151,6 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
                     program.append(el)
         elif type(el) == list:
             program.append(load_program_from_list(el))
-    print("Loaded Program: ", program)
     return program
 
 def generate_random_population(evolutionary_params):

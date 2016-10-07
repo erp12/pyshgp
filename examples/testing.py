@@ -4,7 +4,7 @@ from pysh import pysh_interpreter as interp
 from pysh.gp import gp
 
 
-prog_lst = [3, ['_exec_do*times', '_integer_empty']]
+prog_lst = [3, ['_exec_do*times', ['_integer_empty']]]
 program = gp.load_program_from_list(prog_lst)
 
 interpreter = interp.Pysh_Interpreter()

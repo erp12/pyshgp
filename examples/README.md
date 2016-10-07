@@ -1,15 +1,9 @@
-# Interesting Problem Solutions
+## Interesting Problem Solutions
 
-## Odd
+### Odd
 
 ```
-CLOJUSH:
-(boolean_stackdepth exec_do*range (exec_if () (exec_empty code_null code_quote ())))
-(boolean_stackdepth code_stackdepth boolean_frominteger code_fromboolean exec_do*range (exec_when (boolean_empty code_empty)))
 
-PYSH:
-['_code_stack_depth', '_exec_do*range', ['_exec_empty', '_integer_yankdup']]
-['_exec_do*times', ['_integer_empty']]
 
 ```
 

@@ -43,8 +43,9 @@ class Pysh_Interpreter:
         elif pysh_type == '_input_instruction':
             input_output.handle_input_instruction(instruction, self.state)
         elif pysh_type == '_list':
-            instruction.reverse()
-            for i in instruction:
+            instruction_cpy = copy.deepcopy(instruction)
+            instruction_cpy.reverse()
+            for i in instruction_cpy:
                 self.state.stacks['_exec'].push_item(i)
         elif pysh_type == False:
             raise Exception("Attempted to evaluate " + str(instruction) + " of type " + str(type(instruction)) + ". It isn't an instruction string or literal.") 

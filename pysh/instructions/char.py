@@ -6,6 +6,7 @@ Created on 9/29/2016
 """
 from .. import pysh_state
 from .. import instruction as instr
+from .. import pysh_globals as g
 
 from . import registered_instructions
 
@@ -14,7 +15,8 @@ def char_all_from_string(state):
         char_list = state.stacks['_string'].stack_ref(0)[::-1]
         state.stacks['_string'].pop_item()
         for c in char_list:
-            state.stacks['_char'].push_item(c)
+            new_char = g.Character(c)
+            state.stacks['_char'].push_item(new_char)
 char_all_from_string_instruction = instr.Pysh_Instruction('char_all_from_string',
                                                           char_all_from_string,
                                                           stack_types = ['_string', '_char'])
@@ -28,6 +30,7 @@ registered_instructions.register_instruction(char_all_from_string_instruction)
 def char_from_integer(state):
     if len(state.stacks['_integer']) > 0:
         new_char = chr(state.stacks['_integer'].stack_ref(0) % 128)
+        new_char = g.Character(new_char)
         state.stacks['_integer'].pop_item()
         state.stacks['_char'].push_item(new_char)
 char_from_integer_instruction = instr.Pysh_Instruction('char_from_integer',
@@ -41,8 +44,9 @@ registered_instructions.register_instruction(char_from_integer_instruction)
 
 
 def char_from_float(state):
-    if len(state.stack['_float']) > 0:
+    if len(state.stacks['_float']) > 0:
         new_char = chr(int(state.stacks['_float'].stack_ref(0)) % 128)
+        new_char = g.Character(new_char)
         state.stacks['_float'].pop_item()
         state.stacks['_char'].push_item(new_char)
 char_from_float_instruction = instr.Pysh_Instruction('char_from_float',
@@ -56,8 +60,9 @@ registered_instructions.register_instruction(char_from_float_instruction)
 
 
 def char_is_letter(state):
-    if len(state.stack['_char']) > 0:
-        new_bool = chr.isalpha(state.stack['_char'].stack_ref(0))
+    if len(state.stacks['_char']) > 0:
+        top_char = state.stacks['_char'].stack_ref(0).char
+        new_bool = top_char.isalpha()
         state.stacks['_char'].pop_item()
         state.stacks['_boolean'].push_item(new_bool)
 char_is_letter_instruction = instr.Pysh_Instruction('char_is_letter',
@@ -71,8 +76,9 @@ registered_instructions.register_instruction(char_is_letter_instruction)
 
 
 def char_is_digit(state):
-    if len(state.stack['_char']) > 0:
-        new_bool = chr.isdigit(state.stack['_char'].stack_ref(0))
+    if len(state.stacks['_char']) > 0:
+        top_char = state.stacks['_char'].stack_ref(0).char
+        new_bool = top_char.isdigit()
         state.stacks['_char'].pop_item()
         state.stacks['_boolean'].push_item(new_bool)
 char_is_digit_instruction = instr.Pysh_Instruction('char_is_digit',
@@ -86,13 +92,14 @@ registered_instructions.register_instruction(char_is_digit_instruction)
 
 
 def char_is_white_space(state):
-    if len(state.stack['_char']) > 0:
-        new_bool = chr.isspace(state.stack['_char'].stack_ref(0))
+    if len(state.stacks['_char']) > 0:
+        top_char = state.stacks['_char'].stack_ref(0).char
+        new_bool = top_char.isspace()
         state.stacks['_char'].pop_item()
         state.stacks['_boolean'].push_item(new_bool)
 char_is_white_space_instruction = instr.Pysh_Instruction('char_is_white_space',
-                                                        char_is_white_space,
-                                                        stack_types = ['_boolean', '_char'])
+                                                         char_is_white_space,
+                                                         stack_types = ['_boolean', '_char'])
 registered_instructions.register_instruction(char_is_white_space_instruction)
 #<instr_open>
 #<instr_name>char_is_white_space

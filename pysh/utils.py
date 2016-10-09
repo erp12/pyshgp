@@ -50,6 +50,8 @@ def recognize_pysh_type(thing):
         return '_string'
     elif sys.version_info[0] == 2 and (type(thing) is str or type(thing) is unicode):
         return '_string'
+    elif type(thing) == g.Character:
+        return '_char'
     elif type(thing) is bool:
         return '_boolean'
     elif type(thing) is list:

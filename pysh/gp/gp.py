@@ -17,7 +17,7 @@ from .. import pysh_globals
 from .. import utils as u
 from .. import simplification as simp
 from .. import instruction as instr
-from ..instructions import boolean, code, common, numbers, string, input_output
+from ..instructions import boolean, char, code, common, numbers, string, input_output
 from ..instructions import registered_instructions 
 
 from . import individual
@@ -126,7 +126,6 @@ def init_executor(params):
         params["pool"] = Pool()
     else:
         params['pool'] = Pool(params["max_workers"])
-    #pass
 
 
 def load_program_from_list(lst, atom_generators = default_evolutionary_params["atom_generators"]):
@@ -136,7 +135,7 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
     """
     program = []
     for el in lst:
-        if type(el) == int or type(el) == float or type(el) == bool:
+        if type(el) == int or type(el) == float or type(el) == bool or type(el) == pysh_globals.Character:
             program.append(el)
         elif (sys.version_info[0] == 3 and (type(el) is str or type(el) is bytes)) or (sys.version_info[0] == 2 and (type(el) is str or type(el) is unicode)):
             el = str(el)

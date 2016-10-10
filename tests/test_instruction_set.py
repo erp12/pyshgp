@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals 
 
 import pysh.pysh_interpreter as interp
+import pysh.pysh_globals as g
 from pysh.instructions import boolean, char, code, common, numbers, string, input_output
 from pysh.instructions import registered_instructions as ri
 
@@ -155,7 +156,194 @@ if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+print("Testing boolean_from_float")
+i.reset_pysh_state()
+prog = [1.0, ri.get_instruction_by_name('boolean_from_float')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [0.0, ri.get_instruction_by_name('boolean_from_float')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == False
+
+i.reset_pysh_state()
+prog = [-2.5, ri.get_instruction_by_name('boolean_from_float')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+print("Testing char_all_from_string")
+i.reset_pysh_state()
+prog = ['', ri.get_instruction_by_name('char_all_from_string')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_string']) == 1
+assert i.state.stacks['_string'].top_item() == ''
+
+i.reset_pysh_state()
+prog = ["pysh", ri.get_instruction_by_name('char_all_from_string')]
+i.run_push(prog)
+if not i.state.size() == 4:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 4." % i.state.size())
+assert len(i.state.stacks['_char']) == 4
+assert len(i.state.stacks['_string']) == 0
+assert i.state.stacks['_char'].top_item().char == 'h'
+
+i.reset_pysh_state()
+prog = ['\n', ri.get_instruction_by_name('char_all_from_string')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 1
+assert len(i.state.stacks['_string']) == 0
+assert i.state.stacks['_char'].top_item().char == '\n'
+
+
+print("Testing char_from_integer")
+i.reset_pysh_state()
+prog = [7, ri.get_instruction_by_name('char_from_integer')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 1
+assert len(i.state.stacks['_integer']) == 0
+assert i.state.stacks['_char'].top_item().char == '7'
+
+
+print("Testing char_from_float")
+i.reset_pysh_state()
+prog = [7.5, ri.get_instruction_by_name('char_from_float')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 1
+assert len(i.state.stacks['_float']) == 0
+assert i.state.stacks['_char'].top_item().char == '7'
+
+
+print("Testing char_is_letter")
+i.reset_pysh_state()
+prog = [g.Character('G'), ri.get_instruction_by_name('char_is_letter')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [g.Character('7'), ri.get_instruction_by_name('char_is_letter')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+i.reset_pysh_state()
+prog = [g.Character('\n'), ri.get_instruction_by_name('char_is_letter')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+
+print("Testing char_is_digit")
+i.reset_pysh_state()
+prog = [g.Character('G'), ri.get_instruction_by_name('char_is_digit')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+i.reset_pysh_state()
+prog = [g.Character('7'), ri.get_instruction_by_name('char_is_digit')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [g.Character('\n'), ri.get_instruction_by_name('char_is_digit')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+
+print("Testing char_is_white_space")
+i.reset_pysh_state()
+prog = [g.Character('G'), ri.get_instruction_by_name('char_is_white_space')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+i.reset_pysh_state()
+prog = [g.Character('7'), ri.get_instruction_by_name('char_is_white_space')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+i.reset_pysh_state()
+prog = [g.Character('\n'), ri.get_instruction_by_name('char_is_white_space')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+
+
+
+
 
 
 

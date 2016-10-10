@@ -7,8 +7,5 @@ dependencies:
     - python3.5 setup.py install
 test:
   override:
-    - python
-    parallel: true
-    files:
-      - 2.7 ./tests/test_instruction_set.py
-      - 3.5 ./tests/test_instruction_set.py
+    - case $CIRCLE_NODE_INDEX in 0) python2.7 ;; 1) python3.5 ;; ./tests/test_instruction_set.py:
+      parallel: true

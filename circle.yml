@@ -7,5 +7,7 @@ dependencies:
     - python3.5 setup.py install
 test:
   override:
-    - python2.7 ./tests/test_instruction_set.py
-    - python3.5 ./tests/test_instruction_set.py
+    parallel: true
+    files:
+      - python2.7 ./tests/test_instruction_set.py
+      - python3.5 ./tests/test_instruction_set.py

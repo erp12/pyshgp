@@ -196,7 +196,7 @@ if not i.state.size() == 0:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 0." % i.state.size())
 assert len(i.state.stacks['_char']) == 0
-assert len(i.state.stacks['_string']) == 1
+assert len(i.state.stacks['_string']) == 0
 assert i.state.stacks['_string'].top_item() == ''
 
 i.reset_pysh_state()

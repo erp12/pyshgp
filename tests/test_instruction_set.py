@@ -206,7 +206,7 @@ if not i.state.size() == 4:
     raise Exception("State has %r items. Should be 4." % i.state.size())
 assert len(i.state.stacks['_char']) == 4
 assert len(i.state.stacks['_string']) == 0
-assert i.state.stacks['_char'].top_item().char == 'h'
+assert i.state.stacks['_char'].top_item().char == 'p'
 
 i.reset_pysh_state()
 prog = ['\n', ri.get_instruction_by_name('char_all_from_string')]

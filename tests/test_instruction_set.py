@@ -10,16 +10,18 @@ i = interp.Pysh_Interpreter()
 
 
 print("Testing boolean_and")
+i.reset_pysh_state()
 prog = [True, False, ri.get_instruction_by_name('boolean_and')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == False
 
+i.reset_pysh_state()
 prog = [True, True, ri.get_instruction_by_name('boolean_and')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
@@ -28,16 +30,18 @@ assert i.state.stacks['_boolean'].top_item() == True
 
 
 print("Testing boolean_or")
+i.reset_pysh_state()
 prog = [True, False, ri.get_instruction_by_name('boolean_or')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == True
 
+i.reset_pysh_state()
 prog = [False, False, ri.get_instruction_by_name('boolean_or')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
@@ -46,16 +50,18 @@ assert i.state.stacks['_boolean'].top_item() == False
 
 
 print("Testing boolean_not")
+i.reset_pysh_state()
 prog = [True, ri.get_instruction_by_name('boolean_not')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == False
 
+i.reset_pysh_state()
 prog = [False, ri.get_instruction_by_name('boolean_not')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
@@ -64,16 +70,18 @@ assert i.state.stacks['_boolean'].top_item() == True
 
 
 print("Testing boolean_xor")
+i.reset_pysh_state()
 prog = [True, False, ri.get_instruction_by_name('boolean_xor')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == True
 
+i.reset_pysh_state()
 prog = [True, True, ri.get_instruction_by_name('boolean_xor')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
@@ -82,16 +90,18 @@ assert i.state.stacks['_boolean'].top_item() == False
 
 
 print("Testing boolean_invert_first_then_and")
+i.reset_pysh_state()
 prog = [True, False, ri.get_instruction_by_name('boolean_invert_first_then_and')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == True
 
+i.reset_pysh_state()
 prog = [True, True, ri.get_instruction_by_name('boolean_invert_first_then_and')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
@@ -100,16 +110,18 @@ assert i.state.stacks['_boolean'].top_item() == False
 
 
 print("Testing boolean_invert_second_then_and")
+i.reset_pysh_state()
 prog = [False, True, ri.get_instruction_by_name('boolean_invert_second_then_and')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == True
 
+i.reset_pysh_state()
 prog = [True, True, ri.get_instruction_by_name('boolean_invert_second_then_and')]
-result = i.run_push(prog)
+i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
@@ -117,6 +129,33 @@ assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == False
 
 
+print("Testing boolean_from_integer")
+i.reset_pysh_state()
+prog = [1, ri.get_instruction_by_name('boolean_from_integer')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [0, ri.get_instruction_by_name('boolean_from_integer')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+i.reset_pysh_state()
+prog = [-5, ri.get_instruction_by_name('boolean_from_integer')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
 
 
 

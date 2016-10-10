@@ -38,20 +38,17 @@ def iris_error_func(program, print_trace = False):
 		# Run program
 		interpreter.run_push(program, print_trace)
 		# Get output
-		top_int = interpreter.state.stacks["_integer"].stack_ref(0)
+		top_float = interpreter.state.stacks["_float"].stack_ref(0)
 
-		if type(top_int) == int:
-			if top_int == row['Species']:
-				errors.append(0)
-			else:
-				errors.append(1)
+		if type(top_float) == float:
+			errors.append(abs(top_float - row['Species']))
 		else:
 			errors.append(1000)
 
 	return errors
 
 iris_params = {
-	"error_threshold" : 3,
+	"error_threshold" : 3, # Single decision tree tends to have an error of 6
 	"population_size" : 1000,
 	"atom_generators" : u.merge_dicts(ri.registered_instructions,
 					                  {"f1" : lambda: random.randint(0, 100),
@@ -60,7 +57,11 @@ iris_params = {
 									   "_input2" : instr.Pysh_Input_Instruction("_input2"),
 									   "_input3" : instr.Pysh_Input_Instruction("_input3"),
 									   "_input4" : instr.Pysh_Input_Instruction("_input4"),
-									  }),	
+									  }),
+	"genetic_operator_probabilities" : {"alternation" : 0.3,
+                                        "uniform_mutation" : 0.3,
+                                        "alternation & uniform_mutation" : 0.3,
+                                        "uniform_close_mutation" : 0.1},
     "selection_method" : "lexicase",
 	"uniform_mutation_constant_tweak_rate" : 0.1,
 	"uniform_mutation_float_gaussian_standard_deviation" : 0.1

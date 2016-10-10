@@ -16,7 +16,7 @@ import pysh.instruction as instr
 import pysh.pysh_interpreter as interp
 from pysh.instructions import registered_instructions as ri
 
-credit_data = pd.read_csv("data/credit_approval.csv")
+credit_data = pd.read_csv("data/credit.csv")
 train_inds = np.random.rand(len(credit_data)) < 0.8
 training_set = credit_data[train_inds]
 testing_set = credit_data[~train_inds]
@@ -49,13 +49,10 @@ def credit_error_func(program):
 		# Run program
 		interpreter.run_push(program)
 		# Get output
-		top_bool = interpreter.state.stacks["_boolean"].stack_ref(0)
+		top_float = interpreter.state.stacks["_float"].stack_ref(0)
 
-		if type(top_bool) == bool:
-			if top_bool == row['V16']:
-				errors.append(0)
-			else:
-				errors.append(1)
+		if type(top_float) == float:
+			errors.append(abs(row['V15'] - top_float))
 		else:
 			errors.append(1000)
 
@@ -83,7 +80,7 @@ credit_params = {
 									   "_input14" : instr.Pysh_Input_Instruction("_input14"),
 									   "_input15" : instr.Pysh_Input_Instruction("_input15"),
 									  }),	
-    "selection_method" : "lexicase_selection",
+    "selection_method" : "lexicase",
 	"uniform_mutation_constant_tweak_rate" : 0.1,
 	"uniform_mutation_float_gaussian_standard_deviation" : 0.1
 }

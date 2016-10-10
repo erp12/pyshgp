@@ -192,9 +192,9 @@ print("Testing char_all_from_string")
 i.reset_pysh_state()
 prog = ['', ri.get_instruction_by_name('char_all_from_string')]
 i.run_push(prog)
-if not i.state.size() == 1:
+if not i.state.size() == 0:
     i.state.pretty_print()
-    raise Exception("State has %r items. Should be 1." % i.state.size())
+    raise Exception("State has %r items. Should be 0." % i.state.size())
 assert len(i.state.stacks['_char']) == 0
 assert len(i.state.stacks['_string']) == 1
 assert i.state.stacks['_string'].top_item() == ''

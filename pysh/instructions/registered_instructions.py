@@ -46,3 +46,5 @@ class instruction_looker_upper():
 
 	def __repr__(self):
 		return self.instruction_name[1:] + "_LOOKUP"
+
+

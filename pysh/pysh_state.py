@@ -24,6 +24,16 @@ class Pysh_State:
         self.stacks = {}
         for t in g.pysh_types:
             self.stacks[t] = pysh_stack.Pysh_Stack(t)
+
+    def size(self):
+        # Count items in stacks
+        i = 0
+        for stack in self.stacks.values():
+            i += len(stack)
+        # if output stack exists, subtract 1 from total
+        if '_output' in self.stacks.keys():
+            i -= 1
+        return i
     
     def pretty_print(self):
         '''

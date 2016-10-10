@@ -238,6 +238,11 @@ def test_and_train_data_from_domains(domains):
 
     return [train_set, test_set]
 
-
+def int_to_char(i):
+    '''
+    A way to convert ints to chars and only get human readable chars
+    '''
+    i = (i + 32) % 128
+    return chr(i)
 
 

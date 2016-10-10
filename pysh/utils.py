@@ -238,6 +238,8 @@ def test_and_train_data_from_domains(domains):
 
     return [train_set, test_set]
 
-
+def int_to_char(i):
+    i = (i + 32) % 128
+    return chr(i)
 
 

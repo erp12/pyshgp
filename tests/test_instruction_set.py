@@ -197,7 +197,6 @@ if not i.state.size() == 0:
     raise Exception("State has %r items. Should be 0." % i.state.size())
 assert len(i.state.stacks['_char']) == 0
 assert len(i.state.stacks['_string']) == 0
-assert i.state.stacks['_string'].top_item() == ''
 
 i.reset_pysh_state()
 prog = ["pysh", ri.get_instruction_by_name('char_all_from_string')]

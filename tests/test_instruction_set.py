@@ -221,26 +221,26 @@ assert i.state.stacks['_char'].top_item().char == '\n'
 
 print("Testing char_from_integer")
 i.reset_pysh_state()
-prog = [7, ri.get_instruction_by_name('char_from_integer')]
+prog = [97, ri.get_instruction_by_name('char_from_integer')]
 i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_char']) == 1
 assert len(i.state.stacks['_integer']) == 0
-assert i.state.stacks['_char'].top_item().char == '7'
+assert i.state.stacks['_char'].top_item().char == 'a'
 
 
 print("Testing char_from_float")
 i.reset_pysh_state()
-prog = [7.5, ri.get_instruction_by_name('char_from_float')]
+prog = [97.8, ri.get_instruction_by_name('char_from_float')]
 i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_char']) == 1
 assert len(i.state.stacks['_float']) == 0
-assert i.state.stacks['_char'].top_item().char == '7'
+assert i.state.stacks['_char'].top_item().char == 'a'
 
 
 print("Testing char_is_letter")

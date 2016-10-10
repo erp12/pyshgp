@@ -95,8 +95,8 @@ default_evolutionary_params = {
                        "smallest_genome_size" : True,
                        "largest_genome_size" : True,
                        "unique_program_count" : True,
-                       "unique_error_vectors" : True
-                       },
+                       "unique_error_vectors" : True,
+                       "best_program_by_total_error" : True},
 
 # End of run plots
 "reports" : {"timings" : True,

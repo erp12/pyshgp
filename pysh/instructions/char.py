@@ -30,7 +30,7 @@ registered_instructions.register_instruction(char_all_from_string_instruction)
 
 def char_from_integer(state):
     if len(state.stacks['_integer']) > 0:
-        new_char = chr(state.stacks['_integer'].stack_ref(0))
+        new_char = chr(state.stacks['_integer'].stack_ref(0) % 128)
         new_char = g.Character(new_char)
         state.stacks['_integer'].pop_item()
         state.stacks['_char'].push_item(new_char)

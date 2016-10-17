@@ -45,7 +45,7 @@ def iris_error_func(program, print_trace = False):
 		# Get output
 		class_votes = interpreter.state.stacks['_output'][1:]
 
-		if row['Species'] == class_votes.index(max(class_votes)):
+		if row['Species'] == class_votes.index(max(class_votes))+1:
 			errors.append(0)
 		else:
 			errors.append(1)

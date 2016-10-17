@@ -16,11 +16,11 @@ from . import registered_instructions as ri
 
 def handle_input_instruction(instruction, state):
 	'''
-	Allows Push to handle inN instructions, e.g. in2, using things from the input
-	stack. We can tell whether a particular inN instruction is valid if N-1
+	Allows Push to handle _inputN instructions, e.g. _inputN, using things from the input
+	stack. We can tell whether a particular _inputN instruction is valid if N-1
 	values are on the input stack.
 	'''
-	input_depth = int(instruction.name.split("input")[1]) - 1
+	input_depth = int(instruction.input_index)
 	input_value = state.stacks['_input'].stack_ref(input_depth)
 	pysh_type = u.recognize_pysh_type(input_value)
 
@@ -30,6 +30,17 @@ def handle_input_instruction(instruction, state):
 		state.stacks['_exec'].push_item(input_value)
 	else:
 		state.stacks[pysh_type].push_item(input_value)
+
+def handle_class_instruction(instruction, state):
+	'''
+	
+	'''
+	if len(state.stacks[instruction.vote_stack]) > 0:
+		class_index = int(instruction.class_id)
+		vote_value = state.stacks[instruction.vote_stack].stack_ref(0)
+		state.stacks[instruction.vote_stack].pop_item()
+		state.stacks['_output'][class_index] += vote_value
+
 
 def printer(pysh_type):
 	'''

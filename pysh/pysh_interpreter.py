@@ -41,6 +41,8 @@ class Pysh_Interpreter:
             instruction.func(self.state)
         elif pysh_type == '_input_instruction':
             input_output.handle_input_instruction(instruction, self.state)
+        elif pysh_type == '_class_instruction':
+            input_output.handle_class_instruction(instruction, self.state)
         elif pysh_type == '_list':
             instruction_cpy = copy.deepcopy(instruction)
             instruction_cpy.reverse()

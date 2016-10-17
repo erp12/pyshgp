@@ -46,7 +46,7 @@ def delete_prev_paren_pair(prog):
 	new_prog.reverse()
 	return new_prog
 
-def translate_plush_genome_to_push_program(genome, max_points):
+def translate_plush_genome_to_push_program(genome, max_points, atom_generators = None):
 	'''
 	Takes as input of a Plush genome and translates it to the correct Push program with
 	balanced parens. The linear Plush genome is made up of a list of instruction
@@ -90,8 +90,8 @@ def translate_plush_genome_to_push_program(genome, max_points):
 		else:
 			instr = pl.plush_gene_get_instruction(gn[0])
 			if not pl.plush_gene_is_literal(gn[0]):
-				if instr[:6] == '_input':
-					instr = instruction.Pysh_Input_Instruction(instr)
+				if atom_generators != None and instr in atom_generators:
+					instr = atom_generators[instr]
 				else:
 					instr = ri.get_instruction_by_name(instr)
 

@@ -40,6 +40,8 @@ def recognize_pysh_type(thing):
     '''
     if type(thing) == instr.Pysh_Input_Instruction:
         return '_input_instruction'
+    elif type(thing) == instr.Pysh_Class_Instruction:
+        return '_class_instruction'
     elif type(thing) == instr.Pysh_Instruction:
         return '_instruction'
     elif type(thing) is int:
@@ -244,5 +246,4 @@ def int_to_char(i):
     '''
     i = (i + 32) % 128
     return chr(i)
-
 

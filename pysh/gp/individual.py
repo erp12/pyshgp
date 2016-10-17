@@ -20,16 +20,18 @@ class Individual:
 		self.genome = genome
 		#self.uuid = uuid.uuid4()
 		self.max_points = evo_params["max_points"]
-		self.program = tran.translate_plush_genome_to_push_program(genome, self.max_points)
 		self.errors = []
 		self.total_error = None
+		self.atom_generators = evo_params["atom_generators"]
+		self.program = tran.translate_plush_genome_to_push_program(genome, self.max_points, self.atom_generators)
+
 
 	def get_genome(self):
 		return self.genome
 
 	def set_genome(self, genome):
 		self.genome = genome
-		self.program = tran.translate_plush_genome_to_push_program(self.genome, self.max_points)
+		self.program = tran.translate_plush_genome_to_push_program(self.genome, self.max_points, self.atom_generators)
 
 	def get_program(self):
 		return self.program

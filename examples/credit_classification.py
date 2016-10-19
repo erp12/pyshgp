@@ -16,14 +16,18 @@ import pysh.instruction as instr
 import pysh.pysh_interpreter as interp
 from pysh.instructions import registered_instructions as ri
 
-credit_data = pd.read_csv("data/credit.csv")
+credit_data = pd.read_csv("data/credit.csv", )
 train_inds = np.random.rand(len(credit_data)) < 0.8
 training_set = credit_data[train_inds]
 testing_set = credit_data[~train_inds]
 
 
-def random_character_str():
+def random_one_character_str():
 	return random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+
+def random_two_character_str():
+	s = random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+	return s + random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 
 def credit_error_func(program):
 	errors = []
@@ -73,7 +77,8 @@ credit_params = {
 	"atom_generators" : u.merge_dicts(ri.registered_instructions,
 					                  {"f1" : lambda: random.randint(0, 100),
 									   "f2" : lambda: random.random(),
-									   "f3" : lambda: random_character_str(),
+									   "f3" : lambda: random_one_character_str(),
+									   "f4" : lambda: random_one_character_str(),
 									   # Inpput instructions
 									   "Input_1" : instr.Pysh_Input_Instruction(0),
 									   "Input_2" : instr.Pysh_Input_Instruction(1),
@@ -95,7 +100,11 @@ credit_params = {
 									   "Vote_1_integer" : instr.Pysh_Class_Instruction(1, '_integer'),
 									   "Vote_2_float"   : instr.Pysh_Class_Instruction(2, '_float'),
 									   "Vote_2_integer" : instr.Pysh_Class_Instruction(2, '_integer'),
-									  }),	
+									  }),
+	"genetic_operator_probabilities" : {"alternation" : 0.3,
+                                        "uniform_mutation" : 0.3,
+                                        "alternation & uniform_mutation" : 0.3,
+                                        "uniform_close_mutation" : 0.1},
     "selection_method" : "lexicase",
 	"uniform_mutation_constant_tweak_rate" : 0.1,
 	"uniform_mutation_float_gaussian_standard_deviation" : 0.1

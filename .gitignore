@@ -1,6 +1,5 @@
 *.pyc
 *.png
-*.csv
 
 build/
 *.egg-info

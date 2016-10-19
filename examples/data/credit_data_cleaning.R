@@ -5,17 +5,17 @@ library(glmnet)
 
 credit_df <- read.csv("credit_approval.csv", stringsAsFactors = T)
 
-smp_size <- floor(0.75 * nrow(credit_df))
-train_ind <- sample(seq_len(nrow(credit_df)), size = smp_size)
+# smp_size <- floor(0.75 * nrow(credit_df))
+# train_ind <- sample(seq_len(nrow(credit_df)), size = smp_size)
 
-train <- credit_df[train_ind, ]
-test <- credit_df[-train_ind, ]
-
-fit <- glm(V16~., train, family=binomial())
-
-p <- predict(fit, newdata = test, type = "response")
-pred <- prediction(p, test$V16)
-perf <- performance(pred,"tpr","fpr")
+# train <- credit_df[train_ind, ]
+# test <- credit_df[-train_ind, ]
+# 
+# fit <- glm(V16~., train, family=binomial())
+# 
+# p <- predict(fit, newdata = test, type = "response")
+# pred <- prediction(p, test$V16)
+# perf <- performance(pred,"tpr","fpr")
 
 
 par(mar=c(5,5,2,2),xaxs = "i",yaxs = "i",cex.axis=1.3,cex.lab=1.4)

@@ -6,6 +6,8 @@ Created on 5/50/2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import pathos.multiprocessing as mp
+
 import math
 import random
 
@@ -191,6 +193,9 @@ def produce_child(population, genetic_operators, evolutionary_params):
             raise Exception("Tried to perform unknown genetic operator " + str(op))
     return child
 
+def produce_n_children(n, population, genetic_operators, evolutionary_params):
+    return [produce_child(population, genetic_operators, evolutionary_params) for x in range(n)]
+
 def genetics(population, evolutionary_params):
     '''
     Returns the next generation (unevaluated)
@@ -200,12 +205,43 @@ def genetics(population, evolutionary_params):
     offspring = []
     # Calculate number of children that should be made from each genetic operator
     num_offspring_each_gen_op = dict([(k, int(round(evolutionary_params["genetic_operator_probabilities"][k] * evolutionary_params["population_size"]))) for k in evolutionary_params["genetic_operator_probabilities"]])
-   
-    # For each operator or operator combination
-    for op in num_offspring_each_gen_op.keys():
-        # For each child that should be made by `op`
-        for i in range(num_offspring_each_gen_op[op]):
-            offspring.append(produce_child(population, op, evolutionary_params))
+    
+    if evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1:
+        
+        # Have to figure out how to divide the population in to n groups while preserving gen op numbers.
+        jobs_n = []
+        jobs_ops = []
+
+        pool = evolutionary_params['pool']
+        aprox_num_individuals_per_job = int(evolutionary_params["population_size"] / (pool.ncpus - 1))
+
+        for op in num_offspring_each_gen_op.keys():
+            i = num_offspring_each_gen_op[op]
+            while i > 0:
+                if i < aprox_num_individuals_per_job:
+                    jobs_n.append(i)
+                    jobs_ops.append(op)
+                    i -= i
+                else:
+                    jobs_n.append(aprox_num_individuals_per_job)
+                    jobs_ops.append(op)
+                    i -= aprox_num_individuals_per_job
+
+        job_results = pool.map(produce_n_children, 
+                               jobs_n,
+                               [population]*len(jobs_n),
+                               jobs_ops,
+                               [evolutionary_params]*len(jobs_n))
+
+        for jr in job_results:
+            offspring += jr
+
+    else :
+        # For each operator or operator combination
+        for op in num_offspring_each_gen_op.keys():
+            # For each child that should be made by `op`
+            for i in range(num_offspring_each_gen_op[op]):
+                offspring.append(produce_child(population, op, evolutionary_params))
 
     return offspring
 

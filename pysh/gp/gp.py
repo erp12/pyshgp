@@ -17,7 +17,7 @@ from .. import pysh_globals
 from .. import utils as u
 from .. import simplification as simp
 from .. import instruction as instr
-from ..instructions import boolean, code, common, numbers, string, input_output
+from ..instructions import boolean, char, code, common, numbers, string, input_output
 from ..instructions import registered_instructions 
 
 from . import individual
@@ -95,8 +95,8 @@ default_evolutionary_params = {
                        "smallest_genome_size" : True,
                        "largest_genome_size" : True,
                        "unique_program_count" : True,
-                       "unique_error_vectors" : True
-                       },
+                       "unique_error_vectors" : True,
+                       "best_program_by_total_error" : True},
 
 # End of run plots
 "reports" : {"timings" : True,
@@ -126,7 +126,6 @@ def init_executor(params):
         params["pool"] = Pool()
     else:
         params['pool'] = Pool(params["max_workers"])
-    #pass
 
 
 def load_program_from_list(lst, atom_generators = default_evolutionary_params["atom_generators"]):
@@ -136,9 +135,9 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
     """
     program = []
     for el in lst:
-        if type(el) == int or type(el) == float or type(el) == bool:
+        if type(el) == int or type(el) == float or type(el) == bool or type(el) == pysh_globals.Character:
             program.append(el)
-        elif type(el) == str or type(el) == unicode:
+        elif (sys.version_info[0] == 3 and (type(el) is str or type(el) is bytes)) or (sys.version_info[0] == 2 and (type(el) is str or type(el) is unicode)):
             el = str(el)
             if el[:6] == "_input":
                 inpt_num = int(el[6:])
@@ -151,7 +150,6 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
                     program.append(el)
         elif type(el) == list:
             program.append(load_program_from_list(el))
-    print("Loaded Program: ", program)
     return program
 
 def generate_random_population(evolutionary_params):

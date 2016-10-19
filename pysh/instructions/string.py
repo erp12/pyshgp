@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from .. import pysh_state
 from .. import instruction as instr
 from .. import utils as u
+from .. import pysh_globals as g
 
 from . import registered_instructions
 
@@ -108,6 +109,9 @@ registered_instructions.register_instruction(string_tail_instruction)
 #<instr_desc>Pushed a string of the last i chars in s. i is top integer. s is top string.
 #<instr_close>
 
+## TODO: String first
+## TODO: String last
+
 def string_split_at_index(state):
     if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
         s = state.stacks['_string'].stack_ref(0)
@@ -129,8 +133,8 @@ string_split_at_index_instruction = instr.Pysh_Instruction('string_split_at_inde
 
 def string_split_at_str(state):
     if len(state.stacks['_string']) > 1:
-        split_on = state.stacks['_string'].stack_ref(1)
-        split_this = state.stacks['_string'].stack_ref(0)
+        split_on = state.stacks['_string'].stack_ref(0)
+        split_this = state.stacks['_string'].stack_ref(1)
         if split_on == "":
             new_strings = split_this
         else:
@@ -146,8 +150,31 @@ string_split_at_str_instruction = instr.Pysh_Instruction('string_split_at_str',
 registered_instructions.register_instruction(string_split_at_str_instruction)
 #<instr_open>
 #<instr_name>string_split_at_str
-#<instr_desc>Pushes 2 strings from top string being split on second string.
+#<instr_desc>Pushes all strings resulting from the second string being split on top string.
 #<instr_close>
+
+def string_split_at_char(state):
+    if len(state.stacks['_string']) > 0 and len(state.stacks['_char']) > 0:
+        split_on = state.stacks['_char'].stack_ref(0).char
+        split_this = state.stacks['_string'].stack_ref(0)
+        if split_on == "":
+            new_strings = split_this
+        else:
+            new_strings = split_this.split(split_on)
+        state.stacks['_string'].pop_item()
+        state.stacks['_char'].pop_item()
+        for s in new_strings:
+            state.stacks['_string'].push_item(s)
+    return state
+string_split_at_str_instruction = instr.Pysh_Instruction('string_split_at_char',
+                                                         string_split_at_char,
+                                                         stack_types = ['_string', '_char'])
+registered_instructions.register_instruction(string_split_at_str_instruction)
+#<instr_open>
+#<instr_name>string_split_at_char
+#<instr_desc>Pushes all strings resulting from the top `string` being split on top `char`.
+#<instr_close>
+
 
 
 def string_split_at_space(state):
@@ -206,17 +233,17 @@ def string_char_at(state):
     if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
         s = state.stacks['_string'].stack_ref(0)
         if len(s) == 0:
-            c = ''
+            return
         else:
             i = state.stacks['_integer'].stack_ref(0) % len(s)
             c = s[i]
         state.stacks['_string'].pop_item()
         state.stacks['_integer'].pop_item()
-        state.stacks['_string'].push_item(c)
+        state.stacks['_char'].push_item(g.Character(c))
     return state
 string_char_at_instruction = instr.Pysh_Instruction('string_char_at',
-                                                                string_char_at,
-                                                                stack_types = ['_string', '_integer'])
+                                                    string_char_at,
+                                                    stack_types = ['_string', '_integer', '_char'])
 registered_instructions.register_instruction(string_char_at_instruction)
 #<instr_open>
 #<instr_name>string_char_at
@@ -292,7 +319,8 @@ registered_instructions.register_instruction(string_replace_instruction)
 
 def string_from_char(state):
     if len(state.stacks['_char']) > 0:
-        new_string = str(state.stacks['_char'].stack_ref(0))
+        top_char = state.stacks['_char'].stack_ref(0)
+        new_string = str(top_char.char)
         state.stacks['_char'].pop_item()
         state.stacks['_string'].push_item(new_string)
 string_from_char_instruction = instr.Pysh_Instruction('string_from_char',
@@ -307,7 +335,7 @@ registered_instructions.register_instruction(string_from_char_instruction)
 
 def string_append_char(state):
     if len(state.stacks['_char']) > 0 and len(state.stacks['_string']) > 0:
-        new_string =  state.stacks['_string'].stack_ref(0) + state.stacks['_char'].stack_ref(0)
+        new_string =  state.stacks['_string'].stack_ref(0) + state.stacks['_char'].stack_ref(0).char
         state.stacks['_char'].pop_item()
         state.stacks['_string'].pop_item()
         state.stacks['_string'].push_item(new_string)
@@ -324,6 +352,7 @@ registered_instructions.register_instruction(string_append_char_instruction)
 def string_first(state):
     if len(state.stacks['_string']) > 0 and len(state.stacks['_string'].stack_ref(0)) > 0:
         new_char = state.stacks['_string'].stack_ref(0)[0]
+        new_char = g.Character(new_char)
         state.stacks['_string'].pop_item()
         state.stacks['_char'].push_item(new_char)
 string_first_instruction = instr.Pysh_Instruction('string_first',
@@ -339,6 +368,7 @@ registered_instructions.register_instruction(string_first_instruction)
 def string_last(state):
     if len(state.stacks['_string']) > 0 and len(state.stacks['_string'].stack_ref(0)) > 0:
         new_char = state.stacks['_string'].stack_ref(0)[-1]
+        new_char = g.Character(new_char)
         state.stacks['_string'].pop_item()
         state.stacks['_char'].push_item(new_char)
 string_last_instruction = instr.Pysh_Instruction('string_last',
@@ -351,12 +381,12 @@ registered_instructions.register_instruction(string_last_instruction)
 #<instr_close> 
 
 
-
 def string_nth(state):
     if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0 and len(state.stacks['_string'].stack_ref(0)) > 0:
         top_str = state.stacks['_string'].stack_ref(0)
         index = state.stacks['_integer'].stack_ref(0) % len(top_str)
         new_char = top_str[index]
+        new_char = g.Character(new_char)
         state.stacks['_string'].pop_item()
         state.stacks['_integer'].pop_item()
         state.stacks['_char'].push_item(new_char)
@@ -374,12 +404,14 @@ registered_instructions.register_instruction(string_nth_instruction)
 ## string_indexofchar
 ## string_occurrencesofchar
 
+
 def string_replace_char(state):
     if len(state.stacks['_string']) > 0 and len(state.stacks['_char']) > 1:
         top_str = state.stacks['_string'].stack_ref(0)
-        new_str = top_str.replace(state.stacks['_char'].stack_ref(1), state.stacks['_char'].stack_ref(0))
+        new_str = top_str.replace(state.stacks['_char'].stack_ref(1).char, state.stacks['_char'].stack_ref(0).char)
         state.stacks['_char'].pop_item()
         state.stacks['_char'].pop_item()
+        state.stacks['_string'].pop_item()
         state.stacks['_string'].push_item(new_str)
 string_replace_char_instruction = instr.Pysh_Instruction('string_replace_char',
                                                          string_replace_char,
@@ -394,20 +426,38 @@ registered_instructions.register_instruction(string_replace_char_instruction)
 def string_replace_first_char(state):
     if len(state.stacks['_string']) > 0 and len(state.stacks['_char']) > 1:
         top_str = state.stacks['_string'].stack_ref(0)
-        new_str = top_str.replace(state.stacks['_char'].stack_ref(1), state.stacks['_char'].stack_ref(0), 1)
+        new_str = top_str.replace(state.stacks['_char'].stack_ref(1).char, state.stacks['_char'].stack_ref(0).char, 1)
         state.stacks['_char'].pop_item()
         state.stacks['_char'].pop_item()
+        state.stacks['_string'].pop_item()
         state.stacks['_string'].push_item(new_str)
 string_replace_first_char_instruction = instr.Pysh_Instruction('string_replace_first_char',
                                                                string_replace_first_char,
                                                                stack_types = ['_string', '_char'])
 registered_instructions.register_instruction(string_replace_first_char_instruction)
 #<instr_open>
-#<instr_name>string_replace_first_char_instruction
+#<instr_name>string_replace_first_char
 #<instr_desc>Pushes the top `string` with the first occurence of second `char` replaced with the top `char`.
 #<instr_close> 
 
-## string_removechar
+
+def string_remove_char(state):
+    if len(state.stacks['_string']) > 0 and len(state.stacks['_char']) > 0:
+        top_str = state.stacks['_string'].stack_ref(0)
+        new_str = top_str.replace(state.stacks['_char'].stack_ref(0).char, '')
+        state.stacks['_char'].pop_item()
+        state.stacks['_string'].pop_item()
+        state.stacks['_string'].push_item(new_str)
+string_remove_char_instruction = instr.Pysh_Instruction('string_remove_char',
+                                                        string_remove_char,
+                                                        stack_types = ['_string', '_char'])
+registered_instructions.register_instruction(string_remove_char_instruction)
+#<instr_open>
+#<instr_name>string_remove_char
+#<instr_desc>Pushes the top `string` with all occurences of top `char` removed.
+#<instr_close> 
+
+
 ## string_setchar
 ## exec_string_iterate
 

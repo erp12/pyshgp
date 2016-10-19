@@ -1,0 +1,11 @@
+machine:
+  post:
+    - pyenv global 2.7.12 3.5.2
+dependencies:
+  post:
+    - python2.7 setup.py install
+    - python3.5 setup.py install
+test:
+  override:
+    - python2.7 ./tests/test_instruction_set.py
+    - python3.5 ./tests/test_instruction_set.py

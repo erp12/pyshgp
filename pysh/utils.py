@@ -40,6 +40,8 @@ def recognize_pysh_type(thing):
     '''
     if type(thing) == instr.Pysh_Input_Instruction:
         return '_input_instruction'
+    elif type(thing) == instr.Pysh_Class_Instruction:
+        return '_class_instruction'
     elif type(thing) == instr.Pysh_Instruction:
         return '_instruction'
     elif type(thing) is int:
@@ -50,6 +52,8 @@ def recognize_pysh_type(thing):
         return '_string'
     elif sys.version_info[0] == 2 and (type(thing) is str or type(thing) is unicode):
         return '_string'
+    elif type(thing) == g.Character:
+        return '_char'
     elif type(thing) is bool:
         return '_boolean'
     elif type(thing) is list:
@@ -236,6 +240,10 @@ def test_and_train_data_from_domains(domains):
 
     return [train_set, test_set]
 
-
-
+def int_to_char(i):
+    '''
+    A way to convert ints to chars and only get human readable chars
+    '''
+    i = (i + 32) % 128
+    return chr(i)
 

@@ -468,7 +468,7 @@ registered_instructions.register_instruction(int_from_boolean_instrc)
 
 def integer_from_char(state):
     if len(state.stacks['_char']) > 0:
-        item = ord(state.stacks['_char'].stack_ref(0))
+        item = ord(state.stacks['_char'].stack_ref(0).char)
         state.stacks['_char'].pop_item()
         state.stacks['_integer'].push_item(item)
 integer_from_char_instrc = instr.Pysh_Instruction('integer_from_char',
@@ -529,7 +529,7 @@ registered_instructions.register_instruction(int_from_boolean_instrc)
 
 def float_from_char(state):
     if len(state.stacks['_char']) > 0:
-        item = float(ord(state.stacks['_char'].stack_ref(0)))
+        item = float(ord(state.stacks['_char'].stack_ref(0).char))
         state.stacks['_char'].pop_item()
         state.stacks['_float'].push_item(item)
 float_from_char_instrc = instr.Pysh_Instruction('float_from_char',

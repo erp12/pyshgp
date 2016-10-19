@@ -1,58 +1,32 @@
-# Interesting Problem Solutions
+## Interesting Problem Solutions
 
-## Odd
+### Odd
 
 ```
-CLOJUSH:
-(boolean_stackdepth exec_do*range (exec_if () (exec_empty code_null code_quote ())))
-(boolean_stackdepth code_stackdepth boolean_frominteger code_fromboolean exec_do*range (exec_when (boolean_empty code_empty)))
 
-PYSH:
-['_code_stack_depth', '_exec_do*range', ['_exec_empty', '_integer_yankdup']]
-['_exec_do*times', ['_integer_empty']]
 
+```
+
+### Iris
+
+```
+# Error of 3
+[0.5805125769239845, _input0_INPT_INSTR, vote2_float_CLASS_INSTR, _input0_INPT_INSTR, vote2_float_CLASS_INSTR, float_inc_INSTR, vote1_float_CLASS_INSTR, _input0_INPT_INSTR, 0.9650029510267347, vote2_float_CLASS_INSTR, vote1_float_CLASS_INSTR]
+
+# Error of 1
 ```
 
 
 ## Computational Timings
 
-### STRING
+### Iris With 8 Workers
 
-#### With concurrent
-
-Average Evaluation Timing of Generation: 1.59
-Average Selection/Variations Timing of Generation: 0.53
-
-#### Without Concurrent
-
-Average Evaluation Timing of Generation: 0.974
-Average Selection/Variations Timing of Generation: 0.389
-
-
-### INTEGER REGRESSION (50 test cases)
-
-#### With concurrent
-
-Average Evaluation Timing of Generation: 2.396
-Average Selection/Variations Timing of Generation: 1.681
-
-#### Without Concurrent
-
-Average Evaluation Timing of Generation: 4.681
-Average Selection/Variations Timing of Generation: 1.563
-
-
-### RSWN
-
-#### With concurrent
-
-Average Evaluation Timing of Generation: 17.376
-Average Selection/Variations Timing of Generation: 3.265
-
-#### Without concurrent
-
-Average Evaluation Timing of Generation: 31.837
-Average Selection/Variations Timing of Generation: 3.575
+```
+Evaluation Times (each gen): [64.735, 95.176, 81.068, 85.371, 117.684]
+Selection/Variations Times (each gen): [3.589, 4.748, 10.568, 5.424]
+Average Evaluation Timing of Generation: 88.807
+Average Selection/Variations Timing of Generation: 6.082
+```
 
 #### Solutions
 

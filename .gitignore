@@ -2,6 +2,10 @@
 *.png
 *.csv
 
+build/
+*.egg-info
+*.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

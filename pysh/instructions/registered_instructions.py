@@ -21,7 +21,7 @@ def register_instruction(instruction):
 	if instruction.name in registered_instructions:
 		warnings.warn('Duplicate instructions registered: ' + instruction.name + '. Duplicate ignored.')
 	else:
-		registered_instructions[instruction.name] = instruction
+		registered_instructions[str(instruction.name)] = instruction
 
 
 def get_instruction_by_name(name):
@@ -46,3 +46,5 @@ class instruction_looker_upper():
 
 	def __repr__(self):
 		return self.instruction_name[1:] + "_LOOKUP"
+
+

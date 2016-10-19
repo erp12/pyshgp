@@ -16,7 +16,27 @@ pysh_types = ["_exec",
               "_boolean",
               "_code",
               "_input",
-              "_output"]          
+              "_output"]    
+
+class Character(object):
+    '''
+    Holds a string of length 1. Used to distinguish between string and
+    char literals in Push program interpretation.
+    '''
+    def __init__(self, char):
+        if len(char) == 0:
+            raise Exception("Connot have empty string for a Character")
+        if len(char) > 1:
+            raise Exception("String " + char + " is too long to be a Character")
+        self.char = char
+
+    def __repr__(self):
+        if self.char == '\n':
+          return 'c_newline'
+        if self.char == ' ':
+          return 'c_space'
+        return "c_" + self.char
+
               
 # These definitions are used by instructions to keep computed values within limits
 # or when using random instructions.

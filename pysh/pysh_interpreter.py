@@ -12,7 +12,6 @@ import copy # <- This one is actually needed.
 
 from . import pysh_state
 from . import utils
-from . import pysh_random
 from . import pysh_globals as g
 from .instructions import boolean, code, common, input_output, numbers, string
 from .instructions import registered_instructions
@@ -42,9 +41,12 @@ class Pysh_Interpreter:
             instruction.func(self.state)
         elif pysh_type == '_input_instruction':
             input_output.handle_input_instruction(instruction, self.state)
+        elif pysh_type == '_class_instruction':
+            input_output.handle_class_instruction(instruction, self.state)
         elif pysh_type == '_list':
-            instruction.reverse()
-            for i in instruction:
+            instruction_cpy = copy.deepcopy(instruction)
+            instruction_cpy.reverse()
+            for i in instruction_cpy:
                 self.state.stacks['_exec'].push_item(i)
         elif pysh_type == False:
             raise Exception("Attempted to evaluate " + str(instruction) + " of type " + str(type(instruction)) + ". It isn't an instruction string or literal.") 

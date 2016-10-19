@@ -45,10 +45,10 @@ def odd_error_func(program, debug = False):
 	return errors
 
 odd_params = {
-	"atom_generators" : u.merge_dicts(registered_instructions.registered_instructions,			# Use all possible instructions,
-					                  {"f1" : lambda: random.randint(0, 100),					# and some integers
-									   "f2" : lambda: random.random(),							# and some floats
-									   "_input1" : instr.Pysh_Input_Instruction("_input1")})	# and an input instruction that pushes the input to the _integer stack.
+	"atom_generators" : u.merge_dicts(registered_instructions.registered_instructions,	# Use all possible instructions,
+					                  {"f1" : lambda: random.randint(0, 100),			# and some integers
+									   "f2" : lambda: random.random(),					# and some floats
+									   "Input" : instr.Pysh_Input_Instruction(0)})	    # and an input instruction that pushes the input to the _integer stack.
 }
 
 def test_odd_solution():

@@ -21,6 +21,10 @@ train_inds = np.random.rand(len(credit_data)) < 0.8
 training_set = credit_data[train_inds]
 testing_set = credit_data[~train_inds]
 
+
+def random_character_str():
+	return random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+
 def credit_error_func(program):
 	errors = []
 
@@ -46,15 +50,20 @@ def credit_error_func(program):
 		interpreter.state.stacks["_input"].push_item(row['V14'])
 		interpreter.state.stacks["_input"].push_item(row['V15'])
 
+		# Initialize output classes
+		interpreter.state.stacks["_output"].push_item(0)
+		interpreter.state.stacks["_output"].push_item(0)
+
 		# Run program
 		interpreter.run_push(program)
-		# Get output
-		top_float = interpreter.state.stacks["_float"].stack_ref(0)
 
-		if type(top_float) == float:
-			errors.append(abs(row['V15'] - top_float))
+		# Get output
+		class_votes = interpreter.state.stacks['_output'][1:]
+
+		if row['V16'] == class_votes.index(max(class_votes))+1:
+			errors.append(0)
 		else:
-			errors.append(1000)
+			errors.append(1)
 
 	return errors
 
@@ -64,6 +73,8 @@ credit_params = {
 	"atom_generators" : u.merge_dicts(ri.registered_instructions,
 					                  {"f1" : lambda: random.randint(0, 100),
 									   "f2" : lambda: random.random(),
+									   "f3" : lambda: random_character_str(),
+									   # Inpput instructions
 									   "_input1" : instr.Pysh_Input_Instruction("_input1"),
 									   "_input2" : instr.Pysh_Input_Instruction("_input2"),
 									   "_input3" : instr.Pysh_Input_Instruction("_input3"),
@@ -79,6 +90,10 @@ credit_params = {
 									   "_input13" : instr.Pysh_Input_Instruction("_input13"),
 									   "_input14" : instr.Pysh_Input_Instruction("_input14"),
 									   "_input15" : instr.Pysh_Input_Instruction("_input15"),
+									   # Class label voting instsructions.
+									   "Vote_1_float" : instr.Pysh_Class_Instruction(1, '_float'),
+									   "Vote_2_float" : instr.Pysh_Class_Instruction(2, '_float'),
+									   "Vote_3_float" : instr.Pysh_Class_Instruction(3, '_float'),
 									  }),	
     "selection_method" : "lexicase",
 	"uniform_mutation_constant_tweak_rate" : 0.1,

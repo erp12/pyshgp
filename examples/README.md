@@ -10,7 +10,10 @@
 ### Iris
 
 ```
-[boolean_empty_INSTR, _input1_INPT_INSTR, foat_from_boolean_INSTR, float_div_INSTR, float_inc_INSTR]
+# Error of 3
+[0.5805125769239845, _input0_INPT_INSTR, vote2_float_CLASS_INSTR, _input0_INPT_INSTR, vote2_float_CLASS_INSTR, float_inc_INSTR, vote1_float_CLASS_INSTR, _input0_INPT_INSTR, 0.9650029510267347, vote2_float_CLASS_INSTR, vote1_float_CLASS_INSTR]
+
+# Error of 1
 ```
 
 

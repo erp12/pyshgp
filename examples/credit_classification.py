@@ -21,6 +21,10 @@ train_inds = np.random.rand(len(credit_data)) < 0.8
 training_set = credit_data[train_inds]
 testing_set = credit_data[~train_inds]
 
+
+def random_character_str():
+	return random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+
 def credit_error_func(program):
 	errors = []
 
@@ -46,15 +50,20 @@ def credit_error_func(program):
 		interpreter.state.stacks["_input"].push_item(row['V14'])
 		interpreter.state.stacks["_input"].push_item(row['V15'])
 
+		# Initialize output classes
+		interpreter.state.stacks["_output"].push_item(0)
+		interpreter.state.stacks["_output"].push_item(0)
+
 		# Run program
 		interpreter.run_push(program)
-		# Get output
-		top_float = interpreter.state.stacks["_float"].stack_ref(0)
 
-		if type(top_float) == float:
-			errors.append(abs(row['V15'] - top_float))
+		# Get output
+		class_votes = interpreter.state.stacks['_output'][1:]
+
+		if row['V16'] == class_votes.index(max(class_votes))+1:
+			errors.append(0)
 		else:
-			errors.append(1000)
+			errors.append(1)
 
 	return errors
 
@@ -64,21 +73,28 @@ credit_params = {
 	"atom_generators" : u.merge_dicts(ri.registered_instructions,
 					                  {"f1" : lambda: random.randint(0, 100),
 									   "f2" : lambda: random.random(),
-									   "_input1" : instr.Pysh_Input_Instruction("_input1"),
-									   "_input2" : instr.Pysh_Input_Instruction("_input2"),
-									   "_input3" : instr.Pysh_Input_Instruction("_input3"),
-									   "_input4" : instr.Pysh_Input_Instruction("_input4"),
-									   "_input5" : instr.Pysh_Input_Instruction("_input5"),
-									   "_input6" : instr.Pysh_Input_Instruction("_input6"),
-									   "_input7" : instr.Pysh_Input_Instruction("_input7"),
-									   "_input8" : instr.Pysh_Input_Instruction("_input8"),
-									   "_input9" : instr.Pysh_Input_Instruction("_input9"),
-									   "_input10" : instr.Pysh_Input_Instruction("_input10"),
-									   "_input11" : instr.Pysh_Input_Instruction("_input11"),
-									   "_input12" : instr.Pysh_Input_Instruction("_input12"),
-									   "_input13" : instr.Pysh_Input_Instruction("_input13"),
-									   "_input14" : instr.Pysh_Input_Instruction("_input14"),
-									   "_input15" : instr.Pysh_Input_Instruction("_input15"),
+									   "f3" : lambda: random_character_str(),
+									   # Inpput instructions
+									   "Input_1" : instr.Pysh_Input_Instruction(0),
+									   "Input_2" : instr.Pysh_Input_Instruction(1),
+									   "Input_3" : instr.Pysh_Input_Instruction(2),
+									   "Input_4" : instr.Pysh_Input_Instruction(3),
+									   "Input_5" : instr.Pysh_Input_Instruction(4),
+									   "Input_6" : instr.Pysh_Input_Instruction(5),
+									   "Input_7" : instr.Pysh_Input_Instruction(6),
+									   "Input_8" : instr.Pysh_Input_Instruction(7),
+									   "Input_9" : instr.Pysh_Input_Instruction(8),
+									   "Input_10" : instr.Pysh_Input_Instruction(9),
+									   "Input_11" : instr.Pysh_Input_Instruction(10),
+									   "Input_12" : instr.Pysh_Input_Instruction(11),
+									   "Input_13" : instr.Pysh_Input_Instruction(12),
+									   "Input_14" : instr.Pysh_Input_Instruction(13),
+									   "Input_15" : instr.Pysh_Input_Instruction(14),
+									   # Class label voting instsructions.
+									   "Vote_1_float"   : instr.Pysh_Class_Instruction(1, '_float'),
+									   "Vote_1_integer" : instr.Pysh_Class_Instruction(1, '_integer'),
+									   "Vote_2_float"   : instr.Pysh_Class_Instruction(2, '_float'),
+									   "Vote_2_integer" : instr.Pysh_Class_Instruction(2, '_integer'),
 									  }),	
     "selection_method" : "lexicase",
 	"uniform_mutation_constant_tweak_rate" : 0.1,

@@ -45,7 +45,7 @@ def iris_error_func(program, print_trace = False):
 		# Get output
 		class_votes = interpreter.state.stacks['_output'][1:]
 
-		if row['Species'] == class_votes.index(max(class_votes)):
+		if row['Species'] == class_votes.index(max(class_votes))+1:
 			errors.append(0)
 		else:
 			errors.append(1)
@@ -53,7 +53,7 @@ def iris_error_func(program, print_trace = False):
 	return errors
 
 iris_params = {
-	"error_threshold" : 6, # Single decision tree tends to have an error of 6
+	"error_threshold" : 1, # Single decision tree tends to have an error of 6
 	"population_size" : 1000,
 	"atom_generators" : u.merge_dicts(ri.get_instructions_by_pysh_type('_float'),
 									  ri.get_instructions_by_pysh_type('_exec'),

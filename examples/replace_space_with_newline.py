@@ -96,7 +96,7 @@ RSWN_params = {
                                        "_char_ERC"           : lambda: g.Character(random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t")),
                                        "_string_ERC"         : lambda: random_str(random.randint(0, 21)),
                                        # Input instruction
-                                       "_input1"             : instr.Pysh_Input_Instruction("_input1")},
+                                       "Input"             : instr.Pysh_Input_Instruction(0)},
                                        # Standard stack instructions
                                        ri.get_instructions_by_pysh_type("_integer"),
                                        ri.get_instructions_by_pysh_type("_boolean"),

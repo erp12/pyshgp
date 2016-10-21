@@ -62,7 +62,7 @@ problem_params = {
 						 "float_dup"    : ri.get_instruction_by_name("float_dup"),
 						 "float_pop"    : ri.get_instruction_by_name("float_pop"),
                          "f1"           : lambda: float(random.randint(0, 21) - 10),
-                         "_input1"      : instruction.Pysh_Input_Instruction("_input1")},
+                         "Input"      : instruction.Pysh_Input_Instruction(0)},
     "epigenetic_markers" : [],
     "selection_method" : "epsilon_lexicase",
     "genetic_operator_probabilities" : {"alternation" : 0.5,

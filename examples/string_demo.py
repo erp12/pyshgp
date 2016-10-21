@@ -81,7 +81,7 @@ def string_error_func(program):
 	return errors
 
 string_params = {
-	"atom_generators" : {"_input1" 	           : instr.Pysh_Input_Instruction("_input1"),
+	"atom_generators" : {"Input" 	           : instr.Pysh_Input_Instruction(0),
 						 "string_length"       : ri.get_instruction_by_name("string_length"),
 						 "string_head" 	       : ri.get_instruction_by_name("string_head"),
 						 "string_concat"       : ri.get_instruction_by_name("string_concat"),

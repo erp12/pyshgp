@@ -54,7 +54,7 @@ problem_params = {
 						 "integer_add" : ri.get_instruction_by_name("integer_add"),
 						 "integer_sub" : ri.get_instruction_by_name("integer_sub"),
                          "f1" : lambda: random.randint(0, 10),
-                         "_input1" : instruction.Pysh_Input_Instruction("_input1")},
+                         "Input" : instruction.Pysh_Input_Instruction(0)},
     "epigenetic_markers" : [],
     "selection_method" : "epsilon_lexicase",
     "genetic_operator_probabilities" : {"alternation" : 0.5,

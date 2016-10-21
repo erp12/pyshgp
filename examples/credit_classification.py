@@ -23,11 +23,11 @@ testing_set = credit_data[~train_inds]
 
 
 def random_one_character_str():
-	return random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+	return random.choice("abcdefghijklmnopqrstuvwxyz0123456789")
 
 def random_two_character_str():
-	s = random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
-	return s + random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+	s = random.choice("abcdefghijklmnopqrstuvwxyz0123456789")
+	return s + random.choice("abcdefghijklmnopqrstuvwxyz0123456789")
 
 def credit_error_func(program):
 	errors = []

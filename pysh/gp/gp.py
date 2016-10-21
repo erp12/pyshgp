@@ -104,6 +104,8 @@ default_evolutionary_params = {
 
 #
 "max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
+"parallel_evaluation" : True,
+"parallel_genetics" : False
 }
 
 def grab_command_line_params(evolutionary_params):
@@ -171,7 +173,7 @@ def evaluate_population(population, error_function, evolutionary_params):
     """
     Updates the errors of the population.
     """
-    if evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1:
+    if evolutionary_params['parallel_evaluation'] and (evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1):
         # pathos.multiprocessing
         pool = evolutionary_params['pool']
         return pool.map(evaluate_individual, population, [error_function]*len(population))

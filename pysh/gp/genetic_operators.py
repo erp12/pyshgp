@@ -206,7 +206,7 @@ def genetics(population, evolutionary_params):
     # Calculate number of children that should be made from each genetic operator
     num_offspring_each_gen_op = dict([(k, int(round(evolutionary_params["genetic_operator_probabilities"][k] * evolutionary_params["population_size"]))) for k in evolutionary_params["genetic_operator_probabilities"]])
     
-    if evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1:
+    if evolutionary_params['parallel_genetics'] and (evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1):
         
         # Have to figure out how to divide the population in to n groups while preserving gen op numbers.
         jobs_n = []

@@ -8,5 +8,14 @@
 Pysh GP Examples
 ****************
 
-* `Odd <Odd.html>`_
-* `Integer Regression <Integer_Regression.html>`_
+.. toctree::
+   :maxdepth: 1
+
+   Odd
+   Integer_Regression
+
+Coming Soon!
+
+- Sextic 
+- Iris
+- Replace Space With Newline

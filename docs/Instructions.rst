@@ -4,9 +4,13 @@
  * `Instruction Set <Instructions.html>`_
  * `Examples <Examples.html>`_
 
-********************
-Pysh Instruction Set
-********************
+
+*****************
+Pysh Instructions
+*****************
+
+Standard Instruction Set
+########################
 
 boolean_and
 """""""""""
@@ -906,4 +910,14 @@ Pushes the top `string` with all occurences of second `char` replaced with the t
 string_replace_first_char_instruction
 """""""""""""""""""""""""""""""""""""
 Pushes the top `string` with the first occurence of second `char` replaced with the top `char`.
+
+
+
+Special Instructions
+####################
+
+.. toctree::
+   :maxdepth: 1
+
+   Input_Output_Instr
 

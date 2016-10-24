@@ -339,6 +339,113 @@ assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == True
 
 
+i.reset_pysh_state()
+print("Testing exec_noop")
+prog = [ri.get_instruction_by_name('exec_noop')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+assert len(i.state.stacks['_exec']) == 0
+
+
+i.reset_pysh_state()
+print("Testing code_noop")
+prog = [ri.get_instruction_by_name('code_noop')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+
+
+i.reset_pysh_state()
+print("Testing code_from_boolean")
+prog = [True, ri.get_instruction_by_name('code_from_boolean')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert len(i.state.stacks['_boolean']) == 0
+assert i.state.stacks['_code'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing code_from_float")
+prog = [1.5, ri.get_instruction_by_name('code_from_float')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert len(i.state.stacks['_float']) == 0
+assert i.state.stacks['_code'].top_item() == 1.5
+
+
+i.reset_pysh_state()
+print("Testing code_from_integer")
+prog = [5, ri.get_instruction_by_name('code_from_integer')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert len(i.state.stacks['_integer']) == 0
+assert i.state.stacks['_code'].top_item() == 5
+
+
+i.reset_pysh_state()
+print("Testing code_from_exec")
+prog = [ri.get_instruction_by_name('code_from_exec'), ri.get_instruction_by_name('exec_noop'),]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert len(i.state.stacks['_exec']) == 0
+assert i.state.stacks['_code'].top_item() == ri.get_instruction_by_name('exec_noop')
+
+
+i.reset_pysh_state()
+print("Testing code_append")
+prog = [5, True, ri.get_instruction_by_name('code_from_integer'), ri.get_instruction_by_name('code_from_boolean'), ri.get_instruction_by_name('code_append'),]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert len(i.state.stacks['_integer']) == 0
+assert len(i.state.stacks['_boolean']) == 0
+assert i.state.stacks['_code'].top_item() == [True, 5]
+
+
+i.reset_pysh_state()
+print("Testing code_atom")
+prog = [5, ri.get_instruction_by_name('code_from_integer'), ri.get_instruction_by_name('code_atom'),]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [ri.get_instruction_by_name('code_from_exec') [5, True], ri.get_instruction_by_name('code_atom'),]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+
+
+
+
+
 
 
 

@@ -19,6 +19,9 @@ doc_file_lines.append("")
 doc_file_lines.append("********************")
 doc_file_lines.append("Pysh Instruction Set")
 doc_file_lines.append("********************")
+doc_file_lines.append("")
+doc_file_lines.append("Standard Instruction Set")
+doc_file_lines.append("########################")
 
 # For each .py file in the instructions file directory
 for file_name in os.listdir(instructions_dir):
@@ -63,6 +66,16 @@ for file_name in os.listdir(instructions_dir):
                 # if the line is a <instr_name>
                 else:
                     raise Exception("Unknown instruction doc tag in line: " + l)
+
+
+doc_file_lines.append("")
+doc_file_lines.append("Special Instructions")
+doc_file_lines.append("####################")
+doc_file_lines.append("")
+doc_file_lines.append(".. toctree::")
+doc_file_lines.append("   :maxdepth: 1")
+doc_file_lines.append("   Input_Output_Instr")
+doc_file_lines.append("")
 
 instruction_file = open('Instructions.rst', 'w')
 for line in doc_file_lines:

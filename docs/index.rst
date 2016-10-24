@@ -1,4 +1,3 @@
-
 .. sidebar:: Useful Links
 
 	* `Evolutionary Parameters <Evolutionary_Parameters.html>`_
@@ -22,6 +21,37 @@ More information about PushGP can be found `here <http://faculty.hampshire.edu/l
 
 For the most cutting edge PushGP framework, see the `Clojure <https://clojure.org/>`_ implementaion called `Clojush <https://github.com/lspector/Clojush>`_.
 
+
+Table Of Contents
+=================
+
+.. toctree::
+   :maxdepth: 1
+
+   Evolutionary_Parameters
+   Instructions
+   Examples
+   Push_GP
+   Genetic_Operators
+   Programs_V_Genomes
+
+
+Installation
+============
+
+Install from Pip
+""""""""""""""""
+
+Coming soon!
+
+Build Frome source
+""""""""""""""""""
+
+1. Clone the repo
+2. :code:`cd` into the pysh repo directory
+3. run :code:`python setup.py install`
+
+Thats it! You should be ready to use Pysh.
 
 Examples / Usage
 ================
@@ -47,18 +77,6 @@ Roadmap
 
 Pysh is currently under active development. Feel free to submit a pull request if you have any additions to make.
 
-In Progress Features
---------------------
+To see what features are in development, or planned for the future, check out the Github project board `here <https://github.com/erp12/Pysh/projects/1>`_.
 
-* Improve runtime of push program evaluation.
-* Implement utility functions to filter registered instructions by type.
-* Add remaining code instructions.
-* Finish instruction set documentation.
-
-
-Future Features
----------------
-
-* Add parallel evaluation (using SCOOP?).
-* Improve Pysh genome simplification (borrow from Clojush).
-
+To see Pysh's release notes, check out the other Github project board `here <https://github.com/erp12/Pysh/projects/2>`_.

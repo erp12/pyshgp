@@ -35,7 +35,6 @@ class Pysh_Input_Instruction(Pysh_Instruction):
 
     def __init__(self, input_index):
         name = "_input" + str(input_index)
-        print("NAME", name)
         Pysh_Instruction.__init__(self, name, None)
         self.input_index = input_index
         self.func = "_input" + str(input_index)

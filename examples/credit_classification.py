@@ -64,7 +64,7 @@ def credit_error_func(program):
 		# Get output
 		class_votes = interpreter.state.stacks['_output'][1:]
 
-		if row['V16'] == class_votes.index(max(class_votes))+1:
+		if int(row['V16']) == class_votes.index(max(class_votes))+1:
 			errors.append(0)
 		else:
 			errors.append(1)

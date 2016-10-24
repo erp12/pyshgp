@@ -4,6 +4,9 @@
 	* `Instruction Set <Instructions.html>`_
 	* `Examples <Examples.html>`_
 
+.. toctree::
+   :maxdepth: 1
+
 ************************
 Parameters For Evolution
 ************************
@@ -25,7 +28,7 @@ For examples on how to do this, refer to the Pysh `examples <Examples.html>`_ do
 
 Pysh supports passing evolutionary parameters from the command line. To run the example `Odd <Odd.html>`_ problem with a population size of 777, the following command could be run::
 
-	python -m pysh.problems.odd --population_size=777
+	python odd.py --population_size=777
 
 When setting evolutionary params in this way, each parameter must be set with its own flag. Each flag must start with two dashes and contain no spaces. Following the two dashes, each flag must have the parameter name, and equals sign, and the new value for the parameter in that order.
 

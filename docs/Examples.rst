@@ -13,6 +13,7 @@ Pysh GP Examples
 
    Odd
    Integer_Regression
+   Sextic (Symbolic Regression) 
 
 Coming Soon!
 

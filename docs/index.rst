@@ -28,12 +28,12 @@ Table Of Contents
 .. toctree::
    :maxdepth: 1
 
-   Evolutionary_Parameters
-   Instructions
-   Examples
    Push_GP
+   Evolutionary_Parameters
    Genetic_Operators
    Programs_V_Genomes
+   Instructions
+   Examples
 
 
 Installation

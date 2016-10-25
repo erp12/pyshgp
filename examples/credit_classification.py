@@ -17,10 +17,9 @@ import pysh.pysh_interpreter as interp
 from pysh.instructions import registered_instructions as ri
 
 credit_data = pd.read_csv("data/credit.csv", )
-# train_inds = np.random.rand(len(credit_data)) < 0.8
-# training_set = credit_data[train_inds]
-# testing_set = credit_data[~train_inds]
-training_set = credit_data[:150]
+train_inds = np.random.rand(len(credit_data)) < 0.8
+training_set = credit_data[train_inds]
+testing_set = credit_data[~train_inds]
 
 def random_one_character_str():
 	return random.choice("abcdefghijklmnopqrstuvwxyz0123456789")
@@ -72,8 +71,10 @@ def credit_error_func(program, debug = False):
 	return errors
 
 credit_params = {
-	"error_threshold" : 10,
+	"error_threshold" : 10, # If under 10 rows are mis-classified, consider the program a solution.
 	"population_size" : 1000,
+	"max_genome_initial_size" : 100,
+	"max_points" : 400,
 	"atom_generators" : u.merge_dicts(ri.registered_instructions,
 					                  {"f1" : lambda: random.randint(0, 100),
 									   "f2" : lambda: random.random(),

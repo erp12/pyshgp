@@ -43,7 +43,7 @@ def make_RSWN_data_domains():
                         "^_^ ^_^ ^_^ ^_^ ^_^ "],
             "train_test_split" : [30, 0]}
     dd_2 = {"inputs" : lambda: random_str(random.randint(2, 19)),
-            "train_test_split" : [70, 1000]}
+            "train_test_split" : [0, 0]} # 70 , 1000
     return (dd_1, dd_2)
 
 def RSWN_test_cases(inputs):
@@ -122,8 +122,8 @@ RSWN_params = {
 
 def test_RSWN_solution(err_func):
     print(list(ri.registered_instructions.keys()))
-    prog_lst = [g.Character(" "), '_input1', g.Character("\n"), '_string_replace_char', '_print_string', 
-                g.Character(" "), '_input1', '_string_remove_char', '_char_all_from_string', '_char_stack_depth']
+    prog_lst = [g.Character(" "), instr.Pysh_Input_Instruction(0), g.Character("\n"), '_string_replace_char', '_print_string', 
+                g.Character(" "), instr.Pysh_Input_Instruction(0), '_string_remove_char', '_char_all_from_string', '_char_stack_depth']
     prog = gp.load_program_from_list(prog_lst)
     print(prog)
     errors = err_func(prog, debug = True)

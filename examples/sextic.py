@@ -17,7 +17,7 @@ from pysh.instructions import boolean, code, common, numbers, string
 from pysh.instructions import registered_instructions as ri
 
 '''
-This problem evolves a program to determine if a number is odd or not.
+This problem is symbolic regression.
 '''
 
 def target_function(x):

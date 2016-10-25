@@ -17,10 +17,10 @@ import pysh.pysh_interpreter as interp
 from pysh.instructions import registered_instructions as ri
 
 credit_data = pd.read_csv("data/credit.csv", )
-train_inds = np.random.rand(len(credit_data)) < 0.8
-training_set = credit_data[train_inds]
-testing_set = credit_data[~train_inds]
-
+# train_inds = np.random.rand(len(credit_data)) < 0.8
+# training_set = credit_data[train_inds]
+# testing_set = credit_data[~train_inds]
+training_set = credit_data[:150]
 
 def random_one_character_str():
 	return random.choice("abcdefghijklmnopqrstuvwxyz0123456789")
@@ -29,7 +29,7 @@ def random_two_character_str():
 	s = random.choice("abcdefghijklmnopqrstuvwxyz0123456789")
 	return s + random.choice("abcdefghijklmnopqrstuvwxyz0123456789")
 
-def credit_error_func(program):
+def credit_error_func(program, debug = False):
 	errors = []
 
 	for index, row in training_set.iterrows():
@@ -59,12 +59,12 @@ def credit_error_func(program):
 		interpreter.state.stacks["_output"].push_item(0)
 
 		# Run program
-		interpreter.run_push(program)
+		interpreter.run_push(program, debug)
 
 		# Get output
 		class_votes = interpreter.state.stacks['_output'][1:]
 
-		if int(row['V16']) == class_votes.index(max(class_votes))+1:
+		if int(row['V16']) == class_votes.index(max(class_votes)):
 			errors.append(0)
 		else:
 			errors.append(1)
@@ -110,5 +110,16 @@ credit_params = {
 	"uniform_mutation_float_gaussian_standard_deviation" : 0.1
 }
 
+def test_credit_solution():
+	#print(registered_instructions.registered_instructions)
+	prog_lst = [1.5, instr.Pysh_Class_Instruction(1, '_float')]
+	prog = gp.load_program_from_list(prog_lst)
+	errors = credit_error_func(prog, debug = True)
+	print("Errors:", errors)
+	print("Total Errors:", sum(errors))
+
 if __name__ == "__main__":
 	gp.evolution(credit_error_func, credit_params)
+	#test_credit_solution()
+
+

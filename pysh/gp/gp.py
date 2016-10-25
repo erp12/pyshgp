@@ -139,17 +139,15 @@ def load_program_from_list(lst, atom_generators = default_evolutionary_params["a
     for el in lst:
         if type(el) == int or type(el) == float or type(el) == bool or type(el) == pysh_globals.Character:
             program.append(el)
+        elif type(el) == instr.Pysh_Instruction or type(el) == instr.Pysh_Input_Instruction or type(el) == instr.Pysh_Class_Instruction:
+            program.append(el)
         elif (sys.version_info[0] == 3 and (type(el) is str or type(el) is bytes)) or (sys.version_info[0] == 2 and (type(el) is str or type(el) is unicode)):
             el = str(el)
-            if el[:6] == "_input":
-                inpt_num = int(el[6:])
-                program.append(instr.Pysh_Input_Instruction("_input" + str(inpt_num)))
+            matching_intstructions = [registered_instructions.registered_instructions[x] for x in registered_instructions.registered_instructions.keys() if x == el[1:]]
+            if len(matching_intstructions) > 0:
+                program.append(matching_intstructions[0])
             else:
-                matching_intstructions = [registered_instructions.registered_instructions[x] for x in registered_instructions.registered_instructions.keys() if x == el[1:]]
-                if len(matching_intstructions) > 0:
-                    program.append(matching_intstructions[0])
-                else:
-                    program.append(el)
+                program.append(el)
         elif type(el) == list:
             program.append(load_program_from_list(el))
     return program

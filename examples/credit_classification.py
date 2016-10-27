@@ -71,7 +71,7 @@ def credit_error_func(program, debug = False):
 	return errors
 
 credit_params = {
-	"error_threshold" : 10, # If under 10 rows are mis-classified, consider the program a solution.
+	"error_threshold" : 20, # If under 20 rows are mis-classified, consider the program a solution.
 	"population_size" : 1000,
 	"max_genome_initial_size" : 100,
 	"max_points" : 400,

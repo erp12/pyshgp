@@ -422,7 +422,7 @@ assert i.state.stacks['_code'].top_item() == [True, 5]
 
 i.reset_pysh_state()
 print("Testing code_atom")
-prog = [5, ri.get_instruction_by_name('code_from_integer'), ri.get_instruction_by_name('code_atom'),]
+prog = [5, ri.get_instruction_by_name('code_from_integer'), ri.get_instruction_by_name('code_atom')]
 i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
@@ -432,7 +432,7 @@ assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == True
 
 i.reset_pysh_state()
-prog = [ri.get_instruction_by_name('code_from_exec') [5, True], ri.get_instruction_by_name('code_atom'),]
+prog = [ri.get_instruction_by_name('code_from_exec') [5, True], ri.get_instruction_by_name('code_atom')]
 i.run_push(prog)
 if not i.state.size() == 1:
     i.state.pretty_print()
@@ -440,6 +440,103 @@ if not i.state.size() == 1:
 assert len(i.state.stacks['_code']) == 0
 assert len(i.state.stacks['_boolean']) == 1
 assert i.state.stacks['_boolean'].top_item() == False
+
+
+i.reset_pysh_state()
+print("Testing code_car")
+prog = [ri.get_instruction_by_name('code_from_exec'), [5, True], ri.get_instruction_by_name('code_car')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert i.state.stacks['_code'].top_item() == 5
+
+prog = [ri.get_instruction_by_name('code_from_exec'), 5, ri.get_instruction_by_name('code_car')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert i.state.stacks['_code'].top_item() == 5
+
+
+i.reset_pysh_state()
+print("Testing code_cdr")
+prog = [ri.get_instruction_by_name('code_from_exec'), [5, True], ri.get_instruction_by_name('code_cdr')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert i.state.stacks['_code'].top_item() == True
+
+prog = [ri.get_instruction_by_name('code_from_exec'), 5, ri.get_instruction_by_name('code_cdr')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert i.state.stacks['_code'].top_item() == []
+
+
+i.reset_pysh_state()
+print("Testing code_do")
+prog = [ri.get_instruction_by_name('code_from_exec'), [5, True], ri.get_instruction_by_name('code_do')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_integer']) == 1
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_integer'].top_item() == 5
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing code_do*")
+prog = [ri.get_instruction_by_name('code_from_exec'), [5, True], ri.get_instruction_by_name('code_do*')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_integer']) == 1
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_integer'].top_item() == 5
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing code_do*range")
+prog = [1, 5, ri.get_instruction_by_name('code_from_exec'), True, ri.get_instruction_by_name('code_do*range')]
+i.run_push(prog)
+if not i.state.size() == 5:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 5." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_boolean']) == 5
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing exec_do*range")
+prog = [1, 5, ri.get_instruction_by_name('exec_do*range"'), True]
+i.run_push(prog)
+if not i.state.size() == 5:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 5." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_boolean']) == 5
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+
+
+
+
+
 
 
 

@@ -168,6 +168,7 @@ ri.register_instruction(code_do_instruction)
 def code_do_star(state):
     if len(state.stacks['_code']) > 0:
         top_code = state.stacks['_code'].stack_ref(0)
+        state.stacks['_code'].pop_item()
         state.stacks['_exec'].push_item(top_code)
     return state
 code_do_star_instruction = instr.Pysh_Instruction('code_do*',

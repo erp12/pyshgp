@@ -1,13 +1,6 @@
-.. sidebar:: Useful Links
-
- * `Evolutionary Parameters <Evolutionary_Parameters.html>`_
- * `Instruction Set <Instructions.html>`_
- * `Examples <Examples.html>`_
-
-
-*****************
-Pysh Instructions
-*****************
+***************
+Instruction Set
+***************
 
 Standard Instruction Set
 ########################
@@ -919,5 +912,6 @@ Special Instructions
 .. toctree::
    :maxdepth: 1
 
+   custom_instructions
    Input_Output_Instr
 

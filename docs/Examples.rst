@@ -4,19 +4,18 @@
 	* `Instruction Set <Instructions.html>`_
 	* `Examples <Examples.html>`_
 
-****************
-Pysh GP Examples
-****************
+********
+Examples
+********
 
 .. toctree::
    :maxdepth: 1
 
    Odd
    Integer_Regression
-   Sextic (Symbolic Regression) 
+   Sextic
 
 Coming Soon!
 
-- Sextic 
 - Iris
 - Replace Space With Newline

@@ -1,9 +1,3 @@
-.. sidebar:: Useful Links
-
-	* `Evolutionary Parameters <Evolutionary_Parameters.html>`_
-	* `Instruction Set <Instructions.html>`_
-	* `Examples <Examples.html>`_
-
 
 ****
 Pysh
@@ -26,7 +20,7 @@ Table Of Contents
 =================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    Push_GP
    Evolutionary_Parameters
@@ -58,14 +52,13 @@ Examples / Usage
 
 Pysh is compatable with Python 2.7 and Python 3.5.
 
-* `Odd <Odd>`_
-* `Integer Regression <Integer_Regression>`_
+To run the Pysh examples, simply run one of the problem files in the ``pysh/examples/`` folder.::
 
-
-To run the Pysh examples, simply run one of the following commands from the directory into which you have placed your pysh folder.::
-
-	python -m pysh.problems.odd
-	python -m pysh.problems.simple_regression
+	python examples/odd.py
+   # or
+	python examples/sextic.py
+   # or
+   python examples/integer_regression.py
 
 To learn more about changing the evolutionary parameters for a genetic programming run, see the `evolutionary parameters documentation <Evolutionary_Parameters.html>`_.
 

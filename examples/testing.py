@@ -10,7 +10,7 @@ from pysh.gp import gp
 
 #ri.get_instruction_by_name("_char_from_integer")
 
-prog_lst = [7, '_char_from_integer', 8 "Hello World"]
+prog_lst = [7, '_char_from_integer', 8, "Hello World"]
 program = gp.load_program_from_list(prog_lst)
 
 interpreter = interp.Pysh_Interpreter()

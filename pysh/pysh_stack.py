@@ -39,3 +39,7 @@ class Pysh_Stack(list):
 
     def stack_flush(self):
         self = Pysh_Stack(self.pysh_type)
+
+    def __repr__(self):
+        self_r = list(self[::-1])
+        return self_r.__repr__()

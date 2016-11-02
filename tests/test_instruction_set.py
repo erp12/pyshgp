@@ -533,16 +533,72 @@ assert len(i.state.stacks['_boolean']) == 5
 assert i.state.stacks['_boolean'].top_item() == True
 
 
+i.reset_pysh_state()
+print("Testing code_do*count")
+prog = [ri.get_instruction_by_name('code_from_exec'), True, 5, ri.get_instruction_by_name('code_do*count')]
+i.run_push(prog)
+if not i.state.size() == 10:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 10." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_boolean']) == 5
+assert i.state.stacks['_boolean'].top_item() == True
 
 
+i.reset_pysh_state()
+print("Testing exec_do*count")
+prog = [5, ri.get_instruction_by_name('exec_do*count'), True]
+i.run_push(prog)
+if not i.state.size() == 10:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 10." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 5
+assert i.state.stacks['_boolean'].top_item() == True
 
 
+i.reset_pysh_state()
+print("Testing code_do*times")
+prog = [ri.get_instruction_by_name('code_from_exec'), True, 5, ri.get_instruction_by_name('code_do*times')]
+i.run_push(prog)
+if not i.state.size() == 5:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 5." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_boolean']) == 5
+assert i.state.stacks['_boolean'].top_item() == True
 
 
+i.reset_pysh_state()
+print("Testing exec_do*times")
+prog = [5, ri.get_instruction_by_name('exec_do*times'), True]
+i.run_push(prog)
+if not i.state.size() == 5:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 5." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 5
+assert i.state.stacks['_boolean'].top_item() == True
 
 
+i.reset_pysh_state()
+print("Testing exec_while")
+prog = [False, True, True, True, ri.get_instruction_by_name('exec_while'), 5]
+i.run_push(prog)
+if not i.state.size() == 3:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 3." % i.state.size())
+assert len(i.state.stacks['_integer']) == 3
+assert i.state.stacks['_integer'].top_item() == 5
 
 
+i.reset_pysh_state()
+print("Testing exec_do*while")
+prog = [False, True, True, True, ri.get_instruction_by_name('exec_do*while'), 5]
+i.run_push(prog)
+if not i.state.size() == 4:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 4." % i.state.size())
+assert len(i.state.stacks['_integer']) == 4
+assert i.state.stacks['_integer'].top_item() == 5
 
 
 

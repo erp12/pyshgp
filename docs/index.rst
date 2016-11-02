@@ -54,9 +54,9 @@ Pysh is compatable with Python 2.7 and Python 3.5.
 
 To run the Pysh examples, simply run one of the problem files in the ``pysh/examples/`` folder.::
 
-	python examples/odd.py
+   python examples/odd.py
    # or
-	python examples/sextic.py
+   python examples/sextic.py
    # or
    python examples/integer_regression.py
 

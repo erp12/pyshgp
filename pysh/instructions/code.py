@@ -316,7 +316,7 @@ code_do_times_intruction = instr.Pysh_Instruction('code_do*times',
                                                   stack_types = ['_code', '_integer'])
 ri.register_instruction(code_do_times_intruction)
 #<instr_open>
-#<instr_name>code_do*times'
+#<instr_name>code_do*times
 #<instr_desc>Like `code_do*count` but does not push the loop counter.
 #<instr_close>
 
@@ -383,7 +383,7 @@ exec_do_while_intruction = instr.Pysh_Instruction('exec_do*while',
 ri.register_instruction(exec_do_while_intruction)
 #<instr_open>
 #<instr_name>exec_do*while
-#<instr_desc>Similar to `exec_while`.
+#<instr_desc>Pushes the next item on the `exec` stack until the boolean stack has a False or is empty. Similar to `exec_while`, but results in one extra call to the body of the loop.
 #<instr_close>
 
 

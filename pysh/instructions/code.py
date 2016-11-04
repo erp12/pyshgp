@@ -424,7 +424,7 @@ def exec_if(state):
         state.stacks['_boolean'].pop_item()
         state.stacks['_exec'].push_item(to_push)
 exec_if_instruction = instr.Pysh_Instruction('exec_if',
-                                             code_if,
+                                             exec_if,
                                              stack_types = ['_exec', '_boolean'],
                                              parentheses = 2)
 ri.register_instruction(exec_if_instruction)
@@ -505,8 +505,8 @@ def code_member(state):
         state.stacks['_code'].pop_item()
         state.stacks['_boolean'].push_item(new_bool)
 code_member_instruction = instr.Pysh_Instruction('code_member',
-                                               code_member,
-                                               stack_types = ['_code', '_boolean'])
+                                                 code_member,
+                                                 stack_types = ['_code', '_boolean'])
 ri.register_instruction(code_member_instruction)
 #<instr_open>
 #<instr_name>code_member

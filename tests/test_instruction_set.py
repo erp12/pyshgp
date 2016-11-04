@@ -601,12 +601,240 @@ assert len(i.state.stacks['_integer']) == 4
 assert i.state.stacks['_integer'].top_item() == 5
 
 
+i.reset_pysh_state()
+print("Testing code_if")
+prog = [True, ri.get_instruction_by_name('code_from_exec'), "Hello", ri.get_instruction_by_name('code_from_exec'), "World", ri.get_instruction_by_name('code_if')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert len(i.state.stacks['_boolean']) == 0
+assert len(i.state.stacks['_code']) == 0
+assert i.state.stacks['_string'].top_item() == "Hello"
+
+i.reset_pysh_state()
+prog = [False, ri.get_instruction_by_name('code_from_exec'), "Hello", ri.get_instruction_by_name('code_from_exec'), "World", ri.get_instruction_by_name('code_if')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert len(i.state.stacks['_boolean']) == 0
+assert len(i.state.stacks['_code']) == 0
+assert i.state.stacks['_string'].top_item() == "World"
 
 
+i.reset_pysh_state()
+print("Testing exec_if")
+prog = [True, ri.get_instruction_by_name('exec_if'), "Hello", "World", ]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert len(i.state.stacks['_boolean']) == 0
+assert len(i.state.stacks['_code']) == 0
+assert i.state.stacks['_string'].top_item() == "Hello"
+
+i.reset_pysh_state()
+prog = [False, ri.get_instruction_by_name('exec_if'), "Hello", "World", ]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert len(i.state.stacks['_boolean']) == 0
+assert len(i.state.stacks['_code']) == 0
+assert i.state.stacks['_string'].top_item() == "World"
 
 
+i.reset_pysh_state()
+print("Testing exec_when")
+prog = [True, ri.get_instruction_by_name('exec_when'), "Hello", "World", ]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_string']) == 2
+assert len(i.state.stacks['_boolean']) == 0
+assert len(i.state.stacks['_code']) == 0
+assert i.state.stacks['_string'].top_item() == "World"
+
+i.reset_pysh_state()
+prog = [False, ri.get_instruction_by_name('exec_when'), "Hello", "World", ]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert len(i.state.stacks['_boolean']) == 0
+assert len(i.state.stacks['_code']) == 0
+assert i.state.stacks['_string'].top_item() == "World"
 
 
+i.reset_pysh_state()
+print("Testing code_length")
+prog = [ri.get_instruction_by_name('code_from_exec'), [1, 2, ri.get_instruction_by_name('integer_add')], ri.get_instruction_by_name('code_length')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert i.state.stacks['_integer'].top_item() == 3
+
+i.reset_pysh_state()
+prog = [ri.get_instruction_by_name('code_from_exec'), 5, ri.get_instruction_by_name('code_length')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert i.state.stacks['_integer'].top_item() == 1
 
 
+i.reset_pysh_state()
+print("Testing code_list")
+prog = [ri.get_instruction_by_name('code_from_exec'), 5, ri.get_instruction_by_name('code_from_exec'), 4, ri.get_instruction_by_name('code_list')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert i.state.stacks['_code'].top_item() == [5, 4]
 
+
+i.reset_pysh_state()
+print("Testing code_member")
+prog = [ri.get_instruction_by_name('code_from_exec'), 5, ri.get_instruction_by_name('code_from_exec'), [5, 4], ri.get_instruction_by_name('code_member')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [ri.get_instruction_by_name('code_from_exec'), 5, ri.get_instruction_by_name('code_from_exec'), [1, 3], ri.get_instruction_by_name('code_member')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+
+i.reset_pysh_state()
+print("Testing code_nth")
+prog = [ri.get_instruction_by_name('code_from_exec'), [1, 2, 3, 4], 1, ri.get_instruction_by_name('code_nth')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert len(i.state.stacks['_integer']) == 0
+assert i.state.stacks['_code'].top_item() == 2
+
+i.reset_pysh_state()
+prog = [ri.get_instruction_by_name('code_from_exec'), [1, 2, 3, 4], 5, ri.get_instruction_by_name('code_nth')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert len(i.state.stacks['_integer']) == 0
+assert i.state.stacks['_code'].top_item() == 2
+
+
+i.reset_pysh_state()
+print("Testing code_nthcdr")
+prog = [ri.get_instruction_by_name('code_from_exec'), [1, 2, 3, 4], 1, ri.get_instruction_by_name('code_nthcdr')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert len(i.state.stacks['_integer']) == 0
+assert i.state.stacks['_code'].top_item() == [1, 3, 4]
+
+i.reset_pysh_state()
+prog = [ri.get_instruction_by_name('code_from_exec'), [1, 2, 3, 4], 5, ri.get_instruction_by_name('code_nthcdr')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_code']) == 1
+assert len(i.state.stacks['_integer']) == 0
+assert i.state.stacks['_code'].top_item() == [1, 3, 4]
+
+
+i.reset_pysh_state()
+print("Testing exec_pop")
+prog = [ri.get_instruction_by_name('exec_pop'), ri.get_instruction_by_name('integer_stack_depth')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+assert len(i.state.stacks['_integer']) == 0
+
+
+i.reset_pysh_state()
+print("Testing integer_pop")
+prog = [5, ri.get_instruction_by_name('integer_pop')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+assert len(i.state.stacks['_integer']) == 0
+
+
+i.reset_pysh_state()
+print("Testing float_pop")
+prog = [5.1, ri.get_instruction_by_name('float_pop')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+assert len(i.state.stacks['_float']) == 0
+
+
+i.reset_pysh_state()
+print("Testing code_pop")
+prog = [ri.get_instruction_by_name('code_from_exec'), [True, 5], ri.get_instruction_by_name('code_pop')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+assert len(i.state.stacks['_code']) == 0
+
+
+i.reset_pysh_state()
+print("Testing boolean_pop")
+prog = [True, ri.get_instruction_by_name('boolean_pop')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 0
+
+
+i.reset_pysh_state()
+print("Testing string_pop")
+prog = ["HelloWorld", ri.get_instruction_by_name('string_pop')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+assert len(i.state.stacks['_string']) == 0
+
+
+i.reset_pysh_state()
+print("Testing char_pop")
+prog = [g.Character('G'), ri.get_instruction_by_name('char_pop')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+assert len(i.state.stacks['_char']) == 0

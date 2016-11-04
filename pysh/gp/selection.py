@@ -71,10 +71,10 @@ def tournament_selection(individuals, tournament_size, k = 1):
     selected_individuals = []
     for i in range(k):
         tournament = []
-        for i in range(tournament_size):
+        for _ in range(tournament_size):
             tournament.append(random.choice(individuals))
-            min_error_in_tourn = min([ind.get_total_error() for ind in tournament])
-            best_in_tourn = [ind for ind in tournament if ind.get_total_error() == min_error_in_tourn]
+        min_error_in_tourn = min([ind.get_total_error() for ind in tournament])
+        best_in_tourn = [ind for ind in tournament if ind.get_total_error() == min_error_in_tourn]
         selected_individuals.append(best_in_tourn[0])
     return selected_individuals
 

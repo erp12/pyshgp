@@ -21,7 +21,7 @@ Lexicase selection is the default selection method for Pysh.
     "Unlike most traditional parent selection techniques, lexicase selection does not base selection on a fitness value that is aggregated over all test cases; rather, it considers test cases one at a time in random order" 
     -- T. Helmuth, L. Spector
 
-Lexicase selection follows the following procedures:
+Lexicase selection follows the following procedure:
 
 1. Set **candidates** to be the entire population.
 2. Set **cases** to be a list of all of the test cases in random order.
@@ -53,6 +53,12 @@ For more information about Epsilon Lexicase selection, and its benefits, see the
 Tournament Selection
 """"""""""""""""""""
 
+Tournament selection involved selecting the individual with the lowest total error from a small, random subset of the population. This subset is called the tournament. Each time a selection event occurs, a new random subset of the population is placed into the tournament.
+
+Source Code
+"""""""""""
+
+The source code for all selection methods can be found in `this file <https://github.com/erp12/Pysh/blob/master/pysh/gp/selection.py>`_ on the Pysh Github.
 
 Mutation
 ========
@@ -62,6 +68,15 @@ Mutation operators randomly modify a single parent to create new individuals. Th
 Uniform Mutation
 """"""""""""""""
 
+Uniformly mutates individual. For each token in genome, there is *uniform_mutation_rate* probability of being mutated. If a token is to be mutated, it has a uniform_mutation_constant_tweak_rate probability of being mutated using a constant mutator (which varies depending on the type of the token), and otherwise is replaced with a random instruction.
+
+Uniform Close Mutation
+""""""""""""""""""""""
+
+Uniformly mutates the *close* markers in the individual's plush genes. Each *close* will have a *uniform_close_mutation_rate* probability of being changed, and those that are changed have a *close_increment_rate* chance of being incremented, and are otherwise decremented.
+
+.. note::
+	Pysh's mutation operators are likely to change. Uniform mutation will be split into multiple more specific mutators. Each of these mutation operators will have their tunable probability. 
 
 Recombination (Crossover)
 =========================
@@ -71,11 +86,15 @@ Recombination operators typically use 2 or more parents. Unlike mutation, the re
 Alternation
 """""""""""
 
+Uniformly alternates between the two parent plush genomes
+
 
 Adding Additional Operators
 ===========================
 
 Coming soon ... 
+
+If you write your own genetic operator, I would love to hear about it! Also, I would strongly encourage you to submit a `Pull Request on Github <https://github.com/erp12/Pysh/pulls>`_.
 
 ------------
 

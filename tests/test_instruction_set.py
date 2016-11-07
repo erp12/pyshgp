@@ -838,3 +838,166 @@ if not i.state.size() == 0:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 0." % i.state.size())
 assert len(i.state.stacks['_char']) == 0
+
+i.reset_pysh_state()
+print("Testing exec_dup")
+prog = [ri.get_instruction_by_name('exec_dup'), 5]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_integer']) == 2
+assert i.state.stacks['_integer'].top_item() == 5
+
+
+i.reset_pysh_state()
+print("Testing integer_dup")
+prog = [5, ri.get_instruction_by_name('integer_dup')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_integer']) == 2
+assert i.state.stacks['_integer'].top_item() == 5
+
+
+i.reset_pysh_state()
+print("Testing float_dup")
+prog = [5.1, ri.get_instruction_by_name('float_dup')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_float']) == 2
+assert i.state.stacks['_float'].top_item() == 5.1
+
+
+i.reset_pysh_state()
+print("Testing code_dup")
+prog = [ri.get_instruction_by_name('code_from_exec'), True, ri.get_instruction_by_name('code_dup')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_code']) == 2
+assert i.state.stacks['_code'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing boolean_dup")
+prog = [True, ri.get_instruction_by_name('boolean_dup')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 2
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing string_dup")
+prog = ["HelloWorld", ri.get_instruction_by_name('string_dup')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_string']) == 2
+assert i.state.stacks['_string'].top_item() == "HelloWorld"
+
+
+i.reset_pysh_state()
+print("Testing char_dup")
+prog = [g.Character('G'), ri.get_instruction_by_name('char_dup')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_char']) == 2
+assert i.state.stacks['_char'].top_item().char == "G"
+
+
+i.reset_pysh_state()
+print("Testing exec_swap")
+prog = [ri.get_instruction_by_name('exec_swap'), True, False]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 2
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing integer_swap")
+prog = [1, 2, ri.get_instruction_by_name('integer_swap')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_integer']) == 2
+assert i.state.stacks['_integer'].top_item() == 1
+
+
+i.reset_pysh_state()
+print("Testing float_swap")
+prog = [1.1, 2.1, ri.get_instruction_by_name('float_swap')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_float']) == 2
+assert i.state.stacks['_float'].top_item() == 1.1
+
+
+i.reset_pysh_state()
+print("Testing code_swap")
+prog = [ri.get_instruction_by_name('code_from_exec'), True, ri.get_instruction_by_name('code_from_exec'), False, ri.get_instruction_by_name('code_swap')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_code']) == 2
+assert i.state.stacks['_code'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing boolean_swap")
+prog = [True, False, ri.get_instruction_by_name('boolean_swap')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 2
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing string_swap")
+prog = ["HelloWorld", "HelloWorld", ri.get_instruction_by_name('string_swap')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_string']) == 2
+assert i.state.stacks['_string'].top_item() == "HelloWorld"
+
+
+i.reset_pysh_state()
+print("Testing char_swap")
+prog = [g.Character('A'), g.Character('B'), ri.get_instruction_by_name('char_swap')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_char']) == 2
+assert i.state.stacks['_char'].top_item().char == "A"
+
+
+
+
+
+
+
+
+
+

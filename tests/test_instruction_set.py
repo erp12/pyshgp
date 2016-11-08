@@ -993,6 +993,156 @@ assert len(i.state.stacks['_char']) == 2
 assert i.state.stacks['_char'].top_item().char == "A"
 
 
+i.reset_pysh_state()
+print("Testing exec_rot")
+prog = [ri.get_instruction_by_name('exec_rot'), "A", "B", "C"]
+i.run_push(prog)
+if not i.state.size() == 3:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 3." % i.state.size())
+assert len(i.state.stacks['_string']) == 3
+assert i.state.stacks['_string'].top_item() == "B"
+
+
+i.reset_pysh_state()
+print("Testing integer_rot")
+prog = [1, 2, 3, ri.get_instruction_by_name('integer_rot')]
+i.run_push(prog)
+if not i.state.size() == 3:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 3." % i.state.size())
+assert len(i.state.stacks['_integer']) == 3
+assert i.state.stacks['_integer'].top_item() == 1
+
+
+i.reset_pysh_state()
+print("Testing float_rot")
+prog = [1.1, 2.2, 3.3, ri.get_instruction_by_name('float_rot')]
+i.run_push(prog)
+if not i.state.size() == 3:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 3." % i.state.size())
+assert len(i.state.stacks['_float']) == 3
+assert i.state.stacks['_float'].top_item() == 1.1
+
+
+i.reset_pysh_state()
+print("Testing code_rot")
+prog = [ri.get_instruction_by_name('code_from_exec'), 1, ri.get_instruction_by_name('code_from_exec'), 2, ri.get_instruction_by_name('code_from_exec'), 3, ri.get_instruction_by_name('code_rot')]
+i.run_push(prog)
+if not i.state.size() == 3:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 3." % i.state.size())
+assert len(i.state.stacks['_code']) == 3
+assert i.state.stacks['_code'].top_item() == 1
+
+
+i.reset_pysh_state()
+print("Testing boolean_rot")
+prog = [True, False, True, ri.get_instruction_by_name('boolean_rot')]
+i.run_push(prog)
+if not i.state.size() == 3:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 3." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 3
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+i.reset_pysh_state()
+print("Testing string_rot")
+prog = ["A", "B", "C", ri.get_instruction_by_name('string_rot')]
+i.run_push(prog)
+if not i.state.size() == 3:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 3." % i.state.size())
+assert len(i.state.stacks['_string']) == 3
+assert i.state.stacks['_string'].top_item() == "A"
+
+
+i.reset_pysh_state()
+print("Testing char_rot")
+prog = [g.Character('A'), g.Character('B'), g.Character('C'), ri.get_instruction_by_name('char_rot')]
+i.run_push(prog)
+if not i.state.size() == 3:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 3." % i.state.size())
+assert len(i.state.stacks['_char']) == 3
+assert i.state.stacks['_char'].top_item().char == "A"
+
+
+i.reset_pysh_state()
+print("Testing exec_flush")
+prog = [ri.get_instruction_by_name('exec_flush'), 1, 2, 3]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+
+
+i.reset_pysh_state()
+print("Testing integer_flush")
+prog = [1, 2, 3, ri.get_instruction_by_name('integer_flush')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+
+
+i.reset_pysh_state()
+print("Testing float_flush")
+prog = [1.1, 2.2, 3.3, ri.get_instruction_by_name('float_flush')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+
+
+i.reset_pysh_state()
+print("Testing code_flush")
+prog = [ri.get_instruction_by_name('code_from_exec'), 1, ri.get_instruction_by_name('code_from_exec'), 2, ri.get_instruction_by_name('code_from_exec'), 3, ri.get_instruction_by_name('code_flush')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+
+
+i.reset_pysh_state()
+print("Testing boolean_flush")
+prog = [True, False, True, ri.get_instruction_by_name('boolean_flush')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+
+
+i.reset_pysh_state()
+print("Testing string_flush")
+prog = ["Hello", "World", ri.get_instruction_by_name('string_flush')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+
+
+i.reset_pysh_state()
+print("Testing char_flush")
+prog = [g.Character('A'), g.Character('B'), g.Character('C'), ri.get_instruction_by_name('char_flush')]
+i.run_push(prog)
+if not i.state.size() == 0:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 0." % i.state.size())
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -236,8 +236,8 @@ def flusher(pysh_type):
     def flush(state):
         state.stacks[pysh_type].stack_flush()
     instruction = instr.Pysh_Instruction(pysh_type[1:] + '_flush',
-                                                    flush,
-                                                    stack_types = [pysh_type])
+                                         flush,
+                                         stack_types = [pysh_type])
     return instruction
 registered_instructions.register_instruction(flusher('_exec'))
 #<instr_open>

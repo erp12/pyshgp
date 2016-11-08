@@ -38,7 +38,7 @@ class Pysh_Stack(list):
         self.insert(position, value)
 
     def stack_flush(self):
-        self = Pysh_Stack(self.pysh_type)
+        del self[:]
 
     def __repr__(self):
         self_r = list(self[::-1])

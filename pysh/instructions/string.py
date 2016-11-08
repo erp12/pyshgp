@@ -58,15 +58,14 @@ registered_instructions.register_instruction(string_from_boolean_intruction)
 
 def string_concat(state):
     if len(state.stacks['_string']) > 1:
-        s1 = state.stacks['_string'].stack_ref(0)
-        s2 = state.stacks['_string'].stack_ref(0)
+        s0 = state.stacks['_string'].stack_ref(0)
+        s1 = state.stacks['_string'].stack_ref(1)
         state.stacks['_string'].pop_item()
         state.stacks['_string'].pop_item()
-        state.stacks['_string'].push_item(s1 + s2)
-    return state
+        state.stacks['_string'].push_item(s1 + s0)
 string_concat_instruction = instr.Pysh_Instruction('string_concat',
-                                                               string_concat,
-                                                               stack_types = ['_string'])
+                                                   string_concat,
+                                                   stack_types = ['_string'])
 registered_instructions.register_instruction(string_concat_instruction)
 #<instr_open>
 #<instr_name>string_concat

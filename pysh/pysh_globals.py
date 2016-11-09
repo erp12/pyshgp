@@ -37,6 +37,10 @@ class Character(object):
           return 'c_space'
         return "c_" + self.char
 
+    def __eq__(self, other):
+        return self.char == other.char
+
+
               
 # These definitions are used by instructions to keep computed values within limits
 # or when using random instructions.

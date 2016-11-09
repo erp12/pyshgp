@@ -1133,14 +1133,157 @@ if not i.state.size() == 0:
     raise Exception("State has %r items. Should be 0." % i.state.size())
 
 
+i.reset_pysh_state()
+print("Testing exec_eq")
+prog = [ri.get_instruction_by_name('exec_eq'), 1, 1]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [ri.get_instruction_by_name('exec_eq'), 1, 2]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
 
 
+i.reset_pysh_state()
+print("Testing integer_eq")
+prog = [1, 1, ri.get_instruction_by_name('integer_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [1, 2, ri.get_instruction_by_name('integer_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
 
 
+i.reset_pysh_state()
+print("Testing float_eq")
+prog = [1.1, 1.1, ri.get_instruction_by_name('float_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [1.1, 2.2, ri.get_instruction_by_name('float_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
 
 
+i.reset_pysh_state()
+print("Testing code_eq")
+prog = [ri.get_instruction_by_name('code_from_exec'), 1, ri.get_instruction_by_name('code_from_exec'), 1, ri.get_instruction_by_name('code_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [ri.get_instruction_by_name('code_from_exec'), 1, ri.get_instruction_by_name('code_from_exec'), 2, ri.get_instruction_by_name('code_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
 
 
+i.reset_pysh_state()
+print("Testing boolean_eq")
+prog = [True, True, ri.get_instruction_by_name('boolean_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [True, False, ri.get_instruction_by_name('boolean_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+
+i.reset_pysh_state()
+print("Testing string_eq")
+prog = ["Hello", "Hello", ri.get_instruction_by_name('string_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = ["Hello", "World", ri.get_instruction_by_name('string_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+
+i.reset_pysh_state()
+print("Testing char_eq")
+prog = [g.Character('A'), g.Character('A'), ri.get_instruction_by_name('char_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = [g.Character('A'), g.Character('B'), ri.get_instruction_by_name('char_eq')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+
+i.reset_pysh_state()
+print("Testing [type]_stack_depth instructions")
+prog = [True, False, 1.5, ri.get_instruction_by_name('exec_stack_depth'), ri.get_instruction_by_name('integer_stack_depth'), ri.get_instruction_by_name('float_stack_depth'), ri.get_instruction_by_name('boolean_stack_depth')]
+i.run_push(prog)
+if not i.state.size() == 7:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 7." % i.state.size())
+assert i.state.stacks['_integer'].stack_ref(0) == 2
+assert i.state.stacks['_integer'].stack_ref(1) == 1
+assert i.state.stacks['_integer'].stack_ref(2) == 1
+assert i.state.stacks['_integer'].stack_ref(3) == 3
 
 
 

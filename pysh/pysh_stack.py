@@ -35,7 +35,7 @@ class Pysh_Stack(list):
             return self[(len(self) - 1) - position]
         
     def stack_insert(self, position, value):
-        self.insert(position, value)
+        self.insert(len(self) - position, value)
 
     def stack_flush(self):
         del self[:]

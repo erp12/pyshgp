@@ -396,11 +396,11 @@ def yanker(pysh_type):
             state.stacks['_integer'].pop_item()
             actual_index = int(max(0, min(raw_index, len(state.stacks[pysh_type]) - 1)))
             item = state.stacks[pysh_type].stack_ref(actual_index)
-            del state.stacks[pysh_type][actual_index]
+            del state.stacks[pysh_type][-actual_index-1]
             state.stacks[pysh_type].push_item(item)
     instruction = instr.Pysh_Instruction(pysh_type[1:] + '_yank',
-                                                    yank,
-                                                    stack_types = [pysh_type])
+                                         yank,
+                                         stack_types = [pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 0
     if not pysh_type == '_integer':

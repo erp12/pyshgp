@@ -9,7 +9,11 @@ Examples
    Integer_Regression
    Sextic
 
-Coming Soon!
+Other examples found in repository:
 
-- Iris
-- Replace Space With Newline
+- Replace Space Wtih Newline 
+- Iris Classification
+- String Manipulation
+- Credit Classification
+
+`See all examples here <https://github.com/erp12/Pysh/tree/master/examples>`_

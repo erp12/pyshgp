@@ -80,7 +80,7 @@ The most notable parameter for the sextic progrem is that it uses ``epsilon_lexi
 
 For regression problems, it is helpful to have a small, non-zero ``error_threshold`` because perfect solutions are difficult to evolve.
 
-The sextic atom_generators consist of basic floating point math instructions, random floating point constants, and a single input instruction.
+The sextic ``atom_generators`` consist of basic floating point math instructions, random floating point constants, and a single input instruction.
 
 There is no need for ``epigenetic_markers``, because nested structures are not required to solve this problem.
 

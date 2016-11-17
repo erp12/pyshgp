@@ -86,7 +86,7 @@ Recombination operators typically use 2 or more parents. Unlike mutation, the re
 Alternation
 """""""""""
 
-Uniformly alternates between the two parent plush genomes
+Uniformly alternates between the two parent plush genomes.
 
 
 Adding Additional Operators

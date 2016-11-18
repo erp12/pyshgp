@@ -25,6 +25,9 @@ from . import genetic_operators as go
 from . import evolution_monitors as monitor
 from . import reporting
 
+from sklearn.cluster import KMeans
+import numpy as np
+
 
 default_evolutionary_params = {
 "error_threshold" : 0, # If any total error of individual is below this, that is considered a solution
@@ -105,7 +108,9 @@ default_evolutionary_params = {
 #
 "max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
 "parallel_evaluation" : True,
-"parallel_genetics" : False
+"parallel_genetics" : False,
+
+"cluster_to_test_cases_ratio" : 0.2, # If there are 200 test cases, there will be 20 clusters 
 }
 
 def grab_command_line_params(evolutionary_params):
@@ -225,11 +230,19 @@ def evolution(error_function, problem_params):
         print()
         print("Starting Generation:", g)
 
+        start_time = datetime.datetime.now()
+        if evolutionary_params['selection_method'] == 'cluster_lexicase':
+            print("Clustering population by error vectors")
+            num_clusters = int(evolutionary_params["cluster_to_test_cases_ratio"] * len(population[0].get_errors()))
+            all_errors = np.array([ind.get_errors() for ind in population])
+            # print("K:", num_clusters)
+            evolutionary_params['clusters'] = KMeans(n_clusters=num_clusters).fit(all_errors)
+
         # Select parents and mate them to create offspring
         print("Performing selection and variation.")
-        start_time = datetime.datetime.now()
-        offspring = go.genetics(population, evolutionary_params)
+        offspring = go.genetics(population, evolutionary_params, )
         end_time = datetime.datetime.now()
+        print(end_time - start_time)
         reporting.log_timings("genetics", start_time, end_time)
 
         print("Evaluating new individuals in population.")

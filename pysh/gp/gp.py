@@ -97,12 +97,12 @@ default_evolutionary_params = {
                        "unique_program_count" : True,
                        "unique_error_vectors" : True,
                        "best_program_by_total_error" : True},
-"text_every_x_generations" : 10,
+"SMS_every_x_generations" : 0, # Send SMS every few x generations. 0 means never send text.
 
 # End of run plots
 "reports" : {"timings" : True,
              "plot_piano_roll" : False,
-             "final_text" : True},
+             "final_SMS" : True},
 
 #
 "max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
@@ -210,9 +210,8 @@ def evolution(error_function, problem_params):
     print()
 
     # If you want to use Twilio to text you occasional updates
-    if evolutionary_params['final_text'] or (evolutionary_params['text_every_x_generations'] != None and evolutionary_params['text_every_x_generations'] > 0):
+    if evolutionary_params['reports']['final_SMS'] or (evolutionary_params['SMS_every_x_generations'] != None and evolutionary_params['SMS_every_x_generations'] > 0):
         print("Preparing to send text updates")
-        evolutionary_params['enable_text_updates'] = True
         from .. import text_me
         if sys.version_info[0] == 3:
             evolutionary_params['run_name'] = input("Enter a name for this run: ")
@@ -240,7 +239,7 @@ def evolution(error_function, problem_params):
         print("Starting Generation:", g)
         final_generation = g
 
-        if evolutionary_params['enable_text_updates'] = True and g > 0 and g % evolutionary_params['text_every_x_generations'] == 0:
+        if (evolutionary_params['SMS_every_x_generations'] != None and evolutionary_params['SMS_every_x_generations'] > 0) and g > 0 and g % evolutionary_params['SMS_every_x_generations'] == 0:
             text_me.send_text_msg(evolutionary_params['run_name'] + " just reached generation " + str(g) + ".")
 
         # Select parents and mate them to create offspring
@@ -290,8 +289,8 @@ def evolution(error_function, problem_params):
     print()
     if evolutionary_params["reports"]["plot_piano_roll"]:
         reporting.plot_piano_roll()
-    if evolutionary_params["reports"]["final_text"]:
-        text_me.send_text_msg(evolutionary_params['run_name'] + " just because " + str(stop_reason) + ".")
+    if evolutionary_params["reports"]["final_SMS"]:
+        text_me.send_text_msg(evolutionary_params['run_name'] + " just stopped because " + str(stop_reason) + ".")
 
 
 

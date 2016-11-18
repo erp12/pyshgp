@@ -100,10 +100,12 @@ default_evolutionary_params = {
                        "unique_program_count" : True,
                        "unique_error_vectors" : True,
                        "best_program_by_total_error" : True},
+"SMS_every_x_generations" : 0, # Send SMS every few x generations. 0 means never send text.
 
 # End of run plots
 "reports" : {"timings" : True,
-             "plot_piano_roll" : False},
+             "plot_piano_roll" : False,
+             "final_SMS" : True},
 
 #
 "max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
@@ -212,6 +214,15 @@ def evolution(error_function, problem_params):
             print(value)
     print()
 
+    # If you want to use Twilio to text you occasional updates
+    if evolutionary_params['reports']['final_SMS'] or (evolutionary_params['SMS_every_x_generations'] != None and evolutionary_params['SMS_every_x_generations'] > 0):
+        print("Preparing to send text updates")
+        from .. import text_me
+        if sys.version_info[0] == 3:
+            evolutionary_params['run_name'] = input("Enter a name for this run: ")
+        else: # Python 2
+            evolutionary_params['run_name'] = raw_input("Enter a name for this run: ")
+
     # Create Initial Population
     print("Creating Initial Population")
     population = generate_random_population(evolutionary_params)
@@ -226,9 +237,15 @@ def evolution(error_function, problem_params):
     # Sort the population
     population = sorted(population, key=lambda ind: ind.get_total_error())
 
+    final_generation = 0
+    stop_reason = None
     for g in range(evolutionary_params["max_generations"]):
         print()
         print("Starting Generation:", g)
+        final_generation = g
+
+        if (evolutionary_params['SMS_every_x_generations'] != None and evolutionary_params['SMS_every_x_generations'] > 0) and g > 0 and g % evolutionary_params['SMS_every_x_generations'] == 0:
+            text_me.send_text_msg(evolutionary_params['run_name'] + " just reached generation " + str(g) + ".")
 
         start_time = datetime.datetime.now()
         if evolutionary_params['selection_method'] == 'cluster_lexicase':
@@ -269,12 +286,14 @@ def evolution(error_function, problem_params):
             print(solutions[0].get_genome())
             print()
             simp.auto_simplify(solutions[0], error_function, evolutionary_params["final_simplification_steps"])
+            stop_reason = 'Solution Found'
             break # Finish evolutionary run
 
         if g == evolutionary_params['max_generations'] - 1:
             print('Best program in final generation:')
             print(population[0].get_program())
             print('Errors:', population[0].get_errors())
+            stop_reason = 'Max Generation'
 
     print()
     print("Generating End of Run Reports")
@@ -283,4 +302,8 @@ def evolution(error_function, problem_params):
     print()
     if evolutionary_params["reports"]["plot_piano_roll"]:
         reporting.plot_piano_roll()
+    if evolutionary_params["reports"]["final_SMS"]:
+        text_me.send_text_msg(evolutionary_params['run_name'] + " just stopped because " + str(stop_reason) + ".")
+
+
 

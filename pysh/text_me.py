@@ -17,15 +17,9 @@ to = twilio_json['send_to']
 from_ = twilio_json['twilio_number']
 client = TwilioRestClient(account_sid, auth_token)
 
-print()
-print(twilio_json)
-print()
-
 def send_text_msg(body):
 	try:
 		message = client.messages.create(to=to, from_=from_,
 	                                     body=body)
 	except TwilioRestException as e:
 	    print(e)
-
-send_text_msg("Test")

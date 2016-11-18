@@ -97,6 +97,7 @@ default_evolutionary_params = {
                        "unique_program_count" : True,
                        "unique_error_vectors" : True,
                        "best_program_by_total_error" : True},
+"text_every_x_generations" : 10,
 
 # End of run plots
 "reports" : {"timings" : True,
@@ -206,6 +207,16 @@ def evolution(error_function, problem_params):
         else:
             print(value)
     print()
+
+    # If you want to use Twilio to text you occasional updates
+    if (not evolutionary_params['text_every_x_generations'] == None) and evolutionary_params['text_every_x_generations'] > 0:
+        print("Preparing to send text updates")
+        evolutionary_params['enable_text_updates'] = True
+        from .. import text_me
+        if sys.version_info[0] == 3:
+            evolutionary_params['run_name'] = input("Enter a name for this run: ")
+        else: # Python 2
+            evolutionary_params['run_name'] = raw_input("Enter a name for this run: ")
 
     # Create Initial Population
     print("Creating Initial Population")

@@ -117,13 +117,15 @@ def string_split_at_index(state):
         i = state.stacks['_integer'].stack_ref(0)
         s_head = s[:i]
         s_tail = s[i:]
+        state.stacks['_integer'].pop_item()
         state.stacks['_string'].pop_item()
         state.stacks['_string'].push_item(s_head)
         state.stacks['_string'].push_item(s_tail)
     return state
 string_split_at_index_instruction = instr.Pysh_Instruction('string_split_at_index',
-                                                                      string_split_at_index,
-                                                                      stack_types = ['_string', '_integer'])
+                                                           string_split_at_index,
+                                                           stack_types = ['_string', '_integer'])
+registered_instructions.register_instruction(string_split_at_index_instruction)
 #<instr_open>
 #<instr_name>string_split_at_index
 #<instr_desc>Pushes 2 strings from top string being split at index given by top integer.

@@ -242,7 +242,7 @@ def greater_than_equal(pysh_type):
     '''
     def gte(state):
         if len(state.stacks[pysh_type])>1:
-            new_bool = state.stacks[pysh_type].stack_ref(1) > state.stacks[pysh_type].stack_ref(0)
+            new_bool = state.stacks[pysh_type].stack_ref(1) >= state.stacks[pysh_type].stack_ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
             state.stacks['_boolean'].push_item(new_bool)

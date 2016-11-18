@@ -38,7 +38,9 @@ class Character(object):
         return "c_" + self.char
 
     def __eq__(self, other):
-        return self.char == other.char
+        if isinstance(other, Character):
+          return self.char == other.char
+        return False
 
 
               

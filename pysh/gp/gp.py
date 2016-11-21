@@ -24,11 +24,11 @@ from . import individual
 from . import genetic_operators as go
 from . import evolution_monitors as monitor
 from . import reporting
+from . import evo_params
 
 from sklearn.cluster import KMeans
 import numpy as np
 
-import evo_params
 
 def load_program_from_list(lst, atom_generators = default_evolutionary_params["atom_generators"]):
     """

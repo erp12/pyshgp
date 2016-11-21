@@ -1,4 +1,7 @@
+pysh_job.alf
 *text_me.json
+tractor_pysh_run.sh
+
 *.pyc
 *.png
 

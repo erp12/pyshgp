@@ -120,7 +120,6 @@ RSWN_params = {
     "final_report_simplifications" : 5000,
 
     "selection_method" : 'cluster_lexicase'
-    #'max_workers' : 1
 }
 
 def test_RSWN_solution(err_func):

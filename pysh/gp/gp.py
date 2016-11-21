@@ -141,7 +141,7 @@ def evolution(error_function, problem_params):
             num_clusters = int(evolutionary_params["cluster_to_test_cases_ratio"] * len(population[0].get_errors()))
             all_errors = np.array([ind.get_errors() for ind in population])
             # print("K:", num_clusters)
-            evolutionary_params['clusters'] = KMeans(n_clusters=num_clusters).fit(all_errors)
+            evolutionary_params['clusters'] = KMeans(n_clusters=num_clusters, n_init=3).fit(all_errors)
 
         # Select parents and mate them to create offspring
         print("Performing selection and variation.")

@@ -28,10 +28,11 @@ default_evolutionary_params = {
 #############
 # SELECTION #
 #############
-"selection_method" : "lexicase", # Options are 'lexicase', 'epsilon_lexicase' or tournament';
+"selection_method" : "lexicase", # Options are 'lexicase', 'epsilon_lexicase', 'cluster_lexicase' or tournament';
 
 # Arguments related to lexicase selection, and its variants
 "epsilon_lexicase_epsilon" : None, # Defines a hard-coded epsilon. If None, automaticly defines epsilon using MAD.
+"clusters" : 0.5,
 
 # Arguments related to Tournament Selection
 "tournament_size" : 7, # If using tournament selection, the size of the tournaments

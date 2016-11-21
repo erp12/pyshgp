@@ -30,7 +30,7 @@ from sklearn.cluster import KMeans
 import numpy as np
 
 
-def load_program_from_list(lst, atom_generators = default_evolutionary_params["atom_generators"]):
+def load_program_from_list(lst, atom_generators = evo_params.default_evolutionary_params["atom_generators"]):
     """
     Loads a program from a list, and checks each string in list for an
     instruction with the same name.

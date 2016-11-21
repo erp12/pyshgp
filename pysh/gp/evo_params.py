@@ -76,12 +76,13 @@ default_evolutionary_params = {
                        "unique_program_count" : True,
                        "unique_error_vectors" : True,
                        "best_program_by_total_error" : True},
-"SMS_every_x_generations" : 0, # Send SMS every few x generations. 0 means never send text.
+# Send SMS every few x generations. 0 means never send text.
+"SMS_every_x_generations" : 0,
 
 # End of run plots
 "reports" : {"timings" : True,
              "plot_piano_roll" : False,
-             "final_SMS" : True},
+             "final_SMS" : False},
 
 #
 "max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
@@ -130,10 +131,10 @@ def grab_command_line_params(evolutionary_params):
 def init_executor(evolutionary_params):
     from pathos.multiprocessing import ProcessingPool as Pool
 
-    if params["max_workers"] == None:
-        params["pool"] = Pool()
+    if evolutionary_params["max_workers"] == None:
+        evolutionary_params["pool"] = Pool()
     else:
-        params['pool'] = Pool(params["max_workers"])
+        evolutionary_params['pool'] = Pool(evolutionary_params["max_workers"])
 
 def setup_SMS(evolutionary_params):
     print("Preparing to send text updates")

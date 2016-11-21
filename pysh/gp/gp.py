@@ -28,114 +28,7 @@ from . import reporting
 from sklearn.cluster import KMeans
 import numpy as np
 
-
-default_evolutionary_params = {
-"error_threshold" : 0, # If any total error of individual is below this, that is considered a solution
-"population_size" : 1000, # Size of the population at each generation
-"max_generations" : 1000, # Max generations before evoluion stops. Will stop sooner if solution is found
-"max_genome_initial_size" : 50, # Maximum size of random genomes generated for initial population
-"max_points" : 200, # Maximum size of push genomes and push programs, as counted by points in the program. <- Might not be implemented correctly yet
-
-# The instructions that pushgp will use in random code generation
-"atom_generators" : u.merge_dicts(registered_instructions.registered_instructions,
-                                  {"f1" : lambda: random.randint(0, 100),
-                                   "f2" : lambda: random.random()}),
-
-# Probabilities of parents from previous generation undergoing each
-# genetic operators to produce a child.
-# More coming soon!
-"genetic_operator_probabilities" : {"alternation" : 0.7,
-                                    "uniform_mutation" : 0.1,
-                                    "alternation & uniform_mutation" : 0.2,
-                                    "uniform_close_mutation" : 0.0},
-
-#############
-# SELECTION #
-#############
-"selection_method" : "lexicase", # Options are 'lexicase', 'epsilon_lexicase' or tournament';
-
-# Arguments related to lexicase selection, and its variants
-"epsilon_lexicase_epsilon" : None, # Defines a hard-coded epsilon. If None, automaticly defines epsilon using MAD.
-
-# Arguments related to Tournament Selection
-"tournament_size" : 7, # If using tournament selection, the size of the tournaments
-
-###########################
-# CROSSOVER & ALTERNATION #
-###########################
-
-# Arguments related to alternation
-"alternation_rate" : 0.01, # When using alternation, how often alternates between the parents
-"alignment_deviation" : 10, # When using alternation, the standard deviation of how far alternation may jump between indices when switching between parents
-
-############
-# MUTATION #
-############
-
-# Arguments related to uniform mutation
-"uniform_mutation_rate" : 0.01, # The probability of each token being mutated during uniform mutation
-"uniform_mutation_constant_tweak_rate" : 0.5, # The probability of using a constant mutation instead of simply replacing the token with a random instruction during uniform mutation
-"uniform_mutation_float_gaussian_standard_deviation" : 1.0, # The standard deviation used when tweaking float constants with Gaussian noise
-"uniform_mutation_int_gaussian_standard_deviation" : 1, # The standard deviation used when tweaking integer constants with Gaussian noise
-"uniform_mutation_string_char_change_rate" : 0.1,
-
-# Arguments related to uniform close mutation
-"uniform_close_mutation_rate" : 0.1, # The probability of each :close being incremented or decremented during uniform close mutation.
-"close_increment_rate" : 0.2, # The probability of making an increment change to :close during uniform close mutation, as opposed to a decrement change.
-
-# Epignenetics
-"epigenetic_markers" : ["_close"], # A vector of the epigenetic markers that should be used in the individuals. Implemented options include: :close, :silent
-"close_parens_probabilities" : [0.772, 0.206, 0.021, 0.001], # A vector of the probabilities for the number of parens ending at that position.         
-"silent_instruction_probability" : 0.2, # If :silent is used as an epigenetic-marker, this is the probability of random instructions having :silent be true
-
-# Program Simplification
-"final_simplification_steps" : 5000, # The number of simplification steps that will happen upon finding a solution.
-
-# Monitoring Evolution
-"things_to_monitor" : {"best_total_error" : True,
-                       "average_total_error" : True,
-                       "average_genome_size" : True,
-                       "smallest_genome_size" : True,
-                       "largest_genome_size" : True,
-                       "unique_program_count" : True,
-                       "unique_error_vectors" : True,
-                       "best_program_by_total_error" : True},
-"SMS_every_x_generations" : 0, # Send SMS every few x generations. 0 means never send text.
-
-# End of run plots
-"reports" : {"timings" : True,
-             "plot_piano_roll" : False,
-             "final_SMS" : True},
-
-#
-"max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
-"parallel_evaluation" : True,
-"parallel_genetics" : False,
-
-"cluster_to_test_cases_ratio" : 0.2, # If there are 200 test cases, there will be 20 clusters 
-}
-
-def grab_command_line_params(evolutionary_params):
-    '''
-    Loads parameters from command line and overwrites the problem specific / default
-    parameter values.
-    '''
-    for arg in sys.argv:
-        if arg.startswith('--'):
-            (param,val) = arg.split("=")
-            if not (param[2:] in evolutionary_params):
-                print("WARNING:", "Unknown evolutionary parameter", param[2:], ". Still added to parameters.")
-            val = u.safe_cast_arg(val)
-            evolutionary_params[param[2:]] = val
-
-def init_executor(params):
-    from pathos.multiprocessing import ProcessingPool as Pool
-
-    if params["max_workers"] == None:
-        params["pool"] = Pool()
-    else:
-        params['pool'] = Pool(params["max_workers"])
-
+import evo_params
 
 def load_program_from_list(lst, atom_generators = default_evolutionary_params["atom_generators"]):
     """
@@ -191,8 +84,8 @@ def evolution(error_function, problem_params):
     """ 
 
     # Get the params for the run
-    evolutionary_params = u.merge_dicts(default_evolutionary_params, problem_params)
-    grab_command_line_params(evolutionary_params)
+    evolutionary_params = u.merge_dicts(evo_params.default_evolutionary_params, problem_params)
+    evo_params.grab_command_line_params(evolutionary_params)
     evolutionary_params['genetic_operator_probabilities'] = u.normalize_genetic_operator_probabilities(evolutionary_params['genetic_operator_probabilities'])
 
     # Make certain params globally accesable
@@ -201,7 +94,7 @@ def evolution(error_function, problem_params):
     # Prepare for multi-threading if specified by user
     if evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1:
         print("Preparing Pysh for parellel evaluations")
-        init_executor(evolutionary_params)
+        evo_params.init_executor(evolutionary_params)
 
     print("Starting GP Run With Parameters:")
     print()
@@ -216,12 +109,7 @@ def evolution(error_function, problem_params):
 
     # If you want to use Twilio to text you occasional updates
     if evolutionary_params['reports']['final_SMS'] or (evolutionary_params['SMS_every_x_generations'] != None and evolutionary_params['SMS_every_x_generations'] > 0):
-        print("Preparing to send text updates")
-        from .. import text_me
-        if sys.version_info[0] == 3:
-            evolutionary_params['run_name'] = input("Enter a name for this run: ")
-        else: # Python 2
-            evolutionary_params['run_name'] = raw_input("Enter a name for this run: ")
+        evo_params.setup_SMS(evolutionary_params)
 
     # Create Initial Population
     print("Creating Initial Population")

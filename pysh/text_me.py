@@ -9,7 +9,7 @@ import requests
 
 # Find these values at https://twilio.com/user/account
 twilio_json = None
-with open('/Users/mm94978/Google_Drive/Research/pysh/pysh/text_me.json') as f:
+with open('~/text_me.json') as f:
 	twilio_json = json.load(f)
 account_sid = twilio_json['account_sid']
 auth_token = twilio_json['auth_token']

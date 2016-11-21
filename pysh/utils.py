@@ -13,17 +13,6 @@ import random
 from . import instruction as instr
 from . import pysh_globals as g
 
-def safe_cast_arg(arg, typ = int):
-    try:
-        return typ(arg)
-    except Exception as e:
-        if typ == int:
-            safe_cast_arg(arg, float)
-        elif typ == float:
-            safe_cast_arg(arg, bool)
-        else:
-            return str(arg)
-
 def flatten_all(lst):
     result = []
     for i in lst:

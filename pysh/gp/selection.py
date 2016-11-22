@@ -69,7 +69,8 @@ def cluster_lexicase_selection(population, clusters, k = 1):
 
     selected_clusters = []
 
-    non_empty_clusers = filter(lambda x: x in clusters.labels_, list(range(len(clusters.cluster_centers_))))
+    #non_empty_clusers = list(filter(lambda x: x in clusters.labels_, list(range(len(clusters.cluster_centers_)))))
+    non_empty_clusers = [x for x in list(range(len(clusters.cluster_centers_))) if x in clusters.labels_]
 
     for i in range(k):
         candidates = non_empty_clusers

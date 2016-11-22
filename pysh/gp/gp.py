@@ -138,10 +138,9 @@ def evolution(error_function, problem_params):
         start_time = datetime.datetime.now()
         if evolutionary_params['selection_method'] == 'cluster_lexicase':
             print("Clustering population by error vectors")
-            num_clusters = int(evolutionary_params["cluster_to_test_cases_ratio"] * len(population[0].get_errors()))
             all_errors = np.array([ind.get_errors() for ind in population])
-            # print("K:", num_clusters)
-            evolutionary_params['clusters'] = KMeans(n_clusters=num_clusters, n_init=3).fit(all_errors)
+            evolutionary_params['clusters'] = KMeans(n_clusters=evolutionary_params["cluster_lexicase_clusters"], n_init=3).fit(all_errors)
+            reporting.log_timings("clustering", start_time, datetime.datetime.now())
 
         # Select parents and mate them to create offspring
         print("Performing selection and variation.")

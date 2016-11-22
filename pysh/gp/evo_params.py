@@ -32,7 +32,7 @@ default_evolutionary_params = {
 
 # Arguments related to lexicase selection, and its variants
 "epsilon_lexicase_epsilon" : None, # Defines a hard-coded epsilon. If None, automaticly defines epsilon using MAD.
-"cluster_to_test_cases_ratio" : 0.5, # If problem uses 200 test calse and this value is 0.1, then the number of clusters (if cluster_lexicase is the selection method) would be 20.
+"cluster_lexicase_clusters" : 3,
 
 # Arguments related to Tournament Selection
 "tournament_size" : 7, # If using tournament selection, the size of the tournaments

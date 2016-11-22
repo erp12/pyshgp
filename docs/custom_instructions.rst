@@ -37,13 +37,14 @@ To create an instruction object, you need to instantiate the Instruction class f
 Instantiating the Instruction class requires 1) The name the instruction should be registered as 2) an instruction function (described above) 3) the stack types used by the instruction and 4) the number of open parentheses that should follow the instruction, if applicable.
 
 For our ``string_concat`` instruction, the instruction object would be created like this: 
-:: python
+
+.. code:: python
 
     string_concat_instruction = instr.Pysh_Instruction('string_concat', string_concat, stack_types = ['_string'])
 
 The second argument (``string_concat``) is a reference to the function we defined in the above section. Notice that the number of open parenthesis did not need to be specified because the default value is 0. The ``exec_do_range`` instruction should specify that one open parenthesis is inserted in the program after the instruction. The instantiation of the Instruction class would look like this:
 
-:: python
+.. code:: python
 
     exec_do_range_intruction = instr.Pysh_Instruction('exec_do*range', exec_do_range, stack_types = ['_exec', '_integer'], parentheses = 1)
 

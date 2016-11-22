@@ -1,6 +1,12 @@
-***************
-Instruction Set
-***************
+.. sidebar:: Useful Links
+
+ * `Evolutionary Parameters <Evolutionary_Parameters.html>`_
+ * `Instruction Set <Instructions.html>`_
+ * `Examples <Examples.html>`_
+
+********************
+Pysh Instruction Set
+********************
 
 Standard Instruction Set
 ########################
@@ -160,8 +166,8 @@ exec_do*count
 An iteration instruction that performs a loop (the body of which is taken from the `exec` stack) the number of times indicated by the `integer` argument, pushing an index (which runs from zero to one less than the number of iterations) onto the `integer` stack prior to each execution of the loop body. This is similar to `code_do*count` except that it takes its code argument from the `exec` stack.
 
 
-code_do*times'
-""""""""""""""
+code_do*times
+"""""""""""""
 Like `code_do*count` but does not push the loop counter.
 
 
@@ -177,7 +183,7 @@ Repeats the top item of the exect stack until the boolean stack has a False or i
 
 exec_do*while
 """""""""""""
-Similar to `exec_while`.
+Pushes the next item on the `exec` stack until the boolean stack has a False or is empty. Similar to `exec_while`, but results in one extra call to the body of the loop.
 
 
 code_if
@@ -832,7 +838,12 @@ Pushes 2 strings from top string being split at index given by top integer.
 
 string_split_at_str
 """""""""""""""""""
-Pushes 2 strings from top string being split on second string.
+Pushes all strings resulting from the second string being split on top string.
+
+
+string_split_at_char
+""""""""""""""""""""
+Pushes all strings resulting from the top `string` being split on top `char`.
 
 
 string_split_at_space
@@ -855,14 +866,14 @@ string_char_at
 Pushes string of character in top string at index given by top integer.
 
 
-string_emptystring
-""""""""""""""""""
+string_empty_string
+"""""""""""""""""""
 Pushes True if top string is an emptry string. Pushes False otherwise.
 
 
 string_contains
 """""""""""""""
-Pushes True is second string is a substring of top string. Pushes False otherwise.
+Pushes True if the top string is a substring of the second string. False otherwise.
 
 
 string_replace
@@ -885,8 +896,8 @@ string_first
 Pushes the first `char` of the top `string`.
 
 
-string_first
-""""""""""""
+string_last
+"""""""""""
 Pushes the last `char` of the top `string`.
 
 
@@ -900,10 +911,14 @@ string_replace_char
 Pushes the top `string` with all occurences of second `char` replaced with the top `char`.
 
 
-string_replace_first_char_instruction
-"""""""""""""""""""""""""""""""""""""
+string_replace_first_char
+"""""""""""""""""""""""""
 Pushes the top `string` with the first occurence of second `char` replaced with the top `char`.
 
+
+string_remove_char
+""""""""""""""""""
+Pushes the top `string` with all occurences of top `char` removed.
 
 
 Special Instructions
@@ -912,6 +927,6 @@ Special Instructions
 .. toctree::
    :maxdepth: 1
 
-   custom_instructions
    Input_Output_Instr
+   custom_instructions
 

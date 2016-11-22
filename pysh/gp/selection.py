@@ -66,10 +66,13 @@ def epsilon_lexicase_selection(individuals, epsilon = None, k = 1):
 
 def cluster_lexicase_selection(population, clusters, k = 1):
     centers = clusters.cluster_centers_
+
     selected_clusters = []
 
+    non_empty_clusers = filter(lambda x: x in clusters.labels_, list(range(len(clusters.cluster_centers_))))
+
     for i in range(k):
-        candidates = list(range(len(clusters.cluster_centers_)))
+        candidates = non_empty_clusers
         cases = list(range(len(centers[0])))
         random.shuffle(cases)
 
@@ -84,10 +87,7 @@ def cluster_lexicase_selection(population, clusters, k = 1):
     selected_individuals = []
     for cl in selected_clusters:
         inds_in_cluster = [population[i] for i in list(range(len(population))) if clusters.labels_[i] == cl]
-        if len(inds_in_cluster) > 0:
-            selected_individuals.append(random.choice(inds_in_cluster))
-        else:
-            selected_individuals.append(random.choice(population))
+        selected_individuals.append(random.choice(inds_in_cluster))
 
         
     return selected_individuals

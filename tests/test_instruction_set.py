@@ -2023,9 +2023,187 @@ if not i.state.size() == 3:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 3." % i.state.size())
 assert len(i.state.stacks['_string']) == 3
-assert i.state.stacks['_string'],top_item() == 'rld'
+assert i.state.stacks['_string'].top_item() == 'rld'
 
 
+i.reset_pysh_state()
+print("Testing string_split_at_space")
+prog = ["Hello World", ri.get_instruction_by_name('string_split_at_space')]
+i.run_push(prog)
+if not i.state.size() == 2:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 2." % i.state.size())
+assert len(i.state.stacks['_string']) == 2
+assert i.state.stacks['_string'].top_item() == 'World'
 
 
+i.reset_pysh_state()
+print("Testing string_length")
+prog = ["Hello World", ri.get_instruction_by_name('string_length')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_integer']) == 1
+assert i.state.stacks['_integer'].top_item() == 11
 
+
+i.reset_pysh_state()
+print("Testing string_reverse")
+prog = ["Hello", ri.get_instruction_by_name('string_reverse')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert i.state.stacks['_string'].top_item() == 'olleH'
+
+
+i.reset_pysh_state()
+print("Testing string_char_at")
+prog = ["Hello", 1, ri.get_instruction_by_name('string_char_at')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 1
+assert i.state.stacks['_char'].top_item().char == 'e'
+
+
+i.reset_pysh_state()
+print("Testing string_empty_string")
+prog = ['', ri.get_instruction_by_name('string_empty_string')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = ['HelloWorld', ri.get_instruction_by_name('string_empty_string')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+
+i.reset_pysh_state()
+print("Testing string_contains")
+prog = ['HelloWorld', 'loW', ri.get_instruction_by_name('string_contains')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+prog = ['zzz', 'HelloWorld', ri.get_instruction_by_name('string_contains')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == False
+
+
+i.reset_pysh_state()
+print("Testing string_replace")
+prog = ['Hello World', 'o', '0', ri.get_instruction_by_name('string_replace')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert i.state.stacks['_string'].top_item() == 'Hell0 W0rld'
+
+
+i.reset_pysh_state()
+print("Testing string_from_char")
+prog = [g.Character('E'), ri.get_instruction_by_name('string_from_char')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert i.state.stacks['_string'].top_item() == 'E'
+
+
+i.reset_pysh_state()
+print("Testing string_append_char")
+prog = ['HelloWorl', g.Character('d'), ri.get_instruction_by_name('string_append_char')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert i.state.stacks['_string'].top_item() == 'HelloWorld'
+
+
+i.reset_pysh_state()
+print("Testing string_first")
+prog = ['HelloWorld', ri.get_instruction_by_name('string_first')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 1
+assert i.state.stacks['_char'].top_item().char == 'H'
+
+
+i.reset_pysh_state()
+print("Testing string_last")
+prog = ['HelloWorld', ri.get_instruction_by_name('string_last')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 1
+assert i.state.stacks['_char'].top_item().char == 'd'
+
+
+i.reset_pysh_state()
+print("Testing string_nth")
+prog = ['HelloWorld', 5, ri.get_instruction_by_name('string_nth')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_char']) == 1
+assert i.state.stacks['_char'].top_item().char == 'W'
+
+
+i.reset_pysh_state()
+print("Testing string_replace_char")
+prog = ['HelloWorld', g.Character('o'), g.Character('Z'), ri.get_instruction_by_name('string_replace_char')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert i.state.stacks['_string'].top_item() == 'HellZWZrld'
+
+
+i.reset_pysh_state()
+print("Testing string_replace_first_char")
+prog = ['HelloWorld', g.Character('o'), g.Character('Z'), ri.get_instruction_by_name('string_replace_first_char')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert i.state.stacks['_string'].top_item() == 'HellZWorld'
+
+
+i.reset_pysh_state()
+print("Testing string_remove_char")
+prog = ['HelloWorld', g.Character('o'), ri.get_instruction_by_name('string_remove_char')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_string']) == 1
+assert i.state.stacks['_string'].top_item() == 'HellWrld'

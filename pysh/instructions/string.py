@@ -252,7 +252,7 @@ registered_instructions.register_instruction(string_char_at_instruction)
 #<instr_close>
 
 
-def string_emptystring(state):
+def string_empty_string(state):
     if len(state.stacks['_string']) > 0:
         s = state.stacks['_string'].stack_ref(0)
         state.stacks['_string'].pop_item()
@@ -261,19 +261,19 @@ def string_emptystring(state):
         else:
             state.stacks['_boolean'].push_item(False)
     return state
-string_emptystring_instruction = instr.Pysh_Instruction('string_emptystring',
-                                                                    string_emptystring,
-                                                                    stack_types = ['_string', '_boolean'])
-registered_instructions.register_instruction(string_emptystring_instruction)    
+string_empty_string_instruction = instr.Pysh_Instruction('string_empty_string',
+                                                         string_empty_string,
+                                                         stack_types = ['_string', '_boolean'])
+registered_instructions.register_instruction(string_empty_string_instruction)    
 #<instr_open>
-#<instr_name>string_emptystring
+#<instr_name>string_empty_string
 #<instr_desc>Pushes True if top string is an emptry string. Pushes False otherwise.
 #<instr_close>
 
 
 def string_contains(state): 
     '''
-    True if top string is a substring of second string; false otherwise
+    True if the top string is a substring of the second string. False otherwise
     '''
     if len(state.stacks['_string']) > 1:
         s1 = state.stacks['_string'].stack_ref(0)
@@ -289,7 +289,7 @@ string_contains_instruction = instr.Pysh_Instruction('string_contains',
 registered_instructions.register_instruction(string_contains_instruction)
 #<instr_open>
 #<instr_name>string_contains
-#<instr_desc>Pushes True is second string is a substring of top string. Pushes False otherwise.
+#<instr_desc>Pushes True if the top string is a substring of the second string. False otherwise.
 #<instr_close>
 
 
@@ -377,7 +377,7 @@ string_last_instruction = instr.Pysh_Instruction('string_last',
                                                   stack_types = ['_string', '_char'])
 registered_instructions.register_instruction(string_last_instruction)
 #<instr_open>
-#<instr_name>string_first
+#<instr_name>string_last
 #<instr_desc>Pushes the last `char` of the top `string`.
 #<instr_close> 
 

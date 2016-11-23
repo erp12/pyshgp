@@ -41,6 +41,15 @@ Coming soon!
 Build Frome source
 """"""""""""""""""
 
+Make sure you have the following python packages:
+
+* ``pathos.multiprocessing`` from `pathos <https://github.com/uqfoundation/pathos>`_ (built-in multiprocessing will not work)
+* `numpy <http://www.numpy.org/>`_
+* `twilio <https://github.com/twilio/twilio-python>`_ (optional)
+
+
+Then:
+
 1. Clone the repo
 2. :code:`cd` into the pysh repo directory
 3. run :code:`python setup.py install`
@@ -70,6 +79,6 @@ Roadmap
 
 Pysh is currently under active development. Feel free to submit a pull request if you have any additions to make.
 
-To see what features are in development, or planned for the future, check out the Github project board `here <https://github.com/erp12/Pysh/projects/1>`_.
+To see what features are in development, or planned for the future, check out the `Github project board <https://github.com/erp12/Pysh/projects/1>`_.
 
-To see Pysh's release notes, check out the other Github project board `here <https://github.com/erp12/Pysh/projects/2>`_.
+To see Pysh's release notes, check out the `other Github project board <https://github.com/erp12/Pysh/projects/2>`_.

@@ -32,7 +32,7 @@ default_evolutionary_params = {
 
 # Arguments related to lexicase selection, and its variants
 "epsilon_lexicase_epsilon" : None, # Defines a hard-coded epsilon. If None, automaticly defines epsilon using MAD.
-"cluster_lexicase_clusters" : 3,
+"cluster_lexicase_clusters" : 10,
 
 # Arguments related to Tournament Selection
 "tournament_size" : 7, # If using tournament selection, the size of the tournaments
@@ -78,7 +78,7 @@ default_evolutionary_params = {
                        "unique_error_vectors" : True,
                        "best_program_by_total_error" : True},
 # Send SMS every few x generations. 0 means never send text.
-"SMS_every_x_generations" : 0,
+"SMS_every_x_generations" : None,
 
 # End of run plots
 "reports" : {"timings" : True,

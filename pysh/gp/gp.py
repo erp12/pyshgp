@@ -139,6 +139,8 @@ def evolution(error_function, problem_params):
         if evolutionary_params['selection_method'] == 'cluster_lexicase':
             print("Clustering population by error vectors")
             all_errors = np.array([ind.get_errors() for ind in population])
+            min_errors = [min(ev) for ev in all_errors.transpose()]
+            # FIND ELITE ON SOMETHING!!
             evolutionary_params['clusters'] = KMeans(n_clusters=evolutionary_params["cluster_lexicase_clusters"], n_init=3).fit(all_errors)
             reporting.log_timings("clustering", start_time, datetime.datetime.now())
 
@@ -146,7 +148,6 @@ def evolution(error_function, problem_params):
         print("Performing selection and variation.")
         offspring = go.genetics(population, evolutionary_params, )
         end_time = datetime.datetime.now()
-        print(end_time - start_time)
         reporting.log_timings("genetics", start_time, end_time)
 
         print("Evaluating new individuals in population.")

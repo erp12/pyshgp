@@ -44,6 +44,7 @@ def print_timings():
     print("Timings:")
     print("Evaluation Times (each gen):", [round(x, 3) for x in timings['evaluation']])
     print("Selection/Variations Times (each gen):", [round(x, 3) for x in timings['genetics']])
-    print("Time take up by clustering:", [round(x, 3) for x in timings['clustering']])
+    if len(timings['clustering']) > 0:
+        print("Time take up by clustering:", [round(x, 3) for x in timings['clustering']])
     print("Average Evaluation Timing of Generation:", round(sum(timings['evaluation']) / float(len(timings['evaluation'])), 3))
     print("Average Selection/Variations Timing of Generation:", round(sum(timings['genetics']) / float(len(timings['genetics'])), 3))

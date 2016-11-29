@@ -93,7 +93,6 @@ def evolution(error_function, problem_params):
 
     # Prepare for multi-threading if specified by user
     if evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1:
-        print("Preparing Pysh for parellel evaluations")
         evo_params.init_executor(evolutionary_params)
 
     print("Starting GP Run With Parameters:")

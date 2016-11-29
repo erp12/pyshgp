@@ -130,6 +130,7 @@ def grab_command_line_params(evolutionary_params):
         i += i_s
 
 def init_executor(evolutionary_params):
+    print("Preparing Pysh for parellel evaluations")
     from pathos.multiprocessing import ProcessingPool as Pool
 
     if evolutionary_params["max_workers"] == None:

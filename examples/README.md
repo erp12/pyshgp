@@ -43,6 +43,16 @@ Average Evaluation Timing of Generation: 53.077
 Average Selection/Variations Timing of Generation: 19.628
 ```
 
+### String Demo
+
+```
+Solution found on generation 10
+Evaluation Times (each gen): [1.537, 1.119, 1.622, 1.471, 1.636, 1.748, 1.496, 1.537, 1.651, 1.635, 1.359, 1.387]
+Selection/Variations Times (each gen): [0.251, 0.332, 0.43, 0.521, 0.52, 0.539, 0.517, 0.626, 0.566, 0.388, 0.66]
+Average Evaluation Timing of Generation: 1.516
+Average Selection/Variations Timing of Generation: 0.486
+```
+
 ## Solutions
 
 These solutions have undergone basic simplification. It is likely that they could be simplified further.
@@ -69,4 +79,10 @@ These solutions have undergone basic simplification. It is likely that they coul
 
 ```
 [_input0_INPT_INSTR, string_split_at_space_INSTR, string_concat_INSTR, c_space, c_space, string_concat_INSTR, string_concat_INSTR, string_concat_INSTR, string_concat_INSTR, string_concat_INSTR, string_concat_INSTR, string_concat_INSTR, string_concat_INSTR, float_stack_depth_INSTR, _input0_INPT_INSTR, string_char_at_INSTR, string_length_INSTR, char_eq_INSTR, float_stack_depth_INSTR, _input0_INPT_INSTR, c_newline, integer_shove_INSTR, string_replace_char_INSTR]
+```
+
+### String Demo
+
+```
+[integer_stack_depth_INSTR, integer_dup_INSTR, integer_stack_depth_INSTR, integer_sub_INSTR, string_head_INSTR, string_dup_INSTR, string_concat_INSTR]
 ```

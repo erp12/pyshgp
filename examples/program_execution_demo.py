@@ -23,7 +23,8 @@ print("benchmark problems.")
 programs = [("odd", [instr.Pysh_Input_Instruction(0), 2, '_integer_mod', 1, '_integer_eq'], [3]),
 			("rswn", [g.Character(" "), instr.Pysh_Input_Instruction(0), g.Character("\n"), '_string_replace_char', '_print_string', g.Character(" "), instr.Pysh_Input_Instruction(0), '_string_remove_char', '_char_all_from_string', '_char_stack_depth'], ["Hello Push GP!"]),
 			("string_demo", [instr.Pysh_Input_Instruction(0), '_integer_stack_depth', '_integer_dup', '_integer_stack_depth', '_integer_sub', '_string_head', '_string_dup', '_string_concat'], ["abcdefg"]),
-			("sextic", [instr.Pysh_Input_Instruction(0), instr.Pysh_Input_Instruction(0), '_float_dup', '_float_mult', '_float_div', instr.Pysh_Input_Instruction(0), instr.Pysh_Input_Instruction(0), '_float_mult', '_float_add', instr.Pysh_Input_Instruction(0), '_float_swap', '_float_dup', '_float_mult', '_float_mult', '_float_mult'], [1.23])]
+			("sextic", [instr.Pysh_Input_Instruction(0), instr.Pysh_Input_Instruction(0), '_float_dup', '_float_mult', '_float_div', instr.Pysh_Input_Instruction(0), instr.Pysh_Input_Instruction(0), '_float_mult', '_float_add', instr.Pysh_Input_Instruction(0), '_float_swap', '_float_dup', '_float_mult', '_float_mult', '_float_mult'], [1.23]),
+			("2-bit controlled shift register", [instr.Pysh_Input_Instruction(2), '_exec_shove', [instr.Pysh_Input_Instruction(1)], instr.Pysh_Input_Instruction(0)], [1, 0, 1])]
 
 # Print possible programs to demo
 print()

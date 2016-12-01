@@ -183,7 +183,7 @@ def ensure_list(thing):
 
 def levenshtein_distance(s1, s2):
     '''
-    Big thank to: https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
+    Big thanks to: https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
     '''
     if len(s1) < len(s2):
         return levenshtein_distance(s2, s1)

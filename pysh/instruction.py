@@ -25,7 +25,7 @@ class Pysh_Instruction(object):
         self.atom_type = INSTRUCTION_ATOM_TYPE
         
     def __repr__(self):
-        return str(self.name) + "_INSTR"
+        return str(self.name)
 
 class Pysh_Input_Instruction(Pysh_Instruction):
     '''
@@ -42,7 +42,7 @@ class Pysh_Input_Instruction(Pysh_Instruction):
         self.atom_type = INPUT_INSTRUCTION_ATOM_TYPE
         
     def __repr__(self):
-        return str(self.name) + "_INPT_INSTR"
+        return str(self.name)
 
 class Pysh_Class_Instruction(Pysh_Instruction):
     '''
@@ -58,4 +58,4 @@ class Pysh_Class_Instruction(Pysh_Instruction):
         self.atom_type = CLASS_LABEL_INSTRUCTION_ATOM_TYPE
         
     def __repr__(self):
-        return str(self.name) + "_CLASS_INSTR"
+        return str(self.name)

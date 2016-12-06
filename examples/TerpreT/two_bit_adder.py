@@ -88,9 +88,9 @@ params = {
                                         "uniform_mutation" : 0.2,
                                         "alternation & uniform_mutation" : 0.5,
                                         "uniform_close_mutation" : 0.1},
-    "alternation_rate" : 0.1,
+    "alternation_rate" : 0.01,
     "alignment_deviation" : 10,
-    "uniform_mutation_rate" : 0.1,
+    "uniform_mutation_rate" : 0.01,
     "final_report_simplifications" : 5000
 
 }

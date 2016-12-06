@@ -8,15 +8,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import random
 
-pysh_types = ["_exec",
-              "_integer",
-              "_float",
-              "_string",
-              "_char",
-              "_boolean",
-              "_code",
-              "_input",
-              "_output"]    
+pysh_types = ["_exec", "_integer", "_float", "_string", "_char", "_boolean", "_code",
+              "_input", "_output", '_auxiliary',
+              "_vector_integer", '_vector_float', '_vector_boolean', '_vector_string']    
 
 class Character(object):
     '''

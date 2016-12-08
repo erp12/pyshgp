@@ -13,7 +13,7 @@ import copy # <- This one is actually needed.
 from . import pysh_state
 from . import utils
 from . import pysh_globals as g
-from .instructions import boolean, code, common, input_output, numbers, string
+from .instructions import boolean, code, common, input_output, numbers, string, vectors
 from .instructions import registered_instructions
 from .instructions import input_output
 

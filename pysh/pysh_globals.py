@@ -36,7 +36,21 @@ class Character(object):
           return self.char == other.char
         return False
 
+class PushVector(list):
+    '''
+    List objects that store vectors of literal on relevant Push state stacks.
+    '''
+    def __init__(self, lst, typ):
+        self.typ = typ
+        if typ == None:
+            self.typ = '_exec'
 
+        for el in lst:
+            if type(el) == typ:
+                self.append(el)
+            else:
+                raise Exception('Element of PushVector not correct type. Should be ' + str(typ))
+  
               
 # These definitions are used by instructions to keep computed values within limits
 # or when using random instructions.

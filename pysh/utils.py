@@ -47,6 +47,9 @@ def recognize_pysh_type(thing):
         return '_boolean'
     elif type(thing) is list:
         return '_list'
+    elif type(thing) is g.PushVector:
+        t = recognize_pysh_type(thing.typ())
+        return '_vector' + t
     else:
         print("Could not find pysh type for", thing, "of type", type(thing))
         return False

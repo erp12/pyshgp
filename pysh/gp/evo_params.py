@@ -78,13 +78,9 @@ default_evolutionary_params = {
                        "unique_error_vectors" : True,
                        "best_program_by_total_error" : True,
                        "lowest_error_on_each_case": True},
-# Send SMS every few x generations. 0 means never send text.
-"SMS_every_x_generations" : None,
 
 # End of run plots
-"reports" : {"timings" : True,
-             "plot_piano_roll" : False,
-             "final_SMS" : False},
+"reports" : {"timings" : True},
 
 #
 "max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
@@ -138,14 +134,6 @@ def init_executor(evolutionary_params):
         evolutionary_params["pool"] = Pool()
     else:
         evolutionary_params['pool'] = Pool(evolutionary_params["max_workers"])
-
-def setup_SMS(evolutionary_params):
-    print("Preparing to send text updates")
-    from .. import text_me
-    if sys.version_info[0] == 3:
-        evolutionary_params['run_name'] = input("Enter a name for this run: ")
-    else: # Python 2
-        evolutionary_params['run_name'] = raw_input("Enter a name for this run: ")
 
 
 

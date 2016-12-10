@@ -106,10 +106,6 @@ def evolution(error_function, problem_params):
             print(value)
     print()
 
-    # If you want to use Twilio to text you occasional updates
-    if evolutionary_params['reports']['final_SMS'] or (evolutionary_params['SMS_every_x_generations'] != None and evolutionary_params['SMS_every_x_generations'] > 0):
-        evo_params.setup_SMS(evolutionary_params)
-
     # Create Initial Population
     print("Creating Initial Population")
     population = generate_random_population(evolutionary_params)
@@ -130,9 +126,6 @@ def evolution(error_function, problem_params):
         print()
         print("Starting Generation:", g)
         final_generation = g
-
-        if (evolutionary_params['SMS_every_x_generations'] != None and evolutionary_params['SMS_every_x_generations'] > 0) and g > 0 and g % evolutionary_params['SMS_every_x_generations'] == 0:
-            text_me.send_text_msg(evolutionary_params['run_name'] + " just reached generation " + str(g) + ".")
 
         start_time = datetime.datetime.now()
         if evolutionary_params['selection_method'] == 'cluster_lexicase':
@@ -187,10 +180,6 @@ def evolution(error_function, problem_params):
     if evolutionary_params["reports"]["timings"]:
         reporting.print_timings()
     print()
-    if evolutionary_params["reports"]["plot_piano_roll"]:
-        reporting.plot_piano_roll()
-    if evolutionary_params["reports"]["final_SMS"]:
-        text_me.send_text_msg(evolutionary_params['run_name'] + " just stopped because " + str(stop_reason) + ".")
 
 
 

@@ -11,97 +11,69 @@ import collections
 from pysh import pysh_interpreter
 from pysh import instruction as instr
 from pysh import utils as u
+from pysh import pysh_globals as g
 from pysh.gp import gp
-from pysh.instructions import boolean, code, common, numbers, string
+from pysh.instructions import boolean, code, common, numbers, string, vectors
 from pysh.instructions import registered_instructions as ri
 
 
-test_cases = ['0000',
-              '0001',
-              '0010',
-              '0011',
-              '0100',
-              '0101',
-              '0110',
-              '0111',
-              '1000',
-              '1001',
-              '1010',
-              '1011',
-              '1100',
-              '1101',
-              '1110',
-              '1111',
-              '00001011',
-              '00011101',
-              '00101110',
-              '00111101',
-              '01001011',
-              '01010111',
-              '01101111',
-              '01110101']
+test_cases = [g.PushVector([False, False, False, False], bool),
+              g.PushVector([False, False, False, True], bool),
+              g.PushVector([False, False, True, False], bool),
+              g.PushVector([False, False, True, True], bool),
+              g.PushVector([False, True, False, False], bool),
+              g.PushVector([False, True, False, True], bool),
+              g.PushVector([False, True, True, False], bool),
+              g.PushVector([False, True, True, True], bool),
+              g.PushVector([True, False, False, False], bool),
+              g.PushVector([True, False, False, True], bool),
+              g.PushVector([True, False, True, False], bool),
+              g.PushVector([True, False, True, True], bool),
+              g.PushVector([True, True, False, False], bool),
+              g.PushVector([True, True, False, True], bool),
+              g.PushVector([True, True, True, False], bool),
+              g.PushVector([True, True, True, True], bool),
+              g.PushVector([False, False, False, False, True, False, True, True], bool),
+              g.PushVector([False, False, False, True, True, True, False, True], bool),
+              g.PushVector([False, False, True, False, True, True, True, False], bool),
+              g.PushVector([False, False, True, True, True, True, False, True], bool),
+              g.PushVector([False, True, False, False, True, False, True, True], bool),
+              g.PushVector([False, True, True, False, True, True, True, True], bool),
+              g.PushVector([False, False, False, False, False, False, False, False], bool),
+              g.PushVector([False, True, True, True, False, True, False, True], bool)]
 
 def invert_bitstring(bitstr):
-    inverted_bitstr = ""
-    for bit in bitstr:
-        if bit == '0':
-            inverted_bitstr += '1'
-        elif bit == '1':
-            inverted_bitstr += '0'
+    inverted_bitstr = []
+    for b in bitstr:
+        if b:
+            inverted_bitstr.append(False)
         else:
-            break
-
+            inverted_bitstr.append(True)
     return inverted_bitstr
 
-def string_difference(s1, s2):
-    '''
-    Returns the difference in the strings, based on character position.
-    '''
-    char_lvl_diff = 0
-    for c1, c2 in zip(s1, s2):
-        char_lvl_diff += int(not c1 == c2)
-    return char_lvl_diff + abs(len(s1) - len(s2))
-
-def string_char_counts_difference(s1, s2):
-    '''
-    '''
-    result = len(s1) + len(s2)
-    s1_letters = collections.Counter(s1)
-    for c in s2:
-        if c in s1_letters:
-            result -= 2
-            s1_letters[c] -= 1
-            if s1_letters[c] == 0:
-                s1_letters.pop(c, None)
-    return result
-
 for t in test_cases:
-    print(t, invert_bitstring(t), string_difference(invert_bitstring(t), t), string_char_counts_difference(invert_bitstring(t), t))
+    print(t, invert_bitstring(t))
 
-def error_func(program):
+def error_func(program, debug = False):
     errors = []
     for t in test_cases:
         interpreter = pysh_interpreter.Pysh_Interpreter()
         
         interpreter.state.stacks["_input"].push_item(t)
-        interpreter.state.stacks["_input"].push_item('0')
-        interpreter.state.stacks["_input"].push_item('1')
-        interpreter.run_push(program)
-        prog_output = interpreter.state.stacks['_string'].stack_ref(0)
+        interpreter.run_push(program, debug)
+        prog_output = interpreter.state.stacks['_boolean'][:]
         target_output = invert_bitstring(t)
 
         if prog_output == '_no_stack_item' or prog_output == '_stack_out_of_bounds_item':
             errors.append(1000)
         else:
-            #errors.append(u.levenshtein_distance(prog_output, target_output))
-            errors.append(string_difference(target_output, t) + string_char_counts_difference(target_output, t))
+            errors.append(u.levenshtein_distance(prog_output, target_output))
     return errors
 
 params = {
-    "atom_generators" : u.merge_dicts(ri.registered_instructions,
-                                      {"Input0" : instr.Pysh_Input_Instruction(0),
-                                       "Input1" : instr.Pysh_Input_Instruction(1),
-                                       "Input2" : instr.Pysh_Input_Instruction(2)}),
+    "atom_generators" : u.merge_dicts(ri.get_instructions_by_pysh_type("_boolean"),
+                                      ri.get_instructions_by_pysh_type("_vector"),
+                                      {"Input0" : instr.Pysh_Input_Instruction(0)}),
     "genetic_operator_probabilities" : {"alternation" : 0.2,
                                         "uniform_mutation" : 0.2,
                                         "alternation & uniform_mutation" : 0.5,
@@ -113,5 +85,14 @@ params = {
 
 }
 
+def test_solution():
+  #print(registered_instructions.registered_instructions)
+  prog_lst = [instr.Pysh_Input_Instruction(0), '_exec_do*vector_boolean', ['_boolean_not']]
+  prog = gp.load_program_from_list(prog_lst)
+  errors = error_func(prog, debug = True)
+  print("Errors:", errors)
+
+
 if __name__ == "__main__":
     gp.evolution(error_func, params)
+    #test_solution()

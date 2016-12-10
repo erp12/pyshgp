@@ -11,67 +11,50 @@ import collections
 from pysh import pysh_interpreter
 from pysh import instruction as instr
 from pysh import utils as u
+from pysh import pysh_globals as g
 from pysh.gp import gp
 from pysh.instructions import boolean, code, common, numbers, string
 from pysh.instructions import registered_instructions as ri
 
 
-test_cases = ['0000',
-              '0001',
-              '0010',
-              '0011',
-              '0100',
-              '0101',
-              '0110',
-              '0111',
-              '1000',
-              '1001',
-              '1010',
-              '1011',
-              '1100',
-              '1101',
-              '1110',
-              '1111',
-              '00001011',
-              '00011101',
-              '00101110',
-              '00111101',
-              '01001011',
-              '01010111',
-              '01101111',
-              '01110101']
+test_cases = [g.PushVector([False, False, False, False], bool),
+              g.PushVector([False, False, False, True], bool),
+              g.PushVector([False, False, True, False], bool),
+              g.PushVector([False, False, True, True], bool),
+              g.PushVector([False, True, False, False], bool),
+              g.PushVector([False, True, False, True], bool),
+              g.PushVector([False, True, True, False], bool),
+              g.PushVector([False, True, True, True], bool),
+              g.PushVector([True, False, False, False], bool),
+              g.PushVector([True, False, False, True], bool),
+              g.PushVector([True, False, True, False], bool),
+              g.PushVector([True, False, True, True], bool),
+              g.PushVector([True, True, False, False], bool),
+              g.PushVector([True, True, False, True], bool),
+              g.PushVector([True, True, True, False], bool),
+              g.PushVector([True, True, True, True], bool),
+              g.PushVector([False, False, False, False, True, False, True, True], bool),
+              g.PushVector([False, False, False, True, True, True, False, True], bool),
+              g.PushVector([False, False, True, False, True, True, True, False], bool),
+              g.PushVector([False, False, True, True, True, True, False, True], bool),
+              g.PushVector([False, True, False, False, True, False, True, True], bool),
+              g.PushVector([False, True, True, False, True, True, True, True], bool),
+              g.PushVector([False, False, False, False, False, False, False, False], bool),
+              g.PushVector([False, True, True, True, False, True, False, True], bool)]
 
 def binary_decrement(bitstr):
     bits = list(bitstr[::-1])
     for i, bit in enumerate(bits):
-        if bit == "1":
-            bits[i] = "0"
+        if bit:
+            bits[i] = False
             break
         else:
-            bits[i] = "1"
-    return "".join(bits[::-1])
+            bits[i] = True
+    return bits[::-1]
 
-def string_difference(s1, s2):
-    '''
-    Returns the difference in the strings, based on character position.
-    '''
-    char_lvl_diff = 0
-    for c1, c2 in zip(s1, s2):
-        char_lvl_diff += int(not c1 == c2)
-    return char_lvl_diff + abs(len(s1) - len(s2))
-
-def string_char_counts_difference(s1, s2):
-    '''
-    '''
-    result = len(s1) + len(s2)
-    s1_letters = collections.Counter(s1)
-    for c in s2:
-        if c in s1_letters:
-            result -= 2
-            s1_letters[c] -= 1
-            if s1_letters[c] == 0:
-                s1_letters.pop(c, None)
-    return result
+for t in test_cases:
+    print(t, binary_decrement(t))
+print()
 
 def error_func(program):
     errors = []
@@ -80,13 +63,13 @@ def error_func(program):
         
         interpreter.state.stacks["_input"].push_item(t)
         interpreter.run_push(program)
-        prog_output = interpreter.state.stacks['_string'].stack_ref(0)
+        prog_output = interpreter.state.stacks['_boolean'][:]
         target_output = binary_decrement(t)
 
         if prog_output == '_no_stack_item' or prog_output == '_stack_out_of_bounds_item':
             errors.append(1000)
         else:
-            errors.append(string_difference(prog_output, target_output) + string_char_counts_difference(prog_output, target_output))
+            errors.append(u.levenshtein_distance(prog_output, target_output))
     return errors
 
 params = {
@@ -96,6 +79,11 @@ params = {
                                         "uniform_mutation" : 0.2,
                                         "alternation & uniform_mutation" : 0.5,
                                         "uniform_close_mutation" : 0.1},
+    "max_points" : 3200,
+    "max_genome_size_in_initial_program" : 400,
+    "evalpush_limit" : 1600,
+    "population_size" : 1000,
+    "max_generations" : 300,
     "alternation_rate" : 0.01,
     "alignment_deviation" : 10,
     "uniform_mutation_rate" : 0.01,

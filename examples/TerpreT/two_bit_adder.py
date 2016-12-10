@@ -15,22 +15,22 @@ from pysh.instructions import boolean, code, common, numbers, string
 from pysh.instructions import registered_instructions as ri
 
 
-test_cases = [(False, False, False, False),
-              (False, False, False, True),
-              (False, False, True, False),
-              (False, False, True, True),
-              (False, True, False, False),
-              (False, True, False, True),
-              (False, True, True, False),
-              (False, True, True, True),
-              (True, False, False, False),
-              (True, False, False, True),
-              (True, False, True, False),
-              (True, False, True, True),
-              (True, True, False, False),
-              (True, True, False, True),
-              (True, True, True, False),
-              (True, True, True, True)]
+test_cases = [[False, False, False, False],
+              [False, False, False, True],
+              [False, False, True, False],
+              [False, False, True, True],
+              [False, True, False, False],
+              [False, True, False, True],
+              [False, True, True, False],
+              [False, True, True, True],
+              [True, False, False, False],
+              [True, False, False, True],
+              [True, False, True, False],
+              [True, False, True, True],
+              [True, True, False, False],
+              [True, True, False, True],
+              [True, True, True, False],
+              [True, True, True, True]]
 
 def one_bit_adder(c, a, b):
     xor_1 = not a == b
@@ -88,6 +88,11 @@ params = {
                                         "uniform_mutation" : 0.2,
                                         "alternation & uniform_mutation" : 0.5,
                                         "uniform_close_mutation" : 0.1},
+    "max_points" : 3200,
+    "max_genome_size_in_initial_program" : 400,
+    "evalpush_limit" : 1600,
+    "population_size" : 1000,
+    "max_generations" : 300,
     "alternation_rate" : 0.01,
     "alignment_deviation" : 10,
     "uniform_mutation_rate" : 0.01,

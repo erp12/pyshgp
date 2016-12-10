@@ -18,6 +18,46 @@ vector_types = ['_integer', '_float', '_boolean', '_string']
 #  Instructions for Vectors # 
 ##                         ##
 
+def newer(vec_type):
+    '''
+    Returns a function that takes a state and concats two vectors on the type stack.
+    '''
+    t = None
+    if vec_type == '_vector_integer':
+        t = int
+    elif vec_type == '_vector_float':
+        t = float
+    elif vec_type == '_vector_boolean':
+        t = bool
+    elif vec_type == '_vector_string':
+        t = str
+
+    def new(state):
+        if len(state.stacks[vec_type])>1:
+            state.stacks[vec_type].push_item(g.PushVector([], t))
+    instruction = instr.Pysh_Instruction(vec_type[1:] + '_new',
+                                         new,
+                                         stack_types = [vec_type])
+    return instruction
+#<instr_open>
+#<instr_name>_vector_integer_concat
+#<instr_desc>Concats the top two ``integer vectors`` and pushes the resulting ``integer vector``.
+#<instr_close>
+#<instr_open>
+#<instr_name>_vector_float_concat
+#<instr_desc>Concats the top two ``float vectors`` and pushes the resulting ``float vector``.
+#<instr_close>
+#<instr_open>
+#<instr_name>_vector_string_concat
+#<instr_desc>Concats the top two ``string vectors`` and pushes the resulting ``string vector``.
+#<instr_close>
+#<instr_open>
+#<instr_name>_vector_boolean_concat
+#<instr_desc>Concats the top two ``boolean vectors`` and pushes the resulting ``boolean vector``.
+#<instr_close>
+#<instr_open>
+
+
 def concater(vec_type):
     '''
     Returns a function that takes a state and concats two vectors on the type stack.
@@ -90,14 +130,14 @@ def appender(vec_type, lit_type):
 #<instr_open>
 
 
-def taker(vec_type, lit_type):
+def taker(vec_type):
     '''
     Returns a function that takes a state and appends an item onto the type stack.
     '''
     def take(state):
-        if len(state.stacks[vec_type])>0 and len(state.stacks['_integer'])>0:
+        if len(state.stacks[vec_type]) > 0 and len(state.stacks['_integer']) > 0:
             v = state.stacks[vec_type].stack_ref(0)
-            result = v[:state.stacks[lit_type].stack_ref(0)]
+            result = v[:state.stacks['_integer'].stack_ref(0)]
             state.stacks[vec_type].pop_item()
             state.stacks['_integer'].pop_item()
             state.stacks[vec_type].push_item(g.PushVector(result, v.typ))
@@ -168,7 +208,7 @@ def firster(vec_type, lit_type):
     Returns a function that takes a state and gets the first item from the type stack.
     '''
     def first(state):
-        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type][0]) > 0:
+        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type].stack_ref(0)) > 0:
             result = state.stacks[vec_type].stack_ref(0)[0]
             state.stacks[vec_type].pop_item()
             state.stacks[lit_type].push_item(result)
@@ -200,7 +240,7 @@ def laster(vec_type, lit_type):
     Returns a function that takes a state and gets the first item from the type stack.
     '''
     def last(state):
-        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type][0]) > 0:
+        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type].stack_ref(0)) > 0:
             result = state.stacks[vec_type].stack_ref(0)[-1]
             state.stacks[vec_type].pop_item()
             state.stacks[lit_type].push_item(result)
@@ -232,7 +272,7 @@ def nther(vec_type, lit_type):
     Returns a function that takes a state and gets the first item from the type stack.
     '''
     def nth(state):
-        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type][0]) > 0 and len(state.stacks['_integer']):
+        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type].stack_ref(0)) > 0 and len(state.stacks['_integer']):
             i = state.stacks['_integer'].stack_ref(0) % len(state.stacks[vec_type].stack_ref(0))
             result = state.stacks[vec_type].stack_ref(0)[i]
             state.stacks[vec_type].pop_item()
@@ -548,7 +588,7 @@ def occurrencesofer(vec_type, lit_type):
     item in the top type vector.
     '''
     def occurrencesof(state):
-        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type]) > 0:
+        if len(state.stacks[vec_type]) > 0 and len(state.stacks[lit_type]) > 0:
             l = [x for x in state.stacks[vec_type].stack_ref(0) if x == state.stacks[lit_type].stack_ref(0)]
             state.stacks[vec_type].pop_item()
             state.stacks[lit_type].pop_item()
@@ -594,11 +634,10 @@ def seter(vec_type, lit_type):
                 item = state.stacks[lit_type].stack_ref(0)
 
             index = 0
+            result = v[:]
             if len(v) > 0:
                 index = state.stacks['_integer'].stack_ref(0) % len(v)
-
-            result = v[:]
-            result[index] = item
+                result[index] = item
                 
             state.stacks[vec_type].pop_item()
             state.stacks[lit_type].pop_item()
@@ -761,7 +800,7 @@ def iterateer(vec_type, lit_type):
     '''
     instr_name = 'exec_do*' + vec_type[1:]
     def _iter(state):
-        if len(state.stacks[vec_type])>0 and len(state.stacks['_exec'])>0:
+        if len(state.stacks[vec_type]) > 0 and len(state.stacks['_exec']) > 0:
             v = state.stacks[vec_type].stack_ref(0)
             e = state.stacks['_exec'].stack_ref(0)
             
@@ -819,7 +858,7 @@ for t in vector_types:
     # common instructions for vectors
     ri.register_instruction(concater('_vector'+t))
     ri.register_instruction(appender('_vector'+t, t))
-    ri.register_instruction(taker('_vector'+t, t))
+    ri.register_instruction(taker('_vector'+t))
     ri.register_instruction(subvecer('_vector'+t))
     ri.register_instruction(firster('_vector'+t, t))
     ri.register_instruction(laster('_vector'+t, t))

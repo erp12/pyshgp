@@ -47,6 +47,9 @@ def recognize_pysh_type(thing):
         return '_boolean'
     elif type(thing) is list:
         return '_list'
+    elif type(thing) is g.PushVector:
+        t = recognize_pysh_type(thing.typ())
+        return '_vector' + t
     else:
         print("Could not find pysh type for", thing, "of type", type(thing))
         return False
@@ -183,7 +186,7 @@ def ensure_list(thing):
 
 def levenshtein_distance(s1, s2):
     '''
-    Big thank to: https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
+    Big thanks to: https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
     '''
     if len(s1) < len(s2):
         return levenshtein_distance(s2, s1)

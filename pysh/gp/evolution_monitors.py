@@ -34,6 +34,12 @@ def unique_error_vectors(population):
 def best_program_by_total_error(population):
 	return sorted(population, key=lambda ind: ind.get_total_error())[0].get_program()
 
+def lowest_error_on_each_case(population):
+	result = []
+	for t in list(range(len(population[0].get_errors()))):
+		result.append(min([ind.get_errors()[t] for ind in population]))
+	return result
+
 
 
 def print_monitors(population, monitors_dict):
@@ -54,6 +60,8 @@ def print_monitors(population, monitors_dict):
 		print("Number of Unique Programs:", unique_program_count(population), "/", len(population))
 	if monitors_dict["unique_error_vectors"]:
 		print("Number of Unique Error Vectors:", unique_error_vectors(population), "/", len(population))
+	if monitors_dict["lowest_error_on_each_case"]:
+		print("Best errors on each case:", lowest_error_on_each_case(population))
 	if monitors_dict["best_program_by_total_error"]:
 		print("Best program (by total error):")
 		print(best_program_by_total_error(population))

@@ -8,15 +8,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import random
 
-pysh_types = ["_exec",
-              "_integer",
-              "_float",
-              "_string",
-              "_char",
-              "_boolean",
-              "_code",
-              "_input",
-              "_output"]    
+pysh_types = ["_exec", "_integer", "_float", "_string", "_char", "_boolean", "_code",
+              "_input", "_output", '_auxiliary',
+              "_vector_integer", '_vector_float', '_vector_boolean', '_vector_string']    
 
 class Character(object):
     '''
@@ -42,7 +36,21 @@ class Character(object):
           return self.char == other.char
         return False
 
+class PushVector(list):
+    '''
+    List objects that store vectors of literal on relevant Push state stacks.
+    '''
+    def __init__(self, lst, typ):
+        self.typ = typ
+        if typ == None:
+            self.typ = '_exec'
 
+        for el in lst:
+            if type(el) == typ:
+                self.append(el)
+            else:
+                raise Exception('Element of PushVector not correct type. Should be ' + str(typ))
+  
               
 # These definitions are used by instructions to keep computed values within limits
 # or when using random instructions.

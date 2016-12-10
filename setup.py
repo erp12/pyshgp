@@ -14,7 +14,7 @@ def read(fname):
 
 setup(
     name = "pysh_gp",
-    version = "0.1.3",
+    version = "1.0.0",
     author = "Eddie Pantridge",
     author_email = "erp12@hampshire.edu",
     description = "Push Genetic Programming in Python",

@@ -76,7 +76,8 @@ default_evolutionary_params = {
                        "largest_genome_size" : True,
                        "unique_program_count" : True,
                        "unique_error_vectors" : True,
-                       "best_program_by_total_error" : True},
+                       "best_program_by_total_error" : True,
+                       "lowest_error_on_each_case": True},
 # Send SMS every few x generations. 0 means never send text.
 "SMS_every_x_generations" : None,
 

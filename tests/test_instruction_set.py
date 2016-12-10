@@ -2207,3 +2207,97 @@ if not i.state.size() == 1:
     raise Exception("State has %r items. Should be 1." % i.state.size())
 assert len(i.state.stacks['_string']) == 1
 assert i.state.stacks['_string'].top_item() == 'HellWrld'
+
+
+i.reset_pysh_state()
+print("Testing vector instruction (A)")
+prog = [g.PushVector([1, 2, 3, 4, 5], int), ri.get_instruction_by_name('vector_integer_rest'), ri.get_instruction_by_name('vector_integer_butlast'), 7, ri.get_instruction_by_name('vector_integer_append'), ri.get_instruction_by_name('exec_do*vector_integer'), [ri.get_instruction_by_name('integer_inc')]]
+i.run_push(prog)
+if not i.state.size() == 4:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 4." % i.state.size())
+assert len(i.state.stacks['_integer']) == 4
+assert i.state.stacks['_integer'].top_item() == 8
+assert i.state.stacks['_integer'].stack_ref(3) == 3
+
+i.reset_pysh_state()
+print("Testing vector instruction (B)")
+prog = [g.PushVector([1, 2], int), g.PushVector([3, 4], int), ri.get_instruction_by_name('vector_integer_concat'), 3, ri.get_instruction_by_name('vector_integer_take'), ri.get_instruction_by_name('vector_integer_last')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_integer']) == 1
+assert i.state.stacks['_integer'].top_item() == 3
+
+i.reset_pysh_state()
+print("Testing vector instruction (C)")
+prog = [g.PushVector([1, 2, 3, 4, 5, 6], int), 2, 4, ri.get_instruction_by_name('vector_integer_subvec'), ri.get_instruction_by_name('vector_integer_first')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_integer']) == 1
+assert i.state.stacks['_integer'].top_item() == 3
+
+i.reset_pysh_state()
+print("Testing vector instruction (D)")
+prog = [g.PushVector([1, 2, 3, 4, 5], int), 1, ri.get_instruction_by_name('vector_integer_reverse'), ri.get_instruction_by_name('vector_integer_nth')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_integer']) == 1
+assert i.state.stacks['_integer'].top_item() == 4
+
+i.reset_pysh_state()
+print("Testing vector instruction (E)")
+prog = [g.PushVector([1, 1, 1, 2, 2, 2, 3, 3, 3], int), 3, ri.get_instruction_by_name('vector_integer_remove'), 1, 7, ri.get_instruction_by_name('vector_integer_replace'), 2, 0, ri.get_instruction_by_name('vector_integer_replace'), 2, 0, ri.get_instruction_by_name('vector_integer_replacefirst'), 0, ri.get_instruction_by_name('vector_integer_indexof')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_integer']) == 1
+assert i.state.stacks['_integer'].top_item() == 3
+
+i.reset_pysh_state()
+print("Testing vector instruction (F)")
+prog = [g.PushVector([1, 1, 2, 1, 1], int), 1, 2, ri.get_instruction_by_name('vector_integer_set'), 1, ri.get_instruction_by_name('vector_integer_occurrencesof')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_integer']) == 1
+assert i.state.stacks['_integer'].top_item() == 5
+
+i.reset_pysh_state()
+print("Testing vector instruction (G)")
+prog = [g.PushVector([1, 2, 3, 4], int), ri.get_instruction_by_name('vector_integer_length'), g.PushVector([3, 4, 5], int), ri.get_instruction_by_name('vector_integer_contains'), g.PushVector([1, 2, 3], int), ri.get_instruction_by_name('vector_integer_pushall')]
+i.run_push(prog)
+if not i.state.size() == 4:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 4." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert len(i.state.stacks['_integer']) == 3
+assert i.state.stacks['_integer'].top_item() == 1
+assert i.state.stacks['_integer'].stack_ref(2) == 3
+assert i.state.stacks['_boolean'].top_item() == True
+
+i.reset_pysh_state()
+print("Testing vector instruction (H)")
+prog = [g.PushVector([], int), ri.get_instruction_by_name('vector_integer_emptyvector')]
+i.run_push(prog)
+if not i.state.size() == 1:
+    i.state.pretty_print()
+    raise Exception("State has %r items. Should be 1." % i.state.size())
+assert len(i.state.stacks['_boolean']) == 1
+assert i.state.stacks['_boolean'].top_item() == True
+
+
+
+
+
+
+
+
+

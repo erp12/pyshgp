@@ -10,64 +10,92 @@ __metaclass__ = type
 import time
 import copy # <- This one is actually needed.
 
-from . import pysh_state
-from . import utils
-from . import pysh_globals as g
-from .instructions import boolean, code, common, input_output, numbers, string, vectors
-from .instructions import registered_instructions
-from .instructions import input_output
+from .. import utils as u
+from .. import constants as c
+from .. import exceptions as e
 
+from . import state
+from .instructions import io
 
-class Pysh_Interpreter:
-    '''
-    Object that can run Push programs.
+class PyshInterpreter:
+    '''Object that can run Push programs.
+
+    Attributes:
+        state: The push state.
+        status: Status of the interpreter, this isn't used much yet.
     '''
     
     def __init__(self):
-        self.state = pysh_state.Pysh_State()
+        self.state = state.PyshState()
         self.status = '_normal'
         
     def reset_pysh_state(self):
-        self.state = pysh_state.Pysh_State()
+        self.state = state.PyshState()
         self.status = '_normal'
         
     def execute_instruction(self, instruction):
+        '''Executes a push instruction or literal.
+
+        Args:
+            instruction: The instruction to the executed.
+        '''
+        # If the instruction is None, return.
         if instruction is None:
             return
+
+        # If the instruction is a callable function, call it to get a
+        # value for ``instruction``.
         if callable(instruction):
             instruction = instruction()
-        pysh_type = utils.recognize_pysh_type(instruction)
+
+        # Detect the pysh type of the instruction.
+        pysh_type = u.recognize_pysh_type(instruction)
+
         if pysh_type == '_instruction':
+            # If the instruction is a standard push instruction, call it's
+            # function on the current push state.
             instruction.func(self.state)
         elif pysh_type == '_input_instruction':
-            input_output.handle_input_instruction(instruction, self.state)
+            # If the instruction is an input_instruction, handle it.
+            io.handle_input_instruction(instruction, self.state)
         elif pysh_type == '_class_instruction':
-            input_output.handle_class_instruction(instruction, self.state)
+            # If the instruction is an class_instruction, handle it.
+            io.handle_vote_instruction(instruction, self.state)
         elif pysh_type == '_list':
+            # If the instruction is a list, then decompose it.
+            # Copy the list to avoid mutability madness
             instruction_cpy = copy.deepcopy(instruction)
+            # Reverse the list.
             instruction_cpy.reverse()
+            # Push all contents of the list to the ``exec`` stack.
             for i in instruction_cpy:
                 self.state.stacks['_exec'].push_item(i)
         elif pysh_type == False:
-            raise Exception("Attempted to evaluate " + str(instruction) + " of type " + str(type(instruction)) + ". It isn't an instruction string or literal.") 
+            # If pysh type was not found, raise exception.
+            raise e.UnknownPyshType(instruction) 
         else:
+            # If here, instruction is a pysh literal and will be pushed
+            # on to its corrisponding stack.
             self.state.stacks[pysh_type].push_item(instruction)
     
     def eval_push(self, print_steps):
-        '''
-        Executes the contents of the exec stack, aborting prematurely if execution limits are 
-        exceeded. The resulting push state will map termination to _normal if termination was 
-        normal, or _abnormal otherwise.
+        '''Executes the contents of the exec stack.
+        
+        Aborts prematurely if execution limits are exceeded. If execution limits are
+        reached, status will be denoted.
+
+        Args:
+            print_steps (bool): Denotes if stack state should be printed.
         '''        
         iteration = 1
         time_limit = 0
-        if g.global_evalpush_time_limit != 0:
-            time_limit = time.time() + g.global_evalpush_time_limit
+        if c.global_evalpush_time_limit != 0:
+            time_limit = time.time() + c.global_evalpush_time_limit
         
         while len(self.state.stacks['_exec']) > 0:        
             
             # Check for adnormal stops            
-            if iteration > g.global_evalpush_limit:
+            if iteration > c.global_evalpush_limit:
                 self.status = '_evalpush_limit_reached'
                 break
             if time_limit != 0 and time.time() > time_limit:
@@ -88,12 +116,15 @@ class Pysh_Interpreter:
     
     
     def run_push(self, code, print_steps=False):
+        '''The top level method of the push interpreter.
+
+        Calls eval-push between appropriate code/exec pushing/popping.
+
+        Args:
+            code: The push program to run.
+            print_steps: Denotes if stack states should be printed.
         '''
-        The top level of the push interpreter; calls eval-push between appropriate code/exec 
-        pushing/popping. The resulting push state will map :termination to :normal if termination was 
-        normal, or :abnormal otherwise.
-        '''
-        # If you don't copy the code, the reference to the program will be reverse and other bad things.
+        # If you don't copy the code, the reference to the program will be reversed and other bad things.
         code_copy = copy.deepcopy(code)
         self.state.stacks['_exec'].push_item(code_copy)
         self.eval_push(print_steps)

@@ -9,10 +9,13 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import random
 import copy
 
-from . import utils as u
-from . import plush_gene as pl
+from .. import utils as u
+
+from . import plush as pl
 
 def auto_simplify(individual, error_function, steps):
+	'''TODO: Re-write me!
+	'''
 	print("Autosimplifying program of size:", u.count_points(individual.get_program()))
 
 	for step in range(steps):

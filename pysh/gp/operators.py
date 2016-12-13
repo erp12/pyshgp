@@ -6,15 +6,14 @@ Created on 5/50/2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import pathos.multiprocessing as mp
-
 import math
 import random
 
+from ..push import plush as pl
+from ..push import random as r
+
 from . import selection as sel
 from . import individual
-from .. import plush_gene as pl
-from .. import pysh_random
 
 
 #############
@@ -22,13 +21,13 @@ from .. import pysh_random
 #############
 
 def gaussian_noise_factor():
-    """
-    Returns gaussian noise of mean 0, std dev 1.
-    """
+    '''Returns gaussian noise of mean 0, std dev 1.
+    '''
     return math.sqrt(-2.0 * math.log(random.random())) * math.cos(2.0 * math.pi * random.random()) 
 
 def perturb_with_gaussian_noise(sd, n):
-    "Returns n perturbed with std dev sd."
+    '''Returns n perturbed with std dev sd.
+    '''
     return n + (sd * gaussian_noise_factor())
 
 
@@ -37,9 +36,7 @@ def perturb_with_gaussian_noise(sd, n):
 #############################
 
 def alternation(parent_1, parent_2, evo_params):
-    """
-    Uniformly alternates between the two parent.
-    parent_1 and parent_2 are plush genomes.
+    """Uniformly alternates between the two parents. parent_1 and parent_2 are plush genomes.
     """
     resulting_genome = []
 
@@ -89,7 +86,7 @@ def string_tweak(s, evo_params):
     return new_s
 
 def instruction_mutator(evo_params):
-    return pysh_random.random_plush_instruction(evo_params)
+    return r.random_plush_instruction(evo_params)
 
 def constant_mutator(token, evo_params):
     if pl.plush_gene_is_literal(token):

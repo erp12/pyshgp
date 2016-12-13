@@ -9,42 +9,46 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import warnings
 
+from ... import exceptions as e
+
 '''
 List of all registered push instructions.
 '''
-registered_instructions = {}
+registered_instructions = set()
 
 def register_instruction(instruction):
-	'''
-	Registers an instruction, excluding duplicates.
-	'''   
-	if instruction.name in registered_instructions:
-		warnings.warn('Duplicate instructions registered: ' + instruction.name + '. Duplicate ignored.')
-	else:
-		registered_instructions[str(instruction.name)] = instruction
+    '''Registers an instruction, excluding duplicates.
+    '''   
+    if len([i for i in registered_instructions if i.name == instruction.name]) > 0:
+        warnings.warn('Duplicate instructions registered: ' + instruction.name + '. Duplicate ignored.')
+    else:
+        registered_instructions.update([instruction])
 
 
-def get_instruction_by_name(name):
-	if name[0] == "_":
-		name = name[1:]
-	if name in registered_instructions:
-		return registered_instructions[name]
-	else:
-		raise Exception("No registered instruction with name: " + name)
+def get_instruction(name):
+    '''Gets a registered instruction by its name.
+    '''
+    l = [i for i in registered_instructions if name in i.name]
+    if len(l) > 0:
+        return l[0]
+    else:
+        raise e.UnknownInstructionName(name)
 
 
 def get_instructions_by_pysh_type(pysh_type):
-	return {k:v for (k,v) in registered_instructions.items() if pysh_type in v.stack_types}
+    '''Returns list of instructions that deal with the given pysh_type
+    '''
+    return [i for i in registered_instructions if pysh_type in i.stack_types]
 
 
-class instruction_looker_upper():
-	def __init__(self, instruction_name):
-		self.instruction_name = instruction_name
+class InstructionLookerUpper():
+    '''A callable object that, when processed in by the push interpreter, returns a specific instruction.
+    '''
+    def __init__(self, instruction_name):
+        self.instruction_name = instruction_name
 
-	def __call__(self):
-		return get_instruction_by_name(self.instruction_name)
+    def __call__(self):
+        return get_instruction(self.instruction_name)
 
-	def __repr__(self):
-		return self.instruction_name[1:] + "_LOOKUP"
-
-
+    def __repr__(self):
+        return self.instruction_name + "_LOOKUP"

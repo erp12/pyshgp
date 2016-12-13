@@ -6,19 +6,17 @@ Created on July 24, 2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from .. import pysh_state
+from ... import utils as u
+from ... import constants as c
+
 from .. import instruction as instr
-from .. import utils as u
-from .. import pysh_globals as g
+
 from . import registered_instructions as ri
 
 
 
 def handle_input_instruction(instruction, state):
-	'''
-	Allows Push to handle _inputN instructions, e.g. _inputN, using things from the input
-	stack. We can tell whether a particular _inputN instruction is valid if N-1
-	values are on the input stack.
+	'''Allows Push to handle input instructions.
 	'''
 	input_depth = int(instruction.input_index)
 	input_value = state.stacks['_input'].stack_ref(input_depth)
@@ -31,16 +29,14 @@ def handle_input_instruction(instruction, state):
 	else:
 		state.stacks[pysh_type].push_item(input_value)
 
-def handle_class_instruction(instruction, state):
-	'''
-	
+def handle_vote_instruction(instruction, state):
+	'''Allows Push to handle class voting instructions.
 	'''
 	if len(state.stacks[instruction.vote_stack]) > 0:
 		class_index = int(instruction.class_id)
 		vote_value = state.stacks[instruction.vote_stack].stack_ref(0)
 		state.stacks[instruction.vote_stack].pop_item()
 		state.stacks['_output'][class_index] += vote_value
-
 
 def printer(pysh_type):
 	'''
@@ -53,10 +49,10 @@ def printer(pysh_type):
 
 		top_thing = state.stacks[pysh_type].stack_ref(0)
 		top_thing_str = str(top_thing)
-		if len(str(state.stacks["_output"].stack_ref(0)) + top_thing_str) > g.max_string_length:
+		if len(str(state.stacks["_output"].stack_ref(0)) + top_thing_str) > c.max_string_length:
 			return
 		state.stacks["_output"][0] = str(state.stacks["_output"].stack_ref(0)) + top_thing_str
-	instruction = instr.Pysh_Instruction('print' + pysh_type,
+	instruction = instr.PyshInstruction('_print' + pysh_type,
 										prnt,
 										stack_types = ['_print', pysh_type])
 	if pysh_type == '_exec':
@@ -94,13 +90,13 @@ ri.register_instruction(printer('_string'))
 #<instr_close>
 
 def print_newline(state):
-	if len(str(state.stacks["_output"].stack_ref(0)) + "\n") > g.max_string_length:
+	if len(str(state.stacks["_output"].stack_ref(0)) + "\n") > c.max_string_length:
 		return state
 	state.stacks["_output"][0] = str(state.stacks["_output"].stack_ref(0)) + "\n"
 
-print_newline_instruction = instr.Pysh_Instruction('print_newline',
-												   print_newline,
-												   stack_types = ['_print'])
+print_newline_instruction = instr.PyshInstruction('_print_newline',
+												  print_newline,
+												  stack_types = ['_print'])
 ri.register_instruction(print_newline_instruction)
 #<instr_open>
 #<instr_name>print_newline

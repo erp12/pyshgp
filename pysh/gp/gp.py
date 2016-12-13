@@ -8,59 +8,77 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import sys
 import datetime
-import random
-import warnings
-from collections import defaultdict
 
-from .. import pysh_random
-from .. import pysh_globals
 from .. import utils as u
-from .. import simplification as simp
-from .. import instruction as instr
-from ..instructions import boolean, char, code, common, numbers, string, input_output
-from ..instructions import registered_instructions 
+from .. import exceptions as e
+from .. import constants as c
+from ..push import random as r
+from ..push import simplification as simp
+from ..push import instruction as instr
+
+from ..push.instructions import registered_instructions as ri
 
 from . import individual
-from . import genetic_operators as go
-from . import evolution_monitors as monitor
+from . import operators as go
+from . import monitors as monitor
 from . import reporting
-from . import evo_params
-
-from sklearn.cluster import KMeans
-import numpy as np
+from . import params
 
 
-def load_program_from_list(lst, atom_generators = evo_params.default_evolutionary_params["atom_generators"]):
-    """
-    Loads a program from a list, and checks each string in list for an
-    instruction with the same name.
+
+def load_program_from_list(lst, atom_generators = params.default_evolutionary_params["atom_generators"]):
+    """Loads a program from a list, and checks each string in list for an instruction with the same name.
     """
     program = []
     for el in lst:
-        if type(el) == int or type(el) == float or type(el) == bool or type(el) == pysh_globals.Character:
+        # For each element in the list
+        if type(el) == int or type(el) == float or type(el) == bool or type(el) == u.Character or type(el) == u.PushVector:
+            # If ``el`` is an int, float, bool, Character object or PushVector object simply 
+            # append to the program because these are push literals.
             program.append(el)
-        elif type(el) == instr.Pysh_Instruction or type(el) == instr.Pysh_Input_Instruction or type(el) == instr.Pysh_Class_Instruction:
+        elif type(el) == instr.PyshInstruction or type(el) == instr.PyshInputInstruction or type(el) == instr.PyshClassInstruction:
+            # If ``el`` an instance of any of the instruction types, append to the program.
             program.append(el)
         elif (sys.version_info[0] == 3 and (type(el) is str or type(el) is bytes)) or (sys.version_info[0] == 2 and (type(el) is str or type(el) is unicode)):
+            # If ``el`` is a string:
             el = str(el)
-            matching_intstructions = [registered_instructions.registered_instructions[x] for x in registered_instructions.registered_instructions.keys() if x == el[1:]]
-            if len(matching_intstructions) > 0:
-                program.append(matching_intstructions[0])
-            else:
+            # Attempt to find an instruction with ``el`` as its name.
+            matching_instruction = None
+            try:
+                matching_instruction = ri.get_instruction(el)
+            except e.UnknownInstructionName():
+                pass
+            # If matching_instruction is None, it must be a ssring literal.
+            if matching_instruction == None:
                 program.append(el)
+            else:
+                program.append(matching_instruction)
         elif type(el) == list:
+            # If ``el`` is a list (but not PushVector) turn it into a program
+            # and append it to (aka. nest it in) the program.
             program.append(load_program_from_list(el))
     return program
 
 def generate_random_population(evolutionary_params):
+    '''Generate random population based on given evolutionary_params.
+
+    Returns:
+        A list of Individual objects with randomly generated genomes and translated programs.
+    '''
     population = []
     for i in range(evolutionary_params["population_size"]):
-        rand_genome = pysh_random.random_plush_genome(evolutionary_params)
+        rand_genome = r.random_plush_genome(evolutionary_params)
         population.append(individual.Individual(rand_genome, evolutionary_params))
     return population
 
 def evaluate_individual(ind, error_function):
-    if ind.get_errors() == []:
+    '''Addes an error vector to an individual evalued on the given error_function.
+
+    Args:
+        ind: An Individual object
+        error_function: Python function that evaluates an individual based on its program.
+    '''
+    if ind.get_errors() == []: # Only evalue the individual if it hasn' been already.
         errors = error_function(ind.get_program())
         reporting.total_errors_in_evalutaion_order.append(sum(errors))
         ind.set_errors(errors)
@@ -68,15 +86,20 @@ def evaluate_individual(ind, error_function):
 
 
 def evaluate_population(population, error_function, evolutionary_params):
-    """
-    Updates the errors of the population.
+    """Updates the errors of the population.
+
+    Args:
+        population: List of Individual objects
+        error_function: Python function that evaluates an individual based on its program.
+        evolutionary_params: Other parameters (see params.py)
     """
     if evolutionary_params['parallel_evaluation'] and (evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1):
-        # pathos.multiprocessing
+        # If parallel evalutation, map over the pool.
         pool = evolutionary_params['pool']
         return pool.map(evaluate_individual, population, [error_function]*len(population))
     else:
-        return list(map(evaluate_individual, population, [error_function]*len(population)))
+        # If serial evaluation
+        return [evaluate_individual(ind, error_function) for ind in population]
 
 def evolution(error_function, problem_params):
     """
@@ -84,26 +107,21 @@ def evolution(error_function, problem_params):
     """ 
 
     # Get the params for the run
-    evolutionary_params = u.merge_dicts(evo_params.default_evolutionary_params, problem_params)
-    evo_params.grab_command_line_params(evolutionary_params)
+    evolutionary_params = u.merge_dicts(params.default_evolutionary_params, problem_params)
+    params.grab_command_line_params(evolutionary_params)
     evolutionary_params['genetic_operator_probabilities'] = u.normalize_genetic_operator_probabilities(evolutionary_params['genetic_operator_probabilities'])
 
     # Make certain params globally accesable
-    pysh_globals.global_max_points = evolutionary_params['max_points']
+    c.global_max_points = evolutionary_params['max_points']
 
     # Prepare for multi-threading if specified by user
     if evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1:
-        evo_params.init_executor(evolutionary_params)
+        params.init_executor(evolutionary_params)
 
-    print("Starting GP Run With Parameters:")
-    print()
     # Print the params for the run
-    for key,value in evolutionary_params.items():
-        print(key, end = ": ")
-        if key == "atom_generators":
-            print(list(value.keys()))
-        else:
-            print(value)
+    print()
+    print("=== Starting GP Run With Following Parameters ===")
+    params.params_pretty_print(evolutionary_params)
     print()
 
     # Create Initial Population
@@ -117,25 +135,12 @@ def evolution(error_function, problem_params):
     end_time = datetime.datetime.now()
     reporting.log_timings("evaluation", start_time, end_time)
 
-    # Sort the population
-    population = sorted(population, key=lambda ind: ind.get_total_error())
-
-    final_generation = 0
     stop_reason = None
     for g in range(evolutionary_params["max_generations"]):
         print()
         print("Starting Generation:", g)
-        final_generation = g
 
         start_time = datetime.datetime.now()
-        if evolutionary_params['selection_method'] == 'cluster_lexicase':
-            print("Clustering population by error vectors")
-            all_errors = np.array([ind.get_errors() for ind in population])
-            min_errors = [min(ev) for ev in all_errors.transpose()]
-            # FIND ELITE ON SOMETHING!!
-            evolutionary_params['clusters'] = KMeans(n_clusters=evolutionary_params["cluster_lexicase_clusters"], n_init=3).fit(all_errors)
-            reporting.log_timings("clustering", start_time, datetime.datetime.now())
-
         # Select parents and mate them to create offspring
         print("Performing selection and variation.")
         offspring = go.genetics(population, evolutionary_params, )
@@ -150,7 +155,7 @@ def evolution(error_function, problem_params):
         
         print("Installing next generation.")
         population = offspring
-        population = sorted(population, key=lambda ind: ind.get_total_error())
+        #population = sorted(population, key=lambda ind: ind.get_total_error())
         
         # Print things user wants to monitor
         monitor.print_monitors(population, evolutionary_params["things_to_monitor"])
@@ -159,7 +164,7 @@ def evolution(error_function, problem_params):
         solutions = [ind for ind in population if ind.get_total_error() <= evolutionary_params["error_threshold"]]
         if len(solutions) > 0:
             print()
-            print("Solution Found:")
+            print("Solution Found On Generation " + g + ":")
             print("Program:")
             print(solutions[0].get_program())
             print("Genome:")

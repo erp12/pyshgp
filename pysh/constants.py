@@ -6,52 +6,10 @@ Created on Sun Jun  5 13:29:14 2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import random
-
 pysh_types = ["_exec", "_integer", "_float", "_string", "_char", "_boolean", "_code",
               "_input", "_output", '_auxiliary',
               "_vector_integer", '_vector_float', '_vector_boolean', '_vector_string']    
 
-class Character(object):
-    '''
-    Holds a string of length 1. Used to distinguish between string and
-    char literals in Push program interpretation.
-    '''
-    def __init__(self, char):
-        if len(char) == 0:
-            raise Exception("Connot have empty string for a Character")
-        if len(char) > 1:
-            raise Exception("String " + char + " is too long to be a Character")
-        self.char = char
-
-    def __repr__(self):
-        if self.char == '\n':
-          return 'c_newline'
-        if self.char == ' ':
-          return 'c_space'
-        return "c_" + self.char
-
-    def __eq__(self, other):
-        if isinstance(other, Character):
-          return self.char == other.char
-        return False
-
-class PushVector(list):
-    '''
-    List objects that store vectors of literal on relevant Push state stacks.
-    '''
-    def __init__(self, lst, typ):
-        self.typ = typ
-        if typ == None:
-            self.typ = '_exec'
-
-        for el in lst:
-            if type(el) == typ:
-                self.append(el)
-            else:
-                raise Exception('Element of PushVector not correct type. Should be ' + str(typ))
-  
-              
 # These definitions are used by instructions to keep computed values within limits
 # or when using random instructions.
 max_number_magnitude = 1000000000000 # Used by keep_number_reasonable as the maximum size of any integer or float

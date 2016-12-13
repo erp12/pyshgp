@@ -7,9 +7,22 @@ Created on July 23, 2016
 from __future__ import absolute_import, division, print_function, unicode_literals
 __metaclass__ = type
 
-from . import instruction
+'''
+Plush genomes are linear representations of Push programs.
+Plush genomes are python lists of plush genes.
+Plush genes are python tuples.
+'''
+
 
 def make_plush_gene(instruction, is_literal = False, closes = None, silent = None):
+	'''Creates a plush gene tuple from an instruction ojbect.
+
+	Args:
+		instruction: An instance of the instruction class.
+		is_literal (bool): Denotes if the gene is holding a literal or an instruction.
+		closes (int): The close epigenetic marker. Denotes how many close parens to place after instruction in program.
+		silent (bool): If true, do not include instruction in translated program.
+	'''
 	return (instruction, is_literal, closes, silent)
 
 def plush_gene_print(gene):

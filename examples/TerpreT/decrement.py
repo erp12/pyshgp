@@ -4,24 +4,20 @@ Created on 11/30/2016
 
 @author: Eddie
 """
-
 import random
-import collections
 import numpy as np
 
-from pysh import pysh_interpreter
-from pysh import instruction as instr
-from pysh import utils as u
-from pysh import pysh_globals as g
-from pysh.gp import gp
-from pysh.instructions import boolean, code, common, numbers, string
-from pysh.instructions import registered_instructions as ri
+import pysh.utils as u
+import pysh.gp.gp as gp
+import pysh.push.interpreter as interp
+import pysh.push.instructions.registered_instructions as ri
+import pysh.push.instruction as instr
 
 def gen_random_test_case():
     i = random.randint(4, 31)
     return [random.choice(list(range(i))) for _ in list(range(i))]
 
-test_cases = [g.PushVector(gen_random_test_case(), int) for _ in list(range(20))]
+test_cases = [u.PushVector(gen_random_test_case(), int) for _ in list(range(20))]
 
 for t in test_cases:
     print(t, [x - 1 for x in t])
@@ -29,14 +25,14 @@ for t in test_cases:
 def error_func(program):
     errors = []
     for t in test_cases:
-        interpreter = pysh_interpreter.Pysh_Interpreter()
+        interpreter = interp.PyshInterpreter()
         
         interpreter.state.stacks["_input"].push_item(t)
         interpreter.run_push(program)
         prog_output = interpreter.state.stacks['_integer'][:]
         target_output = [x - 1 for x in t]
 
-        if prog_output == '_no_stack_item' or prog_output == '_stack_out_of_bounds_item':
+        if isinstance(prog_output, u.UnevaluatableStackResponse):
             errors.append(2000)
         elif not len(prog_output) == len(target_output):
             errors.append(1000)
@@ -47,9 +43,9 @@ def error_func(program):
     return errors
 
 params = {
-    "atom_generators" : u.merge_dicts(ri.get_instructions_by_pysh_type("_integer"),
-                                      ri.get_instructions_by_pysh_type("_vector"),
-                                      {"Input0" : instr.Pysh_Input_Instruction(0)}),
+    "atom_generators" : list(u.merge_sets(ri.get_instructions_by_pysh_type("_integer"),
+                                          ri.get_instructions_by_pysh_type("_vector"),
+                                          [instr.PyshInputInstruction(0)])),
     "genetic_operator_probabilities" : {"alternation" : 0.2,
                                         "uniform_mutation" : 0.2,
                                         "alternation & uniform_mutation" : 0.5,

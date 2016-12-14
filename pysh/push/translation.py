@@ -11,6 +11,7 @@ from .. import utils as u
 from . import instruction
 from . import plush as pl
 from .instructions import registered_instructions as ri
+from .instructions import *
 
 def delete_prev_paren_pair(prog):
 	'''

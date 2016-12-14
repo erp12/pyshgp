@@ -64,35 +64,6 @@ def epsilon_lexicase_selection(individuals, epsilon = None, k = 1):
 
     return selected_individuals
 
-def cluster_lexicase_selection(population, clusters, k = 1):
-    centers = clusters.cluster_centers_
-
-    selected_clusters = []
-
-    #non_empty_clusers = list(filter(lambda x: x in clusters.labels_, list(range(len(clusters.cluster_centers_)))))
-    non_empty_clusers = [x for x in list(range(len(clusters.cluster_centers_))) if x in clusters.labels_]
-
-    for i in range(k):
-        candidates = non_empty_clusers
-        cases = list(range(len(centers[0])))
-        random.shuffle(cases)
-
-        while len(cases) > 0 and len(candidates) > 1:
-            best_val_for_cases = min([centers[cluster][cases[0]] for cluster in candidates])
-
-            candidates = [cluster for cluster in candidates if centers[cluster][cases[0]] == best_val_for_cases] 
-            cases.pop(0)
-
-        selected_clusters.append(random.choice(candidates))
-    
-    selected_individuals = []
-    for cl in selected_clusters:
-        inds_in_cluster = [population[i] for i in list(range(len(population))) if clusters.labels_[i] == cl]
-        selected_individuals.append(random.choice(inds_in_cluster))
-
-        
-    return selected_individuals
-
 def tournament_selection(individuals, tournament_size, k = 1):
     '''
     Returns k individuals that do the best out of their respective tournament.
@@ -119,7 +90,5 @@ def selection(population, evolutionary_params, k = 1,):
         return epsilon_lexicase_selection(population, evolutionary_params["epsilon_lexicase_epsilon"], k)
     elif evolutionary_params["selection_method"] == "tournament":
         return tournament_selection(population, evolutionary_params["tournament_size"], k)
-    elif evolutionary_params["selection_method"] == "cluster_lexicase":
-        return cluster_lexicase_selection(population, evolutionary_params["clusters"], k)
     else:
         raise Exception("Unknown selection method: " + str(evolutionary_params["selection_method"]))

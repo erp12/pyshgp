@@ -6,15 +6,13 @@ Created on 7/29/2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import math
 import numpy as np
 import random
 
-from pysh.gp import gp
-from pysh import pysh_interpreter
-from pysh import instruction
-from pysh.instructions import boolean, code, common, numbers, string
-from pysh.instructions import registered_instructions as ri
+import pysh.gp.gp as gp
+import pysh.push.interpreter as interp
+import pysh.push.instructions.registered_instructions as ri
+import pysh.push.instruction as instr
 
 '''
 This problem is symbolic regression.
@@ -29,7 +27,7 @@ def error_func(program):
 	for x in np.arange(-2.0, 2.0, 0.1):
 		x = float(x)
 		# Create the push interpreter
-		interpreter = pysh_interpreter.Pysh_Interpreter()
+		interpreter = interp.PyshInterpreter()
 		interpreter.reset_pysh_state()
 		
 		# Push input number		
@@ -53,16 +51,16 @@ def error_func(program):
 problem_params = {
 	"error_threshold" : 0.01,
 	"population_size" : 2000,
-	"atom_generators" : {"float_div"    : ri.get_instruction_by_name("float_div"),
-						 "float_mult"   : ri.get_instruction_by_name("float_mult"),
-						 "float_sub"    : ri.get_instruction_by_name("float_sub"),
-						 "float_add"    : ri.get_instruction_by_name("float_add"),
-						 "float_rot"    : ri.get_instruction_by_name("float_rot"),
-						 "float_swap"   : ri.get_instruction_by_name("float_swap"),
-						 "float_dup"    : ri.get_instruction_by_name("float_dup"),
-						 "float_pop"    : ri.get_instruction_by_name("float_pop"),
-                         "f1"           : lambda: float(random.randint(0, 21) - 10),
-                         "Input"      : instruction.Pysh_Input_Instruction(0)},
+	"atom_generators" : [ri.get_instruction("float_div"),
+						 ri.get_instruction("float_mult"),
+						 ri.get_instruction("float_sub"),
+						 ri.get_instruction("float_add"),
+						 ri.get_instruction("float_rot"),
+						 ri.get_instruction("float_swap"),
+						 ri.get_instruction("float_dup"),
+						 ri.get_instruction("float_pop"),
+                         lambda: float(random.randint(0, 21) - 10),
+                         instr.PyshInputInstruction(0)],
     "epigenetic_markers" : [],
     "selection_method" : "epsilon_lexicase",
     "genetic_operator_probabilities" : {"alternation" : 0.5,

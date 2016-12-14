@@ -8,7 +8,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import random
 
-import pysh.utils as u
 import pysh.gp.gp as gp
 import pysh.push.interpreter as interp
 import pysh.push.instructions.registered_instructions as ri
@@ -26,7 +25,7 @@ def error_func(program):
 
     for x in range(20):
         # Create the push interpreter
-        interpreter = interp.Pysh_Interpreter()
+        interpreter = interp.PyshInterpreter()
         interpreter.reset_pysh_state()
         
         # Push input number     
@@ -48,12 +47,12 @@ def error_func(program):
     return errors
 
 problem_params = {
-    "atom_generators" : list(ri.get_instruction('_integer_div'),
-                             ri.get_instruction('_integer_mult'),
-                             ri.get_instruction('_integer_add'),
-                             ri.get_instruction('_integer_sub'),
-                             lambda: random.randint(0, 10),
-                             instruction.PyshInputInstruction(0)),
+    "atom_generators" : [ri.get_instruction('_integer_div'),
+                         ri.get_instruction('_integer_mult'),
+                         ri.get_instruction('_integer_add'),
+                         ri.get_instruction('_integer_sub'),
+                         lambda: random.randint(0, 10),
+                         instr.PyshInputInstruction(0)],
     "epigenetic_markers" : [],
     "selection_method" : "epsilon_lexicase",
     "genetic_operator_probabilities" : {"alternation" : 0.5,

@@ -5,32 +5,28 @@ Created on 11/30/2016
 @author: Eddie
 """
 
-import random
+import pysh.utils as u
+import pysh.gp.gp as gp
+import pysh.push.interpreter as interp
+import pysh.push.instructions.registered_instructions as ri
+import pysh.push.instruction as instr
 
-from pysh import pysh_interpreter
-from pysh import instruction as instr
-from pysh import utils as u
-from pysh.gp import gp
-from pysh.instructions import boolean, code, common, numbers, string
-from pysh.instructions import registered_instructions as ri
-
-
-test_cases = [[False, False, False, False],
-              [False, False, False, True],
-              [False, False, True, False],
-              [False, False, True, True],
-              [False, True, False, False],
-              [False, True, False, True],
-              [False, True, True, False],
-              [False, True, True, True],
-              [True, False, False, False],
-              [True, False, False, True],
-              [True, False, True, False],
-              [True, False, True, True],
-              [True, True, False, False],
-              [True, True, False, True],
-              [True, True, True, False],
-              [True, True, True, True]]
+test_cases = [(False, False, False, False),
+              (False, False, False, True),
+              (False, False, True, False),
+              (False, False, True, True),
+              (False, True, False, False),
+              (False, True, False, True),
+              (False, True, True, False),
+              (False, True, True, True),
+              (True, False, False, False),
+              (True, False, False, True),
+              (True, False, True, False),
+              (True, False, True, True),
+              (True, True, False, False),
+              (True, True, False, True),
+              (True, True, True, False),
+              (True, True, True, True)]
 
 def one_bit_adder(c, a, b):
     xor_1 = not a == b
@@ -54,7 +50,7 @@ def two_bit_adder(a_1, b_1, a_2, b_2):
 def error_func(program):
     errors = []
     for t in test_cases:
-        interpreter = pysh_interpreter.Pysh_Interpreter()
+        interpreter = interp.PyshInterpreter()
         
         interpreter.state.stacks["_input"].push_item(t[0])
         interpreter.state.stacks["_input"].push_item(t[1])
@@ -66,7 +62,7 @@ def error_func(program):
         target_output = two_bit_adder(t[0], t[1], t[2], t[3])
 
         e = 0
-        if len(prog_output) < 3 or '_no_stack_item' in prog_output or '_stack_out_of_bounds_item' in prog_output:
+        if len(prog_output) < 3:
             e += 1000
         else:
             if not prog_output[0] == target_output[0]: # Is the fist sum bit the same
@@ -79,11 +75,11 @@ def error_func(program):
     return errors
 
 params = {
-    "atom_generators" : u.merge_dicts(ri.get_instructions_by_pysh_type("_boolean"),
-                                      ri.get_instructions_by_pysh_type("_exec"),
-                                      {"Input0" : instr.Pysh_Input_Instruction(0),
-                                       "Input1" : instr.Pysh_Input_Instruction(1),
-                                       "Input2" : instr.Pysh_Input_Instruction(2)}),
+    "atom_generators" : list(u.merge_sets(ri.get_instructions_by_pysh_type("_boolean"),
+                                          ri.get_instructions_by_pysh_type("_exec"),
+                                          [instr.PyshInputInstruction(0),
+                                           instr.PyshInputInstruction(1),
+                                           instr.PyshInputInstruction(2)])),
     "genetic_operator_probabilities" : {"alternation" : 0.2,
                                         "uniform_mutation" : 0.2,
                                         "alternation & uniform_mutation" : 0.5,

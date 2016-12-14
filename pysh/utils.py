@@ -63,13 +63,19 @@ class PushVector(list):
             else:
                 raise e.PushVectorTypeException(typ, type(el))
 
-class NoStackItem:
+class UnevaluatableStackResponse:
+    '''Used as the superclass for other bad stack responses.
+    '''
+    def __repr__(self):
+        return 'UNEVALUATABLE_STACK_RESPONSE'
+
+class NoStackItem(UnevaluatableStackResponse):
     '''Used as a response when getting value from empty PushStack.
     '''
     def __repr__(self):
         return 'NO_STACK_ITEM'
 
-class StackOutOfBounds:
+class StackOutOfBounds(UnevaluatableStackResponse):
     '''Used as a response when getting value from empty PushStack.
     '''
     def __repr__(self):

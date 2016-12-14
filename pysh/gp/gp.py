@@ -17,6 +17,7 @@ from ..push import simplification as simp
 from ..push import instruction as instr
 
 from ..push.instructions import registered_instructions as ri
+from ..push.instructions import *
 
 from . import individual
 from . import operators as go
@@ -36,7 +37,7 @@ def load_program_from_list(lst, atom_generators = params.default_evolutionary_pa
             # If ``el`` is an int, float, bool, Character object or PushVector object simply 
             # append to the program because these are push literals.
             program.append(el)
-        elif type(el) == instr.PyshInstruction or type(el) == instr.PyshInputInstruction or type(el) == instr.PyshClassInstruction:
+        elif type(el) == instr.PyshInstruction or type(el) == instr.PyshInputInstruction or type(el) == instr.PyshClassVoteInstruction:
             # If ``el`` an instance of any of the instruction types, append to the program.
             program.append(el)
         elif (sys.version_info[0] == 3 and (type(el) is str or type(el) is bytes)) or (sys.version_info[0] == 2 and (type(el) is str or type(el) is unicode)):
@@ -164,7 +165,7 @@ def evolution(error_function, problem_params):
         solutions = [ind for ind in population if ind.get_total_error() <= evolutionary_params["error_threshold"]]
         if len(solutions) > 0:
             print()
-            print("Solution Found On Generation " + g + ":")
+            print("Solution Found On Generation " + str(g) + ":")
             print("Program:")
             print(solutions[0].get_program())
             print("Genome:")

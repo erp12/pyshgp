@@ -28,7 +28,7 @@ def register_instruction(instruction):
 def get_instruction(name):
     '''Gets a registered instruction by its name.
     '''
-    l = [i for i in registered_instructions if name in i.name]
+    l = [i for i in registered_instructions if name == i.name]
     if len(l) > 0:
         return l[0]
     else:

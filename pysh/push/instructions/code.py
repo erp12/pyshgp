@@ -198,9 +198,9 @@ def code_do_range(state):
         if not increment == 0:
             state.stacks['_exec'].push_item([(current_index + increment), 
                                               destination_index, 
-                                              ri.InstructionLookerUpper('code_from_exec'), 
+                                              ri.InstructionLookerUpper('_code_from_exec'), 
                                               to_do,
-                                              ri.InstructionLookerUpper('code_do*range')])
+                                              ri.InstructionLookerUpper('_code_do*range')])
         state.stacks['_integer'].push_item(current_index)
         state.stacks['_exec'].push_item(to_do)
     return state
@@ -259,7 +259,7 @@ def code_do_count(state):
                    state.stacks['_integer'].stack_ref(0) - 1, 
                    ri.InstructionLookerUpper('_code_from_exec'),
                    state.stacks['_code'].stack_ref(0),
-                   ri.InstructionLookerUpper('code_do*range')]
+                   ri.InstructionLookerUpper('_code_do*range')]
         state.stacks['_code'].pop_item()
         state.stacks['_integer'].pop_item()
         state.stacks['_exec'].push_item(to_push)

@@ -16,7 +16,6 @@ from . import registered_instructions as ri
 
 vector_types = ['_integer', '_float', '_boolean', '_string']
 
-
 ##                         ##
 #  Instructions for Vectors # 
 ##                         ##

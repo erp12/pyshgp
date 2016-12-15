@@ -73,7 +73,7 @@ def boolean_invert_first_then_and(state):
         state.stacks['_boolean'].pop_item()
         state.stacks['_boolean'].pop_item()
         state.stacks['_boolean'].push_item(result)
-boolean_invert_first_then_and_intruction = instr.PyshInstruction('boolean_invert_first_then_and', 
+boolean_invert_first_then_and_intruction = instr.PyshInstruction('_boolean_invert_first_then_and', 
                                                                  boolean_invert_first_then_and,
                                                                  stack_types = ['_boolean'])
 ri.register_instruction(boolean_invert_first_then_and_intruction)

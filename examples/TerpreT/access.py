@@ -45,6 +45,11 @@ params = {
     "atom_generators" : list(u.merge_sets(ri.registered_instructions,
                                           [instr.PyshInputInstruction(0),
                                            instr.PyshInputInstruction(1)])),
+    "max_points" : 3200,
+    "max_genome_size_in_initial_program" : 400,
+    "evalpush_limit" : 1600,
+    "population_size" : 1000,
+    "max_generations" : 300,
     "genetic_operator_probabilities" : {"alternation" : 0.2,
                                         "uniform_mutation" : 0.2,
                                         "alternation & uniform_mutation" : 0.5,
@@ -57,7 +62,7 @@ params = {
 }
 
 def test_solution():
-  prog_lst = [instr.PyshInputInstruction(0), '_exec_do*vector_integer', ['_boolean_not']]
+  prog_lst = [instr.PyshInputInstruction(1), instr.PyshInputInstruction(0), vector_integer_nth]
   prog = gp.load_program_from_list(prog_lst)
   errors = error_func(prog, debug = True)
   print("Errors:", errors)

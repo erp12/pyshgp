@@ -42,7 +42,8 @@ def error_func(program):
     return errors
 
 params = {
-    "atom_generators" : list(u.merge_sets(ri.registered_instructions,
+    "atom_generators" : list(u.merge_sets(ri.get_instructions_by_pysh_type("_integer"),
+                                          ri.get_instructions_by_pysh_type("_exec"),
                                           [instr.PyshInputInstruction(0),
                                            instr.PyshInputInstruction(1)])),
     "max_points" : 3200,

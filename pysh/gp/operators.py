@@ -9,6 +9,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import math
 import random
 
+from .. import exceptions as e
+
 from ..push import plush as pl
 from ..push import random as r
 
@@ -187,7 +189,7 @@ def produce_child(population, genetic_operators, evolutionary_params):
             child_genome = uniform_close_mutation(child.get_genome(), evolutionary_params)
             child = individual.Individual(child_genome, evolutionary_params)
         else:
-            raise Exception("Tried to perform unknown genetic operator " + str(op))
+            raise e.UnknownGeneticOperator(op)
     return child
 
 def produce_n_children(n, population, genetic_operators, evolutionary_params):

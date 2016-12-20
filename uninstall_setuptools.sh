@@ -11,7 +11,7 @@ sudo rm -rf build/
 sudo rm -rf dist/
 sudo rm -rf pysh_gp.egg-info/
 
-if [ $1 == "--reinstall" ]; then
+if [ "$1" == "--reinstall" ]; then
 	sudo python setup.py install
 	sudo python3 setup.py install
 fi

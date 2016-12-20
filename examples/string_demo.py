@@ -70,7 +70,7 @@ def string_error_func(program):
         # Get output
         prog_output = interpreter.state.stacks["_string"].stack_ref(0)
 
-        if type(prog_output) == u.NoStackItem or type(prog_output) == u.StackOutOfBounds:
+        if isinstance(prog_output, u.NoStackItem) or isinstance(prog_output, u.StackOutOfBounds):
             # If response is un-evaluatable, add a bad error.
             errors.append(1000)
         else:
@@ -94,6 +94,7 @@ string_params = {
                          ri.get_instruction("_integer_stack_depth"),
                          lambda: random.randint(0, 10),
                          lambda: random_str()],
+    "max_workers" : 1,
     "population_size" : 500,
     "max_generations" : 200,
     "epigenetic_markers" : [],

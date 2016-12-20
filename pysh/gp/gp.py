@@ -69,7 +69,8 @@ def generate_random_population(evolutionary_params):
     population = []
     for i in range(evolutionary_params["population_size"]):
         rand_genome = r.random_plush_genome(evolutionary_params)
-        population.append(individual.Individual(rand_genome, evolutionary_params))
+        new_ind = individual.Individual(rand_genome, evolutionary_params)
+        population.append(new_ind)
     return population
 
 def evaluate_individual(ind, error_function):

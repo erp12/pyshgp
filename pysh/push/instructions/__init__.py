@@ -8,4 +8,5 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 # Forces this directory to become a python package.
 
-__all__ = ['boolean', 'char', 'code', 'common', 'io', 'numbers', 'string', 'vectors']
+l = ['boolean', 'char', 'code', 'common', 'io', 'numbers', 'string', 'vectors']
+__all__ = [str(x) for x in l]

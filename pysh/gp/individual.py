@@ -52,7 +52,7 @@ class Individual:
 		return self.total_error
 
 	def __repr__(self):
-		return "PyshIndividual<"+self.total_error+">"
+		return "PyshIndividual<"+str(self.total_error)+">"
 
 	# def __eq__(self, other):
 	# 	return str(self.genome) == str(other.get_genome())

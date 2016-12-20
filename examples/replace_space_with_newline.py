@@ -7,17 +7,13 @@ Created on 9/15/2016
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import math
 import random
-import collections
 
-from pysh import pysh_interpreter
-from pysh import utils as u
-from pysh import pysh_globals as g
-from pysh import instruction as instr
-from pysh.gp import gp
-from pysh.instructions import boolean, code, common, numbers, string
-from pysh.instructions import registered_instructions as ri
+import pysh.utils as u
+import pysh.gp.gp as gp
+import pysh.push.interpreter as interp
+import pysh.push.instructions.registered_instructions as ri
+import pysh.push.instruction as instr
 
 '''
 Given a string input, print the string, replacing spaces with newlines.
@@ -61,7 +57,7 @@ def make_RSWN_error_func_from_cases(train_cases, test_cases):
         if data_cases == "test":
             cases = test_cases
 
-        interpreter = pysh_interpreter.Pysh_Interpreter()
+        interpreter = interp.PyshInterpreter()
 
         for io_pair in cases:
             interpreter.reset_pysh_state()
@@ -71,11 +67,16 @@ def make_RSWN_error_func_from_cases(train_cases, test_cases):
             str_result = interpreter.state.stacks["_string"].stack_ref(0)
             int_result = interpreter.state.stacks["_integer"].stack_ref(0)
 
-            s_er = u.levenshtein_distance(io_pair[1][0], str_result)
-            i_er = 1000
-            if type(int_result) == int or type(int_result) == float:
-                i_er = abs(int_result - io_pair[1][1])
-            errors += [s_er, i_er]
+            if type(str_result) == u.NoStackItem or type(str_result) == u.StackOutOfBounds:
+                # If response is un-evaluatable, add a bad error.
+                errors += [1000, 1000]
+            else:
+                # If response is evaluatable, compute actual error
+                s_er = u.levenshtein_distance(io_pair[1][0], str_result)
+                i_er = 1000
+                if type(int_result) == int or type(int_result) == float:
+                    i_er = abs(int_result - io_pair[1][1])
+                errors += [s_er, i_er]
 
         return errors
     return actual_RSWN_func
@@ -89,22 +90,20 @@ def get_RSWN_train_and_test():
     return io_pairs
 
 RSWN_params = {
-    "atom_generators" : u.merge_dicts({# Constants
-                                       "_space"              : lambda: g.Character(" "),
-                                       "_newline"            : lambda: g.Character("\n"),
-                                       # ERCs
-                                       "_char_ERC"           : lambda: g.Character(random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t")),
-                                       "_string_ERC"         : lambda: random_str(random.randint(0, 21)),
-                                       # Input instruction
-                                       "Input"             : instr.Pysh_Input_Instruction(0)},
-                                       # Standard stack instructions
-                                       ri.get_instructions_by_pysh_type("_integer"),
-                                       ri.get_instructions_by_pysh_type("_boolean"),
-                                       ri.get_instructions_by_pysh_type("_string"),
-                                       ri.get_instructions_by_pysh_type("_char"),
-                                       ri.get_instructions_by_pysh_type("_exec"),
-                                       ri.get_instructions_by_pysh_type("_print")
-                                       ),
+    "atom_generators" : list(u.merge_sets(ri.get_instructions_by_pysh_type("_integer"),
+                                          ri.get_instructions_by_pysh_type("_boolean"),
+                                          ri.get_instructions_by_pysh_type("_string"),
+                                          ri.get_instructions_by_pysh_type("_char"),
+                                          ri.get_instructions_by_pysh_type("_exec"),
+                                          ri.get_instructions_by_pysh_type("_print"),
+                                          [# Constants
+                                           lambda: u.Character(" "),
+                                           lambda: u.Character("\n"),
+                                           # ERCs
+                                           lambda: u.Character(random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t")),
+                                           lambda: random_str(random.randint(0, 21)),
+                                           # Input instruction
+                                           instr.PyshInputInstruction(0)])),
     "max_points" : 3200,
     "max_genome_size_in_initial_program" : 400,
     "evalpush_limit" : 1600,
@@ -122,8 +121,8 @@ RSWN_params = {
 
 def test_RSWN_solution(err_func):
     print(list(ri.registered_instructions.keys()))
-    prog_lst = [g.Character(" "), instr.Pysh_Input_Instruction(0), g.Character("\n"), '_string_replace_char', '_print_string', 
-                g.Character(" "), instr.Pysh_Input_Instruction(0), '_string_remove_char', '_char_all_from_string', '_char_stack_depth']
+    prog_lst = [u.Character(" "), instr.PyshInputInstruction(0), u.Character("\n"), '_string_replace_char', '_print_string', 
+                u.Character(" "), instr.PyshInputInstruction(0), '_string_remove_char', '_char_all_from_string', '_char_stack_depth']
     prog = gp.load_program_from_list(prog_lst)
     print(prog)
     errors = err_func(prog, debug = True)

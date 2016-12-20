@@ -6,11 +6,12 @@ Created on Sun Jun 6 2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from . import utils as u
-from . import pysh_globals as g
+from .. import utils as u
+
 from . import instruction
-from . import plush_gene as pl
+from . import plush as pl
 from .instructions import registered_instructions as ri
+from .instructions import *
 
 def delete_prev_paren_pair(prog):
 	'''
@@ -29,7 +30,7 @@ def delete_prev_paren_pair(prog):
 		# Check if looking for the correct _open but found an _open for a different paren
 		elif found_first_close and 0 < number_close_parens and reversed_prog[0] == '_open':
 			new_prog.append(reversed_prog[0])
-			eversed_prog.pop(0)
+			reversed_prog.pop(0)
 			number_close_parens -= 1
 		# Check if looking for correct _open but found another _close
 		elif found_first_close and reversed_prog[0] == '_close':
@@ -89,14 +90,13 @@ def translate_plush_genome_to_push_program(genome, max_points, atom_generators =
 		# If here, ready for next instruction
 		else:
 			instr = pl.plush_gene_get_instruction(gn[0])
-			if not pl.plush_gene_is_literal(gn[0]):
-				if atom_generators != None and instr in atom_generators:
-					instr = atom_generators[instr]
-				else:
-					instr = ri.get_instruction_by_name(instr)
+			
+			# if not pl.plush_gene_is_literal(gn[0]):
+			# 	if not (atom_generators != None and instr in atom_generators):
+			# 		instr = ri.get_instruction(instr.name)
 
 			number_paren_groups = 0
-			if type(instr).__name__ == instruction.Pysh_Instruction.__name__:
+			if isinstance(instr, instruction.PyshInstruction):
 				number_paren_groups = instr.parentheses
 
 			new_paren_stack = paren_stack

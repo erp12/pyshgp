@@ -1,21 +1,28 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Dec. 11, 2016
+
+@author: Eddie
+"""
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import sys
-from .. import pysh_globals as g
+
 from .. import utils as u
 
-from ..instructions import boolean, char, code, common, numbers, string, input_output
-from ..instructions import registered_instructions 
+from ..push.instructions import registered_instructions 
 
 default_evolutionary_params = {
 "error_threshold" : 0, # If any total error of individual is below this, that is considered a solution
 "population_size" : 1000, # Size of the population at each generation
-"max_generations" : 1000, # Max generations before evoluion stops. Will stop sooner if solution is found
+"max_generations" : 1000, # Max generations before evolution stops. Will stop sooner if solution is found
 "max_genome_initial_size" : 50, # Maximum size of random genomes generated for initial population
 "max_points" : 200, # Maximum size of push genomes and push programs, as counted by points in the program. <- Might not be implemented correctly yet
 
 # The instructions that pushgp will use in random code generation
-"atom_generators" : u.merge_dicts(registered_instructions.registered_instructions,
-                                  {"f1" : lambda: random.randint(0, 100),
-                                   "f2" : lambda: random.random()}),
+"atom_generators" : u.merge_sets(registered_instructions.registered_instructions,
+                                 set([lambda: random.randint(0, 100),
+                                     lambda: random.random()])),
 
 # Probabilities of parents from previous generation undergoing each
 # genetic operators to produce a child.
@@ -31,7 +38,7 @@ default_evolutionary_params = {
 "selection_method" : "lexicase", # Options are 'lexicase', 'epsilon_lexicase', 'cluster_lexicase' or tournament';
 
 # Arguments related to lexicase selection, and its variants
-"epsilon_lexicase_epsilon" : None, # Defines a hard-coded epsilon. If None, automaticly defines epsilon using MAD.
+"epsilon_lexicase_epsilon" : None, # Defines a hard-coded epsilon. If None, automatically defines epsilon using MAD.
 "cluster_lexicase_clusters" : 10,
 
 # Arguments related to Tournament Selection
@@ -43,7 +50,7 @@ default_evolutionary_params = {
 
 # Arguments related to alternation
 "alternation_rate" : 0.01, # When using alternation, how often alternates between the parents
-"alignment_deviation" : 10, # When using alternation, the standard deviation of how far alternation may jump between indices when switching between parents
+"alignment_deviation" : 10, # When using alternation, the standard deviation of how far alternation may jump between indexes when switching between parents
 
 ############
 # MUTATION #
@@ -78,21 +85,24 @@ default_evolutionary_params = {
                        "unique_error_vectors" : True,
                        "best_program_by_total_error" : True,
                        "lowest_error_on_each_case": True},
-# Send SMS every few x generations. 0 means never send text.
-"SMS_every_x_generations" : None,
 
 # End of run plots
-"reports" : {"timings" : True,
-             "plot_piano_roll" : False,
-             "final_SMS" : False},
+"reports" : {"timings" : True},
 
 #
-"max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parrell. If None, uses number of cores on machine.
+"max_workers" : None, # If 1, pysh runs in single thread. Otherwise, pysh runs in parallel. If None, uses number of cores on machine.
 "parallel_evaluation" : True,
 "parallel_genetics" : False
 }
 
+def params_pretty_print(params):
+    for key,value in params.items():
+        print(key, ":", value)
+    print()
+
 def safe_cast_arg(arg, typ = int):
+    '''Recursively attempts to cast the command line arg. Defaults to string,
+    '''
     if typ == int or typ == float:
         try:
             return typ(arg)
@@ -138,14 +148,6 @@ def init_executor(evolutionary_params):
         evolutionary_params["pool"] = Pool()
     else:
         evolutionary_params['pool'] = Pool(evolutionary_params["max_workers"])
-
-def setup_SMS(evolutionary_params):
-    print("Preparing to send text updates")
-    from .. import text_me
-    if sys.version_info[0] == 3:
-        evolutionary_params['run_name'] = input("Enter a name for this run: ")
-    else: # Python 2
-        evolutionary_params['run_name'] = raw_input("Enter a name for this run: ")
 
 
 

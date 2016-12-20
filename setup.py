@@ -21,7 +21,7 @@ setup(
     license = "LGPL",
     keywords = ["push gp", "genetic programming", "pushGP", "gp", "push"],
     url = "https://github.com/erp12/Pysh",
-    packages=['pysh', 'pysh.gp', 'pysh.instructions'],
+    packages=['pysh', 'pysh.gp', 'pysh.push', 'pysh.push.instructions'],
     long_description=read('README.md'),
     classifiers=[
         "Development Status :: 3 - Alpha",

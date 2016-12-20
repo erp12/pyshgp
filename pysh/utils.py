@@ -7,13 +7,98 @@ Created on Sun Jun  5 15:36:03 2016
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
-import math
 import random
 
-from . import instruction as instr
-from . import pysh_globals as g
+from . import exceptions as e
+from .push import instruction as instr
+from . import constants as c
+
+
+##             ##
+# Utility Types #
+##             ##
+
+class Character(object):
+    '''Holds a string of length 1.
+
+    Used to distinguish between string and char literals 
+    in Push program interpretation.
+
+    Attributes:
+        char (str): string of length 1.
+    '''
+    def __init__(self, char):
+        if len(char) == 0:
+            raise e.EmptyCharacterException()
+        if len(char) > 1:
+            raise e.LongCharacterException()
+        self.char = char
+
+    def __repr__(self):
+        if self.char == '\n':
+          return 'c_newline'
+        if self.char == ' ':
+          return 'c_space'
+        return "c_" + self.char
+
+    def __eq__(self, other):
+        if isinstance(other, Character):
+          return self.char == other.char
+        return False
+
+class PushVector(list):
+    '''List where elements are all of same pysh literal types.
+
+    Attributes:
+        typ (type): Python type that all elements must be.
+    '''
+    def __init__(self, lst, typ):
+        self.typ = typ
+        if typ == None:
+            self.typ = '_exec'
+
+        for el in lst:
+            if type(el) == typ:
+                self.append(el)
+            else:
+                raise e.PushVectorTypeException(typ, type(el))
+
+class UnevaluatableStackResponse:
+    '''Used as the superclass for other bad stack responses.
+    '''
+    def __repr__(self):
+        return 'UNEVALUATABLE_STACK_RESPONSE'
+
+class NoStackItem(UnevaluatableStackResponse):
+    '''Used as a response when getting value from empty PushStack.
+    '''
+    def __repr__(self):
+        return 'NO_STACK_ITEM'
+
+class StackOutOfBounds(UnevaluatableStackResponse):
+    '''Used as a response when getting value from empty PushStack.
+    '''
+    def __repr__(self):
+        return 'NO_STACK_ITEM'
+
+
+##                 ##
+# Utility Functions #
+##                 ##
 
 def flatten_all(lst):
+    '''Recursively flattens nested lists into a single list.
+
+    Args:
+        lst: nested lists
+
+    Returns:
+        Flattened lists.
+
+    Examples: 
+        >>> flatten_all([1, [2, 3, [4], 5]])
+        [1, 2, 3, 4, 5]
+    '''
     result = []
     for i in lst:
         if type(i) == list:
@@ -24,14 +109,31 @@ def flatten_all(lst):
 
 
 def recognize_pysh_type(thing):
+    '''If thing is a literal, return its type -- otherwise return False.
+
+    Args:
+        thing: anything!
+
+    Returns:
+        A string with a ``_`` as the first char. This is how Pysh types
+        are denoted throughout the entire package.
+        If there is no appropriate Pysh type, returns False.
+
+    Examples:
+        >>> recognize_pysh_type(True)
+        '_bool'
+
+        >>> recognize_pysh_type(77)
+        '_integer'
+
+        >>> recognize_pysh_type(abs)
+        False
     '''
-    If thing is a literal, return its type -- otherwise return False.
-    '''
-    if type(thing) == instr.Pysh_Input_Instruction:
+    if type(thing) == instr.PyshInputInstruction:
         return '_input_instruction'
-    elif type(thing) == instr.Pysh_Class_Instruction:
+    elif type(thing) == instr.PyshClassVoteInstruction:
         return '_class_instruction'
-    elif type(thing) == instr.Pysh_Instruction:
+    elif type(thing) == instr.PyshInstruction:
         return '_instruction'
     elif type(thing) is int:
         return '_integer'
@@ -41,15 +143,15 @@ def recognize_pysh_type(thing):
         return '_string'
     elif sys.version_info[0] == 2 and (type(thing) is str or type(thing) is unicode):
         return '_string'
-    elif type(thing) == g.Character:
+    elif type(thing) == Character:
         return '_char'
     elif type(thing) is bool:
         return '_boolean'
-    elif type(thing) is list:
-        return '_list'
-    elif type(thing) is g.PushVector:
+    elif type(thing) is PushVector:
         t = recognize_pysh_type(thing.typ())
         return '_vector' + t
+    elif type(thing) is list:
+        return '_list'
     else:
         print("Could not find pysh type for", thing, "of type", type(thing))
         return False
@@ -60,10 +162,10 @@ def keep_number_reasonable(n):
     '''
     Returns a version of n that obeys limit parameters.
     '''
-    if n > g.max_number_magnitude:
-        n = g.max_number_magnitude
-    elif n < -g.max_number_magnitude:
-        n = -g.max_number_magnitude
+    if n > c.max_number_magnitude:
+        n = c.max_number_magnitude
+    elif n < -c.max_number_magnitude:
+        n = -c.max_number_magnitude
     return n
 
 def normalize_genetic_operator_probabilities(gen_op_dict):
@@ -133,16 +235,15 @@ def reductions(f, l):
 
 
 def get_matcing_close_index(sequence):
-    i = None
     open_count = 0
-    for j in range(len(sequence)):
-        if sequence[j] == '_open':
+    for i in range(len(sequence)):
+        if sequence[i] == '_open':
             open_count += 1
-        elif sequence[j] == '_close':
+        elif sequence[i] == '_close':
             open_count -= 1
         if open_count == 0:
-            return j
-        j += 1
+            return i
+        i += 1
 
 def open_close_sequence_to_list(sequence):
     if not type(sequence) == list:
@@ -176,6 +277,14 @@ def merge_dicts(*dict_args):
     result = {}
     for dictionary in dict_args:
         result.update(dictionary)
+    return result
+
+def merge_sets(*set_args):
+    '''Given any number of sets, shallow copy and merge into a new set.
+    '''
+    result = set()
+    for s in set_args:
+        result.update(s)
     return result
 
 def ensure_list(thing):
@@ -233,8 +342,7 @@ def test_and_train_data_from_domains(domains):
     return [train_set, test_set]
 
 def int_to_char(i):
-    '''
-    A way to convert ints to chars and only get human readable chars
+    '''Convert ints to chars and only get human readable chars
     '''
     i = (i + 32) % 128
     return chr(i)

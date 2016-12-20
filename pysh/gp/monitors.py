@@ -6,7 +6,6 @@ Created on 5/25/2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from .. import utils as u
 
 def best_total_error(population):
 	return sorted(population, key=lambda ind: ind.get_total_error())[0].get_total_error()

@@ -94,7 +94,6 @@ string_params = {
                          ri.get_instruction("_integer_stack_depth"),
                          lambda: random.randint(0, 10),
                          lambda: random_str()],
-    "max_workers" : 1,
     "population_size" : 500,
     "max_generations" : 200,
     "epigenetic_markers" : [],

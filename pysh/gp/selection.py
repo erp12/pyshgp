@@ -9,6 +9,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import random
 import numpy as np
 
+from .. import exceptions as e
+
 #####################
 # Selection Methods #
 #####################
@@ -91,4 +93,4 @@ def selection(population, evolutionary_params, k = 1,):
     elif evolutionary_params["selection_method"] == "tournament":
         return tournament_selection(population, evolutionary_params["tournament_size"], k)
     else:
-        raise Exception("Unknown selection method: " + str(evolutionary_params["selection_method"]))
+        raise e.UnknownGeneticOperator(evolutionary_params["selection_method"])

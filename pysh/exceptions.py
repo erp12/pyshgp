@@ -26,7 +26,17 @@ class UnknownInstructionName(Exception):
 	'''
 	'''
 	def __init__(self, name):
-		super(UnknownInstructionName, self).__init__('No registered instruction with name: ' + name)
+		super(UnknownInstructionName, self).__init__('No registered instruction with name: ' + str(name))
+
+##                       ##
+# Utility Type Exceptions #
+##                       ##
+
+class UnknownGeneticOperator(Exception):
+	'''
+	'''
+	def __init__(self, name):
+		super(UnknownGeneticOperator, self).__init__('Unknown genetic operator (or selection method) ' + str(name))
 
 ##                       ##
 # Utility Type Exceptions #

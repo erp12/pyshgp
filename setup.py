@@ -13,7 +13,7 @@ def read(fname):
 
 
 setup(
-    name = "pysh_gp",
+    name = "pyshGP",
     version = "1.0.0",
     author = "Eddie Pantridge",
     author_email = "erp12@hampshire.edu",
@@ -24,7 +24,7 @@ setup(
     packages=['pysh', 'pysh.gp', 'pysh.push', 'pysh.push.instructions'],
     long_description=read('README.md'),
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Topic :: Machine Learning",
         "Topic :: Genetic Programming",
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",

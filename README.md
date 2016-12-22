@@ -48,12 +48,7 @@ def odd_error_func(program, debug = False):
 
     for i in range(10):
         # Create the push interpreter
-        interpreter = interp.PyshInterpreter()
-        interpreter.reset_pysh_state()
-        
-        # Push input number     
-        interpreter.state.stacks["_integer"].push_item(i)
-        interpreter.state.stacks["_input"].push_item(i)
+        interpreter = interp.PyshInterpreter([i])
         # Run program           
         interpreter.run_push(program, debug)
         # Get output

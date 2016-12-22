@@ -59,13 +59,7 @@ def string_error_func(program):
 
     for inpt in inputs:
         # Create the push interpreter
-        interpreter = interp.PyshInterpreter()
-        interpreter.reset_pysh_state()
-        
-        # Push input number     
-        interpreter.state.stacks["_string"].push_item(inpt)
-        interpreter.state.stacks["_input"].push_item(inpt)
-        # Run program
+        interpreter = interp.PyshInterpreter([inpt])
         interpreter.run_push(program)
         # Get output
         prog_output = interpreter.state.stacks["_string"].stack_ref(0)

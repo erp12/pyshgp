@@ -25,10 +25,7 @@ test_cases = [[u.PushVector([1, 1, 2, 3, 5, 8, 13], int), 4],
 def error_func(program):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter()
-        
-        interpreter.state.stacks["_input"].push_item(t[1]) # index
-        interpreter.state.stacks["_input"].push_item(t[0]) # vector
+        interpreter = interp.PyshInterpreter(t)
         interpreter.run_push(program)
         prog_output = interpreter.state.stacks['_integer'].stack_ref(0)
         target_output = t[0][t[1]]

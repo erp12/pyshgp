@@ -23,12 +23,7 @@ test_cases = [(0, 0, 0),
 def error_func(program):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter()
-        
-        interpreter.state.stacks["_input"].push_item(t[0])
-        interpreter.state.stacks["_input"].push_item(t[1])
-        interpreter.state.stacks["_input"].push_item(t[2])
-
+        interpreter = interp.PyshInterpreter(t)
         interpreter.run_push(program)
         prog_output = interpreter.state.stacks['_integer'][-2:]
 

@@ -24,14 +24,8 @@ def error_func(program):
     errors = []
 
     for x in range(20):
-        # Create the push interpreter
-        interpreter = interp.PyshInterpreter()
-        interpreter.reset_pysh_state()
-        
-        # Push input number     
-        interpreter.state.stacks["_integer"].push_item(x)
-        interpreter.state.stacks["_input"].push_item(x)
-        # Run program
+        # Create the push interpreter and run program
+        interpreter = interp.PyshInterpreter(inputs=[x])
         interpreter.run_push(program)
         # Get output
         top_int = interpreter.state.stacks["_integer"].stack_ref(0)

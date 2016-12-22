@@ -25,9 +25,13 @@ class PyshInterpreter:
         status: Status of the interpreter, this isn't used much yet.
     '''
     
-    def __init__(self):
+    def __init__(self, inputs = None):
         self.state = state.PyshState()
         self.status = '_normal'
+
+        if inputs != None:
+            for i in inputs:
+                self.state.stacks['_input'].push_item(i)
         
     def reset_pysh_state(self):
         self.state = state.PyshState()

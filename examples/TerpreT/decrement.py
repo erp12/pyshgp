@@ -25,9 +25,7 @@ for t in test_cases:
 def error_func(program):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter()
-        
-        interpreter.state.stacks["_input"].push_item(t)
+        interpreter = interp.PyshInterpreter([t])
         interpreter.run_push(program)
         prog_output = interpreter.state.stacks['_integer'][:]
         target_output = [x - 1 for x in t]

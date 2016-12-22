@@ -33,14 +33,7 @@ def iris_error_func(program, print_trace = False):
 
 	for index, row in training_set.iterrows():
 		# Create the push interpreter
-		interpreter = interp.PyshInterpreter()
-		interpreter.reset_pysh_state()
-		
-		# Push input number		
-		interpreter.state.stacks["_input"].push_item(float(row['Sepal_Length']))
-		interpreter.state.stacks["_input"].push_item(float(row['Sepal_Width']))
-		interpreter.state.stacks["_input"].push_item(float(row['Petal_Length']))
-		interpreter.state.stacks["_input"].push_item(float(row['Petal_Width']))
+		interpreter = interp.PyshInterpreter(row.drop('Species').astype(float).tolist())
 
 		# Initialize output classes
 		interpreter.state.stacks["_output"].push_item(0)

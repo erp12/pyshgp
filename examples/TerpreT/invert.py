@@ -52,9 +52,7 @@ for t in test_cases:
 def error_func(program, debug = False):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter()
-        
-        interpreter.state.stacks["_input"].push_item(t)
+        interpreter = interp.PyshInterpreter([t])
         interpreter.run_push(program, debug)
         prog_output = interpreter.state.stacks['_boolean'][:]
         target_output = invert_bitstring(t)

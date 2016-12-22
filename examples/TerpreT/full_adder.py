@@ -33,12 +33,7 @@ def full_adder(c, a, b):
 def error_func(program):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter()
-        
-        interpreter.state.stacks["_input"].push_item(t[0])
-        interpreter.state.stacks["_input"].push_item(t[1])
-        interpreter.state.stacks["_input"].push_item(t[2])
-
+        interpreter = interp.PyshInterpreter(t)
         interpreter.run_push(program)
         prog_output = interpreter.state.stacks['_boolean'][-2:]
         target_output = full_adder(t[0], t[1], t[2])

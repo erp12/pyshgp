@@ -27,13 +27,7 @@ def error_func(program):
 	for x in np.arange(-2.0, 2.0, 0.1):
 		x = float(x)
 		# Create the push interpreter
-		interpreter = interp.PyshInterpreter()
-		interpreter.reset_pysh_state()
-		
-		# Push input number		
-		interpreter.state.stacks["_float"].push_item(x)
-		interpreter.state.stacks["_input"].push_item(x)
-		# Run program
+		interpreter = interp.PyshInterpreter([x])
 		interpreter.run_push(program)
 		# Get output
 		top_float = interpreter.state.stacks["_float"].stack_ref(0)

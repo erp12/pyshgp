@@ -57,12 +57,8 @@ def make_RSWN_error_func_from_cases(train_cases, test_cases):
         if data_cases == "test":
             cases = test_cases
 
-        interpreter = interp.PyshInterpreter()
-
         for io_pair in cases:
-            interpreter.reset_pysh_state()
-            interpreter.state.stacks["_input"].push_item(io_pair[0])
-            #interpreter.run_push(program, debug)
+            interpreter = interp.PyshInterpreter([io_pair[0]])
             interpreter.run_push(program, debug)
             str_result = interpreter.state.stacks["_string"].stack_ref(0)
             int_result = interpreter.state.stacks["_integer"].stack_ref(0)

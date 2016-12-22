@@ -1,19 +1,19 @@
 
-## Benchmarks (Timings in seconds)
+# Benchmarks (Timings in seconds)
 
 These reports are based on single runs that I chose to document because they *seem* to be around the standard runtime for each problem. This should be replaced with a less anecdotal investigation.
 
 
 | Problem        | Solution Generation | Workers | Avg Generation Evaluation Time | Avg Generation Selection/Variations Time |
 |----------------|---------------------|---------|--------------------------------|------------------------------------------|
-| Odd            | 9                   | 8       | 18.433s                        | 3.611s                                   |
-| Iris           | 5                   | 8       | 88.807s                        | 6.082s                                   |
-| Sextic         | 7                   | 8       | 20.954s                        | 25.864s                                  |
-| RSWN           | 21                  | 16      | 53.077s                        | 19.628s                                  |
-| String Demo    | 10                  | 8       | 1.516s                         | 0.486s                                   |
-| Int Regression | 2                   | 8       | 2.601s                         | 2.42s                                    |
+| Odd            | 9                   | 8       | 18.433                         | 3.611                                    |
+| Iris           | 5                   | 8       | 88.807                         | 6.082                                    |
+| Sextic         | 5                   | 8       | 13.491                         | 23.73                                    |
+| RSWN           | 21                  | 16      | 53.077                         | 19.628                                   |
+| String Demo    | 10                  | 8       | 1.863                          | 0.404                                    |
+| Int Regression | 8                   | 8       | 3.141                          | 6.027                                    |
 
-## Solutions
+# Solutions
 
 These solutions have undergone basic simplification. It is likely that they could be simplified further.
 
@@ -32,7 +32,7 @@ These solutions have undergone basic simplification. It is likely that they coul
 ### Sextic
 
 ```
-[_input0_INPT_INSTR, _input0_INPT_INSTR, float_dup_INSTR, float_mult_INSTR, float_div_INSTR, _input0_INPT_INSTR, _input0_INPT_INSTR, float_mult_INSTR, float_add_INSTR, _input0_INPT_INSTR, float_swap_INSTR, float_dup_INSTR, float_mult_INSTR, float_mult_INSTR, float_mult_INSTR]
+[_input0, _float_dup, _input0, _float_mult, _input0, _float_mult, _float_sub, _float_dup, _float_mult]
 ```
 
 ### Replace Space With Newline
@@ -44,5 +44,11 @@ These solutions have undergone basic simplification. It is likely that they coul
 ### String Demo
 
 ```
-[integer_stack_depth_INSTR, integer_dup_INSTR, integer_stack_depth_INSTR, integer_sub_INSTR, string_head_INSTR, string_dup_INSTR, string_concat_INSTR]
+[_string_stack_depth, _input0, _string_dup, _string_stack_depth, _integer_sub, _string_head, _string_dup, _string_concat]
+```
+
+### Integer Regression
+
+```
+[_input0, 2, _integer_sub, _input0, _integer_mult, _input0, _integer_mult, _input0, _integer_sub]
 ```

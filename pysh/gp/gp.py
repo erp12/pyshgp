@@ -177,6 +177,8 @@ def evolution(error_function, problem_params):
             break # Finish evolutionary run
 
         if g == evolutionary_params['max_generations'] - 1:
+            print()
+            print('Failure')
             print('Best program in final generation:')
             print(population[0].get_program())
             print('Errors:', population[0].get_errors())

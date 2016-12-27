@@ -104,7 +104,7 @@ def flatten_all(lst):
         if type(i) == list:
             result += flatten_all(i)
         else:
-            result += i
+            result.append(i)
     return result
 
 

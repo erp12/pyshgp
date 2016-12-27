@@ -40,14 +40,8 @@ def error_func(program):
 
 params = {
     "atom_generators" : list(u.merge_sets(ri.get_instructions_by_pysh_type("_integer"),
-                                          ri.get_instructions_by_pysh_type("_exec"),
                                           [instr.PyshInputInstruction(0),
                                            instr.PyshInputInstruction(1)])),
-    "max_points" : 3200,
-    "max_genome_size_in_initial_program" : 400,
-    "evalpush_limit" : 1600,
-    "population_size" : 1000,
-    "max_generations" : 300,
     "genetic_operator_probabilities" : {"alternation" : 0.2,
                                         "uniform_mutation" : 0.2,
                                         "alternation & uniform_mutation" : 0.5,

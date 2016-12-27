@@ -57,9 +57,7 @@ else:
 	print_trace = False
 
 # Create push interpreter and push inputs onto the _input stack.
-interpreter = interp.PyshInterpreter()
-for i in prog_inputs:
-	interpreter.state.stacks['_input'].push_item(i)
+interpreter = interp.PyshInterpreter(prog_inputs)
 
 # Run the push program
 interpreter.run_push(program, print_trace)

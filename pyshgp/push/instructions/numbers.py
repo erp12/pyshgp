@@ -21,7 +21,7 @@ def adder(pysh_type):
     '''
     def add(state):
         if len(state.stacks[pysh_type])>1:
-            new_num = state.stacks[pysh_type].stack_ref(1) + state.stacks[pysh_type].stack_ref(0)
+            new_num = state.stacks[pysh_type].ref(1) + state.stacks[pysh_type].ref(0)
             new_num = u.keep_number_reasonable(new_num)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
@@ -48,7 +48,7 @@ def subtracter(pysh_type):
     '''
     def sub(state):
         if len(state.stacks[pysh_type])>1:
-            new_num = state.stacks[pysh_type].stack_ref(1) - state.stacks[pysh_type].stack_ref(0)
+            new_num = state.stacks[pysh_type].ref(1) - state.stacks[pysh_type].ref(0)
             new_num = u.keep_number_reasonable(new_num)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
@@ -75,7 +75,7 @@ def multiplier(pysh_type):
     '''
     def mult(state):
         if len(state.stacks[pysh_type])>1:
-            new_num = state.stacks[pysh_type].stack_ref(1) * state.stacks[pysh_type].stack_ref(0)
+            new_num = state.stacks[pysh_type].ref(1) * state.stacks[pysh_type].ref(0)
             new_num = u.keep_number_reasonable(new_num)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
@@ -103,8 +103,11 @@ def divider(pysh_type):
     '''
     def div(state):
         if len(state.stacks[pysh_type])>1:
-            if state.stacks[pysh_type].stack_ref(0) != 0:
-                new_num = state.stacks[pysh_type].stack_ref(1) // state.stacks[pysh_type].stack_ref(0)
+            if state.stacks[pysh_type].ref(0) != 0:
+                new_num = None
+                new_num = state.stacks[pysh_type].ref(1) / state.stacks[pysh_type].ref(0)
+                if pysh_type == '_integer':
+                    new_num = int(new_num)
                 new_num = u.keep_number_reasonable(new_num)
                 state.stacks[pysh_type].pop_item()
                 state.stacks[pysh_type].pop_item()
@@ -132,8 +135,8 @@ def modder(pysh_type):
     '''
     def mod(state):
         if len(state.stacks[pysh_type])>1:
-            if state.stacks[pysh_type].stack_ref(0) != 0:
-                new_num = state.stacks[pysh_type].stack_ref(1) % state.stacks[pysh_type].stack_ref(0)
+            if state.stacks[pysh_type].ref(0) != 0:
+                new_num = state.stacks[pysh_type].ref(1) % state.stacks[pysh_type].ref(0)
                 new_num = u.keep_number_reasonable(new_num)
                 state.stacks[pysh_type].pop_item()
                 state.stacks[pysh_type].pop_item()
@@ -161,7 +164,7 @@ def less_than(pysh_type):
     '''
     def lt(state):
         if len(state.stacks[pysh_type])>1:
-            new_bool = state.stacks[pysh_type].stack_ref(1) < state.stacks[pysh_type].stack_ref(0)
+            new_bool = state.stacks[pysh_type].ref(1) < state.stacks[pysh_type].ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
             state.stacks['_boolean'].push_item(new_bool)
@@ -188,7 +191,7 @@ def less_than_equal(pysh_type):
     '''
     def lte(state):
         if len(state.stacks[pysh_type])>1:
-            new_bool = state.stacks[pysh_type].stack_ref(1) <= state.stacks[pysh_type].stack_ref(0)
+            new_bool = state.stacks[pysh_type].ref(1) <= state.stacks[pysh_type].ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
             state.stacks['_boolean'].push_item(new_bool)
@@ -215,7 +218,7 @@ def greater_than(pysh_type):
     '''
     def gt(state):
         if len(state.stacks[pysh_type])>1:
-            new_bool = state.stacks[pysh_type].stack_ref(1) > state.stacks[pysh_type].stack_ref(0)
+            new_bool = state.stacks[pysh_type].ref(1) > state.stacks[pysh_type].ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
             state.stacks['_boolean'].push_item(new_bool)
@@ -242,7 +245,7 @@ def greater_than_equal(pysh_type):
     '''
     def gte(state):
         if len(state.stacks[pysh_type])>1:
-            new_bool = state.stacks[pysh_type].stack_ref(1) >= state.stacks[pysh_type].stack_ref(0)
+            new_bool = state.stacks[pysh_type].ref(1) >= state.stacks[pysh_type].ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
             state.stacks['_boolean'].push_item(new_bool)
@@ -268,7 +271,7 @@ def minner(pysh_type):
     '''
     def min_pysh(state):
         if len(state.stacks[pysh_type])>1:
-            new_num = min(state.stacks[pysh_type].stack_ref(1), state.stacks[pysh_type].stack_ref(0))
+            new_num = min(state.stacks[pysh_type].ref(1), state.stacks[pysh_type].ref(0))
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
@@ -294,7 +297,7 @@ def maxer(pysh_type):
     '''
     def max_pysh(state):
         if len(state.stacks[pysh_type])>1:
-            new_num = max(state.stacks[pysh_type].stack_ref(1), state.stacks[pysh_type].stack_ref(0))
+            new_num = max(state.stacks[pysh_type].ref(1), state.stacks[pysh_type].ref(0))
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
@@ -320,7 +323,7 @@ def incrementer(pysh_type):
     '''
     def inc(state):
         if len(state.stacks[pysh_type])>0:
-            new_num = state.stacks[pysh_type].stack_ref(0) + 1
+            new_num = state.stacks[pysh_type].ref(0) + 1
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
     instruction = instr.PyshInstruction(pysh_type + '_inc',
@@ -345,7 +348,7 @@ def decrementer(pysh_type):
     '''
     def dec(state):
         if len(state.stacks[pysh_type])>0:
-            new_num = state.stacks[pysh_type].stack_ref(0) - 1
+            new_num = state.stacks[pysh_type].ref(0) - 1
             state.stacks[pysh_type].pop_item()
             state.stacks[pysh_type].push_item(new_num)
     instruction = instr.PyshInstruction(pysh_type + '_dec',
@@ -369,7 +372,7 @@ def float_sin(state):
 
     '''
     if len(state.stacks['_float']) > 0:
-        new_float = math.sin(state.stacks['_float'].stack_ref(0))
+        new_float = math.sin(state.stacks['_float'].ref(0))
         state.stacks['_float'].pop_item()
         state.stacks['_float'].push_item(new_float)
 float_sin_instruction = instr.PyshInstruction('_float_sin',
@@ -387,7 +390,7 @@ def float_cos(state):
 
     '''
     if len(state.stacks['_float']) > 0:
-        new_float = math.cos(state.stacks['_float'].stack_ref(0))
+        new_float = math.cos(state.stacks['_float'].ref(0))
         state.stacks['_float'].pop_item()
         state.stacks['_float'].push_item(new_float)
 float_cos_instruction = instr.PyshInstruction('_float_cos',
@@ -405,7 +408,7 @@ def float_tan(state):
 
     '''
     if len(state.stacks['_float']) > 0:
-        new_float = math.tan(state.stacks['_float'].stack_ref(0))
+        new_float = math.tan(state.stacks['_float'].ref(0))
         state.stacks['_float'].pop_item()
         state.stacks['_float'].push_item(new_float)
 float_tan_instruction = instr.PyshInstruction('_float_tan',
@@ -420,7 +423,7 @@ registered_instructions.register_instruction(float_tan_instruction)
 
 def integer_from_float(state):
     if len(state.stacks['_float']) > 0:
-        new_int = int(state.stacks['_float'].stack_ref(0))
+        new_int = int(state.stacks['_float'].ref(0))
         state.stacks['_float'].pop_item()
         state.stacks['_integer'].push_item(new_int)
 int_from_float_instrc = instr.PyshInstruction('_integer_from_float',
@@ -435,7 +438,7 @@ registered_instructions.register_instruction(int_from_float_instrc)
 
 def integer_from_boolean(state):
     if len(state.stacks['_boolean']) > 0:
-        new_int = int(state.stacks['_boolean'].stack_ref(0))
+        new_int = int(state.stacks['_boolean'].ref(0))
         state.stacks['_boolean'].pop_item()
         state.stacks['_integer'].push_item(new_int)
 int_from_boolean_instrc = instr.PyshInstruction('_integer_from_boolean',
@@ -452,7 +455,7 @@ def integer_from_string(state):
     if len(state.stacks['_string']) > 0:
         new_int = None
         try:
-            new_int = int(state.stacks['_string'].stack_ref(0))
+            new_int = int(state.stacks['_string'].ref(0))
         except ValueError:
             return
         state.stacks['_string'].pop_item()
@@ -468,7 +471,7 @@ registered_instructions.register_instruction(int_from_boolean_instrc)
 
 def integer_from_char(state):
     if len(state.stacks['_char']) > 0:
-        item = ord(state.stacks['_char'].stack_ref(0).char)
+        item = ord(state.stacks['_char'].ref(0).char)
         state.stacks['_char'].pop_item()
         state.stacks['_integer'].push_item(item)
 integer_from_char_instrc = instr.PyshInstruction('_integer_from_char',
@@ -482,7 +485,7 @@ registered_instructions.register_instruction(integer_from_char_instrc)
 
 def float_from_integer(state):
     if len(state.stacks['_integer']) > 0:
-        new_float = float(state.stacks['_integer'].stack_ref(0))
+        new_float = float(state.stacks['_integer'].ref(0))
         state.stacks['_integer'].pop_item()
         state.stacks['_float'].push_item(new_float)
 float_from_int_instrc = instr.PyshInstruction('_float_from_integer',
@@ -497,10 +500,10 @@ registered_instructions.register_instruction(float_from_int_instrc)
 
 def float_from_boolean(state):
     if len(state.stacks['_boolean']) > 0:
-        new_float = float(state.stacks['_boolean'].stack_ref(0))
+        new_float = float(state.stacks['_boolean'].ref(0))
         state.stacks['_boolean'].pop_item()
         state.stacks['_float'].push_item(new_float)
-float_from_bool_instrc = instr.PyshInstruction('_foat_from_boolean',
+float_from_bool_instrc = instr.PyshInstruction('_float_from_boolean',
                                                float_from_boolean,
                                                stack_types = ['_float', '_boolean'])
 registered_instructions.register_instruction(float_from_bool_instrc)
@@ -513,7 +516,7 @@ def float_from_string(state):
     if len(state.stacks['_string']) > 0:
         new_float = None
         try:
-            new_float = float(state.stacks['_string'].stack_ref(0))
+            new_float = float(state.stacks['_string'].ref(0))
         except ValueError:
             return
         state.stacks['_string'].pop_item()
@@ -529,7 +532,7 @@ registered_instructions.register_instruction(int_from_boolean_instrc)
 
 def float_from_char(state):
     if len(state.stacks['_char']) > 0:
-        item = float(ord(state.stacks['_char'].stack_ref(0).char))
+        item = float(ord(state.stacks['_char'].ref(0).char))
         state.stacks['_char'].pop_item()
         state.stacks['_float'].push_item(item)
 float_from_char_instrc = instr.PyshInstruction('_float_from_char',

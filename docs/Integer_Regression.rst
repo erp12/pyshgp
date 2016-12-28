@@ -40,7 +40,7 @@ Below is the error function for the Integer Regression problem.
             # Run program
             interpreter.run_push(prog)
             # Get output
-            top_int = interpreter.state.stacks["_integer"].stack_ref(0)
+            top_int = interpreter.state.stacks["_integer"].ref(0)
             #compare to target output
             target_int = target_function(x)
 

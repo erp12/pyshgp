@@ -59,10 +59,10 @@ def string_error_func(program):
 
     for inpt in inputs:
         # Create the push interpreter
-        interpreter = interp.PyshInterpreter([inpt])
+        interpreter = interp.PushInterpreter([inpt])
         interpreter.run_push(program)
         # Get output
-        prog_output = interpreter.state.stacks["_string"].stack_ref(0)
+        prog_output = interpreter.state.stacks["_string"].ref(0)
 
         if isinstance(prog_output, u.NoStackItem) or isinstance(prog_output, u.StackOutOfBounds):
             # If response is un-evaluatable, add a bad error.

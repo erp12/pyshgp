@@ -7,5 +7,7 @@ dependencies:
     - python3.5 setup.py install
 test:
   override:
-    - python2.7 ./tests/test_instruction_set.py
-    - python3.5 ./tests/test_instruction_set.py
+    - python2.7 -m tests.instructions.boolean_tests
+    - python2.7 -m tests.instructions.numbers_tests
+    - python3.5 -m tests.instructions.boolean_tests
+    - python3.5 -m tests.instructions.numbers_tests

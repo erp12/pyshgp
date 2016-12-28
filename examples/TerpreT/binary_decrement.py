@@ -54,7 +54,7 @@ print()
 def error_func(program):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter([t])
+        interpreter = interp.PushInterpreter([t])
         interpreter.run_push(program)
         prog_output = interpreter.state.stacks['_boolean'][:]
         target_output = binary_decrement(t)

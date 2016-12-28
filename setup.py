@@ -7,7 +7,6 @@ Created on 9/1/2016
 import os
 from setuptools import setup, find_packages
 
-
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
@@ -20,7 +19,7 @@ setup(
     license = "LGPL",
     keywords = ["push gp", "genetic programming", "pushgp", "gp", "push"],
     url = "https://github.com/erp12/Pysh",
-    packages=find_packages(exclude=['examples', 'docs', 'tests']),
+    packages=find_packages(exclude=['examples', 'docs', 'tests*']),
     long_description=read('README.md'),
     classifiers=[
         "Development Status :: 4 - Beta",

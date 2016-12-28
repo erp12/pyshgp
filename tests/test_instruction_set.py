@@ -9,7 +9,7 @@ import pysh.push.instruction as instr
 print(ri.registered_instructions)
 
 print("Setting up Pysh interpreter...")
-i = interp.PyshInterpreter()
+i = interp.PushInterpreter()
 
 
 print("Testing boolean_and")
@@ -1282,10 +1282,10 @@ i.run_push(prog)
 if not i.state.size() == 7:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 7." % i.state.size())
-assert i.state.stacks['_integer'].stack_ref(0) == 2
-assert i.state.stacks['_integer'].stack_ref(1) == 1
-assert i.state.stacks['_integer'].stack_ref(2) == 1
-assert i.state.stacks['_integer'].stack_ref(3) == 3
+assert i.state.stacks['_integer'].ref(0) == 2
+assert i.state.stacks['_integer'].ref(1) == 1
+assert i.state.stacks['_integer'].ref(2) == 1
+assert i.state.stacks['_integer'].ref(3) == 3
 
 
 i.reset_pysh_state()
@@ -1295,10 +1295,10 @@ i.run_push(prog)
 if not i.state.size() == 4:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 4." % i.state.size())
-assert i.state.stacks['_integer'].stack_ref(0) == 3
-assert i.state.stacks['_integer'].stack_ref(1) == 2
-assert i.state.stacks['_integer'].stack_ref(2) == 1
-assert i.state.stacks['_integer'].stack_ref(3) == 0
+assert i.state.stacks['_integer'].ref(0) == 3
+assert i.state.stacks['_integer'].ref(1) == 2
+assert i.state.stacks['_integer'].ref(2) == 1
+assert i.state.stacks['_integer'].ref(3) == 0
 
 
 i.reset_pysh_state()
@@ -1308,10 +1308,10 @@ i.run_push(prog)
 if not i.state.size() == 4:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 4." % i.state.size())
-assert i.state.stacks['_integer'].stack_ref(0) == 1
-assert i.state.stacks['_integer'].stack_ref(1) == 3
-assert i.state.stacks['_integer'].stack_ref(2) == 2
-assert i.state.stacks['_integer'].stack_ref(3) == 0
+assert i.state.stacks['_integer'].ref(0) == 1
+assert i.state.stacks['_integer'].ref(1) == 3
+assert i.state.stacks['_integer'].ref(2) == 2
+assert i.state.stacks['_integer'].ref(3) == 0
 
 
 i.reset_pysh_state()
@@ -1321,7 +1321,7 @@ i.run_push(prog)
 if not i.state.size() == 4:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 4." % i.state.size())
-assert i.state.stacks['_boolean'].stack_ref(0) == False
+assert i.state.stacks['_boolean'].ref(0) == False
 
 
 i.reset_pysh_state()
@@ -1331,11 +1331,11 @@ i.run_push(prog)
 if not i.state.size() == 5:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 5." % i.state.size())
-assert i.state.stacks['_integer'].stack_ref(0) == 4
-assert i.state.stacks['_integer'].stack_ref(1) == 3
-assert i.state.stacks['_integer'].stack_ref(2) == 2
-assert i.state.stacks['_integer'].stack_ref(3) == 1
-assert i.state.stacks['_integer'].stack_ref(4) == 0
+assert i.state.stacks['_integer'].ref(0) == 4
+assert i.state.stacks['_integer'].ref(1) == 3
+assert i.state.stacks['_integer'].ref(2) == 2
+assert i.state.stacks['_integer'].ref(3) == 1
+assert i.state.stacks['_integer'].ref(4) == 0
 
 
 i.reset_pysh_state()
@@ -1345,11 +1345,11 @@ i.run_push(prog)
 if not i.state.size() == 5:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 5." % i.state.size())
-assert i.state.stacks['_integer'].stack_ref(0) == 1
-assert i.state.stacks['_integer'].stack_ref(1) == 3
-assert i.state.stacks['_integer'].stack_ref(2) == 2
-assert i.state.stacks['_integer'].stack_ref(3) == 1
-assert i.state.stacks['_integer'].stack_ref(4) == 0
+assert i.state.stacks['_integer'].ref(0) == 1
+assert i.state.stacks['_integer'].ref(1) == 3
+assert i.state.stacks['_integer'].ref(2) == 2
+assert i.state.stacks['_integer'].ref(3) == 1
+assert i.state.stacks['_integer'].ref(4) == 0
 
 
 i.reset_pysh_state()
@@ -1359,10 +1359,10 @@ i.run_push(prog)
 if not i.state.size() == 5:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 5." % i.state.size())
-assert i.state.stacks['_boolean'].stack_ref(0) == False
-assert i.state.stacks['_boolean'].stack_ref(1) == True
-assert i.state.stacks['_boolean'].stack_ref(2) == True
-assert i.state.stacks['_boolean'].stack_ref(3) == False
+assert i.state.stacks['_boolean'].ref(0) == False
+assert i.state.stacks['_boolean'].ref(1) == True
+assert i.state.stacks['_boolean'].ref(2) == True
+assert i.state.stacks['_boolean'].ref(3) == False
 
 
 i.reset_pysh_state()
@@ -1372,10 +1372,10 @@ i.run_push(prog)
 if not i.state.size() == 5:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 5." % i.state.size())
-assert i.state.stacks['_integer'].stack_ref(0) == 5
-assert i.state.stacks['_integer'].stack_ref(1) == 1
-assert i.state.stacks['_integer'].stack_ref(2) == 4
-assert i.state.stacks['_integer'].stack_ref(3) == 3
+assert i.state.stacks['_integer'].ref(0) == 5
+assert i.state.stacks['_integer'].ref(1) == 1
+assert i.state.stacks['_integer'].ref(2) == 4
+assert i.state.stacks['_integer'].ref(3) == 3
 
 
 i.reset_pysh_state()
@@ -1385,11 +1385,11 @@ i.run_push(prog)
 if not i.state.size() == 5:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 5." % i.state.size())
-assert i.state.stacks['_integer'].stack_ref(0) == 4
-assert i.state.stacks['_integer'].stack_ref(1) == 3
-assert i.state.stacks['_integer'].stack_ref(2) == 2
-assert i.state.stacks['_integer'].stack_ref(3) == 5
-assert i.state.stacks['_integer'].stack_ref(4) == 1
+assert i.state.stacks['_integer'].ref(0) == 4
+assert i.state.stacks['_integer'].ref(1) == 3
+assert i.state.stacks['_integer'].ref(2) == 2
+assert i.state.stacks['_integer'].ref(3) == 5
+assert i.state.stacks['_integer'].ref(4) == 1
 
 
 i.reset_pysh_state()
@@ -1399,11 +1399,11 @@ i.run_push(prog)
 if not i.state.size() == 5:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 5." % i.state.size())
-assert i.state.stacks['_string'].stack_ref(0) == "E" 
-assert i.state.stacks['_string'].stack_ref(1) == "D" 
-assert i.state.stacks['_string'].stack_ref(2) == "C" 
-assert i.state.stacks['_string'].stack_ref(3) == "B" 
-assert i.state.stacks['_string'].stack_ref(4) == "A"
+assert i.state.stacks['_string'].ref(0) == "E" 
+assert i.state.stacks['_string'].ref(1) == "D" 
+assert i.state.stacks['_string'].ref(2) == "C" 
+assert i.state.stacks['_string'].ref(3) == "B" 
+assert i.state.stacks['_string'].ref(4) == "A"
 
 
 i.reset_pysh_state()
@@ -1413,11 +1413,11 @@ i.run_push(prog)
 if not i.state.size() == 5:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 5." % i.state.size())
-assert i.state.stacks['_string'].stack_ref(0) == "D"
-assert i.state.stacks['_string'].stack_ref(1) == "C" 
-assert i.state.stacks['_string'].stack_ref(2) == "B" 
-assert i.state.stacks['_string'].stack_ref(3) == "A" 
-assert i.state.stacks['_string'].stack_ref(4) == "E"
+assert i.state.stacks['_string'].ref(0) == "D"
+assert i.state.stacks['_string'].ref(1) == "C" 
+assert i.state.stacks['_string'].ref(2) == "B" 
+assert i.state.stacks['_string'].ref(3) == "A" 
+assert i.state.stacks['_string'].ref(4) == "E"
 
 
 i.reset_pysh_state()
@@ -1445,8 +1445,8 @@ i.run_push(prog)
 if not i.state.size() == 2:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 2." % i.state.size())
-assert i.state.stacks['_boolean'].stack_ref(0) == False
-assert i.state.stacks['_boolean'].stack_ref(1) == True
+assert i.state.stacks['_boolean'].ref(0) == False
+assert i.state.stacks['_boolean'].ref(1) == True
 
 
 i.reset_pysh_state()
@@ -2013,8 +2013,8 @@ i.run_push(prog)
 if not i.state.size() == 2:
     i.state.pretty_print()
     raise Exception("State has %r items. Should be 2." % i.state.size())
-assert i.state.stacks['_string'].stack_ref(0) == 'World'
-assert i.state.stacks['_string'].stack_ref(1) == 'Hello'
+assert i.state.stacks['_string'].ref(0) == 'World'
+assert i.state.stacks['_string'].ref(1) == 'Hello'
 
 
 i.reset_pysh_state()
@@ -2220,7 +2220,7 @@ if not i.state.size() == 4:
     raise Exception("State has %r items. Should be 4." % i.state.size())
 assert len(i.state.stacks['_integer']) == 4
 assert i.state.stacks['_integer'].top_item() == 8
-assert i.state.stacks['_integer'].stack_ref(3) == 3
+assert i.state.stacks['_integer'].ref(3) == 3
 
 i.reset_pysh_state()
 print("Testing vector instruction (B)")
@@ -2282,7 +2282,7 @@ if not i.state.size() == 4:
 assert len(i.state.stacks['_boolean']) == 1
 assert len(i.state.stacks['_integer']) == 3
 assert i.state.stacks['_integer'].top_item() == 1
-assert i.state.stacks['_integer'].stack_ref(2) == 3
+assert i.state.stacks['_integer'].ref(2) == 3
 assert i.state.stacks['_boolean'].top_item() == True
 
 i.reset_pysh_state()

@@ -48,11 +48,11 @@ def odd_error_func(program, debug = False):
 
     for i in range(10):
         # Create the push interpreter
-        interpreter = interp.PyshInterpreter([i])
+        interpreter = interp.PushInterpreter([i])
         # Run program           
         interpreter.run_push(program, debug)
         # Get output
-        prog_output = interpreter.state.stacks["_boolean"].stack_ref(0)
+        prog_output = interpreter.state.stacks["_boolean"].ref(0)
         #compare to target output
         target_output = bool(i % 2)
 

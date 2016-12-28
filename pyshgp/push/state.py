@@ -34,6 +34,14 @@ class PyshState:
         if '_output' in self.stacks.keys():
             i -= 1
         return i
+
+    def as_dict(self):
+        '''Returns the state as a python dictionary
+        '''
+        dct = {}
+        for k in self.stacks.keys():
+            dct[k] = self.stacks[k][:]
+        return dct
     
     def pretty_print(self):
         '''Prints state of all stacks in the pysh_state

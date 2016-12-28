@@ -27,10 +27,10 @@ def error_func(program):
 	for x in np.arange(-2.0, 2.0, 0.1):
 		x = float(x)
 		# Create the push interpreter
-		interpreter = interp.PyshInterpreter([x])
+		interpreter = interp.PushInterpreter([x])
 		interpreter.run_push(program)
 		# Get output
-		top_float = interpreter.state.stacks["_float"].stack_ref(0)
+		top_float = interpreter.state.stacks["_float"].ref(0)
 
 		if type(top_float) == float:
 			# compare to target output

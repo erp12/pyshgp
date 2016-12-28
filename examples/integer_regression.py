@@ -25,10 +25,10 @@ def error_func(program):
 
     for x in range(20):
         # Create the push interpreter and run program
-        interpreter = interp.PyshInterpreter(inputs=[x])
+        interpreter = interp.PushInterpreter(inputs=[x])
         interpreter.run_push(program)
         # Get output
-        top_int = interpreter.state.stacks["_integer"].stack_ref(0)
+        top_int = interpreter.state.stacks["_integer"].ref(0)
 
         if type(top_int) == int:
             # compare to target output

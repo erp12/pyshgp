@@ -36,7 +36,7 @@ ri.register_instruction(code_noop_instruction)
 def code_maker(pysh_type):
     def f(state):
         if len(state.stacks[pysh_type]) > 0:
-            new_code = state.stacks[pysh_type].stack_ref(0)
+            new_code = state.stacks[pysh_type].ref(0)
             state.stacks[pysh_type].pop_item()
             state.stacks['_code'].push_item(new_code)
         return state
@@ -70,7 +70,7 @@ ri.register_instruction(code_maker('_exec'))
 
 def code_append(state):
     if len(state.stacks['_code']) > 1:
-        new_item = u.ensure_list(state.stacks['_code'].stack_ref(0)) + u.ensure_list(state.stacks['_code'].stack_ref(1))
+        new_item = u.ensure_list(state.stacks['_code'].ref(0)) + u.ensure_list(state.stacks['_code'].ref(1))
         state.stacks['_code'].pop_item()
         state.stacks['_code'].pop_item()
         state.stacks['_code'].push_item(new_item)
@@ -86,7 +86,7 @@ ri.register_instruction(code_append_instruction)
 
 def code_atom(state):
     if len(state.stacks['_code']) > 0:
-        top_code = state.stacks['_code'].stack_ref(0)
+        top_code = state.stacks['_code'].ref(0)
         state.stacks['_code'].pop_item()
         state.stacks['_boolean'].push_item(not (type(top_code) == list))
     return state
@@ -101,8 +101,8 @@ ri.register_instruction(code_atom_instruction)
 
 
 def code_car(state):
-    if len(state.stacks['_code']) > 0 and len(u.ensure_list(state.stacks['_code'].stack_ref(0))) > 0:
-        top_code = u.ensure_list(state.stacks['_code'].stack_ref(0))[0]
+    if len(state.stacks['_code']) > 0 and len(u.ensure_list(state.stacks['_code'].ref(0))) > 0:
+        top_code = u.ensure_list(state.stacks['_code'].ref(0))[0]
         state.stacks['_code'].pop_item()
         state.stacks['_code'].push_item(top_code)
     return state
@@ -118,7 +118,7 @@ ri.register_instruction(code_car_instruction)
 
 def code_cdr(state):
     if len(state.stacks['_code']) > 0:
-        top_code = u.ensure_list(state.stacks['_code'].stack_ref(0))[1:]
+        top_code = u.ensure_list(state.stacks['_code'].ref(0))[1:]
         state.stacks['_code'].pop_item()
         state.stacks['_code'].push_item(top_code)
     return state        
@@ -134,7 +134,7 @@ ri.register_instruction(code_cdr_instruction)
 
 def code_cons(state):
     if len(state.stacks['_code']) > 1:
-        new_item = [state.stacks['_code'].stack_ref(1)] + u.ensure_list(state.stacks['_code'].stack_ref(0))
+        new_item = [state.stacks['_code'].ref(1)] + u.ensure_list(state.stacks['_code'].ref(0))
         state.stacks['_code'].pop_item()
         state.stacks['_code'].push_item(new_item)
     return state
@@ -150,7 +150,7 @@ ri.register_instruction(code_cons_instruction)
 
 def code_do(state):
     if len(state.stacks['_code']) > 0:
-        top_code = state.stacks['_code'].stack_ref(0)
+        top_code = state.stacks['_code'].ref(0)
         state.stacks['_exec'].push_item(ri.InstructionLookerUpper('_code_pop'))
         state.stacks['_exec'].push_item(top_code)
     return state
@@ -166,7 +166,7 @@ ri.register_instruction(code_do_instruction)
 
 def code_do_star(state):
     if len(state.stacks['_code']) > 0:
-        top_code = state.stacks['_code'].stack_ref(0)
+        top_code = state.stacks['_code'].ref(0)
         state.stacks['_code'].pop_item()
         state.stacks['_exec'].push_item(top_code)
     return state
@@ -182,9 +182,9 @@ ri.register_instruction(code_do_star_instruction)
 
 def code_do_range(state):
     if len(state.stacks['_code']) > 0 and len(state.stacks['_integer']) > 1:
-        to_do = state.stacks['_code'].stack_ref(0)
-        current_index = state.stacks['_integer'].stack_ref(1)
-        destination_index = state.stacks['_integer'].stack_ref(0)
+        to_do = state.stacks['_code'].ref(0)
+        current_index = state.stacks['_integer'].ref(1)
+        destination_index = state.stacks['_integer'].ref(0)
         state.stacks['_integer'].pop_item()
         state.stacks['_integer'].pop_item()
         state.stacks['_code'].pop_item()
@@ -219,9 +219,9 @@ def exec_do_range(state):
     Differs from code.do*range only in the source of the code and the recursive call.
     '''
     if len(state.stacks['_exec']) > 0 and len(state.stacks['_integer']) > 1:
-        to_do = state.stacks['_exec'].stack_ref(0)
-        current_index = state.stacks['_integer'].stack_ref(1)
-        destination_index = state.stacks['_integer'].stack_ref(0)
+        to_do = state.stacks['_exec'].ref(0)
+        current_index = state.stacks['_integer'].ref(1)
+        destination_index = state.stacks['_integer'].ref(0)
         state.stacks['_integer'].pop_item()
         state.stacks['_integer'].pop_item()
         state.stacks['_exec'].pop_item()
@@ -254,11 +254,11 @@ ri.register_instruction(exec_do_range_intruction)
 
 
 def code_do_count(state):
-    if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].stack_ref(0) < 1 or len(state.stacks['_code']) == 0):
+    if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].ref(0) < 1 or len(state.stacks['_code']) == 0):
         to_push = [0, 
-                   state.stacks['_integer'].stack_ref(0) - 1, 
+                   state.stacks['_integer'].ref(0) - 1, 
                    ri.InstructionLookerUpper('_code_from_exec'),
-                   state.stacks['_code'].stack_ref(0),
+                   state.stacks['_code'].ref(0),
                    ri.InstructionLookerUpper('_code_do*range')]
         state.stacks['_code'].pop_item()
         state.stacks['_integer'].pop_item()
@@ -279,11 +279,11 @@ def exec_do_count(state):
     '''
     differs from code.do*count only in the source of the code and the recursive call
     '''
-    if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].stack_ref(0) < 1 or len(state.stacks['_exec']) == 0):
+    if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].ref(0) < 1 or len(state.stacks['_exec']) == 0):
         to_push = [0, 
-                   state.stacks['_integer'].stack_ref(0) - 1, 
+                   state.stacks['_integer'].ref(0) - 1, 
                    ri.InstructionLookerUpper('_exec_do*range'),
-                   state.stacks['_exec'].stack_ref(0)]
+                   state.stacks['_exec'].ref(0)]
         state.stacks['_exec'].pop_item()
         state.stacks['_integer'].pop_item()
         state.stacks['_exec'].push_item(to_push)
@@ -301,11 +301,11 @@ ri.register_instruction(exec_do_count_intruction)
 
 
 def code_do_times(state):
-    if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].stack_ref(0) < 1 or len(state.stacks['_code']) == 0):
+    if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].ref(0) < 1 or len(state.stacks['_code']) == 0):
         to_push = [0,
-                   state.stacks['_integer'].stack_ref(0) - 1,
+                   state.stacks['_integer'].ref(0) - 1,
                    ri.InstructionLookerUpper('_code_from_exec'),
-                   [ri.InstructionLookerUpper('_integer_pop')] + u.ensure_list(state.stacks['_code'].stack_ref(0)),
+                   [ri.InstructionLookerUpper('_integer_pop')] + u.ensure_list(state.stacks['_code'].ref(0)),
                    ri.InstructionLookerUpper('_code_do*range')]
         state.stacks['_code'].pop_item()
         state.stacks['_integer'].pop_item()
@@ -324,11 +324,11 @@ def exec_do_times(state):
     '''
     differs from code.do*times only in the source of the code and the recursive call
     '''
-    if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].stack_ref(0) < 1 or len(state.stacks['_exec']) == 0):
+    if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].ref(0) < 1 or len(state.stacks['_exec']) == 0):
         to_push = [0, 
-                   state.stacks['_integer'].stack_ref(0) - 1, 
+                   state.stacks['_integer'].ref(0) - 1, 
                    ri.InstructionLookerUpper('_exec_do*range'),
-                   [ri.InstructionLookerUpper('_integer_pop')] + u.ensure_list(state.stacks['_exec'].stack_ref(0))]
+                   [ri.InstructionLookerUpper('_integer_pop')] + u.ensure_list(state.stacks['_exec'].ref(0))]
         state.stacks['_exec'].pop_item()
         state.stacks['_integer'].pop_item()
         state.stacks['_exec'].push_item(to_push)
@@ -349,11 +349,11 @@ def exec_while(state):
     if len(state.stacks['_exec']) > 0:
         if len(state.stacks['_boolean']) == 0:
             state.stacks['_exec'].pop_item()
-        elif not state.stacks['_boolean'].stack_ref(0):
+        elif not state.stacks['_boolean'].ref(0):
             state.stacks['_exec'].pop_item()
             state.stacks['_boolean'].pop_item()
         else:
-            block = state.stacks['_exec'].stack_ref(0)
+            block = state.stacks['_exec'].ref(0)
             state.stacks['_exec'].push_item(ri.InstructionLookerUpper('_exec_while'))
             state.stacks['_exec'].push_item(block)
             state.stacks['_boolean'].pop_item()
@@ -371,7 +371,7 @@ ri.register_instruction(exec_while_intruction)
 
 def exec_do_while(state):
     if len(state.stacks['_exec']) > 0:
-            block = state.stacks['_exec'].stack_ref(0)
+            block = state.stacks['_exec'].ref(0)
             state.stacks['_exec'].push_item(ri.InstructionLookerUpper('_exec_while'))
             state.stacks['_exec'].push_item(block)
     return state
@@ -396,9 +396,9 @@ def code_map(state):
 
 def code_if(state):
     if len(state.stacks['_code']) > 1 and len(state.stacks['_boolean']) > 0:
-        to_push = state.stacks['_code'].stack_ref(0)
-        if state.stacks['_boolean'].stack_ref(0):
-            to_push = state.stacks['_code'].stack_ref(1)
+        to_push = state.stacks['_code'].ref(0)
+        if state.stacks['_boolean'].ref(0):
+            to_push = state.stacks['_code'].ref(1)
         state.stacks['_code'].pop_item()
         state.stacks['_code'].pop_item()
         state.stacks['_boolean'].pop_item()
@@ -415,9 +415,9 @@ ri.register_instruction(code_if_instruction)
 
 def exec_if(state):
     if len(state.stacks['_exec']) > 1 and len(state.stacks['_boolean']) > 0:
-        to_push = state.stacks['_exec'].stack_ref(1)
-        if state.stacks['_boolean'].stack_ref(0):
-            to_push = state.stacks['_exec'].stack_ref(0)
+        to_push = state.stacks['_exec'].ref(1)
+        if state.stacks['_boolean'].ref(0):
+            to_push = state.stacks['_exec'].ref(0)
         state.stacks['_exec'].pop_item()
         state.stacks['_exec'].pop_item()
         state.stacks['_boolean'].pop_item()
@@ -435,7 +435,7 @@ ri.register_instruction(exec_if_instruction)
 
 def exec_when(state):
     if len(state.stacks['_exec']) > 0 and len(state.stacks['_boolean']) > 0:
-        if not state.stacks['_boolean'].stack_ref(0):
+        if not state.stacks['_boolean'].ref(0):
             state.stacks['_exec'].pop_item()
         state.stacks['_boolean'].pop_item()
 exec_when_instruction = instr.PyshInstruction('_exec_when',
@@ -451,7 +451,7 @@ ri.register_instruction(exec_when_instruction)
 
 def code_length(state):
     if len(state.stacks['_code']) > 0:
-        l = len(u.ensure_list(state.stacks['_code'].stack_ref(0)))
+        l = len(u.ensure_list(state.stacks['_code'].ref(0)))
         state.stacks['_code'].pop_item()
         state.stacks['_integer'].push_item(l)
 code_length_instruction = instr.PyshInstruction('_code_length',
@@ -466,7 +466,7 @@ ri.register_instruction(code_length_instruction)
 
 def code_list(state):
     if len(state.stacks['_code']) > 1:
-        new_item = [state.stacks['_code'].stack_ref(1), state.stacks['_code'].stack_ref(0)]
+        new_item = [state.stacks['_code'].ref(1), state.stacks['_code'].ref(0)]
         if u.count_points(new_item) <= c.global_max_points:
             state.stacks['_code'].pop_item()
             state.stacks['_code'].pop_item()
@@ -483,7 +483,7 @@ ri.register_instruction(code_list_instruction)
 
 def code_wrap(state):
     if len(state.stacks['_code']) > 0:
-        new_item = [state.stacks['_code'].stack_ref(0)]
+        new_item = [state.stacks['_code'].ref(0)]
         if u.count_points(new_item) <= c.global_max_points:
             state.stacks['_code'].pop_item()
             state.stacks['_code'].push_item(new_item)
@@ -499,7 +499,7 @@ ri.register_instruction(code_wrap_instruction)
 
 def code_member(state):
     if len(state.stacks['_code']) > 1:
-        new_bool = state.stacks['_code'].stack_ref(1) in u.ensure_list(state.stacks['_code'].stack_ref(0))
+        new_bool = state.stacks['_code'].ref(1) in u.ensure_list(state.stacks['_code'].ref(0))
         state.stacks['_code'].pop_item()
         state.stacks['_code'].pop_item()
         state.stacks['_boolean'].push_item(new_bool)
@@ -514,9 +514,9 @@ ri.register_instruction(code_member_instruction)
 
 
 def code_nth(state):
-    if len(state.stacks['_integer']) > 0 and len(state.stacks['_code']) > 0 and len(u.ensure_list(state.stacks['_code'].stack_ref(0))) > 0:
-        top_code_as_list = u.ensure_list(state.stacks['_code'].stack_ref(0))
-        i = abs(state.stacks['_integer'].stack_ref(0)) % len(top_code_as_list)
+    if len(state.stacks['_integer']) > 0 and len(state.stacks['_code']) > 0 and len(u.ensure_list(state.stacks['_code'].ref(0))) > 0:
+        top_code_as_list = u.ensure_list(state.stacks['_code'].ref(0))
+        i = abs(state.stacks['_integer'].ref(0)) % len(top_code_as_list)
         new_item = top_code_as_list[i]
         state.stacks['_code'].pop_item()
         state.stacks['_integer'].pop_item()
@@ -532,9 +532,9 @@ ri.register_instruction(code_nth_instruction)
 
 
 def code_nthcdr(state):
-    if len(state.stacks['_integer']) > 0 and len(state.stacks['_code']) > 0 and len(u.ensure_list(state.stacks['_code'].stack_ref(0))) > 0:
-        top_code_as_list = u.ensure_list(state.stacks['_code'].stack_ref(0))
-        i = abs(state.stacks['_integer'].stack_ref(0)) % len(top_code_as_list)
+    if len(state.stacks['_integer']) > 0 and len(state.stacks['_code']) > 0 and len(u.ensure_list(state.stacks['_code'].ref(0))) > 0:
+        top_code_as_list = u.ensure_list(state.stacks['_code'].ref(0))
+        i = abs(state.stacks['_integer'].ref(0)) % len(top_code_as_list)
         new_item = top_code_as_list[:i] + top_code_as_list[i+1:]
         state.stacks['_code'].pop_item()
         state.stacks['_integer'].pop_item()

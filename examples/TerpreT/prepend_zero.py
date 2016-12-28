@@ -42,7 +42,7 @@ def prepend_zero(inpt_bits):
 def error_func(program, debug = False):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter([t])
+        interpreter = interp.PushInterpreter([t])
         interpreter.run_push(program, debug)
         prog_output = interpreter.state.stacks['_boolean'][:]
         target_output = prepend_zero(t)

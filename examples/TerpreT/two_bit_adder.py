@@ -50,7 +50,7 @@ def two_bit_adder(a_1, b_1, a_2, b_2):
 def error_func(program):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter(t)
+        interpreter = interp.PushInterpreter(t)
         interpreter.run_push(program)
         prog_output = interpreter.state.stacks['_boolean'][-3:]
         target_output = two_bit_adder(t[0], t[1], t[2], t[3])

@@ -2,10 +2,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import sys
 
-import pysh.utils as u
-import pysh.gp.gp as gp
-import pysh.push.interpreter as interp
-import pysh.push.instruction as instr
+import pyshgp.utils as u
+import pyshgp.gp.gp as gp
+import pyshgp.push.interpreter as interp
+import pyshgp.push.instruction as instr
 
 # Depending on which version of python is being used,
 # change record with function gets user input.

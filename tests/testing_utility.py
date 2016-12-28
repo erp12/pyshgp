@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import random
 
+import pysh.utils as u
+
 ##                    ##
 # Generating Constants #
 ##                    ##
@@ -29,18 +31,18 @@ def random_test_ints(num_of_each):
 # Generating Floats
 
 def rand_tiny_float():
-	return random.rand() * 10
+	return random.random() * 10
 
 def rand_small_float():
-	return random.rand() * 100
+	return random.random() * 100
 
-def rand_med_float:
-	return random.rand() * 10000
+def rand_med_float():
+	return random.random() * 10000
 
 def rand_large_float():
-	return random.rand() * 1000000
+	return random.random() * 1000000
 
-def random_test_float(num_of_each):
+def random_test_floats(num_of_each):
 	test_floats = [0.0]
 	for i in list(range(num_of_each)):
 		test_floats += [rand_tiny_float(), rand_small_float(), rand_med_float(), rand_large_float()]
@@ -48,14 +50,34 @@ def random_test_float(num_of_each):
 
 # Generating Chars and Strings
 
-def random_char():
-	return random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+def random_char_str():
+	return random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 _-+=.,;:!\n\t")
 
-def random_st():
+def random_character():
+	return u.Character(random_char_str())
+
+def random_test_characters(num):
+	test_chars = []
+	for i in list(range(num)):
+		test_chars.append(random_character())
+	return test_chars
+
+def random_str():
     s = ""
-    for i in range(str_length):
-        if random.random() < 0.2:
-            s += " "
-        else:
-            s += random_char()
+    for i in range(abs(rand_small_int())):
+        s += random_char_str()
     return s
+
+def random_test_strings(num):
+	test_strs = [""]
+	for i in list(range(num)):
+		test_strs.append(random_str())
+	return test_strs
+
+# Generating Bools
+
+def random_test_bools():
+	return [True, False]
+
+
+

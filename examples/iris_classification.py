@@ -11,11 +11,11 @@ import random
 import numpy  as np
 import pandas as pd
 
-import pysh.utils as u
-import pysh.gp.gp as gp
-import pysh.push.interpreter as interp
-import pysh.push.instructions.registered_instructions as ri
-import pysh.push.instruction as instr
+import pyshgp.utils as u
+import pyshgp.gp.gp as gp
+import pyshgp.push.interpreter as interp
+import pyshgp.push.instructions.registered_instructions as ri
+import pyshgp.push.instruction as instr
 
 # Get the absolute path to the data file
 script_dir = os.path.dirname(__file__)

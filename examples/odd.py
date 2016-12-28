@@ -8,11 +8,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import random
 
-import pysh.utils as u
-import pysh.gp.gp as gp
-import pysh.push.interpreter as interp
-import pysh.push.instructions.registered_instructions as ri
-import pysh.push.instruction as instr
+import pyshgp.utils as u
+import pyshgp.gp.gp as gp
+import pyshgp.push.interpreter as interp
+import pyshgp.push.instructions.registered_instructions as ri
+import pyshgp.push.instruction as instr
 
 
 '''

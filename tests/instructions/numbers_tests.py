@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import math
 
+from pyshgp import utils as u
+
 from .. import instructions_test as i_t
 
 integer_tests = [
@@ -84,6 +86,11 @@ integer_tests = [
     [{'_string' : ['0']}, '_integer_from_string', {'_integer' : [0]}],
     [{'_string' : ['']}, '_integer_from_string', {'_string' : ['']}],
     [{'_string' : ['abc']}, '_integer_from_string', {'_string' : ['abc']}],
+    # _integer_from_char
+    [{'_char' : [u.Character('1')]}, '_integer_from_char', {'_integer' : [49]}],
+    [{'_char' : [u.Character('0')]}, '_integer_from_char', {'_integer' : [48]}],
+    [{'_char' : [u.Character(' ')]}, '_integer_from_char', {'_integer' : [32]}],
+    [{'_char' : [u.Character('\n')]}, '_integer_from_char', {'_integer' : [10]}],
     ]
 
 float_tests = [
@@ -182,6 +189,11 @@ float_tests = [
     [{'_string' : ['0.1']}, '_float_from_string', {'_float' : [0.1]}],
     [{'_string' : ['']}, '_float_from_string', {'_string' : ['']}],
     [{'_string' : ['abc']}, '_float_from_string', {'_string' : ['abc']}],
+    # _float_from_char
+    [{'_char' : [u.Character('1')]}, '_integer_from_char', {'_integer' : [49.0]}],
+    [{'_char' : [u.Character('0')]}, '_integer_from_char', {'_integer' : [48.0]}],
+    [{'_char' : [u.Character(' ')]}, '_integer_from_char', {'_integer' : [32.0]}],
+    [{'_char' : [u.Character('\n')]}, '_integer_from_char', {'_integer' : [10.0]}],
     ]
 
 for t in integer_tests:

@@ -1,5 +1,5 @@
-Pysh2
-=====
+Pysh
+====
 
 Push Genetic Programming in Python. For the most complete documentation,
 refer to the `ReadTheDocs`_.

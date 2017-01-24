@@ -136,6 +136,7 @@ def code_cons(state):
     if len(state.stacks['_code']) > 1:
         new_item = [state.stacks['_code'].ref(1)] + u.ensure_list(state.stacks['_code'].ref(0))
         state.stacks['_code'].pop_item()
+        state.stacks['_code'].pop_item()
         state.stacks['_code'].push_item(new_item)
     return state
 code_cons_instruction = instr.PyshInstruction('_code_cons',

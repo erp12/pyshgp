@@ -15,3 +15,5 @@ if [ "$1" == "--reinstall" ]; then
 	sudo python setup.py install
 	sudo python3 setup.py install
 fi
+
+# pip3 install -e .

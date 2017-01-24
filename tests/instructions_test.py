@@ -16,12 +16,21 @@ def dict_matches_state(push_state, state_dict):
 	else:
 		return False
 
-def run_test(test_info, print_actual=False):
+def run_test(test_info, print_test=False):
 	interpreter = interp.PushInterpreter()
 	interpreter.load_state(test_info[0])
 	intstruction = ri.get_instruction(test_info[1])
+
+	if print_test:
+		print(intstruction.name)
+		print("Before:")
+		interpreter.state.pretty_print()
+
 	interpreter.execute_instruction(intstruction)
-	if print_actual:
+
+	if print_test:
+		print("After:")
 		interpreter.state.pretty_print()
 		print()
+
 	return dict_matches_state(interpreter.state, test_info[2])

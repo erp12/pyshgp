@@ -20,13 +20,13 @@ setup(
     keywords = ["push gp", "genetic programming", "pushgp", "gp", "push"],
     url = "https://github.com/erp12/Pysh",
     packages=find_packages(exclude=['examples', 'docs', 'tests*']),
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 4 - Beta",
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         "Intended Audience :: Science/Research",
         "Intended Audience :: Developers",
-        "Topic :: Machine Learning",
-        "Topic :: Genetic Programming",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)"],
     install_requires=[

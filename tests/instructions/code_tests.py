@@ -63,12 +63,121 @@ code_tests = [
     # _exec_do*range
     [{'_exec' : [ri.get_instruction('_integer_inc')], '_integer' : [3, 4]}, 
      '_exec_do*range', 
-     {'_exec' : [[4, 4, ri.InstructionLookerUpper('_exec_do*range'), ri.get_instruction('_integer_inc')], ri.get_instruction('_integer_inc')], '_integer' : [3]}]
-
-]  
+     {'_exec' : [[4, 4, ri.InstructionLookerUpper('_exec_do*range'), ri.get_instruction('_integer_inc')], ri.get_instruction('_integer_inc')], '_integer' : [3]}],
+    # _code_do*count
+    [{'_integer' : [2], '_code' : [ri.get_instruction('_string_stack_depth')]}, 
+     '_code_do*count', 
+     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_code_from_exec'), ri.get_instruction('_string_stack_depth'), ri.InstructionLookerUpper('_code_do*range')]]}],
+    [{'_integer' : [2], '_code' : [ri.get_instruction('_integer_inc')]}, 
+     '_code_do*count', 
+     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_code_from_exec'), ri.get_instruction('_integer_inc'), ri.InstructionLookerUpper('_code_do*range')]]}],
+    # _exec_do*count
+    [{'_integer' : [2], '_exec' : [ri.get_instruction('_string_stack_depth')]},
+     '_exec_do*count',
+     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_exec_do*range'), ri.get_instruction('_string_stack_depth')]]}],
+    [{'_integer' : [2], '_exec' : [ri.get_instruction('_integer_inc')]},
+     '_exec_do*count',
+     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_exec_do*range'), ri.get_instruction('_integer_inc')]]}],
+    # _code_do*times
+    [{'_integer' : [2], '_code' : [ri.get_instruction('_string_stack_depth')]},
+     '_code_do*times',
+     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_code_from_exec'), [ri.InstructionLookerUpper('_integer_pop'), ri.get_instruction('_string_stack_depth')], ri.InstructionLookerUpper('_code_do*range')]]}],
+    [{'_integer' : [2], '_code' : [ri.get_instruction('_integer_inc')]},
+     '_code_do*times',
+     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_code_from_exec'), [ri.InstructionLookerUpper('_integer_pop'), ri.get_instruction('_integer_inc')], ri.InstructionLookerUpper('_code_do*range')]]}],
+    # _exec_do*times
+    [{'_integer' : [2], '_exec' : [ri.get_instruction('_string_stack_depth')]},
+     '_exec_do*times',
+     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_exec_do*range'), [ri.InstructionLookerUpper('_integer_pop'), ri.get_instruction('_string_stack_depth')]]]}],
+    [{'_integer' : [2], '_exec' : [ri.get_instruction('_integer_inc')]},
+     '_exec_do*times',
+     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_exec_do*range'), [ri.InstructionLookerUpper('_integer_pop'), ri.get_instruction('_integer_inc')]]]}],
+    # _exec_while
+    [{'_integer' : [5], '_boolean' : [True], '_exec' : [ri.get_instruction('_integer_inc')]},
+     '_exec_while',
+     {'_integer' : [5], '_exec' : [ri.get_instruction('_integer_inc'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_integer_inc')]}],
+    [{'_integer' : [5], '_boolean' : [False], '_exec' : [ri.get_instruction('_integer_inc')]},
+     '_exec_while',
+     {'_integer' : [5]}],
+    [{'_boolean' : [True], '_exec' : [ri.get_instruction('_string_stack_depth')]},
+     '_exec_while',
+     {'_exec' : [ri.get_instruction('_string_stack_depth'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_string_stack_depth')]}],
+    [{'_boolean' : [False], '_exec' : [ri.get_instruction('_string_stack_depth')]},
+     '_exec_while',
+     {}],
+    # _exec_do*while
+    [{'_integer' : [5], '_boolean' : [True], '_exec' : [ri.get_instruction('_integer_inc')]},
+     '_exec_do*while',
+     {'_integer' : [5], '_boolean' : [True],  '_exec' : [ri.get_instruction('_integer_inc'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_integer_inc')]}],
+    [{'_boolean' : [True], '_exec' : [ri.get_instruction('_string_stack_depth')]},
+     '_exec_do*while',
+     {'_boolean' : [True],'_exec' : [ri.get_instruction('_string_stack_depth'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_string_stack_depth')]}],
+    [{'_integer' : [5], '_boolean' : [False], '_exec' : [ri.get_instruction('_integer_inc')]},
+     '_exec_do*while',
+     {'_integer' : [5], '_boolean' : [False],  '_exec' : [ri.get_instruction('_integer_inc'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_integer_inc')]}],
+    [{'_boolean' : [False], '_exec' : [ri.get_instruction('_string_stack_depth')]},
+     '_exec_do*while',
+     {'_boolean' : [False],'_exec' : [ri.get_instruction('_string_stack_depth'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_string_stack_depth')]}],
+    # _code_if
+    [{'_boolean' : [True], '_code' : [ri.get_instruction('_string_stack_depth'), ri.get_instruction('_string_empty')]},
+     '_code_if',
+     {'_exec' : [ri.get_instruction('_string_stack_depth')]}],
+    [{'_boolean' : [False], '_code' : [ri.get_instruction('_string_stack_depth'), ri.get_instruction('_string_empty')]},
+     '_code_if',
+     {'_exec' : [ri.get_instruction('_string_empty')]}],
+    # _exec_if
+    [{'_boolean' : [True], '_exec' : [ri.get_instruction('_string_stack_depth'), ri.get_instruction('_string_empty')]},
+     '_exec_if',
+     {'_exec' : [ri.get_instruction('_string_empty')]}],
+    [{'_boolean' : [False], '_exec' : [ri.get_instruction('_string_stack_depth'), ri.get_instruction('_string_empty')]},
+     '_exec_if',
+     {'_exec' : [ri.get_instruction('_string_stack_depth')]}],
+    # _exec_when
+    [{'_boolean' : [True], '_exec' : [ri.get_instruction('_string_stack_depth')]},
+     '_exec_when',
+     {'_exec' : [ri.get_instruction('_string_stack_depth')]}],
+    [{'_boolean' : [False], '_exec' : [ri.get_instruction('_string_stack_depth')]},
+     '_exec_when',
+     {}],
+    [{'_boolean' : [True], '_exec' : [ri.get_instruction('_string_empty')]},
+     '_exec_when',
+     {'_exec' : [ri.get_instruction('_string_empty')]}],
+    [{'_boolean' : [False], '_exec' : [ri.get_instruction('_string_empty')]},
+     '_exec_when',
+     {}],
+    # _code_length
+    [{'_code' : [7]}, '_code_length', {'_integer' : [1]}],
+    [{'_code' : [[7]]}, '_code_length', {'_integer' : [1]}],
+    [{'_code' : [[1, 2, 3]]}, '_code_length', {'_integer' : [3]}],
+    # _code_list
+    [{'_code' : [1, 2]}, '_code_list', {'_code' : [[1, 2]]}],
+    [{'_code' : [1, [2]]}, '_code_list', {'_code' : [[1, [2]]]}],
+    [{'_code' : [[1], [2]]}, '_code_list', {'_code' : [[[1], [2]]]}],
+    # _code_wrap
+    [{'_code' : [1]}, '_code_wrap', {'_code' : [[1]]}],
+    [{'_code' : [[1]]}, '_code_wrap', {'_code' : [[[1]]]}],
+    # _code_member
+    [{'_code' : [1, []]}, '_code_member', {'_boolean' : [False]}],
+    [{'_code' : [1, [1]]}, '_code_member', {'_boolean' : [True]}],
+    [{'_code' : [1, [2]]}, '_code_member', {'_boolean' : [False]}],
+    [{'_code' : [7, [1, 2]]}, '_code_member', {'_boolean' : [False]}],
+    # _code_nth
+    [{'_code' : [['a', 'b', 'c']], '_integer' : [1]}, '_code_nth', {'_code' : ['b']}],
+    [{'_code' : [['a', 'b', 'c']], '_integer' : [4]}, '_code_nth', {'_code' : ['b']}],
+    # _code_nthcdr
+    [{'_code' : [['a', 'b', 'c']], '_integer' : [1]}, '_code_nthcdr', {'_code' : [['a', 'c']]}],
+    [{'_code' : [['a', 'b', 'c']], '_integer' : [4]}, '_code_nthcdr', {'_code' : [['a', 'c']]}],
+    [{'_code' : [['a']], '_integer' : [3]}, '_code_nthcdr', {'_code' : [[]]}],
+]
 
 for t in code_tests:
-    passed = i_t.run_test(t, True)
+    passed = i_t.run_test(t)
     if not passed:
         raise Exception("The following test failed: " + str(t))
 print("All code instructions passed.")
+
+
+
+
+
+

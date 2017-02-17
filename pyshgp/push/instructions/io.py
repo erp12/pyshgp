@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from ... import utils as u
 from ... import constants as c
+from ... import exceptions as e
 
 from .. import instruction as instr
 
@@ -19,6 +20,10 @@ def handle_input_instruction(instruction, state):
 	'''Allows Push to handle input instructions.
 	'''
 	input_depth = int(instruction.input_index)
+
+	if input_depth >= len(state.stacks['_input']) or input_depth < 0:
+		raise e.InvalidInputStackIndex(input_depth)
+
 	input_value = state.stacks['_input'].ref(input_depth)
 	pysh_type = u.recognize_pysh_type(input_value)
 
@@ -51,7 +56,8 @@ def printer(pysh_type):
 		top_thing_str = str(top_thing)
 		if len(str(state.stacks["_output"].ref(0)) + top_thing_str) > c.max_string_length:
 			return
-		state.stacks["_output"][0] = str(state.stacks["_output"].ref(0)) + top_thing_str
+		state.stacks['_output'][0] = str(state.stacks["_output"].ref(0)) + top_thing_str
+		state.stacks[pysh_type].pop_item()
 	instruction = instr.PyshInstruction('_print' + pysh_type,
 										prnt,
 										stack_types = ['_print', pysh_type])

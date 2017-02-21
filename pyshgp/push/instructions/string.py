@@ -107,9 +107,6 @@ registered_instructions.register_instruction(string_tail_instruction)
 #<instr_desc>Pushed a string of the last i chars in s. i is top integer. s is top string.
 #<instr_close>
 
-## TODO: String first
-## TODO: String last
-
 def string_split_at_index(state):
     if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
         s = state.stacks['_string'].ref(0)
@@ -135,8 +132,8 @@ def string_split_at_str(state):
     if len(state.stacks['_string']) > 1:
         split_on = state.stacks['_string'].ref(0)
         split_this = state.stacks['_string'].ref(1)
-        if split_on == "":
-            new_strings = split_this
+        if split_on == '':
+            new_strings = [split_this]
         else:
             new_strings = split_this.split(split_on)
         state.stacks['_string'].pop_item()
@@ -157,8 +154,8 @@ def string_split_at_char(state):
     if len(state.stacks['_string']) > 0 and len(state.stacks['_char']) > 0:
         split_on = state.stacks['_char'].ref(0).char
         split_this = state.stacks['_string'].ref(0)
-        if split_on == "":
-            new_strings = split_this
+        if split_on == '':
+            new_strings = [split_this]
         else:
             new_strings = split_this.split(split_on)
         state.stacks['_string'].pop_item()
@@ -181,6 +178,8 @@ def string_split_at_space(state):
     if len(state.stacks['_string']) > 0:
         split_this = state.stacks['_string'].ref(0)
         new_strings = split_this.split()
+        if split_this == '':
+            new_strings = ['']
         state.stacks['_string'].pop_item()
         for s in new_strings:
             state.stacks['_string'].push_item(s)
@@ -400,9 +399,9 @@ registered_instructions.register_instruction(string_nth_instruction)
 #<instr_close> 
 
 
-## string_containschar
-## string_indexofchar
-## string_occurrencesofchar
+## TODO: string_containschar
+## TODO: string_indexofchar
+## TODO: string_occurrencesofchar
 
 
 def string_replace_char(state):
@@ -458,7 +457,7 @@ registered_instructions.register_instruction(string_remove_char_instruction)
 #<instr_close> 
 
 
-## string_setchar
-## exec_string_iterate
+## TODO: string_setchar
+## TODO: exec_string_iterate
 
 

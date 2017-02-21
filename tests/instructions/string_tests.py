@@ -93,12 +93,25 @@ string_tests = [
 	[{'_string' : ['A'], '_integer' : [1]}, '_string_nth', {'_char' : [u.Character('A')]}],
 	[{'_string' : ['AB'], '_integer' : [3]}, '_string_nth', {'_char' : [u.Character('B')]}],
 	# _string_replace_char
+	[{'_string' : [''], '_char' : [u.Character('A'), u.Character('B')]}, '_string_replace_char', {'_string' : ['']}],
+	[{'_string' : ['A'], '_char' : [u.Character('A'), u.Character('B')]}, '_string_replace_char', {'_string' : ['B']}],
+	[{'_string' : ['B'], '_char' : [u.Character('A'), u.Character('B')]}, '_string_replace_char', {'_string' : ['B']}],
+	[{'_string' : ['AA'], '_char' : [u.Character('A'), u.Character('B')]}, '_string_replace_char', {'_string' : ['BB']}],
 	# _string_replace_first_char
+	[{'_string' : [''], '_char' : [u.Character('A'), u.Character('B')]}, '_string_replace_first_char', {'_string' : ['']}],
+	[{'_string' : ['A'], '_char' : [u.Character('A'), u.Character('B')]}, '_string_replace_first_char', {'_string' : ['B']}],
+	[{'_string' : ['B'], '_char' : [u.Character('A'), u.Character('B')]}, '_string_replace_first_char', {'_string' : ['B']}],
+	[{'_string' : ['AA'], '_char' : [u.Character('A'), u.Character('B')]}, '_string_replace_first_char', {'_string' : ['BA']}],
 	# _string_remove_char
+	[{'_string' : [''], '_char' : [u.Character('A')]}, '_string_remove_char', {'_string' : ['']}],
+	[{'_string' : ['A'], '_char' : [u.Character('A')]}, '_string_remove_char', {'_string' : ['']}],
+	[{'_string' : ['B'], '_char' : [u.Character('A')]}, '_string_remove_char', {'_string' : ['B']}],
+	[{'_string' : ['AA'], '_char' : [u.Character('A')]}, '_string_remove_char', {'_string' : ['']}],
+	[{'_string' : ['AB'], '_char' : [u.Character('A')]}, '_string_remove_char', {'_string' : ['B']}],
 	]
 
 for t in string_tests:
-	passed = i_t.run_test(t, True)
+	passed = i_t.run_test(t, False)
 	if not passed:
 		raise Exception("The following test failed: " + str(t))
 print("All string instructions passed.")

@@ -13,9 +13,11 @@ test:
     - python2.7 -m tests.instructions.code_tests
     - python2.7 -m tests.instructions.io_tests
     - python2.7 -m tests.instructions.string_tests
+    - python2.7 -m tests.instructions.common_tests
     - python3.5 -m tests.instructions.boolean_tests
     - python3.5 -m tests.instructions.numbers_tests
     - python3.5 -m tests.instructions.char_tests
     - python3.5 -m tests.instructions.code_tests
     - python3.5 -m tests.instructions.io_tests
     - python3.5 -m tests.instructions.string_tests
+    - python3.5 -m tests.instructions.common_tests

@@ -33,8 +33,8 @@ def iris_error_func(program, print_trace = False):
 
 	for index, row in training_set.iterrows():
 		# Create the push interpreter
-		interpreter = interp.PushInterpreter(row.drop('Species').astype(float).tolist())
-
+		interpreter = interp.PyshInterpreter([float(x) for x in row.drop('Species').tolist()])
+    
 		# Initialize output classes
 		interpreter.state.stacks["_output"].push_item(0)
 		interpreter.state.stacks["_output"].push_item(0)
@@ -55,18 +55,18 @@ def iris_error_func(program, print_trace = False):
 iris_params = {
 	"error_threshold" : 2, # Single decision tree tends to have an error of 6
 	"atom_generators" : list(u.merge_sets(ri.get_instructions_by_pysh_type('_float'),
-								  		  ri.get_instructions_by_pysh_type('_exec'),
-				                  		  [lambda: random.randint(0, 100),
-								  		   lambda: random.random(),
-								  		   # Input Instructions.
-								  		   instr.PyshInputInstruction(0),
-								  		   instr.PyshInputInstruction(1),
-								  		   instr.PyshInputInstruction(2),
-								  		   instr.PyshInputInstruction(3),
-								  		   # Class label voting instsructions.
-								  		   instr.PyshClassVoteInstruction(1, '_float'),
-								  		   instr.PyshClassVoteInstruction(2, '_float'),
-								  		   instr.PyshClassVoteInstruction(3, '_float')])),
+					      ri.get_instructions_by_pysh_type('_exec'),
+					      [lambda: random.randint(0, 100),
+					       lambda: random.random(),
+					       # Input Instructions.
+					       instr.PyshInputInstruction(0),
+					       instr.PyshInputInstruction(1),
+					       instr.PyshInputInstruction(2),
+					       instr.PyshInputInstruction(3),
+					       # Class label voting instsructions.
+					       instr.PyshClassVoteInstruction(1, '_float'),
+					       instr.PyshClassVoteInstruction(2, '_float'),
+					       instr.PyshClassVoteInstruction(3, '_float')])),
 	"genetic_operator_probabilities" : {"alternation" : 0.3,
                                         "uniform_mutation" : 0.3,
                                         "alternation & uniform_mutation" : 0.3,

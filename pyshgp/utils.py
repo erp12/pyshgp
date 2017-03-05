@@ -104,7 +104,7 @@ def flatten_all(lst):
         if type(i) == list:
             result += flatten_all(i)
         else:
-            result += i
+            result.append(i)
     return result
 
 
@@ -132,7 +132,7 @@ def recognize_pysh_type(thing):
     if type(thing) == instr.PyshInputInstruction:
         return '_input_instruction'
     elif type(thing) == instr.PyshClassVoteInstruction:
-        return '_class_instruction'
+        return '_class_vote_instruction'
     elif type(thing) == instr.PyshInstruction:
         return '_instruction'
     elif type(thing) is int:

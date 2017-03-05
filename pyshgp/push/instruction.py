@@ -26,6 +26,12 @@ class PyshInstruction(object):
         self.stack_types = stack_types
         self.parentheses = parentheses # Specifies parens group. (0, 1, 2, ... etc)
         
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __hash__(self):
+        return self.name.__hash__()
+
     def __repr__(self):
         return str(self.name)
 

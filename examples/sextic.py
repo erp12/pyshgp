@@ -9,10 +9,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import numpy as np
 import random
 
-import pysh.gp.gp as gp
-import pysh.push.interpreter as interp
-import pysh.push.instructions.registered_instructions as ri
-import pysh.push.instruction as instr
+import pyshgp.gp.gp as gp
+import pyshgp.push.interpreter as interp
+import pyshgp.push.instructions.registered_instructions as ri
+import pyshgp.push.instruction as instr
 
 '''
 This problem is symbolic regression.
@@ -27,10 +27,10 @@ def error_func(program):
 	for x in np.arange(-2.0, 2.0, 0.1):
 		x = float(x)
 		# Create the push interpreter
-		interpreter = interp.PyshInterpreter([x])
+		interpreter = interp.PushInterpreter([x])
 		interpreter.run_push(program)
 		# Get output
-		top_float = interpreter.state.stacks["_float"].stack_ref(0)
+		top_float = interpreter.state.stacks["_float"].ref(0)
 
 		if type(top_float) == float:
 			# compare to target output

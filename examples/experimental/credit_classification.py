@@ -40,7 +40,7 @@ def credit_error_func(program, debug = False):
 
     for index, row in training_set.iterrows():
         # Create the push interpreter
-        interpreter = interp.PyshInterpreter()
+        interpreter = interp.PushInterpreter()
         interpreter.reset_pysh_state()
         
         # Push input number     

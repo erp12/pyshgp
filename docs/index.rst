@@ -11,9 +11,7 @@ Push Genetic Programming
 
 Push is programming language that plays nice with evolutionay computing / genetic programming. It is a stack-based language that features 1 stack per data type, including code. Programs are represented by lists of instructions, which modify the values on the stacks. Instuctions are executed in order.
 
-More information about PushGP can be found `here <http://faculty.hampshire.edu/lspector/push.html>`_.
-
-For the most cutting edge PushGP framework, see the `Clojure <https://clojure.org/>`_ implementaion called `Clojush <https://github.com/lspector/Clojush>`_.
+More information about PushGP can be found `on the Push Redux <https://erp12.github.io/push-redux/>`_. On this site you can read about how PushGP works and find listings of other implemenations.
 
 
 Table Of Contents
@@ -25,7 +23,6 @@ Table Of Contents
    Push_GP
    Evolutionary_Parameters
    Genetic_Operators
-   Programs_V_Genomes
    Instructions
    Examples
 
@@ -41,18 +38,9 @@ Coming soon!
 Build Frome source
 """"""""""""""""""
 
-Make sure you have the following python packages:
-
-* ``pathos.multiprocessing`` from `pathos <https://github.com/uqfoundation/pathos>`_ (built-in multiprocessing will not work)
-* `numpy <http://www.numpy.org/>`_
-* `twilio <https://github.com/twilio/twilio-python>`_ (optional)
-
-
-Then:
-
 1. Clone the repo
 2. :code:`cd` into the pysh repo directory
-3. run :code:`python setup.py install`
+3. run :code:`pip install . --upgrade`
 
 Thats it! You should be ready to use Pysh.
 
@@ -65,7 +53,7 @@ To run the Pysh examples, simply run one of the problem files in the ``pysh/exam
 
    python examples/odd.py
    # or
-   python examples/sextic.py
+   python examples/replace_space_with_newline.py
    # or
    python examples/integer_regression.py
 

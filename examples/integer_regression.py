@@ -8,10 +8,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import random
 
-import pysh.gp.gp as gp
-import pysh.push.interpreter as interp
-import pysh.push.instructions.registered_instructions as ri
-import pysh.push.instruction as instr
+import pyshgp.gp.gp as gp
+import pyshgp.push.interpreter as interp
+import pyshgp.push.instructions.registered_instructions as ri
+import pyshgp.push.instruction as instr
 
 '''
 This problem evolves a program to determine if a number is odd or not.
@@ -25,10 +25,10 @@ def error_func(program):
 
     for x in range(20):
         # Create the push interpreter and run program
-        interpreter = interp.PyshInterpreter(inputs=[x])
+        interpreter = interp.PushInterpreter(inputs=[x])
         interpreter.run_push(program)
         # Get output
-        top_int = interpreter.state.stacks["_integer"].stack_ref(0)
+        top_int = interpreter.state.stacks["_integer"].ref(0)
 
         if type(top_int) == int:
             # compare to target output

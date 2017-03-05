@@ -66,8 +66,8 @@ def concater(vec_type):
     '''
     def concat(state):
         if len(state.stacks[vec_type])>1:
-            first_vec = state.stacks[vec_type].stack_ref(0)
-            second_vec = state.stacks[vec_type].stack_ref(1)
+            first_vec = state.stacks[vec_type].ref(0)
+            second_vec = state.stacks[vec_type].ref(1)
             if c.max_vector_length < len(first_vec) + len(second_vec):
                 return state
             state.stacks[vec_type].pop_item()
@@ -102,8 +102,8 @@ def appender(vec_type, lit_type):
     '''
     def append(state):
         if len(state.stacks[vec_type])>0 and len(state.stacks[lit_type])>0:
-            v = state.stacks[vec_type].stack_ref(0)
-            result = v + [state.stacks[lit_type].stack_ref(0)]
+            v = state.stacks[vec_type].ref(0)
+            result = v + [state.stacks[lit_type].ref(0)]
             if c.max_vector_length < len(result):
                 return state
             state.stacks[vec_type].pop_item()
@@ -138,8 +138,8 @@ def taker(vec_type):
     '''
     def take(state):
         if len(state.stacks[vec_type]) > 0 and len(state.stacks['_integer']) > 0:
-            v = state.stacks[vec_type].stack_ref(0)
-            result = v[:state.stacks['_integer'].stack_ref(0)]
+            v = state.stacks[vec_type].ref(0)
+            result = v[:state.stacks['_integer'].ref(0)]
             state.stacks[vec_type].pop_item()
             state.stacks['_integer'].pop_item()
             state.stacks[vec_type].push_item(u.PushVector(result, v.typ))
@@ -173,10 +173,10 @@ def subvecer(vec_type):
     '''
     def subvec(state):
         if len(state.stacks[vec_type])>0 and len(state.stacks['_integer'])>1:
-            result = state.stacks[vec_type].stack_ref(0)
+            result = state.stacks[vec_type].ref(0)
             t = result.typ
-            i = state.stacks['_integer'].stack_ref(1)
-            j = state.stacks['_integer'].stack_ref(0)
+            i = state.stacks['_integer'].ref(1)
+            j = state.stacks['_integer'].ref(0)
             result = result[i:j]
             state.stacks[vec_type].pop_item()
             state.stacks['_integer'].pop_item()
@@ -210,8 +210,8 @@ def firster(vec_type, lit_type):
     Returns a function that takes a state and gets the first item from the type stack.
     '''
     def first(state):
-        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type].stack_ref(0)) > 0:
-            result = state.stacks[vec_type].stack_ref(0)[0]
+        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type].ref(0)) > 0:
+            result = state.stacks[vec_type].ref(0)[0]
             state.stacks[vec_type].pop_item()
             state.stacks[lit_type].push_item(result)
     instruction = instr.PyshInstruction(vec_type + '_first',
@@ -242,8 +242,8 @@ def laster(vec_type, lit_type):
     Returns a function that takes a state and gets the first item from the type stack.
     '''
     def last(state):
-        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type].stack_ref(0)) > 0:
-            result = state.stacks[vec_type].stack_ref(0)[-1]
+        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type].ref(0)) > 0:
+            result = state.stacks[vec_type].ref(0)[-1]
             state.stacks[vec_type].pop_item()
             state.stacks[lit_type].push_item(result)
     instruction = instr.PyshInstruction(vec_type + '_last',
@@ -274,9 +274,9 @@ def nther(vec_type, lit_type):
     Returns a function that takes a state and gets the first item from the type stack.
     '''
     def nth(state):
-        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type].stack_ref(0)) > 0 and len(state.stacks['_integer']):
-            i = state.stacks['_integer'].stack_ref(0) % len(state.stacks[vec_type].stack_ref(0))
-            result = state.stacks[vec_type].stack_ref(0)[i]
+        if len(state.stacks[vec_type]) > 0 and len(state.stacks[vec_type].ref(0)) > 0 and len(state.stacks['_integer']):
+            i = state.stacks['_integer'].ref(0) % len(state.stacks[vec_type].ref(0))
+            result = state.stacks[vec_type].ref(0)[i]
             state.stacks[vec_type].pop_item()
             state.stacks['_integer'].pop_item()
             state.stacks[lit_type].push_item(result)
@@ -310,7 +310,7 @@ def rester(vec_type):
     '''
     def rest(state):
         if len(state.stacks[vec_type]) > 0:
-            v = state.stacks[vec_type].stack_ref(0)
+            v = state.stacks[vec_type].ref(0)
             t = v.typ
             result = v[1:]
             state.stacks[vec_type].pop_item()
@@ -345,7 +345,7 @@ def butlaster(vec_type):
     '''
     def butlast(state):
         if len(state.stacks[vec_type]) > 0:
-            v = state.stacks[vec_type].stack_ref(0)
+            v = state.stacks[vec_type].ref(0)
             t = v.typ
             result = v[:-1]
             state.stacks[vec_type].pop_item()
@@ -380,7 +380,7 @@ def lengther(vec_type):
     '''
     def length(state):
         if len(state.stacks[vec_type]) > 0:
-            result = len(state.stacks[vec_type].stack_ref(0))
+            result = len(state.stacks[vec_type].ref(0))
             state.stacks[vec_type].pop_item()
             state.stacks['_integer'].push_item(result)
     instruction = instr.PyshInstruction(vec_type + '_length',
@@ -413,7 +413,7 @@ def reverser(vec_type):
     '''
     def rev(state):
         if len(state.stacks[vec_type]) > 0:
-            v =  state.stacks[vec_type].stack_ref(0)
+            v =  state.stacks[vec_type].ref(0)
             t = v.typ
             result = v[::-1]
             state.stacks[vec_type].pop_item()
@@ -448,7 +448,7 @@ def pushaller(vec_type, lit_type):
     '''
     def pushall(state):
         if len(state.stacks[vec_type]) > 0:
-            l = state.stacks[vec_type].stack_ref(0)
+            l = state.stacks[vec_type].ref(0)
             state.stacks[vec_type].pop_item()
             for el in l[::-1]:
                 state.stacks[lit_type].push_item(el)
@@ -482,7 +482,7 @@ def emptyvectorer(vec_type):
     '''
     def emptyvector(state):
         if len(state.stacks[vec_type]) > 0:
-            l = state.stacks[vec_type].stack_ref(0)
+            l = state.stacks[vec_type].ref(0)
             state.stacks[vec_type].pop_item()
             if len(l) == 0:
                 state.stacks['_boolean'].push_item(True)
@@ -518,7 +518,7 @@ def containser(vec_type, lit_type):
     '''
     def contains(state):
         if len(state.stacks[vec_type]) > 0 and len(state.stacks[lit_type]) > 0:
-            b = state.stacks[lit_type].stack_ref(0) in state.stacks[vec_type].stack_ref(0)
+            b = state.stacks[lit_type].ref(0) in state.stacks[vec_type].ref(0)
             state.stacks[vec_type].pop_item()
             state.stacks[lit_type].pop_item()
             state.stacks['_boolean'].push_item(b)
@@ -552,12 +552,12 @@ def indexofer(vec_type, lit_type):
     '''
     def indexof(state):
         if len(state.stacks[vec_type]) > 0 and len(state.stacks[lit_type]) > 0:
-            b = state.stacks[lit_type].stack_ref(0) in state.stacks[vec_type].stack_ref(0)
+            b = state.stacks[lit_type].ref(0) in state.stacks[vec_type].ref(0)
             i = None
             if not b:
                 i = -1
             else:
-                i = state.stacks[vec_type].stack_ref(0).index(state.stacks[lit_type].stack_ref(0))
+                i = state.stacks[vec_type].ref(0).index(state.stacks[lit_type].ref(0))
             state.stacks[vec_type].pop_item()
             state.stacks[lit_type].pop_item()
             state.stacks['_integer'].push_item(i)
@@ -591,7 +591,7 @@ def occurrencesofer(vec_type, lit_type):
     '''
     def occurrencesof(state):
         if len(state.stacks[vec_type]) > 0 and len(state.stacks[lit_type]) > 0:
-            l = [x for x in state.stacks[vec_type].stack_ref(0) if x == state.stacks[lit_type].stack_ref(0)]
+            l = [x for x in state.stacks[vec_type].ref(0) if x == state.stacks[lit_type].ref(0)]
             state.stacks[vec_type].pop_item()
             state.stacks[lit_type].pop_item()
             state.stacks['_integer'].push_item(len(l))
@@ -625,20 +625,20 @@ def seter(vec_type, lit_type):
     '''
     def _set(state):
         if len(state.stacks[vec_type])>0 and len(state.stacks[lit_type])>0 and len(state.stacks['_integer'])>0:
-            v = state.stacks[vec_type].stack_ref(0)
+            v = state.stacks[vec_type].ref(0)
             t = v.typ
             item = None
             if lit_type == '_integer':
                 if len(state.stacks['_integer'])<2:
                     return
-                item = state.stacks['_integer'].stack_ref(1)
+                item = state.stacks['_integer'].ref(1)
             else:
-                item = state.stacks[lit_type].stack_ref(0)
+                item = state.stacks[lit_type].ref(0)
 
             index = 0
             result = v[:]
             if len(v) > 0:
-                index = state.stacks['_integer'].stack_ref(0) % len(v)
+                index = state.stacks['_integer'].ref(0) % len(v)
                 result[index] = item
                 
             state.stacks[vec_type].pop_item()
@@ -677,10 +677,10 @@ def replaceer(vec_type, lit_type):
     '''
     def _replace(state):
         if len(state.stacks[vec_type])>0 and len(state.stacks[lit_type])>1:
-            v = state.stacks[vec_type].stack_ref(0)
+            v = state.stacks[vec_type].ref(0)
             t = v.typ
-            replace_this = state.stacks[lit_type].stack_ref(1)
-            with_this = state.stacks[lit_type].stack_ref(0)
+            replace_this = state.stacks[lit_type].ref(1)
+            with_this = state.stacks[lit_type].ref(0)
             result = [with_this if x == replace_this else x for x in v]
 
             state.stacks[vec_type].pop_item()
@@ -717,10 +717,10 @@ def replacefirster(vec_type, lit_type):
     '''
     def replacefirst(state):
         if len(state.stacks[vec_type]) > 0 and len(state.stacks[lit_type])>1:
-            v = state.stacks[vec_type].stack_ref(0)
+            v = state.stacks[vec_type].ref(0)
             t = v.typ
-            replace_this = state.stacks[lit_type].stack_ref(1)
-            with_this = state.stacks[lit_type].stack_ref(0)
+            replace_this = state.stacks[lit_type].ref(1)
+            with_this = state.stacks[lit_type].ref(0)
             
             result = []
             found  = False
@@ -764,9 +764,9 @@ def removeer(vec_type, lit_type):
     '''
     def _remove(state):
         if len(state.stacks[vec_type])>0 and len(state.stacks[lit_type])>0:
-            v = state.stacks[vec_type].stack_ref(0)
+            v = state.stacks[vec_type].ref(0)
             t = v.typ
-            remove_this = state.stacks[lit_type].stack_ref(0)
+            remove_this = state.stacks[lit_type].ref(0)
             result = [x for x in v if not x == remove_this]
 
             state.stacks[vec_type].pop_item()
@@ -803,8 +803,8 @@ def iterateer(vec_type, lit_type):
     instr_name = '_exec_do*' + vec_type[1:]
     def _iter(state):
         if len(state.stacks[vec_type]) > 0 and len(state.stacks['_exec']) > 0:
-            v = state.stacks[vec_type].stack_ref(0)
-            e = state.stacks['_exec'].stack_ref(0)
+            v = state.stacks[vec_type].ref(0)
+            e = state.stacks['_exec'].ref(0)
             
             if len(v) == 0:
                 state.stacks[vec_type].pop_item()

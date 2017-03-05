@@ -17,7 +17,7 @@ from .. import exceptions as e
 from . import state
 from .instructions import io
 
-class PyshInterpreter:
+class PushInterpreter:
     '''Object that can run Push programs.
 
     Attributes:
@@ -33,9 +33,15 @@ class PyshInterpreter:
             for i in inputs:
                 self.state.stacks['_input'].push_item(i)
         
-    def reset_pysh_state(self):
+    def reset_state(self):
         self.state = state.PyshState()
         self.status = '_normal'
+
+    def load_state(self, state_dict):
+        self.reset_state()
+        for k in state_dict.keys():
+            for v in state_dict[k][::]:
+                self.state.stacks[k].push_item(v)
         
     def execute_instruction(self, instruction):
         '''Executes a push instruction or literal.

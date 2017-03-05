@@ -44,7 +44,7 @@ class PyshStack(list):
         else:
             return u.NoStackItem()
     
-    def stack_ref(self, position):
+    def ref(self, position):
         '''Returns the element at a given position.
         '''
         if len(self) <= position:
@@ -54,10 +54,10 @@ class PyshStack(list):
         else:
             return self[(len(self) - 1) - position]
         
-    def stack_insert(self, position, value):
-        self.insert(len(self) - position, value)
+    def insert(self, position, value):
+        super(PyshStack, self).insert(len(self) - position, value)
 
-    def stack_flush(self):
+    def flush(self):
         del self[:]
 
     def __repr__(self):

@@ -5,11 +5,11 @@ Created on 11/30/2016
 @author: Eddie
 """
 
-import pysh.utils as u
-import pysh.gp.gp as gp
-import pysh.push.interpreter as interp
-import pysh.push.instructions.registered_instructions as ri
-import pysh.push.instruction as instr
+import pyshgp.utils as u
+import pyshgp.gp.gp as gp
+import pyshgp.push.interpreter as interp
+import pyshgp.push.instructions.registered_instructions as ri
+import pyshgp.push.instruction as instr
 
 
 test_cases = [u.PushVector([False, False, False, False], bool),
@@ -52,7 +52,7 @@ for t in test_cases:
 def error_func(program, debug = False):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter([t])
+        interpreter = interp.PushInterpreter([t])
         interpreter.run_push(program, debug)
         prog_output = interpreter.state.stacks['_boolean'][:]
         target_output = invert_bitstring(t)
@@ -65,13 +65,7 @@ def error_func(program, debug = False):
 
 params = {
     "atom_generators" : list(u.merge_sets(ri.get_instructions_by_pysh_type("_boolean"),
-                                          ri.get_instructions_by_pysh_type("_vector"),
                                           [instr.PyshInputInstruction(0)])),
-    "max_points" : 3200,
-    "max_genome_size_in_initial_program" : 400,
-    "evalpush_limit" : 1600,
-    "population_size" : 1000,
-    "max_generations" : 300,
     "genetic_operator_probabilities" : {"alternation" : 0.2,
                                         "uniform_mutation" : 0.2,
                                         "alternation & uniform_mutation" : 0.5,

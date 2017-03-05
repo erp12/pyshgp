@@ -17,32 +17,32 @@ The Error Function
 
 .. code:: python
 
-def error_func(program):
-    errors = []
+    def error_func(program):
+        errors = []
 
-    for x in np.arange(-2.0, 2.0, 0.1):
-        x = float(x)
-        # Create the push interpreter
-        interpreter = pysh_interpreter.Pysh_Interpreter()
-        interpreter.reset_pysh_state()
-        
-        # Push input number     
-        interpreter.state.stacks["_float"].push_item(x)
-        interpreter.state.stacks["_input"].push_item(x)
-        # Run program
-        interpreter.run_push(program)
-        # Get output
-        top_float = interpreter.state.stacks["_float"].stack_ref(0)
+        for x in np.arange(-2.0, 2.0, 0.1):
+            x = float(x)
+            # Create the push interpreter
+            interpreter = pysh_interpreter.Pysh_Interpreter()
+            interpreter.reset_pysh_state()
+            
+            # Push input number     
+            interpreter.state.stacks["_float"].push_item(x)
+            interpreter.state.stacks["_input"].push_item(x)
+            # Run program
+            interpreter.run_push(program)
+            # Get output
+            top_float = interpreter.state.stacks["_float"].ref(0)
 
-        if type(top_float) == float:
-            # compare to target output
-            target_float = target_function(x)
-            # calculate error
-            errors.append((top_float - target_float)**2)
-        else:
-            errors.append(1000)
+            if type(top_float) == float:
+                # compare to target output
+                target_float = target_function(x)
+                # calculate error
+                errors.append((top_float - target_float)**2)
+            else:
+                errors.append(1000)
 
-    return errors
+        return errors
 
 .. note::
     For a more comprehensive explainaiton of what a error function is in Pysh, see the :doc:`Odd Problem <Odd>`.

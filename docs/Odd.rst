@@ -43,7 +43,7 @@ Below is the error function for the odd problem.
             # Run program
             interpreter.run_push(prog)
             # Get output
-            prog_output = interpreter.state.stacks["_boolean"].stack_ref(0)
+            prog_output = interpreter.state.stacks["_boolean"].ref(0)
             #compare to target output
             target_output = bool(i % 2)
 

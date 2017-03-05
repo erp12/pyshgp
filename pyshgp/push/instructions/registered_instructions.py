@@ -52,3 +52,6 @@ class InstructionLookerUpper():
 
     def __repr__(self):
         return self.instruction_name + "_LOOKUP"
+
+    def __eq__(self, other):
+        return self.instruction_name == other.instruction_name

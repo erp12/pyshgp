@@ -23,8 +23,8 @@ The following is an example function which implements the ``string_concat`` inst
 
     def string_concat(state):
         if len(state.stacks['_string']) > 1:             # Check to make sure there are at least 2 item on the string stack, otherwise do nothing.
-            s0 = state.stacks['_string'].stack_ref(0)    # Get the top item on the string stack
-            s1 = state.stacks['_string'].stack_ref(1)    # Get the second item on the string stack
+            s0 = state.stacks['_string'].ref(0)    # Get the top item on the string stack
+            s1 = state.stacks['_string'].ref(1)    # Get the second item on the string stack
             state.stacks['_string'].pop_item()           # Pop top item off the string stack.
             state.stacks['_string'].pop_item()           # Pop top item again
             state.stacks['_string'].push_item(s1 + s0)   # Push the concatenated string onto the string stack.
@@ -68,8 +68,8 @@ Pysh currently has quick-and-dirty approach to documenting the instruction set. 
 
     def string_concat(state):
         if len(state.stacks['_string']) > 1:
-            s0 = state.stacks['_string'].stack_ref(0)
-            s1 = state.stacks['_string'].stack_ref(1)
+            s0 = state.stacks['_string'].ref(0)
+            s1 = state.stacks['_string'].ref(1)
             state.stacks['_string'].pop_item()
             state.stacks['_string'].pop_item()
             state.stacks['_string'].push_item(s1 + s0)

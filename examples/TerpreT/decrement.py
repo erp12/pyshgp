@@ -7,11 +7,11 @@ Created on 11/30/2016
 import random
 import numpy as np
 
-import pysh.utils as u
-import pysh.gp.gp as gp
-import pysh.push.interpreter as interp
-import pysh.push.instructions.registered_instructions as ri
-import pysh.push.instruction as instr
+import pyshgp.utils as u
+import pyshgp.gp.gp as gp
+import pyshgp.push.interpreter as interp
+import pyshgp.push.instructions.registered_instructions as ri
+import pyshgp.push.instruction as instr
 
 def gen_random_test_case():
     i = random.randint(4, 31)
@@ -25,7 +25,7 @@ for t in test_cases:
 def error_func(program):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter([t])
+        interpreter = interp.PushInterpreter([t])
         interpreter.run_push(program)
         prog_output = interpreter.state.stacks['_integer'][:]
         target_output = [x - 1 for x in t]

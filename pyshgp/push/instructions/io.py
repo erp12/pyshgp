@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from ... import utils as u
 from ... import constants as c
+from ... import exceptions as e
 
 from .. import instruction as instr
 
@@ -19,7 +20,11 @@ def handle_input_instruction(instruction, state):
 	'''Allows Push to handle input instructions.
 	'''
 	input_depth = int(instruction.input_index)
-	input_value = state.stacks['_input'].stack_ref(input_depth)
+
+	if input_depth >= len(state.stacks['_input']) or input_depth < 0:
+		raise e.InvalidInputStackIndex(input_depth)
+
+	input_value = state.stacks['_input'].ref(input_depth)
 	pysh_type = u.recognize_pysh_type(input_value)
 
 	if pysh_type == '_instruction':
@@ -34,7 +39,7 @@ def handle_vote_instruction(instruction, state):
 	'''
 	if len(state.stacks[instruction.vote_stack]) > 0:
 		class_index = int(instruction.class_id)
-		vote_value = state.stacks[instruction.vote_stack].stack_ref(0)
+		vote_value = state.stacks[instruction.vote_stack].ref(0)
 		state.stacks[instruction.vote_stack].pop_item()
 		state.stacks['_output'][class_index] += vote_value
 
@@ -47,11 +52,12 @@ def printer(pysh_type):
 		if len(state.stacks[pysh_type]) < 1:
 			return
 
-		top_thing = state.stacks[pysh_type].stack_ref(0)
+		top_thing = state.stacks[pysh_type].ref(0)
 		top_thing_str = str(top_thing)
-		if len(str(state.stacks["_output"].stack_ref(0)) + top_thing_str) > c.max_string_length:
+		if len(str(state.stacks["_output"].ref(0)) + top_thing_str) > c.max_string_length:
 			return
-		state.stacks["_output"][0] = str(state.stacks["_output"].stack_ref(0)) + top_thing_str
+		state.stacks['_output'][0] = str(state.stacks["_output"].ref(0)) + top_thing_str
+		state.stacks[pysh_type].pop_item()
 	instruction = instr.PyshInstruction('_print' + pysh_type,
 										prnt,
 										stack_types = ['_print', pysh_type])
@@ -90,9 +96,9 @@ ri.register_instruction(printer('_string'))
 #<instr_close>
 
 def print_newline(state):
-	if len(str(state.stacks["_output"].stack_ref(0)) + "\n") > c.max_string_length:
+	if len(str(state.stacks["_output"].ref(0)) + "\n") > c.max_string_length:
 		return state
-	state.stacks["_output"][0] = str(state.stacks["_output"].stack_ref(0)) + "\n"
+	state.stacks["_output"][0] = str(state.stacks["_output"].ref(0)) + "\n"
 
 print_newline_instruction = instr.PyshInstruction('_print_newline',
 												  print_newline,

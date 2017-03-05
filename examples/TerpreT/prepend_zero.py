@@ -4,11 +4,11 @@ Created on 12/1/2016
 
 @author: Eddie
 """
-import pysh.utils as u
-import pysh.gp.gp as gp
-import pysh.push.interpreter as interp
-import pysh.push.instructions.registered_instructions as ri
-import pysh.push.instruction as instr
+import pyshgp.utils as u
+import pyshgp.gp.gp as gp
+import pyshgp.push.interpreter as interp
+import pyshgp.push.instructions.registered_instructions as ri
+import pyshgp.push.instruction as instr
 
 
 test_cases = [u.PushVector([False, False, False, False], bool),
@@ -42,7 +42,7 @@ def prepend_zero(inpt_bits):
 def error_func(program, debug = False):
     errors = []
     for t in test_cases:
-        interpreter = interp.PyshInterpreter([t])
+        interpreter = interp.PushInterpreter([t])
         interpreter.run_push(program, debug)
         prog_output = interpreter.state.stacks['_boolean'][:]
         target_output = prepend_zero(t)

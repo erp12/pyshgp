@@ -28,6 +28,18 @@ class UnknownInstructionName(Exception):
 	def __init__(self, name):
 		super(UnknownInstructionName, self).__init__('No registered instruction with name: ' + str(name))
 
+class UnknownPyshStack(Exception):
+	'''Exception when a pysh state is asked to return an unknown 
+	'''
+	def __init__(self, stack_name):
+		super(UnknownPyshStack, self).__init__('Pysh state does not contain stack ' + str(stack_name) + '.')
+
+class InvalidInputStackIndex(Exception):
+	'''Exception when an invalid index to the input stack is used to get element on input stack.
+	'''
+	def __init__(self, ind):
+		super(InvalidInputStackIndex, self).__init__('Pysh state does not contain an input at index ' + str(ind) + '.')
+
 ##                       ##
 # Utility Type Exceptions #
 ##                       ##

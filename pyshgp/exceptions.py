@@ -23,7 +23,7 @@ class UnkownEpigeneticMarker(Exception):
 		super(UnkownEpigeneticMarker, self).__init__('Unknown epigenetic marker: ' + str(marker))
 
 class UnknownInstructionName(Exception):
-	'''
+	'''Exception when there is no registered instruction with given name.
 	'''
 	def __init__(self, name):
 		super(UnknownInstructionName, self).__init__('No registered instruction with name: ' + str(name))
@@ -45,7 +45,7 @@ class InvalidInputStackIndex(Exception):
 ##                       ##
 
 class UnknownGeneticOperator(Exception):
-	'''
+	'''Exception that is raised when an unknown genetic operator is specified.
 	'''
 	def __init__(self, name):
 		super(UnknownGeneticOperator, self).__init__('Unknown genetic operator (or selection method) ' + str(name))

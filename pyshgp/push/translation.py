@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jun 6 2016
+The :mod:`translation` module provides functions that translate Plush genomes 
+into Push programs.
 
-@author: Eddie
+Todo:
+	Consider breaking up some of the larger functions in this file.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -12,6 +14,41 @@ from . import instruction
 from . import plush as pl
 from .instructions import registered_instructions as ri
 from .instructions import *
+
+
+def get_matcing_close_index(sequence):
+    open_count = 0
+    for i in range(len(sequence)):
+        if sequence[i] == '_open':
+            open_count += 1
+        elif sequence[i] == '_close':
+            open_count -= 1
+        if open_count == 0:
+            return i
+        i += 1
+
+def open_close_sequence_to_list(sequence):
+    if not type(sequence) == list:
+        return sequence
+    elif len(sequence) == 0:
+        return []
+    else:
+        result = []
+        rest = sequence
+        while len(rest) > 0:
+            if rest[0] == '_open':
+                i = get_matcing_close_index(rest)
+                sub_seq = rest[1:i]
+                result.append( open_close_sequence_to_list(sub_seq) )
+                rest = rest[i+1:]
+            else:
+                result.append(rest[0])
+                rest.pop(0)
+        return result
+# print(open_close_sequence_to_list(["_open", 1, 2, "_open", 'a', 'b', "_open", 'c', "_close", "_open", "_open", 'd', "_close", "_close", 'e', "_close", "_close"]))
+# print(open_close_sequence_to_list(["_open", 1, "_close", "_open", 2, "_close"]))
+# print(open_close_sequence_to_list(["_open", "_open", 1, "_close", "_open", 2, "_close", "_close"]))
+
 
 def delete_prev_paren_pair(prog):
 	'''

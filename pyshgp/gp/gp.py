@@ -25,6 +25,12 @@ from . import monitors as monitor
 from . import reporting
 from . import params
 
+def normalize_genetic_operator_probabilities(gen_op_dict):
+    '''
+    '''
+    tot = sum(gen_op_dict.values())
+    new_probs = [round(x / tot, 4) for x in gen_op_dict.values()]
+    return dict(zip(gen_op_dict.keys(), new_probs))
 
 
 def load_program_from_list(lst, atom_generators = params.default_evolutionary_params["atom_generators"]):
@@ -111,7 +117,7 @@ def evolution(error_function, problem_params):
     # Get the params for the run
     evolutionary_params = u.merge_dicts(params.default_evolutionary_params, problem_params)
     params.grab_command_line_params(evolutionary_params)
-    evolutionary_params['genetic_operator_probabilities'] = u.normalize_genetic_operator_probabilities(evolutionary_params['genetic_operator_probabilities'])
+    evolutionary_params['genetic_operator_probabilities'] = normalize_genetic_operator_probabilities(evolutionary_params['genetic_operator_probabilities'])
 
     # Make certain params globally accesable
     c.global_max_points = evolutionary_params['max_points']

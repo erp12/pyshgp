@@ -25,8 +25,6 @@ Utils
 
 .. autofunction:: pyshgp.utils.keep_number_reasonable
 
-.. autofunction:: pyshgp.utils.normalize_genetic_operator_probabilities
-
 .. autofunction:: pyshgp.utils.count_parens
 
 .. autofunction:: pyshgp.utils.count_points

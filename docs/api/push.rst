@@ -14,6 +14,11 @@ Interpreter
 .. automodule:: pyshgp.push.interpreter
 	:members:
 
+Plush
+=====
+
+.. automodule:: pyshgp.push.plush
+	:members:
 
 Translation
 ===========

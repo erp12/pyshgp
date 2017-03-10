@@ -22,6 +22,7 @@ Table Of Contents
 
    Push_GP
    Evolutionary_Parameters
+   api/index
    Genetic_Operators
    Instructions
    Examples

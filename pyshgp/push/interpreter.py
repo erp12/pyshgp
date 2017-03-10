@@ -23,8 +23,8 @@ from . import state
 from .instructions import io
 
 class PushInterpreter:
-    '''Object that can run Push programs.
-    '''
+    """Object that can run Push programs.
+    """
 
     #: Current Push state of the interpreter.
     state = None

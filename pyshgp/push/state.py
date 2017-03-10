@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jun  5 13:27:39 2016
 
-@author: Eddie
 """
+The :mod:`state` module defines the ``PyshState`` class which is used to hold
+all values during the execution of a PushProgram.
+
+.. todo::
+    Consider merging this file with ``interpreter.py`` to simplify the 
+    manipuation of Push states. 
+"""
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 __metaclass__ = type
 
@@ -11,10 +16,13 @@ __metaclass__ = type
 from . import stack 
 from .. import constants as c
 
-'''
-Object containing the entire push state. 
-'''
+
 class PyshState:
+    """Object containing the entire push state. 
+
+    .. todo::
+        This should could extend from dict.
+    """
     
     def __init__(self):
         '''Initializes empty stacks
@@ -24,7 +32,9 @@ class PyshState:
             self.stacks[t] = stack.PyshStack(t)
 
     def size(self):
-        '''Returns the number of items on the stack
+        '''Returns the number of items on the stack, not including output str.
+
+        :returns: Int of size.
         '''
         i = 0
         for stk in self.stacks.values():
@@ -37,6 +47,8 @@ class PyshState:
 
     def as_dict(self):
         '''Returns the state as a python dictionary
+
+        :returns: Dict of all values in state.
         '''
         dct = {}
         for k in self.stacks.keys():

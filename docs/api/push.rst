@@ -20,11 +20,32 @@ Plush
 .. automodule:: pyshgp.push.plush
 	:members:
 
+Random
+===========
+
+.. automodule:: pyshgp.push.random
+	:members:
+
+Simplificaiton
+==============
+
+.. automodule:: pyshgp.push.simplification
+	:members:
+
+Stack
+=====
+
+.. automodule:: pyshgp.push.stack
+	:members:
+
+State
+=====
+
+.. automodule:: pyshgp.push.state
+	:members:
+
 Translation
 ===========
 
 .. automodule:: pyshgp.push.translation
-
-.. autofunction:: pyshgp.push.translation.get_matcing_close_index
-
-.. autofunction:: pyshgp.push.translation.open_close_sequence_to_list
+	:members:

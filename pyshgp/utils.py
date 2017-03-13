@@ -7,8 +7,7 @@ the push interpreter and GP modules.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import sys
-import random
+import sys, random, math
 
 from . import exceptions as e
 from .push import instruction as instr
@@ -342,3 +341,30 @@ def int_to_char(i):
     '''
     i = (i + 32) % 128
     return chr(i)
+
+def gaussian_noise_factor():
+    '''Returns Gaussian noise of mean 0, std dev 1.
+    
+    :returns: Float samples from Gaussian distribution.
+
+    :example:
+        >>> gaussian_noise_factor()
+        1.43412557975
+        >>> gaussian_noise_factor()
+        -0.0410900866765
+    '''
+    return math.sqrt(-2.0 * math.log(random.random())) * math.cos(2.0 * math.pi * random.random()) 
+
+def perturb_with_gaussian_noise(sd, n):
+    '''Returns n perturbed with standard deviation.
+
+    :param float sd: Standard deviation
+    :param float n: number to perturb.
+    :returns: Perturbed float.
+    :example:
+        >>> perturb_with_gaussian_noise(5, 0)
+        5.03608878454
+        >>> perturb_with_gaussian_noise(1, 100)
+        99.9105032498
+    '''
+    return n + (sd * gaussian_noise_factor())

@@ -7,7 +7,7 @@ Push Genetic Programming in Python
 
 
 Push Genetic Programming
-========================
+=========================
 
 Push is programming language that plays nice with evolutionay computing / genetic programming. It is a stack-based language that features 1 stack per data type, including code. Programs are represented by lists of instructions, which modify the values on the stacks. Instuctions are executed in order.
 
@@ -15,7 +15,7 @@ More information about PushGP can be found `on the Push Redux <https://erp12.git
 
 
 Table Of Contents
-=================
+==================
 
 .. toctree::
    :maxdepth: 2
@@ -25,11 +25,11 @@ Table Of Contents
    api/index
    Genetic_Operators
    Instructions
-   Examples
+   examples/index
 
 
 Installation
-============
+=============
 
 Install from Pip
 """"""""""""""""
@@ -46,7 +46,7 @@ Build Frome source
 Thats it! You should be ready to use Pysh.
 
 Examples / Usage
-================
+=================
 
 Pysh is compatable with Python 2.7 and Python 3.5.
 
@@ -64,7 +64,7 @@ For a more in depth explanation of Pysh's usage, see the `examples page <Example
 
 
 Roadmap
-=======
+========
 
 Pysh is currently under active development. Feel free to submit a pull request if you have any additions to make.
 

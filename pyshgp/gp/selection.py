@@ -1,8 +1,7 @@
 # _*_ coding: utf_8 _*_
 """
-Created on 5/26/2016
-
-@author: Eddie
+The :mod:`selection` module defines the various selection methods supported
+by pysh.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -16,10 +15,14 @@ from .. import exceptions as e
 #####################
 
 def lexicase_selection(individuals, k = 1):
-    """
-    Returns an individual that does the best on the fitness cases when considered one at a
-    time in random order.
+    """Returns an individual that does the best on the fitness cases when
+    considered one at a time in random order.
+
     http://faculty.hampshire.edu/lspector/pubs/lexicase-IEEE-TEC.pdf
+
+    :param list individuals: A list of individuals to select from.
+    :param int k: The number of individuals to select.
+    :returns: A list of selected individuals.
     """
     selected_individuals = []    
     
@@ -39,10 +42,22 @@ def lexicase_selection(individuals, k = 1):
     return selected_individuals
 
 def epsilon_lexicase_selection(individuals, epsilon = None, k = 1):
-    """
-    Returns an individual that does the best on the fitness cases when considered one at a
-    time in random order.
-    http://faculty.hampshire.edu/lspector/pubs/lexicase-IEEE-TEC.pdf
+    """Returns an individual that does the best on the fitness cases when 
+    considered one at a time in random order. Requires a epsilon parameter.
+    
+    https://push-language.hampshire.edu/uploads/default/original/1X/35c30e47ef6323a0a949402914453f277fb1b5b0.pdf
+
+    .. todo::
+        Adjust this implementation based on recent finding with epsilon lexicase
+        (ie. static, dynamic, super-dynamic, etc)
+
+    :param list individuals: A list of individuals to select from.
+    :param int k: The number of individuals to select.
+    :param float epsilon: If an individual is within epsilon of being elite, it will \
+    remain in the selection pool. If 'dynamic', epsilon is set at the start of \
+    each selection even. If 'super-dynamic', epsilon is set realtive to the \
+    current selection pool at each iteration of lexicase selection.
+    :returns: A list of selected individuals.
     """
     selected_individuals = []    
     
@@ -67,9 +82,14 @@ def epsilon_lexicase_selection(individuals, epsilon = None, k = 1):
     return selected_individuals
 
 def tournament_selection(individuals, tournament_size, k = 1):
-    '''
-    Returns k individuals that do the best out of their respective tournament.
-    '''
+    """Returns k individuals that do the best out of their respective
+    tournament.
+
+    :param list individuals: A list of individuals to select from.
+    :param int tournament_size: Size of each tournament.
+    :param int k: The number of individuals to select.
+    :returns: A list of selected individuals.
+    """
     selected_individuals = []
     for i in range(k):
         tournament = []
@@ -86,6 +106,13 @@ def tournament_selection(individuals, tournament_size, k = 1):
 #############################
 
 def selection(population, evolutionary_params, k = 1,):
+    """The main selection function. Returns k parents from the population based
+    on evolutionary_params.
+
+    :param list population: List of individuals to select parents from.
+    :param dict evolutionary_params: Parameters for evolution, including selection.
+    :returns: A list of selected individuals
+    """
     if evolutionary_params["selection_method"] == "lexicase":
         return lexicase_selection(population, k)
     elif evolutionary_params["selection_method"] == "epsilon_lexicase":

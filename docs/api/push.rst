@@ -49,3 +49,11 @@ Translation
 
 .. automodule:: pyshgp.push.translation
 	:members:
+
+Instructions
+=============
+
+.. toctree::
+   :maxdepth: 2
+
+   registered_instructions

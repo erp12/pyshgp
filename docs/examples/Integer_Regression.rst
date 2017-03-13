@@ -57,7 +57,7 @@ Integer Regression Problem Parameters
 Every evolutionary paramter has a default value that can be overwritten when defining a problem. These parameters are stored in a dictionary.
 
 .. note::
-    More infomration about the rest of the evolutionary params can be found on the :doc:`Evolutionary Parameters Page <Evolutionary_Parameters>`.
+    More infomration about the rest of the evolutionary params can be found on the :doc:`Evolutionary Parameters Page <../Evolutionary_Parameters>`.
 
 Below is the dictionary defining the evolutionary parameters that pertain to the Integer Regression problem.
 

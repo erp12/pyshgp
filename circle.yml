@@ -32,7 +32,7 @@ machine:
             python3.5 -m tests.instructions.string_tests;
             python3.5 -m tests.instructions.common_tests;
         fi
-    parallel: true
+        parallel: true
 
 # - python2.7 -m tests.instructions.boolean_tests
 # - python2.7 -m tests.instructions.numbers_tests

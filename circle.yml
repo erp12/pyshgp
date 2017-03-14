@@ -3,11 +3,12 @@ machine:
     - pyenv global 2.7.12 3.5.2
 dependencies:
   post:
-    - python2.7 setup.py install
-    - python3.5 setup.py install
+    - python2.7 -m pip install .
+    - python3.5 -m pip install .
 test:
   post:
-    # Instruction set tests are custom for now.
+    # Instruction set tests are custom for now. Running in post so as not to 
+    # override the unit tests specified in setup.py
     - >
         case $CIRCLE_NODE_INDEX in 
             0) python2.7 -m tests.instructions.boolean_tests

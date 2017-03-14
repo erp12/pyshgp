@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import unittest
 import testing_utility as tu
 
-import pysh.utils as u
-import pysh.push.instruction as instr
+import pyshgp.utils as u
+import pyshgp.push.instruction as instr
 
 class TestUtilMethods(unittest.TestCase):
 

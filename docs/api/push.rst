@@ -2,9 +2,58 @@
 Push
 *****
 
+Instruction
+===========
+
+.. automodule:: pyshgp.push.instruction
+	:members:
+
+Interpreter
+===========
+
+.. automodule:: pyshgp.push.interpreter
+	:members:
+
+Plush
+=====
+
+.. automodule:: pyshgp.push.plush
+	:members:
+
+Random
+===========
+
+.. automodule:: pyshgp.push.random
+	:members:
+
+Simplificaiton
+==============
+
+.. automodule:: pyshgp.push.simplification
+	:members:
+
+Stack
+=====
+
+.. automodule:: pyshgp.push.stack
+	:members:
+
+State
+=====
+
+.. automodule:: pyshgp.push.state
+	:members:
+
 Translation
 ===========
 
-.. autofunction:: pyshgp.push.translation.get_matcing_close_index
+.. automodule:: pyshgp.push.translation
+	:members:
 
-.. autofunction:: pyshgp.push.translation.open_close_sequence_to_list
+Instructions
+=============
+
+.. toctree::
+   :maxdepth: 2
+
+   registered_instructions

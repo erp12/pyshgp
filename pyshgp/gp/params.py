@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Dec. 11, 2016
+The :mod:`params` module defines the default hyper-parameters for genetic
+programming runs and utility functions regarding updating these parameters.
+This module also is responsible for the initialization and configuration of
+the process pool used to parallelize parts of evolution.
 
-@author: Eddie
+.. todo::
+    Much of the logic in the file can be handled in a more robust way using
+    argparse. This is a fairly high priority change that will improve usability.
+
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -12,6 +18,7 @@ from .. import utils as u
 
 from ..push.instructions import registered_instructions 
 
+#: Dict of default values for all evolutionary parameters.
 default_evolutionary_params = {
 "error_threshold" : 0, # If any total error of individual is below this, that is considered a solution
 "population_size" : 1000, # Size of the population at each generation
@@ -96,13 +103,17 @@ default_evolutionary_params = {
 }
 
 def params_pretty_print(params):
+    """Prints the parameter dict in a human readable way.
+    """
     for key,value in params.items():
         print(key, ":", value)
     print()
 
 def safe_cast_arg(arg, typ = int):
-    '''Recursively attempts to cast the command line arg. Defaults to string,
-    '''
+    """Recursively attempts to cast the command line arg. Defaults to string.
+
+    :param str arg: String of command line arg value.
+    """
     if typ == int or typ == float:
         try:
             return typ(arg)
@@ -119,10 +130,10 @@ def safe_cast_arg(arg, typ = int):
         return str(arg)
 
 def grab_command_line_params(evolutionary_params):
-    '''
-    Loads parameters from command line and overwrites the problem specific / default
-    parameter values.
-    '''
+    """Loads parameters from command line and overwrites values in given dict.
+
+    :param dict evolutionary_params: Dict of default and problem specific params.
+    """
     i = 0
     while i < len(sys.argv):
         i_s = 1
@@ -141,7 +152,18 @@ def grab_command_line_params(evolutionary_params):
         i += i_s
 
 def init_executor(evolutionary_params):
-    print("Preparing Pysh for parellel evaluations")
+    """Initializes a pool of processes.
+
+    This requires pathos.multiprocessing because the standard multiprocessing
+    library does not support pickling lambda and non-top level functions.
+    Pathos specifically makes use of the dill package.
+
+    .. todo::
+        If there is away around using pathos, it would be great to remove this
+        dependency.
+
+    :param dict evolutionary_params: Dict of evolutionary parameters.
+    """
     from pathos.multiprocessing import ProcessingPool as Pool
 
     if evolutionary_params["max_workers"] == None:

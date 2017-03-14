@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jun  5 15:26:32 2016
 
-@author: Eddie
 """
+The :mod:`interpreter` module defines the ``PushInterpreter`` class which is
+capable of running Push programs.
+
+.. todo::
+    Consider merging this file with ``state.py`` to simplify the manipuation of
+    Push states.
+"""
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 __metaclass__ = type
 
@@ -18,12 +23,15 @@ from . import state
 from .instructions import io
 
 class PushInterpreter:
-    '''Object that can run Push programs.
+    """Object that can run Push programs.
+    """
 
-    Attributes:
-        state: The push state.
-        status: Status of the interpreter, this isn't used much yet.
-    '''
+    #: Current Push state of the interpreter.
+    state = None
+
+    #: Current status of the interpreter. Either '_normal' or some kind of
+    #: error indicator.
+    status = '_normal'
     
     def __init__(self, inputs = None):
         self.state = state.PyshState()
@@ -34,21 +42,36 @@ class PushInterpreter:
                 self.state.stacks['_input'].push_item(i)
         
     def reset_state(self):
+        """Repalces the Push state with an empty Push state and resets status.
+        """
         self.state = state.PyshState()
         self.status = '_normal'
 
     def load_state(self, state_dict):
+        """Repalces the Push state with an Push state based on given dict.
+
+        .. warning::
+            This is written to be used in ``pyshgp`` tests, NOT as part of 
+            push program execution or evolution. There are no checks to confirm
+            that the ``state_dict`` can be converted to a valid Push state.
+
+        .. todo::
+            If ``state.py`` does not get merged with this file, this function
+            should move to ``state.py``.
+
+        :param dict state_dict: Dict that is converted into a Push state.
+
+        """
         self.reset_state()
         for k in state_dict.keys():
             for v in state_dict[k][::]:
                 self.state.stacks[k].push_item(v)
         
     def execute_instruction(self, instruction):
-        '''Executes a push instruction or literal.
+        """Executes a push instruction or literal.
 
-        Args:
-            instruction: The instruction to the executed.
-        '''
+        :param PushInstruction instruction: The instruction to the executed.
+        """
         # If the instruction is None, return.
         if instruction is None:
             return
@@ -89,14 +112,13 @@ class PushInterpreter:
             self.state.stacks[pysh_type].push_item(instruction)
     
     def eval_push(self, print_steps):
-        '''Executes the contents of the exec stack.
+        """Executes the contents of the exec stack.
         
-        Aborts prematurely if execution limits are exceeded. If execution limits are
-        reached, status will be denoted.
+        Aborts prematurely if execution limits are exceeded. If execution
+        limits are reached, status will be denoted.
 
-        Args:
-            print_steps (bool): Denotes if stack state should be printed.
-        '''        
+        :param bool print_steps: Denotes if stack state should be printed.
+        """      
         iteration = 1
         time_limit = 0
         if c.global_evalpush_time_limit != 0:
@@ -113,8 +135,8 @@ class PushInterpreter:
                 break;
             
             # Advance program 1 step
-            top_exec = self.state.stacks['_exec'].top_item()    # Get top exec item
-            self.state.stacks['_exec'].pop_item()               # Remove top exec item
+            top_exec = self.state.stacks['_exec'].top_item() # Get top exec item
+            self.state.stacks['_exec'].pop_item()            # Remove top exec item
             self.execute_instruction(top_exec)
             
             # print steps
@@ -126,15 +148,15 @@ class PushInterpreter:
     
     
     def run_push(self, code, print_steps=False):
-        '''The top level method of the push interpreter.
+        """The top level method of the push interpreter.
 
         Calls eval-push between appropriate code/exec pushing/popping.
 
-        Args:
-            code: The push program to run.
-            print_steps: Denotes if stack states should be printed.
-        '''
-        # If you don't copy the code, the reference to the program will be reversed and other bad things.
+        :param list code: The push program to run.
+        :param bool print_steps: Denotes if stack states should be printed.
+        """
+        # If you don't copy the code, the reference to the program will be 
+        # reversed and other bad things.
         code_copy = copy.deepcopy(code)
         self.state.stacks['_exec'].push_item(code_copy)
         self.eval_push(print_steps)

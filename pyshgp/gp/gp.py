@@ -1,9 +1,16 @@
 # _*_ coding: utf_8 _*_
-"""
-Created on 5/20/2016
 
-@author: Eddie
 """
+The :mod:`gp` module defines the genetic programming capabilities of pyshgp.
+The functions in this module are responsible for creating populations,
+evaluating individuals, and defining the core evolutionary loop that will be 
+used to drive evolution.
+
+.. todo::
+    Create more general abstraction of evolution, probably in the form of a 
+    class. Include extentions for scikit-learn.
+"""
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
@@ -25,10 +32,29 @@ from . import monitors as monitor
 from . import reporting
 from . import params
 
+def normalize_genetic_operator_probabilities(gen_op_dict):
+    """Normalizes dict of operator probabilities so that values sum to 1.
+
+    :param dict gen_op_dict: Dict where keys are operator names and values are probabilities. 
+    :returns: ``gen_op_dict`` where values sum to 1 and relative magnitude preserved.
+    """
+    tot = sum(gen_op_dict.values())
+    new_probs = [round(x / tot, 4) for x in gen_op_dict.values()]
+    return dict(zip(gen_op_dict.keys(), new_probs))
 
 
-def load_program_from_list(lst, atom_generators = params.default_evolutionary_params["atom_generators"]):
+def load_program_from_list(lst):
     """Loads a program from a list, and checks each string in list for an instruction with the same name.
+
+    .. warning::
+        This function will attempt to look up all strings in the registered
+        instructions to see if an instruction with a matching name exists. 
+        This limits you to only using strings that are not exact matches of
+        instruction names. This is mitigated by the fact that all instruction
+        names begin with a ``'_'``.
+
+    :param list lst: List that should be translated into a Push program.
+    :returns: List that can be executed as a Push program.
     """
     program = []
     for el in lst:
@@ -61,11 +87,11 @@ def load_program_from_list(lst, atom_generators = params.default_evolutionary_pa
     return program
 
 def generate_random_population(evolutionary_params):
-    '''Generate random population based on given evolutionary_params.
+    """Generate random population based on given evolutionary_params.
 
-    Returns:
-        A list of Individual objects with randomly generated genomes and translated programs.
-    '''
+    :param dict evolutionary_params: Dict of evolutionary hyper-parameters.
+    :returns: A list of Individual objects with randomly generated genomes and translated programs.
+    """
     population = []
     for i in range(evolutionary_params["population_size"]):
         rand_genome = r.random_plush_genome(evolutionary_params)
@@ -74,13 +100,13 @@ def generate_random_population(evolutionary_params):
     return population
 
 def evaluate_individual(ind, error_function):
-    '''Addes an error vector to an individual evalued on the given error_function.
+    """Adds an error vector to an individual evaluated on the given error_function.
 
-    Args:
-        ind: An Individual object
-        error_function: Python function that evaluates an individual based on its program.
-    '''
-    if ind.get_errors() == []: # Only evalue the individual if it hasn' been already.
+    :param Individual ind: An instance of the Individual class.
+    :param function error_function: Python function that evaluates an individual based on its program.
+    :return: Individual with error values assigned.
+    """
+    if ind.get_errors() == []: # Only evaluate the individual if it hasn't been already.
         errors = error_function(ind.get_program())
         reporting.total_errors_in_evalutaion_order.append(sum(errors))
         ind.set_errors(errors)
@@ -90,10 +116,10 @@ def evaluate_individual(ind, error_function):
 def evaluate_population(population, error_function, evolutionary_params):
     """Updates the errors of the population.
 
-    Args:
-        population: List of Individual objects
-        error_function: Python function that evaluates an individual based on its program.
-        evolutionary_params: Other parameters (see params.py)
+    :param list population: List of Individual objects
+    :param function error_function: Python function that evaluates an individual based on its program.
+    :param dict evolutionary_params: Other parameters (see params.py)
+    :returns: New population (list of Individuals) with error values assigned.
     """
     if evolutionary_params['parallel_evaluation'] and (evolutionary_params["max_workers"] == None or evolutionary_params["max_workers"] > 1):
         # If parallel evalutation, map over the pool.
@@ -104,14 +130,23 @@ def evaluate_population(population, error_function, evolutionary_params):
         return [evaluate_individual(ind, error_function) for ind in population]
 
 def evolution(error_function, problem_params):
-    """
-    Basic evolutionary loop.
+    """Basic evolutionary loop. Currently the main GP function in ``pyshgp``.
+
+    .. todo::
+        This should soon be replaced by various base classes. These classes will
+        include: 1) Evolver - A general evolution class with same functionality 
+        as this function 2) SymbolicRegressor - A class that extends 
+        scikit-learn for regression problems and 3) SymbolicClassifier - A class
+        that extends scikit-learn for classification problems.
+
+    :param function error_function: Python function that evaluates an individual based on its program.
+    :param dict problem_params: Evolutionary params that should overide the pyshgp defaults for this run.
     """ 
 
     # Get the params for the run
     evolutionary_params = u.merge_dicts(params.default_evolutionary_params, problem_params)
     params.grab_command_line_params(evolutionary_params)
-    evolutionary_params['genetic_operator_probabilities'] = u.normalize_genetic_operator_probabilities(evolutionary_params['genetic_operator_probabilities'])
+    evolutionary_params['genetic_operator_probabilities'] = normalize_genetic_operator_probabilities(evolutionary_params['genetic_operator_probabilities'])
 
     # Make certain params globally accesable
     c.global_max_points = evolutionary_params['max_points']

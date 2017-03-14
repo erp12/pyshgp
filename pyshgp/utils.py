@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jun  5 15:36:03 2016
 
-@author: Eddie
 """
+The :mod:`utils` module provides classes and functions that are used throughout
+the push interpreter and GP modules.
+"""
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import sys
-import random
+import sys, random, math
 
 from . import exceptions as e
 from .push import instruction as instr
@@ -24,8 +24,7 @@ class Character(object):
     Used to distinguish between string and char literals 
     in Push program interpretation.
 
-    Attributes:
-        char (str): string of length 1.
+    :attributes: :attr:`char` - String of length 1.
     '''
     def __init__(self, char):
         if len(char) == 0:
@@ -49,8 +48,9 @@ class Character(object):
 class PushVector(list):
     '''List where elements are all of same pysh literal types.
 
-    Attributes:
-        typ (type): Python type that all elements must be.
+    Is a subclass of the Python list, and has access to all list methods.
+
+    :attributes: :attr:`typ` - Python type that all elements must be.
     '''
     def __init__(self, lst, typ):
         self.typ = typ
@@ -89,13 +89,10 @@ class StackOutOfBounds(UnevaluatableStackResponse):
 def flatten_all(lst):
     '''Recursively flattens nested lists into a single list.
 
-    Args:
-        lst: nested lists
+    :param lst: Nested lists
+    :returns: Flattened lists.
 
-    Returns:
-        Flattened lists.
-
-    Examples: 
+    :example: 
         >>> flatten_all([1, [2, 3, [4], 5]])
         [1, 2, 3, 4, 5]
     '''
@@ -111,21 +108,16 @@ def flatten_all(lst):
 def recognize_pysh_type(thing):
     '''If thing is a literal, return its type -- otherwise return False.
 
-    Args:
-        thing: anything!
-
-    Returns:
-        A string with a ``_`` as the first char. This is how Pysh types
+    :param thing: anything!
+    :returns: A string with a ``_`` as the first char. This is how Pysh types
         are denoted throughout the entire package.
         If there is no appropriate Pysh type, returns False.
 
-    Examples:
+    :example: 
         >>> recognize_pysh_type(True)
         '_bool'
-
         >>> recognize_pysh_type(77)
         '_integer'
-
         >>> recognize_pysh_type(abs)
         False
     '''
@@ -156,11 +148,11 @@ def recognize_pysh_type(thing):
         print("Could not find pysh type for", thing, "of type", type(thing))
         return False
     
-        
-
 def keep_number_reasonable(n):
-    '''
-    Returns a version of n that obeys limit parameters.
+    '''Returns a version of n that obeys the limits set in :mod:`constants`.
+
+    :param n: Any numeric value.
+    :returns: ``n`` clamped to ``-c.max_number_magnitude < n < c.max_number_magnitude``
     '''
     if n > c.max_number_magnitude:
         n = c.max_number_magnitude
@@ -168,14 +160,11 @@ def keep_number_reasonable(n):
         n = -c.max_number_magnitude
     return n
 
-def normalize_genetic_operator_probabilities(gen_op_dict):
-    tot = sum(gen_op_dict.values())
-    new_probs = [round(x / tot, 4) for x in gen_op_dict.values()]
-    return dict(zip(gen_op_dict.keys(), new_probs))
-
 def count_parens(tree):
-    '''
-    Returns the number of paren pairs in tree.
+    '''Returns the number of paren pairs in tree.
+    
+    :param tree: Nested list structure equivalent to tree.
+    :returns: Integer equal to the number of paren pairs.
     '''
     remaining = tree
     total = 0
@@ -192,9 +181,12 @@ def count_parens(tree):
             total
 
 def count_points(tree):
-    '''
-    Returns the number of points in tree, where each atom and each pair of parentheses 
-    counts as a point.
+    '''Returns the number of points in tree.
+
+    Each atom and each pair of parentheses counts as a point.
+
+    :param tree: Nested list structure equivalent to tree.
+    :returns: Integer equal to the number of points.
     '''
     remaining = tree
     total = 0
@@ -212,12 +204,16 @@ def count_points(tree):
             total += 1
     return total
 
-
-
 def reductions(f, l):
-    '''
-    Returns a list of the intermediate values of the reduction (as
-    per reduce) of coll by f, starting with init.
+    '''Returns intermediate values of the reduction of ``l`` by ``f``.
+    
+    :param f: Function to be reduced down ``l``.
+    :param l: List to reduce ``f`` down.
+    :returns: List of intermediate values.
+
+    :example:
+        >>> reductions(lambda x,y: x * y, [1, 3, 5, 7])
+        [1, 3, 15, 105]
     '''
     result = []
     for i in range(len(l)):
@@ -227,52 +223,15 @@ def reductions(f, l):
             result.append(f(result[-1], l[i]))
     return result
 
-# def list_to_open_close_sequence(lst):
-#     if type(lst) == list:
-#         flatten_all
-#     else:
-#         return lst
-
-
-def get_matcing_close_index(sequence):
-    open_count = 0
-    for i in range(len(sequence)):
-        if sequence[i] == '_open':
-            open_count += 1
-        elif sequence[i] == '_close':
-            open_count -= 1
-        if open_count == 0:
-            return i
-        i += 1
-
-def open_close_sequence_to_list(sequence):
-    if not type(sequence) == list:
-        return sequence
-    elif len(sequence) == 0:
-        return []
-    else:
-        result = []
-        rest = sequence
-        while len(rest) > 0:
-            if rest[0] == '_open':
-                i = get_matcing_close_index(rest)
-                sub_seq = rest[1:i]
-                result.append( open_close_sequence_to_list(sub_seq) )
-                rest = rest[i+1:]
-            else:
-                result.append(rest[0])
-                rest.pop(0)
-        return result
-# print(open_close_sequence_to_list(["_open", 1, 2, "_open", 'a', 'b', "_open", 'c', "_close", "_open", "_open", 'd', "_close", "_close", 'e', "_close", "_close"]))
-# print(open_close_sequence_to_list(["_open", 1, "_close", "_open", 2, "_close"]))
-# print(open_close_sequence_to_list(["_open", "_open", 1, "_close", "_open", 2, "_close", "_close"]))
-
-
 def merge_dicts(*dict_args):
-    '''
+    '''Merges arbitrary number of dicts into one dict.
+
     Given any number of dicts, shallow copy and merge into a new dict,
     precedence goes to key value pairs in latter dicts.
     Taken From: http://stackoverflow.com/a/26853961/4297413 Thanks to Aaron Hall
+
+    :param *dict_args: Arbitrary number of arguments, all must be dicts.
+    :returns: Result of merging all dicts into a single dict.
     '''
     result = {}
     for dictionary in dict_args:
@@ -281,6 +240,9 @@ def merge_dicts(*dict_args):
 
 def merge_sets(*set_args):
     '''Given any number of sets, shallow copy and merge into a new set.
+
+    :param *set_args: Arbitrary number of arguments, all must be sets.
+    :returns: Result of union-ing all sets into a single set.
     '''
     result = set()
     for s in set_args:
@@ -288,19 +250,40 @@ def merge_sets(*set_args):
     return result
 
 def ensure_list(thing):
-    if type(thing) == list:
+    '''Returns argument inside of a list if it is not already a list.
+
+    :param thing: Anything!
+    :returns: If ``thing`` is a list, returns ``thing``
+        otherwise returns ``[thing]``.
+    :example:
+        >>> ensure_list("ABC")
+        ["ABC"]
+        >>> ensure_list([1, 2, 3])
+        [1, 2, 3]
+    '''
+    if isinstance(thing, list):
         return thing
     else:
         return [thing]
 
 def levenshtein_distance(s1, s2):
-    '''
-    Big thanks to: https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
+    '''Computes the string edit distance based on the Levenshtein Distance.
+
+    All credit for implementation goes to:
+    https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
+    Much appreciated.
+
+    .. note::
+        If ``s1`` and ``s2`` must both be strings or both be list. Cannot mix
+        types.
+
+    :param s1: String or list
+    :param s2: Other string or list
+    :returns: Integer equal to the number of edits to get from ``s1`` to ``s2``.
     '''
     if len(s1) < len(s2):
         return levenshtein_distance(s2, s1)
 
-    # len(s1) >= len(s2)
     if len(s2) == 0:
         return len(s1)
 
@@ -308,8 +291,8 @@ def levenshtein_distance(s1, s2):
     for i, c1 in enumerate(s1):
         current_row = [i + 1]
         for j, c2 in enumerate(s2):
-            insertions = previous_row[j + 1] + 1 # j+1 instead of j since previous_row and current_row are one character longer
-            deletions = current_row[j] + 1       # than s2
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
             substitutions = previous_row[j] + (c1 != c2)
             current_row.append(min(insertions, deletions, substitutions))
         previous_row = current_row
@@ -317,10 +300,14 @@ def levenshtein_distance(s1, s2):
     return previous_row[-1]
 
 def test_and_train_data_from_domains(domains):
-    '''
-    Takes a list of domains and creates a set of (random) train inputs and a set of test
-    inputs based on the domains. Returns [train test]. A program should not
-    be considered a solution unless it is perfect on both the train and test cases.
+    '''Creates train and test data.
+
+    Takes a list of domains and creates a set of (random) train inputs and a 
+    set of test inputs based on the domains. Returns [train test].
+
+    .. note::
+        This will likely no longer be used once integration with scikit-learn
+        and other libraries improves. 
     '''
     train_set = []
     test_set = []
@@ -342,8 +329,42 @@ def test_and_train_data_from_domains(domains):
     return [train_set, test_set]
 
 def int_to_char(i):
-    '''Convert ints to chars and only get human readable chars
+    '''Convert int ``i`` to chars and only get English-friendly chars
+
+    :param i: Any integer.
+    :returns: English-friendly string of length 1.
+    :example:
+        >>> int_to_char(42)
+        'J'
+        >>> int_to_char(-42)
+        'v'
     '''
     i = (i + 32) % 128
     return chr(i)
 
+def gaussian_noise_factor():
+    '''Returns Gaussian noise of mean 0, std dev 1.
+    
+    :returns: Float samples from Gaussian distribution.
+
+    :example:
+        >>> gaussian_noise_factor()
+        1.43412557975
+        >>> gaussian_noise_factor()
+        -0.0410900866765
+    '''
+    return math.sqrt(-2.0 * math.log(random.random())) * math.cos(2.0 * math.pi * random.random()) 
+
+def perturb_with_gaussian_noise(sd, n):
+    '''Returns n perturbed with standard deviation.
+
+    :param float sd: Standard deviation
+    :param float n: number to perturb.
+    :returns: Perturbed float.
+    :example:
+        >>> perturb_with_gaussian_noise(5, 0)
+        5.03608878454
+        >>> perturb_with_gaussian_noise(1, 100)
+        99.9105032498
+    '''
+    return n + (sd * gaussian_noise_factor())

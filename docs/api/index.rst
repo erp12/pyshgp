@@ -3,8 +3,9 @@ API
 ***
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
+   gp
    push
    constants
    exceptions

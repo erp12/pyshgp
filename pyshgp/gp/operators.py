@@ -1,14 +1,17 @@
 # _*_ coding: utf_8 _*_
 """
-Created on 5/50/2016
+The :mod:`operators` module defines genetic operators used by 
 
-@author: Eddie
+.. todo::
+    Consider merging this file with ``state.py`` to simplify the manipuation of
+    Push states.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math
 import random
 
+from .. import utils as u
 from .. import exceptions as e
 
 from ..push import plush as pl
@@ -18,27 +21,20 @@ from . import selection as sel
 from . import individual
 
 
-#############
-# Utilities #
-#############
-
-def gaussian_noise_factor():
-    '''Returns gaussian noise of mean 0, std dev 1.
-    '''
-    return math.sqrt(-2.0 * math.log(random.random())) * math.cos(2.0 * math.pi * random.random()) 
-
-def perturb_with_gaussian_noise(sd, n):
-    '''Returns n perturbed with std dev sd.
-    '''
-    return n + (sd * gaussian_noise_factor())
-
-
 #############################
 # Crossover and Alternation #
 #############################
 
 def alternation(parent_1, parent_2, evo_params):
-    """Uniformly alternates between the two parents. parent_1 and parent_2 are plush genomes.
+    """Uniformly alternates between the two parents. 
+
+    More information can be found on the `this Push-Redux page
+    <https://erp12.github.io/push-redux/pages/genetic_operators/index.html#recombination>`_.
+
+    :param list parent_1: Plush genome of parent 1.
+    :param list parent_2: Plush genome of parent 2.
+    :param dict evo_params: Parameters for evolution.
+    :returns: A new genome composed of alternating between genomes.
     """
     resulting_genome = []
 
@@ -53,7 +49,7 @@ def alternation(parent_1, parent_2, evo_params):
     while (i < loop_times) and (len(resulting_genome) < evo_params["max_points"]):
         if random.random() < evo_params["alternation_rate"]:
             # Switch which parent we are pulling genes from
-            i += round(evo_params["alignment_deviation"] * gaussian_noise_factor())
+            i += round(evo_params["alignment_deviation"] * u.gaussian_noise_factor())
             i = int(max(0, i))
             use_parent_1 = not use_parent_1
         else:
@@ -96,9 +92,9 @@ def constant_mutator(token, evo_params):
         instruction = None
 
         if type(const) == float:
-            instruction = perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const)
+            instruction = u.perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const)
         elif type(const) == int:
-            instruction = round(perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const))
+            instruction = round(u.perturb_with_gaussian_noise(evo_params["uniform_mutation_float_gaussian_standard_deviation"], const))
         elif type(const) == str:
             instruction = string_tweak(const, evo_params)
         elif type(const) == bool:
@@ -117,12 +113,20 @@ def token_mutator(token, evo_params):
     return new_token
 
 def uniform_mutation(genome, evo_params):
-    """
-    Uniformly mutates individual. For each token in program, there is
-    uniform-mutation-rate probability of being mutated. If a token is to be
-    mutated, it has a uniform-mutation-constant-tweak-rate probability of being
-    mutated using a constant mutator (which varies depending on the type of the
-    token), and otherwise is replaced with a random instruction.
+    """Uniformly mutates individual.
+    
+    For each token in program, there is ``uniform_mutation_rate`` probability of 
+    being mutated. If a token is to be mutated, it has a 
+    ``uniform_mutation_constant_tweak_rate`` probability of being mutated using
+    a constant mutator (which varies depending on the type of the token), and
+    otherwise is replaced with a random instruction.
+
+    More information can be found on the `this Push-Redux page
+    <https://erp12.github.io/push-redux/pages/genetic_operators/index.html#mutation>`_.
+
+    :param list genome: Plush genome to mutate.
+    :param dict evo_params: Parameters for evolution.
+    :returns: The new mutated genome.
     """
     new_genome = [token_mutator(gene, evo_params) for gene in genome]
     return new_genome
@@ -150,11 +154,18 @@ def close_mutator(gene, evo_params):
                               pl.plush_gene_is_silent(gene))
 
 def uniform_close_mutation(genome, evo_params):
-    """
-    Uniformly mutates the _close's in the individual's instruction maps. Each
-    _close will have a uniform_close_mutation_rate probability of being changed,
-    and those that are changed have a close_increment_rate chance of being
-    incremented, and are otherwise decremented.
+    """Uniformly mutates the ``_close`` markers in the individual's genome.
+
+    Each ``_close`` will have a ``uniform_close_mutation_rate`` probability of
+    being changed, and those that are changed have a ``close_increment_rate``
+    chance of being incremented, and are otherwise decremented.
+
+    More information can be found on the `this Push-Redux page
+    <https://erp12.github.io/push-redux/pages/genetic_operators/index.html#mutation>`_.
+
+    :param list genome: Plush genome to mutate.
+    :param dict evo_params: Parameters for evolution.
+    :returns: The new mutated genome.
     """
     if not "_close" in evo_params["epigenetic_markers"]:
         return genome
@@ -166,8 +177,16 @@ def uniform_close_mutation(genome, evo_params):
 #############################
 
 def produce_child(population, genetic_operators, evolutionary_params):
-    '''
-    Returns one offspring individual.
+    '''Returns one offspring individual.
+
+    ``genetic_operators`` string should be names of genetic operators 
+    seperated by a `` & ``. Supported genetic operators are:
+    ``'alternation'``, ``'uniform_mutation'``, and ``'uniform_close_mutation'``.
+
+    :param list population: List of Individuals
+    :param str genetic_operators: String of all genetic operators to apply.
+    :param dict evo_params: Parameters for evolution.
+    :returns: New unevaluated Individual
     '''
     child = sel.selection(population, evolutionary_params)[0]
     ops = genetic_operators.split(" & ")
@@ -196,8 +215,18 @@ def produce_n_children(n, population, genetic_operators, evolutionary_params):
     return [produce_child(population, genetic_operators, evolutionary_params) for x in range(n)]
 
 def genetics(population, evolutionary_params):
-    '''
-    Returns the next generation (unevaluated)
+    '''Returns the next generation on (unevaluated) Individuals.
+
+    .. warning::
+        Although ``pyshgp`` supports performing genetic in parallel, this
+        usually results in a slower runtime for the evolution run. This is 
+        because the selection and variation algorithms are not as well suited
+        to parallel computation. This is likely a valuable area of future
+        development.
+
+    :param list population: List of Individuals
+    :param dict evo_params: Parameters for evolution.
+    :returns: List of unevaluated Individuals
     '''
 
     # Create next generation

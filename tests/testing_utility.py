@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import random
 
-import pysh.utils as u
+import pyshgp.utils as u
 
 ##                    ##
 # Generating Constants #

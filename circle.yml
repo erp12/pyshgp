@@ -1,43 +1,50 @@
 machine:
   post:
     - pyenv global 2.7.12 3.5.2
-dependencies:
-  post:
-    - python2.7 -m pip install .
-    - python3.5 -m pip install .
-test:
-  post:
+    dependencies:
+      post:
+        - python2.7 -m pip install .
+        - python3.5 -m pip install .
+        test:
+          post:
     # Instruction set tests are custom for now. Running in post so as not to 
     # override the unit tests specified in setup.py
     - >
-        case $CIRCLE_NODE_INDEX in 
-            0) python2.7 -m tests.instructions.boolean_tests
-               python2.7 -m tests.instructions.numbers_tests
-               python2.7 -m tests.instructions.char_tests
-               python2.7 -m tests.instructions.code_tests ;;
-            1) python2.7 -m tests.instructions.io_tests
-               python2.7 -m tests.instructions.string_tests
-               python2.7 -m tests.instructions.common_tests
-               python3.5 -m tests.instructions.boolean_tests ;;
-            2) python3.5 -m tests.instructions.numbers_tests
-               python3.5 -m tests.instructions.char_tests
-               python3.5 -m tests.instructions.code_tests
-               python3.5 -m tests.instructions.io_tests ;;
-            3) python3.5 -m tests.instructions.string_tests
-               python3.5 -m tests.instructions.common_tests ;; esac:
-                parallel: true
+        if [ $CIRCLE_NODE_INDEX = 0 ]; then
+            python2.7 -m tests.instructions.boolean_tests;
+            python2.7 -m tests.instructions.numbers_tests;
+            python2.7 -m tests.instructions.char_tests;
+            python2.7 -m tests.instructions.code_tests;
+        fi
+        if [ $CIRCLE_NODE_INDEX = 1 ]; then
+            python2.7 -m tests.instructions.io_tests;
+            python2.7 -m tests.instructions.string_tests;
+            python2.7 -m tests.instructions.common_tests;
+            python3.5 -m tests.instructions.boolean_tests;
+        fi
+        if [ $CIRCLE_NODE_INDEX = 2 ]; then
+            python3.5 -m tests.instructions.numbers_tests;
+            python3.5 -m tests.instructions.char_tests;
+            python3.5 -m tests.instructions.code_tests;
+            python3.5 -m tests.instructions.io_tests;
+        fi
+        if [ $CIRCLE_NODE_INDEX = 3 ]; then
+            python3.5 -m tests.instructions.string_tests;
+            python3.5 -m tests.instructions.common_tests;
+        fi
+    parallel: true
 
-    # - python2.7 -m tests.instructions.boolean_tests
-    # - python2.7 -m tests.instructions.numbers_tests
-    # - python2.7 -m tests.instructions.char_tests
-    # - python2.7 -m tests.instructions.code_tests
-    # - python2.7 -m tests.instructions.io_tests
-    # - python2.7 -m tests.instructions.string_tests
-    # - python2.7 -m tests.instructions.common_tests
-    # - python3.5 -m tests.instructions.boolean_tests
-    # - python3.5 -m tests.instructions.numbers_tests
-    # - python3.5 -m tests.instructions.char_tests
-    # - python3.5 -m tests.instructions.code_tests
-    # - python3.5 -m tests.instructions.io_tests
-    # - python3.5 -m tests.instructions.string_tests
-    # - python3.5 -m tests.instructions.common_tests
+# - python2.7 -m tests.instructions.boolean_tests
+# - python2.7 -m tests.instructions.numbers_tests
+# - python2.7 -m tests.instructions.char_tests
+# - python2.7 -m tests.instructions.code_tests
+# - python2.7 -m tests.instructions.io_tests
+# - python2.7 -m tests.instructions.string_tests
+# - python2.7 -m tests.instructions.common_tests
+# - python3.5 -m tests.instructions.boolean_tests
+# - python3.5 -m tests.instructions.numbers_tests
+# - python3.5 -m tests.instructions.char_tests
+# - python3.5 -m tests.instructions.code_tests
+# - python3.5 -m tests.instructions.io_tests
+# - python3.5 -m tests.instructions.string_tests
+# - python3.5 -m tests.instructions.common_tests

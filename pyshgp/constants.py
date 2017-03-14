@@ -57,7 +57,8 @@ global_evalpush_limit = 150
 #: The time in nanoseconds that a program can evaluate before stopping, 0 means no time limit
 global_evalpush_time_limit = 0 
 
-# Maximum size of push programs and push code, as counted by points in the 
-# program. Also, the maximum size of code that can appear on the exec or 
-# code stacks. This is set during evolution, and should not have a value here.
-global_max_points = None
+#: Maximum size of push programs and push code, as counted by points in the 
+#: program. Also, the maximum size of code that can appear on the exec or 
+#: code stacks. This is set during evolution, but also has a default value here
+#: for push executions that happen outside of evolution.
+global_max_points = 200

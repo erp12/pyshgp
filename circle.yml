@@ -36,7 +36,9 @@ test:
                 python2.7 -m tests.instructions.io_tests
                 python2.7 -m tests.instructions.string_tests
                 python2.7 -m tests.instructions.common_tests
-            fi
+            fi:
+                parallel: true
+        - >
             if [ $CIRCLE_NODE_INDEX = 1 ]; then
                 python3.5 -m tests.instructions.boolean_tests
                 python3.5 -m tests.instructions.numbers_tests
@@ -45,4 +47,5 @@ test:
                 python3.5 -m tests.instructions.io_tests
                 python3.5 -m tests.instructions.string_tests
                 python3.5 -m tests.instructions.common_tests
-            fi
+            fi:
+                parallel: true

@@ -24,8 +24,7 @@ test:
                python3.5 -m tests.instructions.code_tests
                python3.5 -m tests.instructions.io_tests ;;
             3) python3.5 -m tests.instructions.string_tests
-               python3.5 -m tests.instructions.common_tests ;;
-               esac:
+               python3.5 -m tests.instructions.common_tests ;; esac:
                 parallel: true
 
     # - python2.7 -m tests.instructions.boolean_tests

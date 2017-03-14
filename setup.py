@@ -4,8 +4,13 @@ Created on 9/1/2016
 
 @author: Eddie
 """
-import os
+import os, unittest
 from setuptools import setup, find_packages
+
+def pysh_test_suite():
+    test_loader = unittest.TestLoader()
+    test_suite = test_loader.discover('tests', pattern='test_*.py')
+    return test_suite
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -33,4 +38,5 @@ setup(
        'numpy>=1.11.2',
        'pathos==0.2.0'
     ],
+    test_suite='setup.pysh_test_suite',
 )

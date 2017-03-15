@@ -3,21 +3,23 @@ machine:
     - pyenv global 2.7.12 3.5.2
 dependencies:
   post:
-    - python2.7 setup.py install
-    - python3.5 setup.py install
+    - python2.7 -m pip install .
+    - python3.5 -m pip install .
 test:
-  override:
-    - python2.7 -m tests.instructions.boolean_tests
-    - python2.7 -m tests.instructions.numbers_tests
-    - python2.7 -m tests.instructions.char_tests
-    - python2.7 -m tests.instructions.code_tests
-    - python2.7 -m tests.instructions.io_tests
-    - python2.7 -m tests.instructions.string_tests
-    - python2.7 -m tests.instructions.common_tests
-    - python3.5 -m tests.instructions.boolean_tests
-    - python3.5 -m tests.instructions.numbers_tests
-    - python3.5 -m tests.instructions.char_tests
-    - python3.5 -m tests.instructions.code_tests
-    - python3.5 -m tests.instructions.io_tests
-    - python3.5 -m tests.instructions.string_tests
-    - python3.5 -m tests.instructions.common_tests
+    post:
+        # Instruction set tests are custom for now. Running in post to
+        # not to override the unit tests specified in setup.py
+        - python2.7 -m tests.instructions.boolean_tests
+        - python2.7 -m tests.instructions.numbers_tests
+        - python2.7 -m tests.instructions.char_tests
+        - python2.7 -m tests.instructions.code_tests
+        - python2.7 -m tests.instructions.io_tests
+        - python2.7 -m tests.instructions.string_tests
+        - python2.7 -m tests.instructions.common_tests
+        - python3.5 -m tests.instructions.boolean_tests
+        - python3.5 -m tests.instructions.numbers_tests
+        - python3.5 -m tests.instructions.char_tests
+        - python3.5 -m tests.instructions.code_tests
+        - python3.5 -m tests.instructions.io_tests
+        - python3.5 -m tests.instructions.string_tests
+        - python3.5 -m tests.instructions.common_tests

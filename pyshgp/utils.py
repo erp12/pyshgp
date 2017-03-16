@@ -117,6 +117,19 @@ def is_str_type(thing):
     else:
         raise Exception("Uknown python version?")
 
+def is_int_type(thing):
+    """Returns true if thing is an int or long, agnostic to Python version.
+
+    :param thing: Anything!
+    :returns: True if thing is an int or long, False otherwise.
+    """
+    if sys.version_info[0] == 3:
+        return type(thing) is int
+    elif sys.version_info[0] == 2:
+        return type(thing) is int or type(thing) is long
+    else:
+        raise Exception("Uknown python version?")
+
 def recognize_pysh_type(thing):
     """If thing is a literal, return its type -- otherwise return False.
 
@@ -139,7 +152,7 @@ def recognize_pysh_type(thing):
         return '_class_vote_instruction'
     elif type(thing) == instr.PyshInstruction:
         return '_instruction'
-    elif type(thing) is int or type(thing) is long:
+    elif is_int_type(thing):
         return '_integer'
     elif type(thing) is float:
         return '_float'

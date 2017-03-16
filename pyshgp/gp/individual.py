@@ -31,7 +31,7 @@ class Individual:
 		self.errors = []
 		self.total_error = None
 		self.atom_generators = evo_params["atom_generators"]
-		self.program = tran.translate_plush_genome_to_push_program(genome, self.max_points, self.atom_generators)
+		self.program = tran.translate_plush_genome_to_push_program(genome, self.max_points)
 
 	# Getters and Setters
 
@@ -47,7 +47,7 @@ class Individual:
 		:param list genome: List of Plush gene tuples.
 		"""
 		self.genome = genome
-		self.program = tran.translate_plush_genome_to_push_program(self.genome, self.max_points, self.atom_generators)
+		self.program = tran.translate_plush_genome_to_push_program(self.genome, self.max_points)
 
 	def get_program(self):
 		"""

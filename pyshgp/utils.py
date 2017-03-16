@@ -104,9 +104,34 @@ def flatten_all(lst):
             result.append(i)
     return result
 
+def is_str_type(thing):
+    """Returns true if thing is a string, agnostic to Python version.
+
+    :param thing: Anything!
+    :returns: True if thing is a string, False otherwise.
+    """
+    if sys.version_info[0] == 3:
+        return type(thing) is str or type(thing) is bytes
+    elif sys.version_info[0] == 2:
+        return type(thing) is str or type(thing) is unicode
+    else:
+        raise Exception("Uknown python version?")
+
+def is_int_type(thing):
+    """Returns true if thing is an int or long, agnostic to Python version.
+
+    :param thing: Anything!
+    :returns: True if thing is an int or long, False otherwise.
+    """
+    if sys.version_info[0] == 3:
+        return type(thing) is int
+    elif sys.version_info[0] == 2:
+        return type(thing) is int or type(thing) is long
+    else:
+        raise Exception("Uknown python version?")
 
 def recognize_pysh_type(thing):
-    '''If thing is a literal, return its type -- otherwise return False.
+    """If thing is a literal, return its type -- otherwise return False.
 
     :param thing: anything!
     :returns: A string with a ``_`` as the first char. This is how Pysh types
@@ -120,20 +145,18 @@ def recognize_pysh_type(thing):
         '_integer'
         >>> recognize_pysh_type(abs)
         False
-    '''
+    """
     if type(thing) == instr.PyshInputInstruction:
         return '_input_instruction'
     elif type(thing) == instr.PyshClassVoteInstruction:
         return '_class_vote_instruction'
     elif type(thing) == instr.PyshInstruction:
         return '_instruction'
-    elif type(thing) is int:
+    elif is_int_type(thing):
         return '_integer'
     elif type(thing) is float:
         return '_float'
-    elif sys.version_info[0] == 3 and (type(thing) is str or type(thing) is bytes):
-        return '_string'
-    elif sys.version_info[0] == 2 and (type(thing) is str or type(thing) is unicode):
+    elif is_str_type(thing):
         return '_string'
     elif type(thing) == Character:
         return '_char'

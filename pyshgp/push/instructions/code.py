@@ -152,7 +152,7 @@ ri.register_instruction(code_cons_instruction)
 def code_do(state):
     if len(state.stacks['_code']) > 0:
         top_code = state.stacks['_code'].ref(0)
-        state.stacks['_exec'].push_item(ri.InstructionLookerUpper('_code_pop'))
+        state.stacks['_exec'].push_item(instr.JustInTimeInstruction('_code_pop'))
         state.stacks['_exec'].push_item(top_code)
     return state
 code_do_instruction = instr.PyshInstruction('_code_do',
@@ -199,9 +199,9 @@ def code_do_range(state):
         if not increment == 0:
             state.stacks['_exec'].push_item([(current_index + increment), 
                                               destination_index, 
-                                              ri.InstructionLookerUpper('_code_from_exec'), 
+                                              instr.JustInTimeInstruction('_code_from_exec'), 
                                               to_do,
-                                              ri.InstructionLookerUpper('_code_do*range')])
+                                              instr.JustInTimeInstruction('_code_do*range')])
         state.stacks['_integer'].push_item(current_index)
         state.stacks['_exec'].push_item(to_do)
     return state
@@ -236,7 +236,7 @@ def exec_do_range(state):
         if not increment == 0:
             state.stacks['_exec'].push_item([(current_index + increment), 
                                               destination_index, 
-                                              ri.InstructionLookerUpper('_exec_do*range'), 
+                                              instr.JustInTimeInstruction('_exec_do*range'), 
                                               to_do])
 
         state.stacks['_integer'].push_item(current_index)
@@ -258,9 +258,9 @@ def code_do_count(state):
     if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].ref(0) < 1 or len(state.stacks['_code']) == 0):
         to_push = [0, 
                    state.stacks['_integer'].ref(0) - 1, 
-                   ri.InstructionLookerUpper('_code_from_exec'),
+                   instr.JustInTimeInstruction('_code_from_exec'),
                    state.stacks['_code'].ref(0),
-                   ri.InstructionLookerUpper('_code_do*range')]
+                   instr.JustInTimeInstruction('_code_do*range')]
         state.stacks['_code'].pop_item()
         state.stacks['_integer'].pop_item()
         state.stacks['_exec'].push_item(to_push)
@@ -283,7 +283,7 @@ def exec_do_count(state):
     if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].ref(0) < 1 or len(state.stacks['_exec']) == 0):
         to_push = [0, 
                    state.stacks['_integer'].ref(0) - 1, 
-                   ri.InstructionLookerUpper('_exec_do*range'),
+                   instr.JustInTimeInstruction('_exec_do*range'),
                    state.stacks['_exec'].ref(0)]
         state.stacks['_exec'].pop_item()
         state.stacks['_integer'].pop_item()
@@ -305,9 +305,9 @@ def code_do_times(state):
     if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].ref(0) < 1 or len(state.stacks['_code']) == 0):
         to_push = [0,
                    state.stacks['_integer'].ref(0) - 1,
-                   ri.InstructionLookerUpper('_code_from_exec'),
-                   [ri.InstructionLookerUpper('_integer_pop')] + u.ensure_list(state.stacks['_code'].ref(0)),
-                   ri.InstructionLookerUpper('_code_do*range')]
+                   instr.JustInTimeInstruction('_code_from_exec'),
+                   [instr.JustInTimeInstruction('_integer_pop')] + u.ensure_list(state.stacks['_code'].ref(0)),
+                   instr.JustInTimeInstruction('_code_do*range')]
         state.stacks['_code'].pop_item()
         state.stacks['_integer'].pop_item()
         state.stacks['_exec'].push_item(to_push)
@@ -328,8 +328,8 @@ def exec_do_times(state):
     if not (len(state.stacks['_integer']) == 0 or state.stacks['_integer'].ref(0) < 1 or len(state.stacks['_exec']) == 0):
         to_push = [0, 
                    state.stacks['_integer'].ref(0) - 1, 
-                   ri.InstructionLookerUpper('_exec_do*range'),
-                   [ri.InstructionLookerUpper('_integer_pop')] + u.ensure_list(state.stacks['_exec'].ref(0))]
+                   instr.JustInTimeInstruction('_exec_do*range'),
+                   [instr.JustInTimeInstruction('_integer_pop')] + u.ensure_list(state.stacks['_exec'].ref(0))]
         state.stacks['_exec'].pop_item()
         state.stacks['_integer'].pop_item()
         state.stacks['_exec'].push_item(to_push)
@@ -355,7 +355,7 @@ def exec_while(state):
             state.stacks['_boolean'].pop_item()
         else:
             block = state.stacks['_exec'].ref(0)
-            state.stacks['_exec'].push_item(ri.InstructionLookerUpper('_exec_while'))
+            state.stacks['_exec'].push_item(instr.JustInTimeInstruction('_exec_while'))
             state.stacks['_exec'].push_item(block)
             state.stacks['_boolean'].pop_item()
     return state
@@ -373,7 +373,7 @@ ri.register_instruction(exec_while_intruction)
 def exec_do_while(state):
     if len(state.stacks['_exec']) > 0:
             block = state.stacks['_exec'].ref(0)
-            state.stacks['_exec'].push_item(ri.InstructionLookerUpper('_exec_while'))
+            state.stacks['_exec'].push_item(instr.JustInTimeInstruction('_exec_while'))
             state.stacks['_exec'].push_item(block)
     return state
 exec_do_while_intruction = instr.PyshInstruction('_exec_do*while',

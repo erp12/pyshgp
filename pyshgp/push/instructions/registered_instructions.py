@@ -46,32 +46,3 @@ def get_instructions_by_pysh_type(pysh_type):
     :returns: List if PushInstruction objects that are associated with ``pysh_type``.
     """
     return [i for i in registered_instructions if pysh_type in i.stack_types]
-
-
-class InstructionLookerUpper():
-    """A callable object that, when processed in by the push interpreter, returns a specific instruction.
-
-    Use of these instructions is only needed when defining new Push
-    instructions that must call themselves, or other situations where a Push
-    instruction must be defined in a way that creates an instance of another
-    Push instruction that is not yet registered.
-
-    .. todo::
-        Consider renaming this class. Perhaps ``JustInTimeInstruction``?
-    """
-
-    #: Name of the instruction to look up and use in place of this instruction
-    #: during program execution.
-    instruction_name = None
-
-    def __init__(self, instruction_name):
-        self.instruction_name = instruction_name
-
-    def __call__(self):
-        return get_instruction(self.instruction_name)
-
-    def __repr__(self):
-        return self.instruction_name + "_LOOKUP"
-
-    def __eq__(self, other):
-        return self.instruction_name == other.instruction_name

@@ -4,6 +4,8 @@ Pysh
 Push Genetic Programming in Python. For the most complete documentation,
 refer to the `ReadTheDocs`_.
 
+http://pysh2.readthedocs.io/en/latest/
+
 Push Genetic Programming
 ------------------------
 
@@ -13,8 +15,9 @@ stack per data type, including code. Programs are represented by lists
 of instructions, which modify the values on the stacks. Instuctions are
 executed in order.
 
-More information about PushGP can be found here:
-http://faculty.hampshire.edu/lspector/push.html
+More information about PushGP can be found on the 
+`Push Redux <https://erp12.github.io/push-redux/>`_ and the
+`Push Homepage <http://faculty.hampshire.edu/lspector/push.html>`_.
 
 For the most cutting edge PushGP framework, see the `Clojure`_
 implementaion called `Clojush`_.
@@ -24,19 +27,21 @@ Installing Pysh
 
     Pysh is compatale with python ``2.7.x`` and ``3.5.x``
 
-Install from Pip
+Install from pip
 ~~~~~~~~~~~~~~~~
 
-Coming soon!
+Coming whith first beta release of ``pyshgp``. Check the `Roadmap`_ to get a
+sense of how far off this is.
 
 Build Frome source
 ~~~~~~~~~~~~~~~~~~
 
 1. Clone the repo
 2. ``cd`` into the pysh repo directory
-3. run ``python setup.py install``
-4. Thats it! Check out the examples and `Pysh ReadTheDocs`_ for in depth
-   usage.
+3. run ``pip install . --upgrade``
+4. Thats it! Check out the examples and `Pysh ReadTheDocs`_
+   for more information.
+
 
 Example Usage
 ~~~~~~~~~~~~~
@@ -48,6 +53,10 @@ Odd problem source:
 
 .. code:: python
 
+    """
+    This problem evolves a program to determine if a number is odd or not.
+
+    """
     from __future__ import absolute_import, division, print_function, unicode_literals
 
     import random
@@ -57,11 +66,6 @@ Odd problem source:
     import pyshgp.push.interpreter as interp
     import pyshgp.push.instructions.registered_instructions as ri
     import pyshgp.push.instruction as instr
-
-
-    '''
-    This problem evolves a program to determine if a number is odd or not.
-    '''
 
     def odd_error_func(program, debug = False):
         errors = []
@@ -91,6 +95,7 @@ Odd problem source:
 
     if __name__ == "__main__":
         gp.evolution(odd_error_func, odd_params)
+
 
 More demonstrations of this can be found on `Pysh’s ReadTheDocs page`_.
 

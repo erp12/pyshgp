@@ -1,8 +1,7 @@
 # _*_ coding: utf_8 _*_
 """
-Created on 5/21/2016
+This problem evolves a program to determine if a number is odd or not.
 
-@author: Eddie
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -13,11 +12,6 @@ import pyshgp.gp.gp as gp
 import pyshgp.push.interpreter as interp
 import pyshgp.push.instructions.registered_instructions as ri
 import pyshgp.push.instruction as instr
-
-
-'''
-This problem evolves a program to determine if a number is odd or not.
-'''
 
 def odd_error_func(program, debug = False):
     errors = []

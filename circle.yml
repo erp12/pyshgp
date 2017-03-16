@@ -9,17 +9,17 @@ test:
     post:
         # Instruction set tests are custom for now. Running in post to
         # not to override the unit tests specified in setup.py
-        - python2.7 -m tests.instructions.test_boolean
-        - python2.7 -m tests.instructions.test_numbers
-        - python2.7 -m tests.instructions.test_char
-        - python2.7 -m tests.instructions.test_code
-        - python2.7 -m tests.instructions.test_io
-        - python2.7 -m tests.instructions.test_string
-        - python2.7 -m tests.instructions.test_common
-        - python3.5 -m tests.instructions.test_boolean
-        - python3.5 -m tests.instructions.test_numbers
-        - python3.5 -m tests.instructions.test_char
-        - python3.5 -m tests.instructions.test_code
-        - python3.5 -m tests.instructions.test_io
-        - python3.5 -m tests.instructions.test_string
-        - python3.5 -m tests.instructions.test_common
+        - python2.7 -m tests.instructions.boolean_tests
+        - python2.7 -m tests.instructions.numbers_tests
+        - python2.7 -m tests.instructions.char_tests
+        - python2.7 -m tests.instructions.code_tests
+        - python2.7 -m tests.instructions.io_tests
+        - python2.7 -m tests.instructions.string_tests
+        - python2.7 -m tests.instructions.common_tests
+        - python3.5 -m tests.instructions.boolean_tests
+        - python3.5 -m tests.instructions.number_tests
+        - python3.5 -m tests.instructions.char_tests
+        - python3.5 -m tests.instructions.code_tests
+        - python3.5 -m tests.instructions.io_tests
+        - python3.5 -m tests.instructions.string_tests
+        - python3.5 -m tests.instructions.common_tests

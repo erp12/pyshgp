@@ -3,7 +3,7 @@
 The :mod:`translation` module provides functions that translate Plush genomes 
 into Push programs.
 
-Todo:
+.. todo::
     Consider breaking up some of the larger functions in this file.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -24,9 +24,9 @@ def get_matcing_close_index(sequence):
     """
     open_count = 0
     for i in range(len(sequence)):
-        if sequence[i] == '_open':
+        if u.is_str_type(sequence[i]) and sequence[i] == '_open':
             open_count += 1
-        elif sequence[i] == '_close':
+        elif u.is_str_type(sequence[i]) and sequence[i] == '_close':
             open_count -= 1
         if open_count == 0:
             return i
@@ -49,7 +49,7 @@ def open_close_sequence_to_list(sequence):
         result = []
         rest = sequence
         while len(rest) > 0:
-            if rest[0] == '_open':
+            if u.is_str_type(rest[0]) and rest[0] == '_open':
                 i = get_matcing_close_index(rest)
                 sub_seq = rest[1:i]
                 result.append( open_close_sequence_to_list(sub_seq) )
@@ -112,7 +112,7 @@ def translate_plush_genome_to_push_program(genome, max_points):
             num_parens_here = len(paren_stack)
         # Check if done
         elif len(gn) == 0:
-            translated_program = u.open_close_sequence_to_list(prog)
+            translated_program = open_close_sequence_to_list(prog)
             looping = False
         # Check for silenced instruction
         elif pl.plush_gene_is_silent(gn[0]):

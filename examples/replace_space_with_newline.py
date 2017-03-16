@@ -1,9 +1,18 @@
 # _*_ coding: utf_8 _*_
 """
-Created on 9/15/2016
+The Replace Space With Newline problem is an insteresting software synthesis
+problem. The RSWN problem is specified as:
 
-@author: Eddie
+Given a string input, print the string, replacing spaces with newlines.
+The input string will not have tabs or newlines, but may have multiple spaces
+in a row. It will have maximum length of 20 characters. Also, the program
+should return the integer count of the non-whitespace characters.
+
+This problem requires PushGP to evolve a program that manipulates more than
+one data type. This problem aslo requires the printing of a value on top of
+producing another value.
 """
+
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -15,12 +24,6 @@ import pyshgp.push.interpreter as interp
 import pyshgp.push.instructions.registered_instructions as ri
 import pyshgp.push.instruction as instr
 
-'''
-Given a string input, print the string, replacing spaces with newlines.
-The input string will not have tabs or newlines, but may have multiple spaces
-in a row. It will have maximum length of 20 characters. Also, the program
-should return the integer count of the non-whitespace characters.
-'''
 
 def random_str(str_length):
     s = ""
@@ -63,14 +66,14 @@ def make_RSWN_error_func_from_cases(train_cases, test_cases):
             str_result = interpreter.state.stacks["_string"].ref(0)
             int_result = interpreter.state.stacks["_integer"].ref(0)
 
-            if type(str_result) == u.NoStackItem or type(str_result) == u.StackOutOfBounds:
+            if isinstance(str_result, u.UnevaluatableStackResponse):
                 # If response is un-evaluatable, add a bad error.
                 errors += [1000, 1000]
             else:
                 # If response is evaluatable, compute actual error
                 s_er = u.levenshtein_distance(io_pair[1][0], str_result)
                 i_er = 1000
-                if type(int_result) == int or type(int_result) == float:
+                if type(int_result) == int:
                     i_er = abs(int_result - io_pair[1][1])
                 errors += [s_er, i_er]
 

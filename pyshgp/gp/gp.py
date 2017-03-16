@@ -66,7 +66,7 @@ def load_program_from_list(lst):
         elif type(el) == instr.PyshInstruction or type(el) == instr.PyshInputInstruction or type(el) == instr.PyshClassVoteInstruction:
             # If ``el`` an instance of any of the instruction types, append to the program.
             program.append(el)
-        elif (sys.version_info[0] == 3 and (type(el) is str or type(el) is bytes)) or (sys.version_info[0] == 2 and (type(el) is str or type(el) is unicode)):
+        elif u.is_str_type(el):
             # If ``el`` is a string:
             el = str(el)
             # Attempt to find an instruction with ``el`` as its name.
@@ -94,7 +94,7 @@ def generate_random_population(evolutionary_params):
     """
     population = []
     for i in range(evolutionary_params["population_size"]):
-        rand_genome = r.random_plush_genome(evolutionary_params)
+        rand_genome = r.random_plush_genome(evolutionary_params['max_genome_initial_size'], evolutionary_params)
         new_ind = individual.Individual(rand_genome, evolutionary_params)
         population.append(new_ind)
     return population

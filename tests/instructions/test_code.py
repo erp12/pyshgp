@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import math
 
 from pyshgp import utils as u
+from pyshgp.push import instruction as instr
 from pyshgp.push.instructions import registered_instructions as ri
-
 
 from .. import instructions_test as i_t
 
@@ -53,71 +53,71 @@ code_tests = [
     [{'_code' : [["a", "b"], ["c"]]}, '_code_cons', {'_code' : [[["a", "b"], "c"]]}],
     [{'_code' : [["a", "b"], ["c", "d"]]}, '_code_cons', {'_code' : [[["a", "b"], "c", "d"]]}],
     # _code_do
-    [{'_code' : [7], '_exec' : []}, '_code_do', {'_exec' : [ri.InstructionLookerUpper('_code_pop'), 7], '_code' : [7]}],
+    [{'_code' : [7], '_exec' : []}, '_code_do', {'_exec' : [instr.JustInTimeInstruction('_code_pop'), 7], '_code' : [7]}],
     # _code_do_star
     [{'_code' : [7], '_exec' : []}, '_code_do*', {'_exec' : [7]}],
     # _code_do*range
     [{'_code' : [ri.get_instruction('_integer_inc')], '_integer' : [1, 2, 3]}, 
      '_code_do*range', 
-     {'_exec' : [[3, 3, ri.InstructionLookerUpper('_code_from_exec'), ri.get_instruction('_integer_inc'), ri.InstructionLookerUpper('_code_do*range')], ri.get_instruction('_integer_inc')], '_integer' : [1, 2]}],
+     {'_exec' : [[3, 3, instr.JustInTimeInstruction('_code_from_exec'), ri.get_instruction('_integer_inc'), instr.JustInTimeInstruction('_code_do*range')], ri.get_instruction('_integer_inc')], '_integer' : [1, 2]}],
     # _exec_do*range
     [{'_exec' : [ri.get_instruction('_integer_inc')], '_integer' : [3, 4]}, 
      '_exec_do*range', 
-     {'_exec' : [[4, 4, ri.InstructionLookerUpper('_exec_do*range'), ri.get_instruction('_integer_inc')], ri.get_instruction('_integer_inc')], '_integer' : [3]}],
+     {'_exec' : [[4, 4, instr.JustInTimeInstruction('_exec_do*range'), ri.get_instruction('_integer_inc')], ri.get_instruction('_integer_inc')], '_integer' : [3]}],
     # _code_do*count
     [{'_integer' : [2], '_code' : [ri.get_instruction('_string_stack_depth')]}, 
      '_code_do*count', 
-     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_code_from_exec'), ri.get_instruction('_string_stack_depth'), ri.InstructionLookerUpper('_code_do*range')]]}],
+     {'_exec' : [[0, 1, instr.JustInTimeInstruction('_code_from_exec'), ri.get_instruction('_string_stack_depth'), instr.JustInTimeInstruction('_code_do*range')]]}],
     [{'_integer' : [2], '_code' : [ri.get_instruction('_integer_inc')]}, 
      '_code_do*count', 
-     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_code_from_exec'), ri.get_instruction('_integer_inc'), ri.InstructionLookerUpper('_code_do*range')]]}],
+     {'_exec' : [[0, 1, instr.JustInTimeInstruction('_code_from_exec'), ri.get_instruction('_integer_inc'), instr.JustInTimeInstruction('_code_do*range')]]}],
     # _exec_do*count
     [{'_integer' : [2], '_exec' : [ri.get_instruction('_string_stack_depth')]},
      '_exec_do*count',
-     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_exec_do*range'), ri.get_instruction('_string_stack_depth')]]}],
+     {'_exec' : [[0, 1, instr.JustInTimeInstruction('_exec_do*range'), ri.get_instruction('_string_stack_depth')]]}],
     [{'_integer' : [2], '_exec' : [ri.get_instruction('_integer_inc')]},
      '_exec_do*count',
-     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_exec_do*range'), ri.get_instruction('_integer_inc')]]}],
+     {'_exec' : [[0, 1, instr.JustInTimeInstruction('_exec_do*range'), ri.get_instruction('_integer_inc')]]}],
     # _code_do*times
     [{'_integer' : [2], '_code' : [ri.get_instruction('_string_stack_depth')]},
      '_code_do*times',
-     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_code_from_exec'), [ri.InstructionLookerUpper('_integer_pop'), ri.get_instruction('_string_stack_depth')], ri.InstructionLookerUpper('_code_do*range')]]}],
+     {'_exec' : [[0, 1, instr.JustInTimeInstruction('_code_from_exec'), [instr.JustInTimeInstruction('_integer_pop'), ri.get_instruction('_string_stack_depth')], instr.JustInTimeInstruction('_code_do*range')]]}],
     [{'_integer' : [2], '_code' : [ri.get_instruction('_integer_inc')]},
      '_code_do*times',
-     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_code_from_exec'), [ri.InstructionLookerUpper('_integer_pop'), ri.get_instruction('_integer_inc')], ri.InstructionLookerUpper('_code_do*range')]]}],
+     {'_exec' : [[0, 1, instr.JustInTimeInstruction('_code_from_exec'), [instr.JustInTimeInstruction('_integer_pop'), ri.get_instruction('_integer_inc')], instr.JustInTimeInstruction('_code_do*range')]]}],
     # _exec_do*times
     [{'_integer' : [2], '_exec' : [ri.get_instruction('_string_stack_depth')]},
      '_exec_do*times',
-     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_exec_do*range'), [ri.InstructionLookerUpper('_integer_pop'), ri.get_instruction('_string_stack_depth')]]]}],
+     {'_exec' : [[0, 1, instr.JustInTimeInstruction('_exec_do*range'), [instr.JustInTimeInstruction('_integer_pop'), ri.get_instruction('_string_stack_depth')]]]}],
     [{'_integer' : [2], '_exec' : [ri.get_instruction('_integer_inc')]},
      '_exec_do*times',
-     {'_exec' : [[0, 1, ri.InstructionLookerUpper('_exec_do*range'), [ri.InstructionLookerUpper('_integer_pop'), ri.get_instruction('_integer_inc')]]]}],
+     {'_exec' : [[0, 1, instr.JustInTimeInstruction('_exec_do*range'), [instr.JustInTimeInstruction('_integer_pop'), ri.get_instruction('_integer_inc')]]]}],
     # _exec_while
     [{'_integer' : [5], '_boolean' : [True], '_exec' : [ri.get_instruction('_integer_inc')]},
      '_exec_while',
-     {'_integer' : [5], '_exec' : [ri.get_instruction('_integer_inc'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_integer_inc')]}],
+     {'_integer' : [5], '_exec' : [ri.get_instruction('_integer_inc'), instr.JustInTimeInstruction('_exec_while'), ri.get_instruction('_integer_inc')]}],
     [{'_integer' : [5], '_boolean' : [False], '_exec' : [ri.get_instruction('_integer_inc')]},
      '_exec_while',
      {'_integer' : [5]}],
     [{'_boolean' : [True], '_exec' : [ri.get_instruction('_string_stack_depth')]},
      '_exec_while',
-     {'_exec' : [ri.get_instruction('_string_stack_depth'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_string_stack_depth')]}],
+     {'_exec' : [ri.get_instruction('_string_stack_depth'), instr.JustInTimeInstruction('_exec_while'), ri.get_instruction('_string_stack_depth')]}],
     [{'_boolean' : [False], '_exec' : [ri.get_instruction('_string_stack_depth')]},
      '_exec_while',
      {}],
     # _exec_do*while
     [{'_integer' : [5], '_boolean' : [True], '_exec' : [ri.get_instruction('_integer_inc')]},
      '_exec_do*while',
-     {'_integer' : [5], '_boolean' : [True],  '_exec' : [ri.get_instruction('_integer_inc'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_integer_inc')]}],
+     {'_integer' : [5], '_boolean' : [True],  '_exec' : [ri.get_instruction('_integer_inc'), instr.JustInTimeInstruction('_exec_while'), ri.get_instruction('_integer_inc')]}],
     [{'_boolean' : [True], '_exec' : [ri.get_instruction('_string_stack_depth')]},
      '_exec_do*while',
-     {'_boolean' : [True],'_exec' : [ri.get_instruction('_string_stack_depth'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_string_stack_depth')]}],
+     {'_boolean' : [True],'_exec' : [ri.get_instruction('_string_stack_depth'), instr.JustInTimeInstruction('_exec_while'), ri.get_instruction('_string_stack_depth')]}],
     [{'_integer' : [5], '_boolean' : [False], '_exec' : [ri.get_instruction('_integer_inc')]},
      '_exec_do*while',
-     {'_integer' : [5], '_boolean' : [False],  '_exec' : [ri.get_instruction('_integer_inc'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_integer_inc')]}],
+     {'_integer' : [5], '_boolean' : [False],  '_exec' : [ri.get_instruction('_integer_inc'), instr.JustInTimeInstruction('_exec_while'), ri.get_instruction('_integer_inc')]}],
     [{'_boolean' : [False], '_exec' : [ri.get_instruction('_string_stack_depth')]},
      '_exec_do*while',
-     {'_boolean' : [False],'_exec' : [ri.get_instruction('_string_stack_depth'), ri.InstructionLookerUpper('_exec_while'), ri.get_instruction('_string_stack_depth')]}],
+     {'_boolean' : [False],'_exec' : [ri.get_instruction('_string_stack_depth'), instr.JustInTimeInstruction('_exec_while'), ri.get_instruction('_string_stack_depth')]}],
     # _code_if
     [{'_boolean' : [True], '_code' : [ri.get_instruction('_string_stack_depth'), ri.get_instruction('_string_empty')]},
      '_code_if',

@@ -87,15 +87,15 @@ class StackOutOfBounds(UnevaluatableStackResponse):
 ##                 ##
 
 def flatten_all(lst):
-    '''Recursively flattens nested lists into a single list.
+    """Recursively flattens nested lists into a single list.
 
-    :param lst: Nested lists
+    :param list lst: Nested lists
     :returns: Flattened lists.
 
     :example: 
         >>> flatten_all([1, [2, 3, [4], 5]])
         [1, 2, 3, 4, 5]
-    '''
+    """
     result = []
     for i in lst:
         if type(i) == list:
@@ -186,7 +186,7 @@ def keep_number_reasonable(n):
 def count_parens(tree):
     '''Returns the number of paren pairs in tree.
     
-    :param tree: Nested list structure equivalent to tree.
+    :param list tree: Nested list structure equivalent to tree.
     :returns: Integer equal to the number of paren pairs.
     '''
     remaining = tree
@@ -204,13 +204,13 @@ def count_parens(tree):
             total
 
 def count_points(tree):
-    '''Returns the number of points in tree.
+    """Returns the number of points in tree.
 
     Each atom and each pair of parentheses counts as a point.
 
-    :param tree: Nested list structure equivalent to tree.
+    :param list tree: Nested list structure equivalent to tree.
     :returns: Integer equal to the number of points.
-    '''
+    """
     remaining = tree
     total = 0
 
@@ -228,7 +228,7 @@ def count_points(tree):
     return total
 
 def reductions(f, l):
-    '''Returns intermediate values of the reduction of ``l`` by ``f``.
+    """Returns intermediate values of the reduction of ``l`` by ``f``.
     
     :param f: Function to be reduced down ``l``.
     :param l: List to reduce ``f`` down.
@@ -237,7 +237,7 @@ def reductions(f, l):
     :example:
         >>> reductions(lambda x,y: x * y, [1, 3, 5, 7])
         [1, 3, 15, 105]
-    '''
+    """
     result = []
     for i in range(len(l)):
         if i == 0:
@@ -247,7 +247,7 @@ def reductions(f, l):
     return result
 
 def merge_dicts(*dict_args):
-    '''Merges arbitrary number of dicts into one dict.
+    """Merges arbitrary number of dicts into one dict.
 
     Given any number of dicts, shallow copy and merge into a new dict,
     precedence goes to key value pairs in latter dicts.
@@ -255,25 +255,25 @@ def merge_dicts(*dict_args):
 
     :param *dict_args: Arbitrary number of arguments, all must be dicts.
     :returns: Result of merging all dicts into a single dict.
-    '''
+    """
     result = {}
     for dictionary in dict_args:
         result.update(dictionary)
     return result
 
 def merge_sets(*set_args):
-    '''Given any number of sets, shallow copy and merge into a new set.
+    """Given any number of sets, shallow copy and merge into a new set.
 
     :param *set_args: Arbitrary number of arguments, all must be sets.
     :returns: Result of union-ing all sets into a single set.
-    '''
+    """
     result = set()
     for s in set_args:
         result.update(s)
     return result
 
 def ensure_list(thing):
-    '''Returns argument inside of a list if it is not already a list.
+    """Returns argument inside of a list if it is not already a list.
 
     :param thing: Anything!
     :returns: If ``thing`` is a list, returns ``thing``
@@ -283,14 +283,14 @@ def ensure_list(thing):
         ["ABC"]
         >>> ensure_list([1, 2, 3])
         [1, 2, 3]
-    '''
+    """
     if isinstance(thing, list):
         return thing
     else:
         return [thing]
 
 def levenshtein_distance(s1, s2):
-    '''Computes the string edit distance based on the Levenshtein Distance.
+    """Computes the string edit distance based on the Levenshtein Distance.
 
     All credit for implementation goes to:
     https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
@@ -303,7 +303,7 @@ def levenshtein_distance(s1, s2):
     :param s1: String or list
     :param s2: Other string or list
     :returns: Integer equal to the number of edits to get from ``s1`` to ``s2``.
-    '''
+    """
     if len(s1) < len(s2):
         return levenshtein_distance(s2, s1)
 
@@ -354,7 +354,7 @@ def test_and_train_data_from_domains(domains):
 def int_to_char(i):
     '''Convert int ``i`` to chars and only get English-friendly chars
 
-    :param i: Any integer.
+    :param int i: Any integer.
     :returns: English-friendly string of length 1.
     :example:
         >>> int_to_char(42)

@@ -91,7 +91,7 @@ class PushInterpreter:
         elif pysh_type == '_input_instruction':
             # If the instruction is an input_instruction, handle it.
             io.handle_input_instruction(instruction, self.state)
-        elif pysh_type == '_class_instruction':
+        elif pysh_type == '_class_vote_instruction':
             # If the instruction is an class_instruction, handle it.
             io.handle_vote_instruction(instruction, self.state)
         elif pysh_type == '_list':

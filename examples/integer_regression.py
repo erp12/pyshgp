@@ -1,8 +1,18 @@
 # _*_ coding: utf_8 _*_
 """
-Created on 7/29/2016
-
 @author: Eddie
+
+This example problem is meant to be a demonstration of how ``pyshgp`` could be
+used to perform simple regression tasks. 
+
+The problem consists of using integer instructions and integer constants to fit
+the following polynomial: 
+
+.. literalinclude:: /../examples/integer_regression.py
+   :pyobject: target_function
+
+The training set for this problem consists of only 20 data points.
+
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -12,10 +22,6 @@ import pyshgp.gp.gp as gp
 import pyshgp.push.interpreter as interp
 import pyshgp.push.instructions.registered_instructions as ri
 import pyshgp.push.instruction as instr
-
-'''
-This problem evolves a program to determine if a number is odd or not.
-'''
 
 def target_function(x):
     return x**3 - (2*(x**2)) - x

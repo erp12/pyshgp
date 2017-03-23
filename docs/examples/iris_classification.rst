@@ -1,25 +1,25 @@
 ****************************
-Sextic (Symbolic Regression)
+Iris Classification
 ****************************
 
-.. automodule:: examples.sextic
+.. automodule:: examples.iris_classification
 
 Running The Example
 ###################
 
 To run the odd problem, install Pysh and run the example file.::
 
-    python path/to/sextic.py
+    python path/to/iris_classification.py
 
 
 The Error Function
 ##################
 
-.. literalinclude:: /../examples/sextic.py
-   :pyobject: error_func
+.. literalinclude:: /../examples/iris_classification.py
+   :pyobject: iris_error_func
 
 .. note::
-    For a more comprehensive explainaiton of what am error function is in Pysh, 
+    For a more comprehensive explainaiton of what a error function is in Pysh,
     see the :doc:`Odd Problem <odd>`.
 
 
@@ -28,17 +28,17 @@ Sextic Parameters
 
 Below is the sextic problem specific parameters. 
 
-.. literalinclude:: /../examples/sextic.py
-   :lines: 47-66
+.. literalinclude:: /../examples/iris_classification.py
+   :lines: 60-82
 
 The most notable parameter for the sextic progrem is that it uses 
 ``epsilon_lexicase`` as its selection method. This selection method is discussed
 in greater detail on the `Genetic Operators <Genetic_Operators>`_ page.
 
-For regression problems, it is helpful to have a small, non-zero 
+For regression problems, it is helpful to have a small, non-zero
 ``error_threshold`` because perfect solutions are difficult to evolve.
 
-The sextic ``atom_generators`` consist of basic floating point math 
+The sextic ``atom_generators`` consist of basic floating point math
 instructions, random floating point constants, and a single input instruction.
 
 There is no need for ``epigenetic_markers``, because nested structures are not

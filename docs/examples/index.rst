@@ -2,18 +2,20 @@
 Examples
 ********
 
+The following examples are deomonstrations of the basic usage of ``pyshgp``.
+
 .. toctree::
    :maxdepth: 1
 
-   Odd
-   Integer_Regression
-   Sextic
+   integer_regression
+   iris_classification
+   odd
+   sextic
+   string_demo
 
-Other examples found in repository:
+More Examples
+#############
 
-- Replace Space Wtih Newline 
-- Iris Classification
-- String Manipulation
-- Credit Classification
-
+There are many other eamples of ``pyshgp`` that can be found in the repository
+on GitHub.
 `See all examples here <https://github.com/erp12/Pysh/tree/master/examples>`_

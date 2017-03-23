@@ -16,6 +16,9 @@ class TestUtilMethods(unittest.TestCase):
     def test_flatten_all_B(self):
         self.assertEqual(u.flatten_all([]), [])
 
+    # is_str_type
+    # is_int_type
+
     # Detect Input Instruction
     def test_recognize_pysh_type_PyshInputInstruction(self):
         i = instr.PyshInputInstruction(0)
@@ -50,6 +53,30 @@ class TestUtilMethods(unittest.TestCase):
     def test_recognize_pysh_type_bool(self):
         for i in tu.random_test_bools():
             self.assertEqual(u.recognize_pysh_type(i), '_boolean')
+
+    # keep_number_reasonable
+    # count_parens
+    # count_points
+    # reductions
+
+    # Test 3 dicts
+    def test_merge_dicts_stnrd(self):
+        d1 = {"a" : 1, "b" : 2}
+        d2 = {"c" : 3, "a" : 4}
+        d3 = {"b" : 5}
+        self.assertEqual(u.merge_dicts(d1, d2, d3),
+                         {"a" : 4, "b" : 5, "c" : 3})
+
+    # Test 1 dicts
+    def test_merge_dicts_single(self):
+        d = {"a" : 1, "b" : 2}
+        self.assertEqual(u.merge_dicts(d), {"a" : 1, "b" : 2})
+
+    # Test No arguments
+    def test_merge_dicts_empty(self):
+        self.assertEqual(u.merge_dicts(), {})
+
+    # Test with non-dict argument
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,6 +1,7 @@
 # _*_ coding: utf_8 _*_
 """
-This problem evolves a program to determine if a number is odd or not.
+The goal of the Odd problem is to evolve a program that will produce a True if 
+the input integer is odd, and a False if its even.
 
 """
 from __future__ import absolute_import, division, print_function, unicode_literals

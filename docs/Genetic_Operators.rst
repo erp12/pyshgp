@@ -44,7 +44,7 @@ For more information about Lexicase selection, and its benefits, see the followi
 Epsilon Lexicase Selection
 """"""""""""""""""""""""""
 
-Lexicase selection generally performs poorly on problems that use continuous outpus, such as regression. Epsilon Lexicase Selection is a form of lexicase selection that allows candidates to pass a test case as long as their error is within *epsilon* of the error of the best candidate on the test case. This change dramatically increases the performance of lexicase selection on regression problems. For an example of this, see the :doc:`Sextic (symbolic regression) example problem <Sextic>`.
+Lexicase selection generally performs poorly on problems that use continuous outpus, such as regression. Epsilon Lexicase Selection is a form of lexicase selection that allows candidates to pass a test case as long as their error is within *epsilon* of the error of the best candidate on the test case. This change dramatically increases the performance of lexicase selection on regression problems. For an example of this, see the :doc:`Sextic (symbolic regression) example problem <examples/sextic>`.
 
 For more information about Epsilon Lexicase selection, and its benefits, see the following publication:
 

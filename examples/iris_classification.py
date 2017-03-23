@@ -1,8 +1,13 @@
 # _*_ coding: utf_8 _*_
 """
-Created on 9/19/2016
-
 @author: Eddie
+
+This examples performs the famous, yet simple, classification of iris species
+based on measurements of 150 iris flowers.
+
+This example is intended to demonstrate the use of class voting instructions
+in classification problems.
+
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -33,7 +38,7 @@ def iris_error_func(program, print_trace = False):
 
 	for index, row in training_set.iterrows():
 		# Create the push interpreter
-		interpreter = interp.PyshInterpreter([float(x) for x in row.drop('Species').tolist()])
+		interpreter = interp.PushInterpreter([float(x) for x in row.drop('Species').tolist()])
     
 		# Initialize output classes
 		interpreter.state.stacks["_output"].push_item(0)

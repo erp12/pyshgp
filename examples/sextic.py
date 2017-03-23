@@ -1,8 +1,13 @@
 # _*_ coding: utf_8 _*_
 """
-Created on 7/29/2016
+The Sextic problem is simple, floating point symbolic regression problem.
 
-@author: Eddie
+The problem consists of using float instructions and float constants to fit
+the following polynomial: 
+
+.. literalinclude:: /../examples/sextic.py
+	:pyobject: target_function
+
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -14,9 +19,6 @@ import pyshgp.push.interpreter as interp
 import pyshgp.push.instructions.registered_instructions as ri
 import pyshgp.push.instruction as instr
 
-'''
-This problem is symbolic regression.
-'''
 
 def target_function(x):
 	return x**6 + -2*(x**4) + x**2

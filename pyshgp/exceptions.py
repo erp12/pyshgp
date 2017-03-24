@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Dec. 11, 2016
-
-@author: Eddie
+"""The :mod:`exceptions` module provides utility classes that inherit from
+python Exception class. These errors can be used to provide more useful 
+debugging information to the user.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 

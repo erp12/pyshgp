@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 The :mod:`utils` module provides classes and functions that are used throughout
 the push interpreter and GP modules.
@@ -46,7 +45,11 @@ class Character(object):
         return False
 
 class PushVector(list):
-    '''List where elements are all of same pysh literal types.
+    '''List where elements are all of same pysh literal type.
+
+    Args:
+        lst (list): Python list where all elements are of type ``typ``.
+        typ (type): Python Type that denotes the type of the vector.
 
     Is a subclass of the Python list, and has access to all list methods.
 
@@ -188,6 +191,7 @@ def count_parens(tree):
     
     :param list tree: Nested list structure equivalent to tree.
     :returns: Integer equal to the number of paren pairs.
+
     '''
     remaining = tree
     total = 0
@@ -201,7 +205,7 @@ def count_parens(tree):
             remaining.pop(0)
         else:
             remaining = remaining[0] + remaining[1:]
-            total
+            total += 1
 
 def count_points(tree):
     """Returns the number of points in tree.
@@ -322,8 +326,10 @@ def levenshtein_distance(s1, s2):
     
     return previous_row[-1]
 
+
+
 def test_and_train_data_from_domains(domains):
-    '''Creates train and test data.
+    """Creates train and test data.
 
     Takes a list of domains and creates a set of (random) train inputs and a 
     set of test inputs based on the domains. Returns [train test].
@@ -331,7 +337,7 @@ def test_and_train_data_from_domains(domains):
     .. note::
         This will likely no longer be used once integration with scikit-learn
         and other libraries improves. 
-    '''
+    """
     train_set = []
     test_set = []
 

@@ -37,6 +37,7 @@ setup(
     install_requires=[
        'numpy>=1.11.2',
        'pathos==0.2.0',
+       'numpy>=1.12.0',
        'scipy>=0.18.0',
        'scikit-learn>=0.18.0'
     ],

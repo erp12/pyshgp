@@ -1,5 +1,4 @@
 # _*_ coding: utf_8 _*_
-
 """
 The :mod:`gp` module defines the genetic programming capabilities of pyshgp.
 The functions in this module are responsible for creating populations,
@@ -41,50 +40,6 @@ def normalize_genetic_operator_probabilities(gen_op_dict):
     tot = sum(gen_op_dict.values())
     new_probs = [round(x / tot, 4) for x in gen_op_dict.values()]
     return dict(zip(gen_op_dict.keys(), new_probs))
-
-
-def load_program_from_list(lst):
-    """Loads a program from a list, and checks each string in list for an instruction with the same name.
-
-    .. warning::
-        This function will attempt to look up all strings in the registered
-        instructions to see if an instruction with a matching name exists. 
-        This limits you to only using strings that are not exact matches of
-        instruction names. This is mitigated by the fact that all instruction
-        names begin with a ``'_'``.
-
-    :param list lst: List that should be translated into a Push program.
-    :returns: List that can be executed as a Push program.
-    """
-    program = []
-    for el in lst:
-        # For each element in the list
-        if type(el) == int or type(el) == float or type(el) == bool or type(el) == u.Character or type(el) == u.PushVector:
-            # If ``el`` is an int, float, bool, Character object or PushVector object simply 
-            # append to the program because these are push literals.
-            program.append(el)
-        elif type(el) == instr.PyshInstruction or type(el) == instr.PyshInputInstruction or type(el) == instr.PyshClassVoteInstruction:
-            # If ``el`` an instance of any of the instruction types, append to the program.
-            program.append(el)
-        elif u.is_str_type(el):
-            # If ``el`` is a string:
-            el = str(el)
-            # Attempt to find an instruction with ``el`` as its name.
-            matching_instruction = None
-            try:
-                matching_instruction = ri.get_instruction(el)
-            except e.UnknownInstructionName():
-                pass
-            # If matching_instruction is None, it must be a ssring literal.
-            if matching_instruction == None:
-                program.append(el)
-            else:
-                program.append(matching_instruction)
-        elif type(el) == list:
-            # If ``el`` is a list (but not PushVector) turn it into a program
-            # and append it to (aka. nest it in) the program.
-            program.append(load_program_from_list(el))
-    return program
 
 def generate_random_population(evolutionary_params):
     """Generate random population based on given evolutionary_params.
@@ -135,8 +90,8 @@ def evolution(error_function, problem_params):
     .. todo::
         This should soon be replaced by various base classes. These classes will
         include: 1) Evolver - A general evolution class with same functionality 
-        as this function 2) SymbolicRegressor - A class that extends 
-        scikit-learn for regression problems and 3) SymbolicClassifier - A class
+        as this function 2) PushGPRegressor - A class that extends 
+        scikit-learn for regression problems and 3) PushGPClassifier - A class
         that extends scikit-learn for classification problems.
 
     :param function error_function: Python function that evaluates an individual based on its program.

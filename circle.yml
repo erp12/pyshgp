@@ -1,10 +1,13 @@
 machine:
-  post:
-    - pyenv global 2.7.12 3.5.2
+    post:
+        - pyenv global 2.7.12 3.5.2
+
 dependencies:
-  post:
-    - python2.7 -m pip install . --upgrade
-    - python3.5 -m pip install . --upgrade
+    pre:
+        - pip install numpy
+        - pip install scipy
+        - pip install scikit-learn
+        - pip install pathos
 test:
     post:
         # Instruction set tests are custom for now. Running in post to

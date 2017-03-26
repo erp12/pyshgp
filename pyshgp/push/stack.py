@@ -16,10 +16,6 @@ class PyshStack(list):
     pysh_type = None
     
     def __init__(self, pysh_type_str):
-        """Test
-
-        :param str pysh_type_str: Where do I show up?
-        """
         self.pysh_type = pysh_type_str
 
         # If the pysh_type is ``_output`` then push the empty string to

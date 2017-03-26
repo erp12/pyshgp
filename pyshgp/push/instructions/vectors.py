@@ -814,7 +814,7 @@ def iterateer(vec_type, lit_type):
                 state.stacks[lit_type].push_item(v[0])
             else:
                 state.stacks[vec_type].pop_item()
-                state.stacks['_exec'].push_item(ri.InstructionLookerUpper(instr_name))
+                state.stacks['_exec'].push_item(instr.JustInTimeInstruction(instr_name))
                 state.stacks['_exec'].push_item(u.PushVector(v[1:], v.typ))
                 state.stacks['_exec'].push_item(e)
                 state.stacks[lit_type].push_item(v[0])

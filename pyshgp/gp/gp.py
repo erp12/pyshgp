@@ -161,18 +161,19 @@ def evolution(error_function, problem_params):
             print(solutions[0].get_program())
             print("Genome:")
             print(solutions[0].get_genome())
-            print()
-            simp.auto_simplify(solutions[0], error_function, evolutionary_params["final_simplification_steps"])
-            stop_reason = 'Solution Found'
-            break # Finish evolutionary run
+            solution = simp.auto_simplify(solutions[0],
+                                          error_function, 
+                                          evolutionary_params["final_simplification_steps"])
+            return (solution, True)
 
         if g == evolutionary_params['max_generations'] - 1:
+            best = sorted(population, key=lambda ind: ind.get_total_error())[0]
             print()
             print('Failure')
             print('Best program in final generation:')
-            print(population[0].get_program())
-            print('Errors:', population[0].get_errors())
-            stop_reason = 'Max Generation'
+            print(best.get_program())
+            print('Errors:', best.get_errors())
+            return (best, False)
 
     print()
     print("Generating End of Run Reports")

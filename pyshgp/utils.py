@@ -164,7 +164,7 @@ def recognize_pysh_type(thing):
         return '_string'
     elif type(thing) == Character:
         return '_char'
-    elif type(thing) is bool or isinstance(thing, np.bool):
+    elif type(thing) is bool or isinstance(thing, np.bool_):
         return '_boolean'
     elif type(thing) is PushVector:
         t = recognize_pysh_type(thing.typ())

@@ -8,6 +8,10 @@ dependencies:
         - pip install scipy
         - pip install scikit-learn
         - pip install pathos
+        - pip3 install numpy
+        - pip3 install scipy
+        - pip3 install scikit-learn
+        - pip3 install pathos
 test:
     post:
         # Instruction set tests are custom for now. Running in post to

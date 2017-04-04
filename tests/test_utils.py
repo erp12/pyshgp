@@ -43,8 +43,7 @@ class TestUtilMethods(unittest.TestCase):
 
     # Detect numpy float
     def test_recognize_pysh_type_float(self):
-        for i in np.float32(1.1):
-            self.assertEqual(u.recognize_pysh_type(i), '_float')
+        self.assertEqual(u.recognize_pysh_type(np.float32(1.1)), '_float')
 
     # Detect string
     def test_recognize_pysh_type_string(self):

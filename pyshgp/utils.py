@@ -158,7 +158,7 @@ def recognize_pysh_type(thing):
         return '_instruction'
     elif is_int_type(thing):
         return '_integer'
-    elif type(thing) is float or isinstance(thing, np.float):
+    elif isinstance(thing, np.float):
         return '_float'
     elif is_str_type(thing):
         return '_string'

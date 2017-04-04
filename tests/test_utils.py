@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals 
 
+import numpy as np
+
 import unittest
 import testing_utility as tu
 
@@ -37,6 +39,11 @@ class TestUtilMethods(unittest.TestCase):
     # Detect float
     def test_recognize_pysh_type_float(self):
         for i in tu.random_test_floats(5):
+            self.assertEqual(u.recognize_pysh_type(i), '_float')
+
+    # Detect numpy float
+    def test_recognize_pysh_type_float(self):
+        for i in np.float32(1.1):
             self.assertEqual(u.recognize_pysh_type(i), '_float')
 
     # Detect string

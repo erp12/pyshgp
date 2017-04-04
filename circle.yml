@@ -26,3 +26,6 @@ test:
         - python3.5 -m tests.instructions.io_tests
         - python3.5 -m tests.instructions.string_tests
         - python3.5 -m tests.instructions.common_tests
+        # Validation tests
+        - python2.7 -m tests.validation.sklearn_regression
+        - python3.5 -m tests.validation.sklearn_regression

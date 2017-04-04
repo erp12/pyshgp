@@ -7,6 +7,7 @@ the push interpreter and GP modules.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys, random, math
+import numpy as np
 
 from . import exceptions as e
 from .push import instruction as instr
@@ -157,13 +158,13 @@ def recognize_pysh_type(thing):
         return '_instruction'
     elif is_int_type(thing):
         return '_integer'
-    elif type(thing) is float:
+    elif type(thing) is float or isinstance(thing, np.float):
         return '_float'
     elif is_str_type(thing):
         return '_string'
     elif type(thing) == Character:
         return '_char'
-    elif type(thing) is bool:
+    elif type(thing) is bool or isinstance(thing, np.bool):
         return '_boolean'
     elif type(thing) is PushVector:
         t = recognize_pysh_type(thing.typ())

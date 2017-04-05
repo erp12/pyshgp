@@ -879,7 +879,3 @@ for t in vector_types:
     ri.register_instruction(replacefirster('_vector'+t, t))
     ri.register_instruction(removeer('_vector'+t, t))
     ri.register_instruction(iterateer('_vector'+t, t))
-
-
-
-

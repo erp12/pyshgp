@@ -143,4 +143,3 @@ def translate_plush_genome_to_push_program(genome, max_points):
         return [] # Translates to an empty programs if program exceeds max-points
     else:
         return translated_program
-

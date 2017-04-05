@@ -40,5 +40,5 @@ setup(
         'scikit-learn>=0.18.0',
         'pathos==0.2.0'
     ],
-    test_suite='setup.pysh_test_suite',
+    test_suite='setup.pysh_test_suite'
 )

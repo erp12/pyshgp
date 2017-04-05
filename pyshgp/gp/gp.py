@@ -180,6 +180,3 @@ def evolution(error_function, problem_params):
     if evolutionary_params["reports"]["timings"]:
         reporting.print_timings()
     print()
-
-
-

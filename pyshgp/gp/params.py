@@ -170,7 +170,3 @@ def init_executor(evolutionary_params):
         evolutionary_params["pool"] = Pool()
     else:
         evolutionary_params['pool'] = Pool(evolutionary_params["max_workers"])
-
-
-
-

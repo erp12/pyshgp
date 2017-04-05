@@ -59,8 +59,8 @@ class PushGPRegressor(BaseEstimator):
     """A Scikit-learn estimator that uses PushGP for symbolic regression tasks.
     """
 
-    #: Best program found by evolution. Used to make predictions.
-    _best_program = None
+    #: Instance of PushGPEvolver that evolves the _best_program.
+    _evolver = None
 
     #: Atom generators that make sense to use for regression problems.
     _atom_generators = list(u.merge_sets(
@@ -149,8 +149,8 @@ class PushGPClassifier(BaseEstimator, ClassifierMixin):
     """A Scikit-learn estimator that uses PushGP for classification tasks.
     """
 
-    #: Best program found by evolution. Used to make predictions.
-    _best_program = None
+    #: Instance of PushGPEvolver that evolves the _best_program.
+    _evolver = None
 
     #: Atom generators that make sense to use for regression problems.
     _atom_generators = list(u.merge_sets(
@@ -194,9 +194,10 @@ class PushGPClassifier(BaseEstimator, ClassifierMixin):
         for k in p.default_evolutionary_params.keys():
             try:
                 new_val = getattr(self, k)
+                final_params[k] = new_val
+
             except AttributeError:
                 continue
-            final_params[k] = new_val
 
         # Set other parameters
         final_params['genetic_operator_probabilities'] = {
@@ -220,22 +221,24 @@ class PushGPClassifier(BaseEstimator, ClassifierMixin):
 
         interpreter.run_push(program)
         votes = np.array(interpreter.state.stacks["_output"][1:])
-        return np.argmax(votes)
+        return int(np.argmax(votes))
 
     def fit(self, X, y):
 
         self._num_classes = len(np.unique(y))
 
         def _error(program):
-            errors = []
+            errors = np.array([])
             for i in list(range(len(X))):
                 output = self._get_output(program, X[i])
                 if type(output) == int:
-                    errors.append(self.error_metric([output], [y[i]]))
+                    errors = np.append(errors, 
+                                       (self.error_metric(np.array([output]).reshape(1, -1),
+                                                          np.array([y[i]]).reshape(-1, 1))))
                 else:
-                    errors.append(99999)
+                   errors = np.append(errors, 99999)
             return errors
 
         final_params = self._create_params_for_data(X, y)
-        _best_program = PushGPEvolver(_error, final_params)
+        self._evolver = PushGPEvolver(_error, final_params)
         return self

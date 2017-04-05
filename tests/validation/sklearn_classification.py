@@ -2,10 +2,7 @@
 """
 @author: Eddie
 
-This example problem is meant to be a demonstration of how ``pyshgp`` could be
-used to perform simple classification tasks. 
-
-The problem consists of predicting the species of iris.
+Tests PushGPClassifier class
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -20,9 +17,6 @@ X_train, X_test, y_train, y_test = model_selection.train_test_split(iris.data,
                                                                     iris.target,
                                                                     test_size=0.5)
 
-print(X_train)
-print(y_train)
-print()
-
-model = gp.PushGPClassifier(population_size = 100)
+model = gp.PushGPClassifier(population_size = 100, max_generations = 5,
+	final_simplification_steps = 500)
 model.fit(X_train, y_train)

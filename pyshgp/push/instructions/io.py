@@ -41,7 +41,7 @@ def handle_vote_instruction(instruction, state):
 		class_index = int(instruction.class_id)
 		vote_value = state.stacks[instruction.vote_stack].ref(0)
 		state.stacks[instruction.vote_stack].pop_item()
-		state.stacks['_output'][class_index] += vote_value
+		state.stacks['_output'][class_index] += float(vote_value)
 
 def printer(pysh_type):
 	'''

@@ -65,7 +65,7 @@ class PyshClassVoteInstruction(PyshInstruction):
     """
 
     def __init__(self, class_id, vote_stack):
-        PyshInstruction.__init__(self, "vote"+str(class_id)+vote_stack, None)
+        PyshInstruction.__init__(self, "_vote"+str(class_id)+vote_stack, None)
         self.class_id = class_id
         self.vote_stack = vote_stack
         self.stack_types = '_class'

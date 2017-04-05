@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-
 """
-The :mod:`stack` module defines the ``PyshStack`` class which is used to
-hold values of a certain type in a ``PyshState`` object.
+The :mod:`stack` module defines the ``PyshStack`` class which is used to hold
+values of a certain type in a ``PyshState`` object.
 """
 
 from __future__ import absolute_import, division, print_function, unicode_literals

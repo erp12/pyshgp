@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 The :mod:`utils` module provides classes and functions that are used throughout
 the push interpreter and GP modules.
@@ -8,6 +7,7 @@ the push interpreter and GP modules.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys, random, math
+import numpy as np
 
 from . import exceptions as e
 from .push import instruction as instr
@@ -46,7 +46,11 @@ class Character(object):
         return False
 
 class PushVector(list):
-    '''List where elements are all of same pysh literal types.
+    '''List where elements are all of same pysh literal type.
+
+    Args:
+        lst (list): Python list where all elements are of type ``typ``.
+        typ (type): Python Type that denotes the type of the vector.
 
     Is a subclass of the Python list, and has access to all list methods.
 
@@ -154,13 +158,13 @@ def recognize_pysh_type(thing):
         return '_instruction'
     elif is_int_type(thing):
         return '_integer'
-    elif type(thing) is float:
+    elif isinstance(thing, np.float):
         return '_float'
     elif is_str_type(thing):
         return '_string'
     elif type(thing) == Character:
         return '_char'
-    elif type(thing) is bool:
+    elif type(thing) is bool or isinstance(thing, np.bool_):
         return '_boolean'
     elif type(thing) is PushVector:
         t = recognize_pysh_type(thing.typ())
@@ -188,6 +192,7 @@ def count_parens(tree):
     
     :param list tree: Nested list structure equivalent to tree.
     :returns: Integer equal to the number of paren pairs.
+
     '''
     remaining = tree
     total = 0
@@ -201,7 +206,7 @@ def count_parens(tree):
             remaining.pop(0)
         else:
             remaining = remaining[0] + remaining[1:]
-            total
+            total += 1
 
 def count_points(tree):
     """Returns the number of points in tree.
@@ -322,8 +327,10 @@ def levenshtein_distance(s1, s2):
     
     return previous_row[-1]
 
+
+
 def test_and_train_data_from_domains(domains):
-    '''Creates train and test data.
+    """Creates train and test data.
 
     Takes a list of domains and creates a set of (random) train inputs and a 
     set of test inputs based on the domains. Returns [train test].
@@ -331,7 +338,7 @@ def test_and_train_data_from_domains(domains):
     .. note::
         This will likely no longer be used once integration with scikit-learn
         and other libraries improves. 
-    '''
+    """
     train_set = []
     test_set = []
 
@@ -391,3 +398,47 @@ def perturb_with_gaussian_noise(sd, n):
         99.9105032498
     '''
     return n + (sd * gaussian_noise_factor())
+
+def load_program_from_list(lst):
+    """Loads a program from a list, and checks each string in list for an 
+    instruction with the same name.
+
+    .. warning::
+        This function will attempt to look up all strings in the registered
+        instructions to see if an instruction with a matching name exists. 
+        This limits you to only using strings that are not exact matches of
+        instruction names. This is mitigated by the fact that all instruction
+        names begin with a ``'_'``.
+
+    :param list lst: List that should be translated into a Push program.
+    :returns: List that can be executed as a Push program.
+    """
+    program = []
+    for el in lst:
+        # For each element in the list
+        if type(el) == int or type(el) == float or type(el) == bool or type(el) == u.Character or type(el) == u.PushVector:
+            # If ``el`` is an int, float, bool, Character object or PushVector object simply 
+            # append to the program because these are push literals.
+            program.append(el)
+        elif type(el) == instr.PyshInstruction or type(el) == instr.PyshInputInstruction or type(el) == instr.PyshClassVoteInstruction:
+            # If ``el`` an instance of any of the instruction types, append to the program.
+            program.append(el)
+        elif u.is_str_type(el):
+            # If ``el`` is a string:
+            el = str(el)
+            # Attempt to find an instruction with ``el`` as its name.
+            matching_instruction = None
+            try:
+                matching_instruction = ri.get_instruction(el)
+            except e.UnknownInstructionName():
+                pass
+            # If matching_instruction is None, it must be a ssring literal.
+            if matching_instruction == None:
+                program.append(el)
+            else:
+                program.append(matching_instruction)
+        elif type(el) == list:
+            # If ``el`` is a list (but not PushVector) turn it into a program
+            # and append it to (aka. nest it in) the program.
+            program.append(load_program_from_list(el))
+    return program

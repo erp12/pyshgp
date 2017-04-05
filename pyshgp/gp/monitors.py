@@ -6,42 +6,58 @@ health.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import numpy as np
+
+def _get_all_total_errors(population):
+    gnrtr = (ind.get_total_error() for ind in population)
+    return np.fromiter(gnrtr, np.float)
+
+def _get_all_genome_sizes(population):
+    gnrtr = (len(ind.get_genome()) for ind in population)
+    return np.fromiter(gnrtr, np.float)
+
+def _get_population_error_matrix(population):
+    return np.array([ind.get_errors() for ind in population])
 
 def best_total_error(population):
     """
     :param list population: List of Individuals.
     :returns: Float of lowest total error in the population.
     """
-    return sorted(population, key=lambda ind: ind.get_total_error())[0].get_total_error()
+    errs = _get_all_total_errors(population)
+    return np.min(errs)
 
 def average_total_error(population):
     """
-
     :param list population: List of Individuals.
     :returns: Float of lowest total error in the population.
     """
-    return round(sum([ind.get_total_error() for ind in population]) / float(len(population)), 3)
+    errs = _get_all_total_errors(population)
+    return np.around(np.sum(errs) / float(len(population)), 3)
 
 def average_genome_size(population):
     """
     :param list population: List of Individuals.
     :returns: Float of lowest total error in the population.
     """
-    return round(sum([len(ind.get_genome()) for ind in population]) / float(len(population)), 3)
+    gnme_sizes = _get_all_genome_sizes(population)
+    return np.around(np.sum(gnme_sizes) / float(len(population)), 3)
 
 def smallest_genome_size(population):
     """
     :param list population: List of Individuals.
     :returns: Float of lowest total error in the population.
     """
-    return min([len(ind.get_genome()) for ind in population])
+    gnme_sizes = _get_all_genome_sizes(population)
+    return np.min(gnme_sizes)
 
 def largest_genome_size(population):
     """
     :param list population: List of Individuals.
     :returns: Float of lowest total error in the population.
     """
-    return max([len(ind.get_genome()) for ind in population])
+    gnme_sizes = _get_all_genome_sizes(population)
+    return np.max(gnme_sizes)
 
 def unique_program_count(population):
     """
@@ -56,8 +72,8 @@ def unique_error_vectors(population):
     :param list population: List of Individuals.
     :returns: Float of lowest total error in the population.
     """
-    error_vectors = [ind.get_errors() for ind in population]
-    return len([list(x) for x in set(tuple(x) for x in error_vectors)])
+    error_mat = _get_population_error_matrix(population)
+    return np.unique(error_mat).size
 
 def best_by_total_error(population):
     """
@@ -71,11 +87,8 @@ def lowest_error_on_each_case(population):
     :param list population: List of Individuals.
     :returns: Float of lowest total error in the population.
     """
-    result = []
-    for t in list(range(len(population[0].get_errors()))):
-        result.append(min([ind.get_errors()[t] for ind in population]))
-    return result
-
+    error_mat = _get_population_error_matrix(population)
+    return np.min(error_mat, axis = 0)
 
 
 def print_monitors(population, monitors_dict):

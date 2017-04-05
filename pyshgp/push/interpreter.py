@@ -37,7 +37,7 @@ class PushInterpreter:
         self.state = state.PyshState()
         self.status = '_normal'
 
-        if inputs != None:
+        if not (inputs is None):
             for i in inputs:
                 self.state.stacks['_input'].push_item(i)
         

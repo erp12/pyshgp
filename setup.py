@@ -35,8 +35,10 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)"],
     install_requires=[
-       'numpy>=1.11.2',
-       'pathos==0.2.0'
+        'numpy>=1.12.0',
+        'scipy>=0.18.0',
+        'scikit-learn>=0.18.0',
+        'pathos==0.2.0'
     ],
-    test_suite='setup.pysh_test_suite',
+    test_suite='setup.pysh_test_suite'
 )

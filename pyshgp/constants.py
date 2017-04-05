@@ -15,8 +15,6 @@ pysh_types = ["_exec", "_integer", "_float", "_string", "_char", "_boolean", "_c
               "_input", "_output", '_auxiliary',
               "_vector_integer", '_vector_float', '_vector_boolean', '_vector_string']    
 
-
-
 #: Used by keep_number_reasonable as the maximum size of any integer or float
 max_number_magnitude = 1000000000000 
 

@@ -1,10 +1,17 @@
 machine:
-  post:
-    - pyenv global 2.7.12 3.5.2
+    post:
+        - pyenv global 2.7.12 3.5.2
+
 dependencies:
-  post:
-    - python2.7 -m pip install .
-    - python3.5 -m pip install .
+    pre:
+        - pip install numpy
+        - pip install scipy
+        - pip install scikit-learn
+        - pip install pathos
+        - pip3 install numpy
+        - pip3 install scipy
+        - pip3 install scikit-learn
+        - pip3 install pathos
 test:
     post:
         # Instruction set tests are custom for now. Running in post to
@@ -23,3 +30,8 @@ test:
         - python3.5 -m tests.instructions.io_tests
         - python3.5 -m tests.instructions.string_tests
         - python3.5 -m tests.instructions.common_tests
+        # Validation tests
+        - python2.7 -m tests.validation.sklearn_regression
+        - python2.7 -m tests.validation.sklearn_classification
+        - python3.5 -m tests.validation.sklearn_regression
+        - python3.5 -m tests.validation.sklearn_classification

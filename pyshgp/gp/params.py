@@ -42,11 +42,10 @@ default_evolutionary_params = {
 #############
 # SELECTION #
 #############
-"selection_method" : "lexicase", # Options are 'lexicase', 'epsilon_lexicase', 'cluster_lexicase' or tournament';
+"selection_method" : "lexicase", # Options are 'lexicase', 'epsilon_lexicase' or tournament'
 
 # Arguments related to lexicase selection, and its variants
 "epsilon_lexicase_epsilon" : None, # Defines a hard-coded epsilon. If None, automatically defines epsilon using MAD.
-"cluster_lexicase_clusters" : 10,
 
 # Arguments related to Tournament Selection
 "tournament_size" : 7, # If using tournament selection, the size of the tournaments
@@ -68,7 +67,8 @@ default_evolutionary_params = {
 "uniform_mutation_constant_tweak_rate" : 0.5, # The probability of using a constant mutation instead of simply replacing the token with a random instruction during uniform mutation
 "uniform_mutation_float_gaussian_standard_deviation" : 1.0, # The standard deviation used when tweaking float constants with Gaussian noise
 "uniform_mutation_int_gaussian_standard_deviation" : 1, # The standard deviation used when tweaking integer constants with Gaussian noise
-"uniform_mutation_string_char_change_rate" : 0.1,
+"uniform_mutation_string_char_change_rate" : 0.1, # The probability of each character being changed when doing string constant tweaking.
+
 
 # Arguments related to uniform close mutation
 "uniform_close_mutation_rate" : 0.1, # The probability of each :close being incremented or decremented during uniform close mutation.
@@ -170,7 +170,3 @@ def init_executor(evolutionary_params):
         evolutionary_params["pool"] = Pool()
     else:
         evolutionary_params['pool'] = Pool(evolutionary_params["max_workers"])
-
-
-
-

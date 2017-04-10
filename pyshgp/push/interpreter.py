@@ -109,7 +109,7 @@ class PushInterpreter:
         """
         self.reset_state()
         for k in state_dict.keys():
-            if k is '_output':
+            if str(k) == '_output':
                 stck = state_dict[k][1:]
             else:
                 stck = state_dict[k][::]

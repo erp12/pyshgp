@@ -34,10 +34,9 @@ class TestStackMethods(unittest.TestCase):
     def test_state_as_dict(self):
         self.assertEqual(self.i.state_as_dict(), self.d)
 
-    def test_from_dict(self):
+    def test_state_from_dict(self):
         self.d['_integer'].append(5)
         self.i.state_from_dict(self.d)
-        #print(self.i.state_as_dict())
         self.assertEqual(self.i.state_size(), 4)
         self.assertEqual(self.i.state['_integer'].top_item(), 5)
         self.assertEqual(len(self.i.state['_integer']), 1)

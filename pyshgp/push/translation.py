@@ -17,7 +17,8 @@ from .instructions import *
 
 
 def get_matcing_close_index(sequence):
-    """Returns the index of the the matching ``"_close"`` to the first ``"_open"``.
+    """Returns the index of the the matching ``"_close"``
+    to the first ``"_open"``.
 
     :param sequence: List with some ``"_open"`` and ``"_close"`` elements.
     :returns: Int of index to match ``"_close"``.
@@ -33,7 +34,8 @@ def get_matcing_close_index(sequence):
         i += 1
 
 def open_close_sequence_to_list(sequence):
-    """Converts flat list with ``"_open"`` and ``"_close"`` elements to nested lists.
+    """Converts flat list with ``"_open"`` and ``"_close"`` elements to
+    nested lists.
 
     :param sequence: List with some ``"_open"`` and ``"_close"`` elements.
 
@@ -59,7 +61,7 @@ def open_close_sequence_to_list(sequence):
                 rest.pop(0)
         return result
 
-def translate_plush_genome_to_push_program(genome, max_points):
+def genome_to_program(genome, max_points):
     """Given a Plush genomes, returns the equivalent Push program.
 
     Takes as input of a Plush genome and translates it to the correct Push 
@@ -115,14 +117,14 @@ def translate_plush_genome_to_push_program(genome, max_points):
             translated_program = open_close_sequence_to_list(prog)
             looping = False
         # Check for silenced instruction
-        elif pl.plush_gene_is_silent(gn[0]):
+        elif gn[0].is_silent:
             gn.pop(0)
         # If here, ready for next instruction
         else:
-            instr = pl.plush_gene_get_instruction(gn[0])
+            atom = gn[0].atom
             number_paren_groups = 0
-            if isinstance(instr, instruction.PyshInstruction):
-                number_paren_groups = instr.parentheses
+            if isinstance(atom, instruction.PyshInstruction):
+                number_paren_groups = atom.parentheses
 
             new_paren_stack = paren_stack
             if 0 < number_paren_groups:
@@ -131,10 +133,10 @@ def translate_plush_genome_to_push_program(genome, max_points):
                 new_paren_stack += paren_stack
                 
             if 0 >= number_paren_groups:
-                prog.append(instr)
+                prog.append(atom)
             else: 
-                prog += [instr, '_open']
-            num_parens_here = pl.plush_gene_get_closes(gn[0])
+                prog += [atom, '_open']
+            num_parens_here = gn[0].closes
             gn = gn[1:]
             paren_stack = new_paren_stack
 

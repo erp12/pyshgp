@@ -8,10 +8,10 @@ from . import registered_instructions
 
 
 def string_from_integer(state):
-    if len(state.stacks['_integer']) > 0:
-        top_int = state.stacks['_integer'].ref(0)
-        state.stacks['_integer'].pop_item()
-        state.stacks['_string'].push_item(str(top_int))
+    if len(state['_integer']) > 0:
+        top_int = state['_integer'].ref(0)
+        state['_integer'].pop_item()
+        state['_string'].push_item(str(top_int))
     return state
 string_from_integer_intruction = instr.PyshInstruction('_string_from_integer',
                                                        string_from_integer,
@@ -24,10 +24,10 @@ registered_instructions.register_instruction(string_from_integer_intruction)
 
 
 def string_from_float(state):
-    if len(state.stacks['_float']) > 0:
-        top_float = state.stacks['_float'].ref(0)
-        state.stacks['_float'].pop_item()
-        state.stacks['_string'].push_item(str(top_float))
+    if len(state['_float']) > 0:
+        top_float = state['_float'].ref(0)
+        state['_float'].pop_item()
+        state['_string'].push_item(str(top_float))
     return state
 string_from_float_intruction = instr.PyshInstruction('_string_from_float',
                                                      string_from_float,
@@ -40,10 +40,10 @@ registered_instructions.register_instruction(string_from_float_intruction)
 
 
 def string_from_boolean(state):
-    if len(state.stacks['_boolean']) > 0:
-        top_float = state.stacks['_boolean'].ref(0)
-        state.stacks['_boolean'].pop_item()
-        state.stacks['_string'].push_item(str(top_float))
+    if len(state['_boolean']) > 0:
+        top_float = state['_boolean'].ref(0)
+        state['_boolean'].pop_item()
+        state['_string'].push_item(str(top_float))
     return state
 string_from_boolean_intruction = instr.PyshInstruction('_string_from_boolean',
                                                        string_from_boolean,
@@ -56,12 +56,12 @@ registered_instructions.register_instruction(string_from_boolean_intruction)
 
 
 def string_concat(state):
-    if len(state.stacks['_string']) > 1:
-        s0 = state.stacks['_string'].ref(0)
-        s1 = state.stacks['_string'].ref(1)
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].push_item(s1 + s0)
+    if len(state['_string']) > 1:
+        s0 = state['_string'].ref(0)
+        s1 = state['_string'].ref(1)
+        state['_string'].pop_item()
+        state['_string'].pop_item()
+        state['_string'].push_item(s1 + s0)
 string_concat_instruction = instr.PyshInstruction('_string_concat',
                                                   string_concat,
                                                   stack_types = ['_string'])
@@ -73,12 +73,12 @@ registered_instructions.register_instruction(string_concat_instruction)
 
 
 def string_head(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
-        s = state.stacks['_string'].ref(0)
-        i = state.stacks['_integer'].ref(0)
-        state.stacks['_string'].pop_item()
-        state.stacks['_integer'].pop_item()
-        state.stacks['_string'].push_item(s[:i])
+    if len(state['_string']) > 0 and len(state['_integer']) > 0:
+        s = state['_string'].ref(0)
+        i = state['_integer'].ref(0)
+        state['_string'].pop_item()
+        state['_integer'].pop_item()
+        state['_string'].push_item(s[:i])
     return state
 string_head_instruction = instr.PyshInstruction('_string_head',
                                                 string_head,
@@ -91,12 +91,12 @@ registered_instructions.register_instruction(string_head_instruction)
 
 
 def string_tail(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
-        s = state.stacks['_string'].ref(0)
-        i = state.stacks['_integer'].ref(0)
-        state.stacks['_string'].pop_item()
-        state.stacks['_integer'].pop_item()
-        state.stacks['_string'].push_item(s[-i:])
+    if len(state['_string']) > 0 and len(state['_integer']) > 0:
+        s = state['_string'].ref(0)
+        i = state['_integer'].ref(0)
+        state['_string'].pop_item()
+        state['_integer'].pop_item()
+        state['_string'].push_item(s[-i:])
     return state
 string_tail_instruction = instr.PyshInstruction('_string_tail',
                                                 string_tail,
@@ -108,15 +108,15 @@ registered_instructions.register_instruction(string_tail_instruction)
 #<instr_close>
 
 def string_split_at_index(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
-        s = state.stacks['_string'].ref(0)
-        i = state.stacks['_integer'].ref(0)
+    if len(state['_string']) > 0 and len(state['_integer']) > 0:
+        s = state['_string'].ref(0)
+        i = state['_integer'].ref(0)
         s_head = s[:i]
         s_tail = s[i:]
-        state.stacks['_integer'].pop_item()
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].push_item(s_head)
-        state.stacks['_string'].push_item(s_tail)
+        state['_integer'].pop_item()
+        state['_string'].pop_item()
+        state['_string'].push_item(s_head)
+        state['_string'].push_item(s_tail)
     return state
 string_split_at_index_instruction = instr.PyshInstruction('_string_split_at_index',
                                                           string_split_at_index,
@@ -129,17 +129,17 @@ registered_instructions.register_instruction(string_split_at_index_instruction)
 
 
 def string_split_at_str(state):
-    if len(state.stacks['_string']) > 1:
-        split_on = state.stacks['_string'].ref(0)
-        split_this = state.stacks['_string'].ref(1)
+    if len(state['_string']) > 1:
+        split_on = state['_string'].ref(0)
+        split_this = state['_string'].ref(1)
         if split_on == '':
             new_strings = [split_this]
         else:
             new_strings = split_this.split(split_on)
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].pop_item()
+        state['_string'].pop_item()
+        state['_string'].pop_item()
         for s in new_strings:
-            state.stacks['_string'].push_item(s)
+            state['_string'].push_item(s)
     return state
 string_split_at_str_instruction = instr.PyshInstruction('_string_split_at_str',
                                                         string_split_at_str,
@@ -151,17 +151,17 @@ registered_instructions.register_instruction(string_split_at_str_instruction)
 #<instr_close>
 
 def string_split_at_char(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_char']) > 0:
-        split_on = state.stacks['_char'].ref(0).char
-        split_this = state.stacks['_string'].ref(0)
+    if len(state['_string']) > 0 and len(state['_char']) > 0:
+        split_on = state['_char'].ref(0).char
+        split_this = state['_string'].ref(0)
         if split_on == '':
             new_strings = [split_this]
         else:
             new_strings = split_this.split(split_on)
-        state.stacks['_string'].pop_item()
-        state.stacks['_char'].pop_item()
+        state['_string'].pop_item()
+        state['_char'].pop_item()
         for s in new_strings:
-            state.stacks['_string'].push_item(s)
+            state['_string'].push_item(s)
     return state
 string_split_at_str_instruction = instr.PyshInstruction('_string_split_at_char',
                                                         string_split_at_char,
@@ -175,14 +175,14 @@ registered_instructions.register_instruction(string_split_at_str_instruction)
 
 
 def string_split_at_space(state):
-    if len(state.stacks['_string']) > 0:
-        split_this = state.stacks['_string'].ref(0)
+    if len(state['_string']) > 0:
+        split_this = state['_string'].ref(0)
         new_strings = split_this.split()
         if split_this == '':
             new_strings = ['']
-        state.stacks['_string'].pop_item()
+        state['_string'].pop_item()
         for s in new_strings:
-            state.stacks['_string'].push_item(s)
+            state['_string'].push_item(s)
     return state
 string_split_at_space_instruction = instr.PyshInstruction('_string_split_at_space',
                                                           string_split_at_space,
@@ -195,11 +195,11 @@ registered_instructions.register_instruction(string_split_at_space_instruction)
 
 
 def string_length(state):
-    if len(state.stacks['_string']) > 0:
-        new_int = len(state.stacks['_string'].ref(0))
+    if len(state['_string']) > 0:
+        new_int = len(state['_string'].ref(0))
         new_int = u.keep_number_reasonable(new_int)
-        state.stacks['_string'].pop_item()
-        state.stacks['_integer'].push_item(new_int)
+        state['_string'].pop_item()
+        state['_integer'].push_item(new_int)
     return state
 string_length_instruction = instr.PyshInstruction('_string_length',
                                                                 string_length,
@@ -212,11 +212,11 @@ registered_instructions.register_instruction(string_length_instruction)
 
 
 def string_reverse(state):
-    if len(state.stacks['_string']) > 0:
-        s = state.stacks['_string'].ref(0)
+    if len(state['_string']) > 0:
+        s = state['_string'].ref(0)
         s = s[::-1]
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].push_item(s)
+        state['_string'].pop_item()
+        state['_string'].push_item(s)
     return state
 string_reverse_instruction = instr.PyshInstruction('_string_reverse',
                                                    string_reverse,
@@ -229,16 +229,16 @@ registered_instructions.register_instruction(string_reverse_instruction)
 
 
 def string_char_at(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0:
-        s = state.stacks['_string'].ref(0)
+    if len(state['_string']) > 0 and len(state['_integer']) > 0:
+        s = state['_string'].ref(0)
         if len(s) == 0:
             return
         else:
-            i = state.stacks['_integer'].ref(0) % len(s)
+            i = state['_integer'].ref(0) % len(s)
             c = s[i]
-        state.stacks['_string'].pop_item()
-        state.stacks['_integer'].pop_item()
-        state.stacks['_char'].push_item(u.Character(c))
+        state['_string'].pop_item()
+        state['_integer'].pop_item()
+        state['_char'].push_item(u.Character(c))
     return state
 string_char_at_instruction = instr.PyshInstruction('_string_char_at',
                                                    string_char_at,
@@ -251,13 +251,13 @@ registered_instructions.register_instruction(string_char_at_instruction)
 
 
 def string_empty_string(state):
-    if len(state.stacks['_string']) > 0:
-        s = state.stacks['_string'].ref(0)
-        state.stacks['_string'].pop_item()
+    if len(state['_string']) > 0:
+        s = state['_string'].ref(0)
+        state['_string'].pop_item()
         if s == "":
-            state.stacks['_boolean'].push_item(True)
+            state['_boolean'].push_item(True)
         else:
-            state.stacks['_boolean'].push_item(False)
+            state['_boolean'].push_item(False)
     return state
 string_empty_string_instruction = instr.PyshInstruction('_string_empty_string',
                                                         string_empty_string,
@@ -273,13 +273,13 @@ def string_contains(state):
     '''
     True if the top string is a substring of the second string. False otherwise
     '''
-    if len(state.stacks['_string']) > 1:
-        s1 = state.stacks['_string'].ref(0)
-        s2 = state.stacks['_string'].ref(1)
+    if len(state['_string']) > 1:
+        s1 = state['_string'].ref(0)
+        s2 = state['_string'].ref(1)
         new_bool = s1 in s2
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].pop_item()
-        state.stacks['_boolean'].push_item(new_bool)
+        state['_string'].pop_item()
+        state['_string'].pop_item()
+        state['_boolean'].push_item(new_bool)
     return state
 string_contains_instruction = instr.PyshInstruction('_string_contains',
                                                     string_contains,
@@ -295,15 +295,15 @@ def string_replace(state):
     '''
     In third string on stack, replaces all occurences of second string with first string
     '''
-    if len(state.stacks['_string']) > 2:
-        replace_this = state.stacks['_string'].ref(1)
-        with_this = state.stacks['_string'].ref(0)
-        in_this = state.stacks['_string'].ref(2)
+    if len(state['_string']) > 2:
+        replace_this = state['_string'].ref(1)
+        with_this = state['_string'].ref(0)
+        in_this = state['_string'].ref(2)
         new_string = in_this.replace(replace_this, with_this)
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].push_item(new_string)
+        state['_string'].pop_item()
+        state['_string'].pop_item()
+        state['_string'].pop_item()
+        state['_string'].push_item(new_string)
     return state
 string_replace_instruction = instr.PyshInstruction('_string_replace',
                                                    string_replace,
@@ -317,11 +317,11 @@ registered_instructions.register_instruction(string_replace_instruction)
 ## STRING CHAR INSTRUCTIONS ##
 
 def string_from_char(state):
-    if len(state.stacks['_char']) > 0:
-        top_char = state.stacks['_char'].ref(0)
+    if len(state['_char']) > 0:
+        top_char = state['_char'].ref(0)
         new_string = str(top_char.char)
-        state.stacks['_char'].pop_item()
-        state.stacks['_string'].push_item(new_string)
+        state['_char'].pop_item()
+        state['_string'].push_item(new_string)
 string_from_char_instruction = instr.PyshInstruction('_string_from_char',
                                                      string_from_char,
                                                      stack_types = ['_string', '_char'])
@@ -333,11 +333,11 @@ registered_instructions.register_instruction(string_from_char_instruction)
 
 
 def string_append_char(state):
-    if len(state.stacks['_char']) > 0 and len(state.stacks['_string']) > 0:
-        new_string =  state.stacks['_string'].ref(0) + state.stacks['_char'].ref(0).char
-        state.stacks['_char'].pop_item()
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].push_item(new_string)
+    if len(state['_char']) > 0 and len(state['_string']) > 0:
+        new_string =  state['_string'].ref(0) + state['_char'].ref(0).char
+        state['_char'].pop_item()
+        state['_string'].pop_item()
+        state['_string'].push_item(new_string)
 string_append_char_instruction = instr.PyshInstruction('_string_append_char',
                                                        string_append_char,
                                                        stack_types = ['_string', '_char'])
@@ -349,11 +349,11 @@ registered_instructions.register_instruction(string_append_char_instruction)
 
 
 def string_first(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_string'].ref(0)) > 0:
-        new_char = state.stacks['_string'].ref(0)[0]
+    if len(state['_string']) > 0 and len(state['_string'].ref(0)) > 0:
+        new_char = state['_string'].ref(0)[0]
         new_char = u.Character(new_char)
-        state.stacks['_string'].pop_item()
-        state.stacks['_char'].push_item(new_char)
+        state['_string'].pop_item()
+        state['_char'].push_item(new_char)
 string_first_instruction = instr.PyshInstruction('_string_first',
                                                  string_first,
                                                  stack_types = ['_string', '_char'])
@@ -365,11 +365,11 @@ registered_instructions.register_instruction(string_first_instruction)
 
 
 def string_last(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_string'].ref(0)) > 0:
-        new_char = state.stacks['_string'].ref(0)[-1]
+    if len(state['_string']) > 0 and len(state['_string'].ref(0)) > 0:
+        new_char = state['_string'].ref(0)[-1]
         new_char = u.Character(new_char)
-        state.stacks['_string'].pop_item()
-        state.stacks['_char'].push_item(new_char)
+        state['_string'].pop_item()
+        state['_char'].push_item(new_char)
 string_last_instruction = instr.PyshInstruction('_string_last',
                                                 string_last,
                                                 stack_types = ['_string', '_char'])
@@ -381,14 +381,14 @@ registered_instructions.register_instruction(string_last_instruction)
 
 
 def string_nth(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_integer']) > 0 and len(state.stacks['_string'].ref(0)) > 0:
-        top_str = state.stacks['_string'].ref(0)
-        index = state.stacks['_integer'].ref(0) % len(top_str)
+    if len(state['_string']) > 0 and len(state['_integer']) > 0 and len(state['_string'].ref(0)) > 0:
+        top_str = state['_string'].ref(0)
+        index = state['_integer'].ref(0) % len(top_str)
         new_char = top_str[index]
         new_char = u.Character(new_char)
-        state.stacks['_string'].pop_item()
-        state.stacks['_integer'].pop_item()
-        state.stacks['_char'].push_item(new_char)
+        state['_string'].pop_item()
+        state['_integer'].pop_item()
+        state['_char'].push_item(new_char)
 string_nth_instruction = instr.PyshInstruction('_string_nth',
                                                string_nth,
                                                stack_types = ['_string', '_char', '_integer'])
@@ -405,13 +405,13 @@ registered_instructions.register_instruction(string_nth_instruction)
 
 
 def string_replace_char(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_char']) > 1:
-        top_str = state.stacks['_string'].ref(0)
-        new_str = top_str.replace(state.stacks['_char'].ref(1).char, state.stacks['_char'].ref(0).char)
-        state.stacks['_char'].pop_item()
-        state.stacks['_char'].pop_item()
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].push_item(new_str)
+    if len(state['_string']) > 0 and len(state['_char']) > 1:
+        top_str = state['_string'].ref(0)
+        new_str = top_str.replace(state['_char'].ref(1).char, state['_char'].ref(0).char)
+        state['_char'].pop_item()
+        state['_char'].pop_item()
+        state['_string'].pop_item()
+        state['_string'].push_item(new_str)
 string_replace_char_instruction = instr.PyshInstruction('_string_replace_char',
                                                         string_replace_char,
                                                         stack_types = ['_string', '_char'])
@@ -423,13 +423,13 @@ registered_instructions.register_instruction(string_replace_char_instruction)
 
 
 def string_replace_first_char(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_char']) > 1:
-        top_str = state.stacks['_string'].ref(0)
-        new_str = top_str.replace(state.stacks['_char'].ref(1).char, state.stacks['_char'].ref(0).char, 1)
-        state.stacks['_char'].pop_item()
-        state.stacks['_char'].pop_item()
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].push_item(new_str)
+    if len(state['_string']) > 0 and len(state['_char']) > 1:
+        top_str = state['_string'].ref(0)
+        new_str = top_str.replace(state['_char'].ref(1).char, state['_char'].ref(0).char, 1)
+        state['_char'].pop_item()
+        state['_char'].pop_item()
+        state['_string'].pop_item()
+        state['_string'].push_item(new_str)
 string_replace_first_char_instruction = instr.PyshInstruction('_string_replace_first_char',
                                                               string_replace_first_char,
                                                               stack_types = ['_string', '_char'])
@@ -441,12 +441,12 @@ registered_instructions.register_instruction(string_replace_first_char_instructi
 
 
 def string_remove_char(state):
-    if len(state.stacks['_string']) > 0 and len(state.stacks['_char']) > 0:
-        top_str = state.stacks['_string'].ref(0)
-        new_str = top_str.replace(state.stacks['_char'].ref(0).char, '')
-        state.stacks['_char'].pop_item()
-        state.stacks['_string'].pop_item()
-        state.stacks['_string'].push_item(new_str)
+    if len(state['_string']) > 0 and len(state['_char']) > 0:
+        top_str = state['_string'].ref(0)
+        new_str = top_str.replace(state['_char'].ref(0).char, '')
+        state['_char'].pop_item()
+        state['_string'].pop_item()
+        state['_string'].push_item(new_str)
 string_remove_char_instruction = instr.PyshInstruction('_string_remove_char',
                                                        string_remove_char,
                                                        stack_types = ['_string', '_char'])

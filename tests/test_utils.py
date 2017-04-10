@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import numpy as np
 
 import unittest
-import testing_utility as tu
+import testing_utilities as tu
 
 import pyshgp.utils as u
 import pyshgp.push.instruction as instr

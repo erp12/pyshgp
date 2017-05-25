@@ -2,6 +2,8 @@
 """
 The :mod:`variation` module defines classes for each genetic oper
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+from future.utils import with_metaclass
 
 from abc import ABCMeta, abstractmethod
 import random
@@ -12,7 +14,7 @@ from ..push import plush as pl
 from ..utils import perturb_with_gaussian_noise, gaussian_noise_factor
 
 
-class VariationOperator(metaclass=ABCMeta):
+class VariationOperator(with_metaclass(ABCMeta)):
     """TODO: Write me
     """
 
@@ -141,7 +143,7 @@ class UniformMutation(VariationOperator):
                 atom = perturb_with_gaussian_noise(
                     self.float_standard_deviation, const)
             elif type(const) == int:
-                atom = round(perturb_with_gaussian_noise(
+                atom = int(perturb_with_gaussian_noise(
                     self.int_standard_deviation, const))
             elif type(const) == str:
                 atom = self.string_tweak(const)

@@ -1,6 +1,8 @@
 """
 Classes that reperesents Individuals and Populations in evolutionary algorithms.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math, random
 from copy import copy
 import numpy as np
@@ -14,7 +16,7 @@ from ..push import simplification as simp
 # Classes #
 ###########
 
-class Individual:
+class Individual(object):
     """Holds all information about an individual.
 	"""
 
@@ -239,5 +241,5 @@ class Population(list):
     def unique(self):
         """Returns the number of unique programs found in the population.
         """
-        programs_set = {str(ind.program[:]) for ind in self}
+        programs_set = {str(ind.program) for ind in self}
         return len(programs_set)

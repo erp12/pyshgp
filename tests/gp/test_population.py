@@ -27,7 +27,6 @@ class TestIndividualMethods(unittest.TestCase):
     def test_evaluate(self):
         ef = lambda program: [1, 2, 3]
         self.i.evaluate(ef)
-        print('HELLO', self.i.error_vector, self.i.total_error)
         self.assertEqual(self.i.error_vector, [1,2,3])
         self.assertEqual(self.i.total_error, 6)
 

@@ -34,4 +34,5 @@ test:
         # - python3.5 -m tests.validation.sklearn_regression
         # - python3.5 -m tests.validation.sklearn_classification
         # Coverage reports
+        - coverage xml ./setup.py test
         - python-codacy-coverage -r coverage.xml

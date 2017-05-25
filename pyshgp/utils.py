@@ -21,7 +21,7 @@ from . import constants as c
 class Character(object):
     '''Holds a string of length 1.
 
-    Used to distinguish between string and char literals 
+    Used to distinguish between string and char literals
     in Push program interpretation.
 
     :attributes: :attr:`char` - String of length 1.
@@ -96,7 +96,7 @@ def flatten_all(lst):
     :param list lst: Nested lists
     :returns: Flattened lists.
 
-    :example: 
+    :example:
         >>> flatten_all([1, [2, 3, [4], 5]])
         [1, 2, 3, 4, 5]
     """
@@ -142,7 +142,7 @@ def recognize_pysh_type(thing):
         are denoted throughout the entire package.
         If there is no appropriate Pysh type, returns False.
 
-    :example: 
+    :example:
         >>> recognize_pysh_type(True)
         '_bool'
         >>> recognize_pysh_type(77)
@@ -174,7 +174,7 @@ def recognize_pysh_type(thing):
     else:
         print("Could not find pysh type for", thing, "of type", type(thing))
         return False
-    
+
 def keep_number_reasonable(n):
     '''Returns a version of n that obeys the limits set in :mod:`constants`.
 
@@ -189,7 +189,7 @@ def keep_number_reasonable(n):
 
 def count_parens(tree):
     '''Returns the number of paren pairs in tree.
-    
+
     :param list tree: Nested list structure equivalent to tree.
     :returns: Integer equal to the number of paren pairs.
 
@@ -234,7 +234,7 @@ def count_points(tree):
 
 def reductions(f, l):
     """Returns intermediate values of the reduction of ``l`` by ``f``.
-    
+
     :param f: Function to be reduced down ``l``.
     :param l: List to reduce ``f`` down.
     :returns: List of intermediate values.
@@ -324,7 +324,7 @@ def levenshtein_distance(s1, s2):
             substitutions = previous_row[j] + (c1 != c2)
             current_row.append(min(insertions, deletions, substitutions))
         previous_row = current_row
-    
+
     return previous_row[-1]
 
 
@@ -332,12 +332,12 @@ def levenshtein_distance(s1, s2):
 def test_and_train_data_from_domains(domains):
     """Creates train and test data.
 
-    Takes a list of domains and creates a set of (random) train inputs and a 
+    Takes a list of domains and creates a set of (random) train inputs and a
     set of test inputs based on the domains. Returns [train test].
 
     .. note::
         This will likely no longer be used once integration with scikit-learn
-        and other libraries improves. 
+        and other libraries improves.
     """
     train_set = []
     test_set = []
@@ -374,7 +374,7 @@ def int_to_char(i):
 
 def gaussian_noise_factor():
     '''Returns Gaussian noise of mean 0, std dev 1.
-    
+
     :returns: Float samples from Gaussian distribution.
 
     :example:
@@ -383,7 +383,7 @@ def gaussian_noise_factor():
         >>> gaussian_noise_factor()
         -0.0410900866765
     '''
-    return math.sqrt(-2.0 * math.log(random.random())) * math.cos(2.0 * math.pi * random.random()) 
+    return math.sqrt(-2.0 * math.log(random.random())) * math.cos(2.0 * math.pi * random.random())
 
 def perturb_with_gaussian_noise(sd, n):
     '''Returns n perturbed with standard deviation.
@@ -400,12 +400,12 @@ def perturb_with_gaussian_noise(sd, n):
     return n + (sd * gaussian_noise_factor())
 
 def load_program_from_list(lst):
-    """Loads a program from a list, and checks each string in list for an 
+    """Loads a program from a list, and checks each string in list for an
     instruction with the same name.
 
     .. warning::
         This function will attempt to look up all strings in the registered
-        instructions to see if an instruction with a matching name exists. 
+        instructions to see if an instruction with a matching name exists.
         This limits you to only using strings that are not exact matches of
         instruction names. This is mitigated by the fact that all instruction
         names begin with a ``'_'``.
@@ -417,7 +417,7 @@ def load_program_from_list(lst):
     for el in lst:
         # For each element in the list
         if type(el) == int or type(el) == float or type(el) == bool or type(el) == u.Character or type(el) == u.PushVector:
-            # If ``el`` is an int, float, bool, Character object or PushVector object simply 
+            # If ``el`` is an int, float, bool, Character object or PushVector object simply
             # append to the program because these are push literals.
             program.append(el)
         elif type(el) == instr.PyshInstruction or type(el) == instr.PyshInputInstruction or type(el) == instr.PyshClassVoteInstruction:
@@ -442,3 +442,19 @@ def load_program_from_list(lst):
             # and append it to (aka. nest it in) the program.
             program.append(load_program_from_list(el))
     return program
+
+def median_absolute_deviation(a):
+    """Returns the MAD of X.
+
+    Parameters
+    ----------
+    a : array-like, shape = (n,)
+
+    Returns
+    -------
+    mad : float
+
+    :param list a: List of numbers.
+    :returns: MAD of list.
+    """
+    return np.median(np.abs(a - np.median(a)))

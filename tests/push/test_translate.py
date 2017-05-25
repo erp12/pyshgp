@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, unicode_literals 
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import unittest
 
@@ -11,7 +11,7 @@ class TestTranslateMethods(unittest.TestCase):
     def setUp(self):
         self.balenced = ["_open", 1, "_close", "_open", 2, "_close"]
         self.unbalenced = ["_open", "_open", 1, "_close", "_close", 3, "_close"]
-        R = r.Random([lambda: 0])
+        R = r.PushSpawner([lambda: 0])
         self.gn = R.random_plush_genome(5)
 
     def test_get_matcing_close_index(self):
@@ -23,6 +23,5 @@ class TestTranslateMethods(unittest.TestCase):
         self.assertEqual(l, [[1], [2]])
 
     def test_genome_to_program(self):
-        p = t.genome_to_program(self.gn, 5)
+        p = t.genome_to_program(self.gn)
         self.assertIsInstance(p, list)
-        self.assertTrue(len(p) <  5)

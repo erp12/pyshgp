@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, unicode_literals 
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import numpy as np
 
@@ -15,7 +15,7 @@ class TestRandomMethods(unittest.TestCase):
             instr.PyshInstruction("noop", lambda s: s, [], 0),
             lambda: np.random.random()
         ]
-        self.R = r.Random(self.atom_gens)
+        self.R = r.PushSpawner(self.atom_gens)
 
     def test_random_closes(self):
         c = self.R.random_closes()

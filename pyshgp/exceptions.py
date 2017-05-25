@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """The :mod:`exceptions` module provides utility classes that inherit from
-python Exception class. These errors can be used to provide more useful 
+python Exception class. These errors can be used to provide more useful
 debugging information to the user.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -28,7 +28,7 @@ class UnknownInstructionName(Exception):
 		super(UnknownInstructionName, self).__init__('No registered instruction with name: ' + str(name))
 
 class UnknownPyshStack(Exception):
-	'''Exception when a pysh state is asked to return an unknown 
+	'''Exception when a pysh state is asked to return an unknown
 	'''
 	def __init__(self, stack_name):
 		super(UnknownPyshStack, self).__init__('Pysh state does not contain stack ' + str(stack_name) + '.')
@@ -40,7 +40,7 @@ class InvalidInputStackIndex(Exception):
 		super(InvalidInputStackIndex, self).__init__('Pysh state does not contain an input at index ' + str(ind) + '.')
 
 ##                       ##
-# Utility Type Exceptions #
+# Utility Exceptions #
 ##                       ##
 
 class UnknownGeneticOperator(Exception):

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-The :mod:`random` module defines a class that produce random Plush
+The :mod:`random` module defines classes that produce random Plush
 genomes and random Push programs.
+
+TODO: There should be better structure here in terms of what goes in the
+spawner class and what is a global function.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -15,7 +18,7 @@ from . import translation as t
 from . import plush as pl
 from .instructions import registered_instructions as ri
 
-class Random():
+class PushSpawner:
 
     #: List of atoms to choose from.
     atom_generators = None
@@ -29,8 +32,8 @@ class Random():
     #: Probability of gene being silent.
     silent_gene_probability = None
 
-    def __init__(self, atom_generators, 
-                 epigenetic_markers = ['_instruction', '_close'], 
+    def __init__(self, atom_generators,
+                 epigenetic_markers = ['_instruction', '_close'],
                  close_parens_probabilities = [0.772, 0.206, 0.021, 0.001],
                  silent_gene_probability = 0.2):
         self.atom_generators = atom_generators
@@ -43,7 +46,7 @@ class Random():
     def random_closes(self):
         """Returns a random number of closes based on close_parens_probabilities.
 
-        close_parens_probabilities defaults to [0.772, 0.206, 0.021, 0.001]. 
+        close_parens_probabilities defaults to [0.772, 0.206, 0.021, 0.001].
         This is roughly equivalent to each selection coming from  a binomial
         distribution with n=4 and p=1/16.
         This results in the following probabilities:
@@ -56,7 +59,7 @@ class Random():
         """
         prob = random.random()
         close_probabilities = u.reductions(
-            lambda i, j: i + j, 
+            lambda i, j: i + j,
             self.close_parens_probabilities
         ) + [1.0]
         parens = 0
@@ -84,11 +87,11 @@ class Random():
                 if callable(atom):
                     # If it is callable, then it is likely a function that will
                     # produce a literal.
-                    fn_element = atom() 
+                    fn_element = atom()
                     if callable(fn_element): # It's another function!
                         instruction = fn_element()
                     else:
-                        instruction = fn_element 
+                        instruction = fn_element
                     is_literal = True
                 else:
                     # If atom is not callable, then it is the
@@ -97,7 +100,7 @@ class Random():
                     # something like the number 7.
                     instruction = atom
             elif m == '_close':
-                # Returns a random number of close parens to follow the 
+                # Returns a random number of close parens to follow the
                 # instruction in a program.
                 closes = self.random_closes()
             elif m == '_silent':
@@ -123,7 +126,7 @@ class Random():
 
     def random_plush_genome_with_size(self, genome_size):
         """Returns a random Plush genome with size ``genome_size``.
-        
+
         :param int genome_size: The number of genes to be put in the Plush genome.
         :returns: List of Plush genes (tuples). This is considered a genome.
         """

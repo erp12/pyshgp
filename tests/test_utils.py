@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, unicode_literals 
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import numpy as np
 
@@ -8,7 +8,7 @@ import testing_utilities as tu
 import pyshgp.utils as u
 import pyshgp.push.instruction as instr
 
-class TestUtilMethods(unittest.TestCase):
+class TestUtilsMethods(unittest.TestCase):
 
     # Standard use case
     def test_flatten_all_A(self):

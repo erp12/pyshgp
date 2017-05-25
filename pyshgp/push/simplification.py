@@ -1,7 +1,7 @@
 # _*_ coding: utf_8 _*_
 """
 The :mod:`simplification` module defines method of automatically simplifying
-Push genomes and Push programs. 
+Push genomes and Push programs.
 
 .. todo::
     Genome simplification is very simplistic in its current state. This should
@@ -18,49 +18,60 @@ from .. import utils as u
 
 from . import plush as pl
 
-def auto_simplify(individual, error_function, steps):
-	'''Simplifies the genome (and program) of the individual based on error_function.
 
-	At each step, 1 or 2 random gene are silenced from the individual's genome.
-	The genome is translated into a program which is then run through the 
-	error_funciton. If the errors of the program are equal or lower, the gene(s)
-	remain silenced. Otherwise they are un-silenced. 
+def auto_simplify(individual, error_function, steps, verbose=0):
+    '''Simplifies the genome (and program) of the individual based on error_function.
 
-	.. todo::
-	    Add bool to toggle printing.
+    At each step, 1 or 2 random gene are silenced from the individual's genome.
+    The genome is translated into a program which is then run through the
+    error_funciton. If the errors of the program are equal or lower, the gene(s)
+    remain silenced. Otherwise they are un-silenced.
 
-	:param Individual individual: Individual to simplify (The genome, program, 
-		and error vector are needed.)
-	:param function error_function: Error function.
-	:param int steps: Number of simplification iterations.
-	:returns: A new individual with a simplified program that performs the same.
+    .. todo::
+        Add bool to toggle printing.
 
-	'''
-	print("Autosimplifying program of size:", u.count_points(individual.get_program()))
+    :param Individual individual: Individual to simplify (The genome, program,
+    and error vector are needed.)
+    :param function error_function: Error function.
+    :param int steps: Number of simplification iterations.
+    :returns: A new individual with a simplified program that performs the same.
 
-	for step in range(steps):
-		old_genome = individual.get_genome()
-		initial_error_vector = individual.get_errors()
-		# Pick the index of the gene you want to silence
-		genes_to_silence = [random.randint(0,len(individual.get_genome())-1)]
-		# Possibly silence another gene
-		if random.random() < 0.5 :
-			genes_to_silence.append(random.randint(0,len(individual.get_genome())-1))
+    '''
+    if verbose > 0:
+        print("Autosimplifying program of size:",
+              u.count_points(individual.program))
 
-		# Silence the gene(s)
-		new_genome = copy.copy(individual.get_genome())
-		for i in genes_to_silence:
-			if not pl.plush_gene_is_silent(new_genome[i]):
-				new_genome[i] = pl.make_plush_gene(new_genome[i][0], new_genome[i][1], new_genome[i][2], True)
+    for step in range(steps):
 
-		# Make sure the program still performs the same
-		individual.set_genome(new_genome)
-		new_error = error_function(individual.get_program())
+        # If individual's program has become empty, break.
+        if individual.program == []:
+            break;
 
-		# reset genes if no improvment was made
-		if not new_error <= initial_error_vector:
-			individual.set_genome(old_genome)
+        old_genome = copy.deepcopy(individual.genome)
+        individual.evaluate(error_function)
+        initial_error_vector = individual.error_vector[:]
+        # Pick the index of the gene you want to silence
+        genes_to_silence = [random.randint(0, len(individual.genome) - 1)]
+        # Possibly silence another gene
+        if random.random() < 0.5:
+            genes_to_silence.append(random.randint(0, len(individual.genome) - 1))
 
-	print("Finished simplifying program. New size:", u.count_points(individual.get_program()))
-	print(individual.get_program())
-	return individual
+        # Silence the gene(s)
+        new_genome = copy.copy(individual.genome)
+        for i in genes_to_silence:
+            if not new_genome[i].is_silent:
+                new_genome[i].is_silent = True
+
+        # Make sure the program still performs the same
+        individual.genome = new_genome
+        new_error = error_function(individual.program)
+
+        # reset genes if no improvment was made
+        if not new_error <= initial_error_vector:
+            individual.genome = old_genome
+
+    if verbose > 0:
+        print("Finished simplifying program. New size:",
+              u.count_points(individual.program))
+        print(individual.program)
+    return individual

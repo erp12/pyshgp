@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-The :mod:`translation` module provides functions that translate Plush genomes 
+The :mod:`translation` module provides functions that translate Plush genomes
 into Push programs.
 
 .. todo::
@@ -39,7 +39,7 @@ def open_close_sequence_to_list(sequence):
 
     :param sequence: List with some ``"_open"`` and ``"_close"`` elements.
 
-    :example: 
+    :example:
         >>> open_close_sequence_to_list(["_open", 1, "_close", "_open", 2, "_close"]))
         [[1], [2]]
     """
@@ -61,40 +61,39 @@ def open_close_sequence_to_list(sequence):
                 rest.pop(0)
         return result
 
-def genome_to_program(genome, max_points):
+def genome_to_program(genome):
     """Given a Plush genomes, returns the equivalent Push program.
 
-    Takes as input of a Plush genome and translates it to the correct Push 
+    Takes as input of a Plush genome and translates it to the correct Push
     program with balanced parens. The linear Plush genome is made up of a list
-    of instruction objects. As the linear Plush genome is traversed, each 
-    instruction that requires parens will push ``"_close"`` and/or 
+    of instruction objects. As the linear Plush genome is traversed, each
+    instruction that requires parens will push ``"_close"`` and/or
     ``"_close_open"`` onto the paren stack, and will also put an open paren
     after it in the program.  If the end of the program is reached but parens
     are still needed (as indicated by the paren-stack), parens are added until
     the paren stack is empty.
 
     :param list genome: List of Plush genes to be translated.
-    :param int max_points: Max size of translated program.
     :returns: A Push program.
     """
 
     # The program being built after being translated from open-close sequence.
     translated_program = None
 
-    # The open-close being built. 
+    # The open-close being built.
     prog = []
 
     # The linear Plush genome being translated. List of Plush_Gene objects.
-    gn = genome 
+    gn = genome
 
      # The number of parens that still need to be added at this location.
     num_parens_here = 0
 
-    # Whenever an instruction requires parens grouping, it will push either 
+    # Whenever an instruction requires parens grouping, it will push either
     # _close or _close_open on this stack. This will indicate what to insert in
-    # the program the next time a paren is indicated by the _close key in the 
+    # the program the next time a paren is indicated by the _close key in the
     # instruction.
-    paren_stack = [] 
+    paren_stack = []
 
     looping = True
     while looping:
@@ -131,17 +130,13 @@ def genome_to_program(genome, max_points):
                 new_paren_stack = ['_close_open'] * (number_paren_groups - 1)
                 new_paren_stack += ['_close']
                 new_paren_stack += paren_stack
-                
+
             if 0 >= number_paren_groups:
                 prog.append(atom)
-            else: 
+            else:
                 prog += [atom, '_open']
             num_parens_here = gn[0].closes
             gn = gn[1:]
             paren_stack = new_paren_stack
 
-    if u.count_points(translated_program) > max_points:
-        print("Too many points! Max is:", max_points)
-        return [] # Translates to an empty programs if program exceeds max-points
-    else:
-        return translated_program
+    return translated_program

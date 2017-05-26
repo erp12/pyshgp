@@ -18,11 +18,6 @@ class PyshStack(list):
     def __init__(self, pysh_type_str):
         self.pysh_type = pysh_type_str
 
-        # If the pysh_type is ``_output`` then push the empty string to
-        # the outut stack.
-        if pysh_type_str == '_output':
-            self.push_item('')
-
     def push(self, value):
         '''Pushes a value to the top of the stack. An alias for `append` which
         makes the definition of push instructions more clear.

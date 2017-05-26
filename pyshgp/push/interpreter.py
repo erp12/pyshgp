@@ -9,7 +9,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 __metaclass__ = type
 
 import time
-import copy # <- This one is actually needed.
+from copy import deepcopy # <- This one is actually needed.
+from collections import OrderedDict
 
 from .. import utils as u
 from .. import constants as c
@@ -24,30 +25,31 @@ def _handle_input_instruction(instruction, state):
     if input_depth >= len(state['_input']) or input_depth < 0:
         raise e.InvalidInputStackIndex(input_depth)
 
-    input_value = state['_input'].ref(input_depth)
+    input_value = state['_input'][input_depth]
     pysh_type = u.recognize_pysh_type(input_value)
 
     if pysh_type == '_instruction':
-        state['_exec'].push_item(input_value)
+        state['_exec'].push(input_value)
     elif pysh_type == '_list':
-        state['_exec'].push_item(input_value)
+        state['_exec'].push(input_value)
     else:
-        state[pysh_type].push_item(input_value)
+        state[pysh_type].push(input_value)
 
 def _handle_vote_instruction(instruction, state):
     '''Allows Push to handle class voting instructions.
     '''
-    if len(state[instruction.vote_stack]) > 0:
-        class_index = int(instruction.class_id)
-        vote_value = state[instruction.vote_stack].ref(0)
-        state[instruction.vote_stack].pop_item()
-        state['_output'][class_index] += float(vote_value)
+    output_name = 'class-'+instruction.class_id
+    if not output_name in state['_output'].keys():
+        return
+    vote_value = state[instruction.vote_stack].ref(0)
+    state[instruction.vote_stack].pop()
+    state['_output'][class_index] += float(vote_value)
 
 class PushState(dict):
     """Dictionary that holds PyshStacks.
     """
 
-    def __init__(self, inputs=[], outputs={}):
+    def __init__(self, inputs=[], outputs=OrderedDict()):
         if not isinstance(inputs, list):
             msg = "Push inputs must be a list, got {}"
             raise ValueError(msg.format(type(inputs)))
@@ -55,7 +57,7 @@ class PushState(dict):
             msg = "Push outputs must be a dict, got {}"
             raise ValueError(msg.format(type(outputs)))
         self['_input'] = inputs[::-1]
-        self['_ouput'] = outputs
+        self['_output'] = outputs
 
         for t in c.pysh_types:
             self[t] = stack.PyshStack(t)
@@ -76,11 +78,13 @@ class PushState(dict):
         :param dict d: Dict that is converted into a Push state.
         """
         # Clear existing stacks.
+        self['_input'] = []
+        self['_output'] = OrderedDict()
         for t in c.pysh_types:
             self[t] = stack.PyshStack(t)
         # Overwrite stacks found in dict
         for k in d.keys():
-            if k in ['_input', '_output']:
+            if k == '_input' or k == '_output':
                 # Make output field the same as dictionary. Should be a dict.
                 self[k] = d[k]
             else:
@@ -93,7 +97,8 @@ class PushState(dict):
         """
         for t in c.pysh_types:
             print(self[t].pysh_type, ":", self[t])
-
+        print('_input :', self['_input'])
+        print('_output :', self['_output'])
 
 class PushInterpreter:
     """Object that can run Push programs and stores the state of the Push
@@ -108,7 +113,7 @@ class PushInterpreter:
     status = '_normal'
 
 
-    def __init__(self, inputs=[], outputs={}):
+    def __init__(self, inputs=[], outputs=OrderedDict()):
         self.state = PushState(inputs, outputs)
         self.status = '_normal'
 
@@ -142,19 +147,19 @@ class PushInterpreter:
         elif pysh_type == '_list':
             # If the instruction is a list, then decompose it.
             # Copy the list to avoid mutability madness
-            instruction_cpy = copy.deepcopy(instruction)
+            instruction_cpy = deepcopy(instruction)
             # Reverse the list.
             instruction_cpy.reverse()
             # Push all contents of the list to the ``exec`` stack.
             for i in instruction_cpy:
-                self.state['_exec'].push_item(i)
+                self.state['_exec'].push(i)
         elif pysh_type == False:
             # If pysh type was not found, raise exception.
             raise e.UnknownPyshType(instruction)
         else:
             # If here, instruction is a pysh literal and will be pushed
             # on to its corrisponding stack.
-            self.state[pysh_type].push_item(instruction)
+            self.state[pysh_type].push(instruction)
 
     def eval_push(self, print_steps):
         """Executes the contents of the exec stack.
@@ -181,7 +186,7 @@ class PushInterpreter:
 
             # Advance program 1 step
             top_exec = self.state['_exec'].top_item()
-            self.state['_exec'].pop_item()
+            self.state['_exec'].pop()
             self.execute_instruction(top_exec)
 
             # print steps
@@ -200,10 +205,10 @@ class PushInterpreter:
         :param list code: The push program to run.
         :param bool print_steps: Denotes if stack states should be printed.
         """
-        # If you don't copy the code, the reference to the program will be
+        # If you don't copy the code, the reference to the program will get
         # reversed and other bad things.
-        code_copy = copy.deepcopy(code)
-        self.state['_exec'].push_item(code_copy)
+        code_copy = deepcopy(code)
+        self.state['_exec'].push(code_copy)
         self.eval_push(print_steps)
         if print_steps:
             print("=== Finished Push Execution ===")

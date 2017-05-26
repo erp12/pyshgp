@@ -14,28 +14,39 @@ from .. import instruction as instr
 
 from . import registered_instructions as ri
 
+def print_newline(state):
+    """Appends a newline to the stdout string in the output field.
+    """
+    if not 'stdout' in state['_output'].keys():
+        return
+    if len(state['_output']['stdout'])+1 > c.max_string_length:
+        return
+    state['_output']['stdout'] += '\n'
+print_newline_instruction = instr.PyshInstruction('_print_newline',
+                                                  print_newline,
+                                                  stack_types = ['_print'])
+ri.register_instruction(print_newline_instruction)
 
 def printer(pysh_type):
-	'''
-	Returns a function that takes a state and prints the top item of the
-	appropriate stack of the state.
-	'''
-	def prnt(state):
-		if len(state[pysh_type]) < 1:
-			return
-
-		top_thing = state[pysh_type].ref(0)
-		top_thing_str = str(top_thing)
-		if len(str(state["_output"].ref(0)) + top_thing_str) > c.max_string_length:
-			return
-		state['_output'][0] = str(state["_output"].ref(0)) + top_thing_str
-		state[pysh_type].pop_item()
-	instruction = instr.PyshInstruction('_print' + pysh_type,
-										prnt,
-										stack_types = ['_print', pysh_type])
-	if pysh_type == '_exec':
-		instruction.parentheses = 1
-	return instruction
+    """Returns a function that takes a state and prints the top item of the
+    appropriate stack of the state.
+    """
+    def prnt(state):
+        if len(state[pysh_type]) < 1:
+            return
+        top_thing = state[pysh_type].ref(0)
+        top_thing_str = str(top_thing)
+        if not 'stdout' in state['_output'].keys():
+            return
+        if len(state['_output']['stdout'])+len(top_thing_str) > c.max_string_length:
+            return
+        state[pysh_type].pop()
+        state['_output']['stdout'] += top_thing_str
+    instruction = instr.PyshInstruction('_print' + pysh_type, prnt,
+                                        stack_types = ['_print', pysh_type])
+    if pysh_type == '_exec':
+        instruction.parentheses = 1
+    return instruction
 ri.register_instruction(printer('_exec'))
 #<instr_open>
 #<instr_name>print_exec
@@ -65,18 +76,4 @@ ri.register_instruction(printer('_string'))
 #<instr_open>
 #<instr_name>print_string
 #<instr_desc>Prints the top string to the string on the output stack.
-#<instr_close>
-
-def print_newline(state):
-	if len(str(state["_output"].ref(0)) + "\n") > c.max_string_length:
-		return state
-	state["_output"][0] = str(state["_output"].ref(0)) + "\n"
-
-print_newline_instruction = instr.PyshInstruction('_print_newline',
-												  print_newline,
-												  stack_types = ['_print'])
-ri.register_instruction(print_newline_instruction)
-#<instr_open>
-#<instr_name>print_newline
-#<instr_desc>Prints a newline to the string on the output stack.
 #<instr_close>

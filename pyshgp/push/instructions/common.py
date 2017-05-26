@@ -17,7 +17,7 @@ def popper(pysh_type):
     '''
     def pop(state):
         if len(state[pysh_type]) > 0:
-            state[pysh_type].pop_item()
+            state[pysh_type].pop()
     instruction = instr.PyshInstruction(pysh_type + '_pop',
                                         pop,
                                         stack_types = [pysh_type])
@@ -68,7 +68,7 @@ def duper(pysh_type):
     '''
     def dup(state):
         if len(state[pysh_type]) > 0:
-            state[pysh_type].push_item(state[pysh_type].top_item())
+            state[pysh_type].push(state[pysh_type].top_item())
     instruction = instr.PyshInstruction(pysh_type + '_dup',
                                         dup,
                                         stack_types = [pysh_type])
@@ -121,10 +121,10 @@ def swapper(pysh_type):
         if len(state[pysh_type])>1:
             first_item = state[pysh_type].ref(0)
             second_item = state[pysh_type].ref(1)
-            state[pysh_type].pop_item()
-            state[pysh_type].pop_item()
-            state[pysh_type].push_item(first_item)
-            state[pysh_type].push_item(second_item)
+            state[pysh_type].pop()
+            state[pysh_type].pop()
+            state[pysh_type].push(first_item)
+            state[pysh_type].push(second_item)
     instruction = instr.PyshInstruction(pysh_type + '_swap',
                                         swap,
                                         stack_types = [pysh_type])
@@ -179,12 +179,12 @@ def rotter(pysh_type):
             first_item = state[pysh_type].ref(0)
             second_item = state[pysh_type].ref(1)
             third_item = state[pysh_type].ref(2)
-            state[pysh_type].pop_item()
-            state[pysh_type].pop_item()
-            state[pysh_type].pop_item()
-            state[pysh_type].push_item(second_item)
-            state[pysh_type].push_item(first_item)
-            state[pysh_type].push_item(third_item)
+            state[pysh_type].pop()
+            state[pysh_type].pop()
+            state[pysh_type].pop()
+            state[pysh_type].push(second_item)
+            state[pysh_type].push(first_item)
+            state[pysh_type].push(third_item)
     instruction = instr.PyshInstruction(pysh_type + '_rot',
                                         rot,
                                         stack_types = [pysh_type])
@@ -277,16 +277,16 @@ registered_instructions.register_instruction(flusher('_char'))
 
 def eqer(pysh_type):
     '''
-    Returns an instruction that compares the top two items of the appropriate 
+    Returns an instruction that compares the top two items of the appropriate
     stack of the given state.
     '''
     def eq(state):
         if len(state[pysh_type])>1:
             first_item = state[pysh_type].ref(0)
             second_item = state[pysh_type].ref(1)
-            state[pysh_type].pop_item()
-            state[pysh_type].pop_item()
-            state['_boolean'].push_item(first_item == second_item)
+            state[pysh_type].pop()
+            state[pysh_type].pop()
+            state['_boolean'].push(first_item == second_item)
     instruction = instr.PyshInstruction(pysh_type + '_eq',
                                         eq,
                                         stack_types = [pysh_type])
@@ -338,7 +338,7 @@ def stackdepther(pysh_type):
     '''
     def stackdepth(state):
         depth = len(state[pysh_type])
-        state['_integer'].push_item(depth)
+        state['_integer'].push(depth)
     instruction = instr.PyshInstruction(pysh_type + '_stack_depth',
                                         stackdepth,
                                         stack_types = [pysh_type])
@@ -392,11 +392,11 @@ def yanker(pysh_type):
         b = pysh_type != '_integer' and len(state[pysh_type])>0 and len(state['_integer'])>0
         if a or b:
             raw_index = state['_integer'].ref(0)
-            state['_integer'].pop_item()
+            state['_integer'].pop()
             actual_index = int(max(0, min(raw_index, len(state[pysh_type]) - 1)))
             item = state[pysh_type].ref(actual_index)
             del state[pysh_type][-actual_index-1]
-            state[pysh_type].push_item(item)
+            state[pysh_type].push(item)
     instruction = instr.PyshInstruction(pysh_type + '_yank',
                                         yank,
                                         stack_types = [pysh_type])
@@ -452,10 +452,10 @@ def yankduper(pysh_type):
         b = pysh_type != '_integer' and len(state[pysh_type])>0 and len(state['_integer'])>0
         if a or b:
             raw_index = state['_integer'].ref(0)
-            state['_integer'].pop_item()
+            state['_integer'].pop()
             actual_index = int(max(0, min(raw_index, len(state[pysh_type]) - 1)))
             item = state[pysh_type].ref(actual_index)
-            state[pysh_type].push_item(item)
+            state[pysh_type].push(item)
     instruction = instr.PyshInstruction(pysh_type + '_yankdup',
                                         yankdup,
                                         stack_types = [pysh_type])
@@ -511,9 +511,9 @@ def shover(pysh_type):
         b = pysh_type != '_integer' and len(state[pysh_type])>0 and len(state['_integer'])>0
         if a or b:
             raw_index = state['_integer'].ref(0)
-            state['_integer'].pop_item()
+            state['_integer'].pop()
             item = state[pysh_type].ref(0)
-            state[pysh_type].pop_item()
+            state[pysh_type].pop()
             actual_index = int(max(0, min(raw_index, len(state[pysh_type]))))
             state[pysh_type].insert(actual_index, item)
     instruction = instr.PyshInstruction(pysh_type + '_shove',
@@ -566,7 +566,7 @@ def emptyer(pysh_type):
     Returns an instruction that takes a state and tells whether that stack is empty.
     '''
     def empty(state):
-        state['_boolean'].push_item(len(state[pysh_type])==0)
+        state['_boolean'].push(len(state[pysh_type])==0)
     instruction = instr.PyshInstruction(pysh_type + '_empty',
                                         empty,
                                         stack_types = [pysh_type])

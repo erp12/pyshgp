@@ -17,7 +17,7 @@ from . import registered_instructions as ri
 vector_types = ['_integer', '_float', '_boolean', '_string']
 
 ##                         ##
-#  Instructions for Vectors # 
+#  Instructions for Vectors #
 ##                         ##
 
 def newer(vec_type):
@@ -37,7 +37,7 @@ def newer(vec_type):
 
     def new(state):
         if len(state[vec_type])>1:
-            state[vec_type].push_item(u.PushVector([], t))
+            state[vec_type].push(u.PushVector([], t))
     instruction = instr.PyshInstruction(vec_type + '_new',
                                         new,
                                         stack_types = [vec_type])
@@ -71,9 +71,9 @@ def concater(vec_type):
             second_vec = state[vec_type].ref(1)
             if c.max_vector_length < len(first_vec) + len(second_vec):
                 return state
-            state[vec_type].pop_item()
-            state[vec_type].pop_item()
-            state[vec_type].push_item(u.PushVector(second_vec + first_vec, second_vec.typ))
+            state[vec_type].pop()
+            state[vec_type].pop()
+            state[vec_type].push(u.PushVector(second_vec + first_vec, second_vec.typ))
     instruction = instr.PyshInstruction(vec_type + '_concat',
                                         concat,
                                         stack_types = [vec_type])
@@ -107,9 +107,9 @@ def appender(vec_type, lit_type):
             result = v + [state[lit_type].ref(0)]
             if c.max_vector_length < len(result):
                 return state
-            state[vec_type].pop_item()
-            state[lit_type].pop_item()
-            state[vec_type].push_item(u.PushVector(result, v.typ))
+            state[vec_type].pop()
+            state[lit_type].pop()
+            state[vec_type].push(u.PushVector(result, v.typ))
     instruction = instr.PyshInstruction(vec_type + '_append',
                                         append,
                                         stack_types = [vec_type, lit_type])
@@ -141,9 +141,9 @@ def taker(vec_type):
         if len(state[vec_type]) > 0 and len(state['_integer']) > 0:
             v = state[vec_type].ref(0)
             result = v[:state['_integer'].ref(0)]
-            state[vec_type].pop_item()
-            state['_integer'].pop_item()
-            state[vec_type].push_item(u.PushVector(result, v.typ))
+            state[vec_type].pop()
+            state['_integer'].pop()
+            state[vec_type].push(u.PushVector(result, v.typ))
     instruction = instr.PyshInstruction(vec_type + '_take',
                                         take,
                                         stack_types = [vec_type, '_integer'])
@@ -179,10 +179,10 @@ def subvecer(vec_type):
             i = state['_integer'].ref(1)
             j = state['_integer'].ref(0)
             result = result[i:j]
-            state[vec_type].pop_item()
-            state['_integer'].pop_item()
-            state['_integer'].pop_item()
-            state[vec_type].push_item(u.PushVector(result, t))
+            state[vec_type].pop()
+            state['_integer'].pop()
+            state['_integer'].pop()
+            state[vec_type].push(u.PushVector(result, t))
     instruction = instr.PyshInstruction(vec_type + '_subvec',
                                         subvec,
                                         stack_types = [vec_type, '_integer'])
@@ -213,8 +213,8 @@ def firster(vec_type, lit_type):
     def first(state):
         if len(state[vec_type]) > 0 and len(state[vec_type].ref(0)) > 0:
             result = state[vec_type].ref(0)[0]
-            state[vec_type].pop_item()
-            state[lit_type].push_item(result)
+            state[vec_type].pop()
+            state[lit_type].push(result)
     instruction = instr.PyshInstruction(vec_type + '_first',
                                         first,
                                         stack_types = [vec_type, lit_type])
@@ -245,8 +245,8 @@ def laster(vec_type, lit_type):
     def last(state):
         if len(state[vec_type]) > 0 and len(state[vec_type].ref(0)) > 0:
             result = state[vec_type].ref(0)[-1]
-            state[vec_type].pop_item()
-            state[lit_type].push_item(result)
+            state[vec_type].pop()
+            state[lit_type].push(result)
     instruction = instr.PyshInstruction(vec_type + '_last',
                                         last,
                                         stack_types = [vec_type, lit_type])
@@ -278,9 +278,9 @@ def nther(vec_type, lit_type):
         if len(state[vec_type]) > 0 and len(state[vec_type].ref(0)) > 0 and len(state['_integer']):
             i = state['_integer'].ref(0) % len(state[vec_type].ref(0))
             result = state[vec_type].ref(0)[i]
-            state[vec_type].pop_item()
-            state['_integer'].pop_item()
-            state[lit_type].push_item(result)
+            state[vec_type].pop()
+            state['_integer'].pop()
+            state[lit_type].push(result)
     instruction = instr.PyshInstruction(vec_type + '_nth',
                                          nth,
                                          stack_types = [vec_type, lit_type, '_integer'])
@@ -314,8 +314,8 @@ def rester(vec_type):
             v = state[vec_type].ref(0)
             t = v.typ
             result = v[1:]
-            state[vec_type].pop_item()
-            state[vec_type].push_item(u.PushVector(result, t)) 
+            state[vec_type].pop()
+            state[vec_type].push(u.PushVector(result, t))
     instruction = instr.PyshInstruction(vec_type + '_rest',
                                          rest,
                                          stack_types = [vec_type])
@@ -349,8 +349,8 @@ def butlaster(vec_type):
             v = state[vec_type].ref(0)
             t = v.typ
             result = v[:-1]
-            state[vec_type].pop_item()
-            state[vec_type].push_item(u.PushVector(result, t))
+            state[vec_type].pop()
+            state[vec_type].push(u.PushVector(result, t))
     instruction = instr.PyshInstruction(vec_type + '_butlast',
                                          butlast,
                                          stack_types = [vec_type])
@@ -382,8 +382,8 @@ def lengther(vec_type):
     def length(state):
         if len(state[vec_type]) > 0:
             result = len(state[vec_type].ref(0))
-            state[vec_type].pop_item()
-            state['_integer'].push_item(result)
+            state[vec_type].pop()
+            state['_integer'].push(result)
     instruction = instr.PyshInstruction(vec_type + '_length',
                                          length,
                                          stack_types = [vec_type, '_integer'])
@@ -417,8 +417,8 @@ def reverser(vec_type):
             v =  state[vec_type].ref(0)
             t = v.typ
             result = v[::-1]
-            state[vec_type].pop_item()
-            state[vec_type].push_item(u.PushVector(result, t))
+            state[vec_type].pop()
+            state[vec_type].push(u.PushVector(result, t))
     instruction = instr.PyshInstruction(vec_type + '_reverse',
                                          rev,
                                          stack_types = [vec_type])
@@ -450,9 +450,9 @@ def pushaller(vec_type, lit_type):
     def pushall(state):
         if len(state[vec_type]) > 0:
             l = state[vec_type].ref(0)
-            state[vec_type].pop_item()
+            state[vec_type].pop()
             for el in l[::-1]:
-                state[lit_type].push_item(el)
+                state[lit_type].push(el)
     instruction = instr.PyshInstruction(vec_type + '_pushall',
                                          pushall,
                                          stack_types = [vec_type, lit_type])
@@ -484,11 +484,11 @@ def emptyvectorer(vec_type):
     def emptyvector(state):
         if len(state[vec_type]) > 0:
             l = state[vec_type].ref(0)
-            state[vec_type].pop_item()
+            state[vec_type].pop()
             if len(l) == 0:
-                state['_boolean'].push_item(True)
+                state['_boolean'].push(True)
             else:
-                state['_boolean'].push_item(False)
+                state['_boolean'].push(False)
     instruction = instr.PyshInstruction(vec_type + '_emptyvector',
                                          emptyvector,
                                          stack_types = [vec_type, '_boolean'])
@@ -520,9 +520,9 @@ def containser(vec_type, lit_type):
     def contains(state):
         if len(state[vec_type]) > 0 and len(state[lit_type]) > 0:
             b = state[lit_type].ref(0) in state[vec_type].ref(0)
-            state[vec_type].pop_item()
-            state[lit_type].pop_item()
-            state['_boolean'].push_item(b)
+            state[vec_type].pop()
+            state[lit_type].pop()
+            state['_boolean'].push(b)
     instruction = instr.PyshInstruction(vec_type + '_contains',
                                          contains,
                                          stack_types = [vec_type, lit_type, '_boolean'])
@@ -559,9 +559,9 @@ def indexofer(vec_type, lit_type):
                 i = -1
             else:
                 i = state[vec_type].ref(0).index(state[lit_type].ref(0))
-            state[vec_type].pop_item()
-            state[lit_type].pop_item()
-            state['_integer'].push_item(i)
+            state[vec_type].pop()
+            state[lit_type].pop()
+            state['_integer'].push(i)
     instruction = instr.PyshInstruction(vec_type + '_indexof',
                                          indexof,
                                          stack_types = [vec_type, lit_type, '_integer'])
@@ -593,9 +593,9 @@ def occurrencesofer(vec_type, lit_type):
     def occurrencesof(state):
         if len(state[vec_type]) > 0 and len(state[lit_type]) > 0:
             l = [x for x in state[vec_type].ref(0) if x == state[lit_type].ref(0)]
-            state[vec_type].pop_item()
-            state[lit_type].pop_item()
-            state['_integer'].push_item(len(l))
+            state[vec_type].pop()
+            state[lit_type].pop()
+            state['_integer'].push(len(l))
     instruction = instr.PyshInstruction(vec_type + '_occurrencesof',
                                          occurrencesof,
                                          stack_types = [vec_type, lit_type, '_integer'])
@@ -641,11 +641,11 @@ def seter(vec_type, lit_type):
             if len(v) > 0:
                 index = state['_integer'].ref(0) % len(v)
                 result[index] = item
-                
-            state[vec_type].pop_item()
-            state[lit_type].pop_item()
-            state['_integer'].pop_item()
-            state[vec_type].push_item(u.PushVector(result, t))
+
+            state[vec_type].pop()
+            state[lit_type].pop()
+            state['_integer'].pop()
+            state[vec_type].push(u.PushVector(result, t))
     instruction = instr.PyshInstruction(vec_type + '_set',
                                          _set,
                                          stack_types = [vec_type, lit_type])
@@ -684,10 +684,10 @@ def replaceer(vec_type, lit_type):
             with_this = state[lit_type].ref(0)
             result = [with_this if x == replace_this else x for x in v]
 
-            state[vec_type].pop_item()
-            state[lit_type].pop_item()
-            state[lit_type].pop_item()
-            state[vec_type].push_item(u.PushVector(result, t))
+            state[vec_type].pop()
+            state[lit_type].pop()
+            state[lit_type].pop()
+            state[vec_type].push(u.PushVector(result, t))
 
     instruction = instr.PyshInstruction(vec_type + '_replace',
                                          _replace,
@@ -722,7 +722,7 @@ def replacefirster(vec_type, lit_type):
             t = v.typ
             replace_this = state[lit_type].ref(1)
             with_this = state[lit_type].ref(0)
-            
+
             result = []
             found  = False
             for el in v:
@@ -731,10 +731,10 @@ def replacefirster(vec_type, lit_type):
                 else:
                     result.append(el)
 
-            state[vec_type].pop_item()
-            state[lit_type].pop_item()
-            state[lit_type].pop_item()
-            state[vec_type].push_item(u.PushVector(result, t))
+            state[vec_type].pop()
+            state[lit_type].pop()
+            state[lit_type].pop()
+            state[vec_type].push(u.PushVector(result, t))
 
     instruction = instr.PyshInstruction(vec_type + '_replacefirst',
                                          replacefirst,
@@ -770,9 +770,9 @@ def removeer(vec_type, lit_type):
             remove_this = state[lit_type].ref(0)
             result = [x for x in v if not x == remove_this]
 
-            state[vec_type].pop_item()
-            state[lit_type].pop_item()
-            state[vec_type].push_item(u.PushVector(result, t))
+            state[vec_type].pop()
+            state[lit_type].pop()
+            state[vec_type].push(u.PushVector(result, t))
 
     instruction = instr.PyshInstruction(vec_type + '_remove',
                                          _remove,
@@ -806,19 +806,19 @@ def iterateer(vec_type, lit_type):
         if len(state[vec_type]) > 0 and len(state['_exec']) > 0:
             v = state[vec_type].ref(0)
             e = state['_exec'].ref(0)
-            
+
             if len(v) == 0:
-                state[vec_type].pop_item()
-                state['_exec'].pop_item()
+                state[vec_type].pop()
+                state['_exec'].pop()
             elif len(v) == 1: #If the rest of the vector is empty, we're done iterating.
-                state[vec_type].pop_item()
-                state[lit_type].push_item(v[0])
+                state[vec_type].pop()
+                state[lit_type].push(v[0])
             else:
-                state[vec_type].pop_item()
-                state['_exec'].push_item(instr.JustInTimeInstruction(instr_name))
-                state['_exec'].push_item(u.PushVector(v[1:], v.typ))
-                state['_exec'].push_item(e)
-                state[lit_type].push_item(v[0])
+                state[vec_type].pop()
+                state['_exec'].push(instr.JustInTimeInstruction(instr_name))
+                state['_exec'].push(u.PushVector(v[1:], v.typ))
+                state['_exec'].push(e)
+                state[lit_type].push(v[0])
 
     instruction = instr.PyshInstruction(instr_name,
                                          _iter,

@@ -24,7 +24,7 @@ class PyshInstruction(object):
         self.func = func
         self.stack_types = stack_types
         self.parentheses = parentheses # Specifies parens group. (0, 1, 2, ... etc)
-        
+
     def __eq__(self, other):
         if isinstance(other, PyshInstruction):
             return self.name == other.name
@@ -50,7 +50,20 @@ class PyshInputInstruction(PyshInstruction):
         PyshInstruction.__init__(self, name, None)
         self.input_index = input_index
         self.stack_types = '_input'
-        
+
+    def __repr__(self):
+        return str(self.name)
+
+class PyshOutputInstruction(PyshInstruction):
+    """
+    """
+
+    def __init__(self, output_name, from_stack):
+        name = '_output_'+from_stack+'_as_'+output_name
+        PyshInstruction.__init__(self, name, None)
+        self.output_name = output_name
+        self.from_stack = from_stack
+
     def __repr__(self):
         return str(self.name)
 
@@ -69,7 +82,7 @@ class PyshClassVoteInstruction(PyshInstruction):
         self.class_id = class_id
         self.vote_stack = vote_stack
         self.stack_types = '_class'
-        
+
     def __repr__(self):
         return str(self.name)
 

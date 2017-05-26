@@ -7,9 +7,9 @@ from . import registered_instructions as ri
 def boolean_and(state):
     if len(state['_boolean']) > 1:
         result = state['_boolean'].ref(0) and state['_boolean'].ref(1)
-        state['_boolean'].pop_item()
-        state['_boolean'].pop_item()
-        state['_boolean'].push_item(result)
+        state['_boolean'].pop()
+        state['_boolean'].pop()
+        state['_boolean'].push(result)
 boolean_and_intruction = instr.PyshInstruction('_boolean_and',
                                                boolean_and,
                                                stack_types = ['_boolean'])
@@ -23,9 +23,9 @@ ri.register_instruction(boolean_and_intruction)
 def boolean_or(state):
     if len(state['_boolean']) > 1:
         result = state['_boolean'].ref(0) or state['_boolean'].ref(1)
-        state['_boolean'].pop_item()
-        state['_boolean'].pop_item()
-        state['_boolean'].push_item(result)
+        state['_boolean'].pop()
+        state['_boolean'].pop()
+        state['_boolean'].push(result)
 boolean_or_intruction = instr.PyshInstruction('_boolean_or',
                                               boolean_or,
                                               stack_types = ['_boolean'])
@@ -39,8 +39,8 @@ ri.register_instruction(boolean_or_intruction)
 def boolean_not(state):
     if len(state['_boolean']) > 0:
         result = not state['_boolean'].ref(0)
-        state['_boolean'].pop_item()
-        state['_boolean'].push_item(result)
+        state['_boolean'].pop()
+        state['_boolean'].push(result)
 boolean_not_intruction = instr.PyshInstruction('_boolean_not',
                                                boolean_not,
                                                stack_types = ['_boolean'])
@@ -54,9 +54,9 @@ ri.register_instruction(boolean_not_intruction)
 def boolean_xor(state):
     if len(state['_boolean']) > 1:
         result = not (state['_boolean'].ref(0) == state['_boolean'].ref(1))
-        state['_boolean'].pop_item()
-        state['_boolean'].pop_item()
-        state['_boolean'].push_item(result)
+        state['_boolean'].pop()
+        state['_boolean'].pop()
+        state['_boolean'].push(result)
 boolean_xor_intruction = instr.PyshInstruction('_boolean_xor',
                                                boolean_xor,
                                                stack_types = ['_boolean'])
@@ -70,10 +70,10 @@ ri.register_instruction(boolean_xor_intruction)
 def boolean_invert_first_then_and(state):
     if len(state['_boolean']) > 1:
         result = (not state['_boolean'].ref(0)) and state['_boolean'].ref(1)
-        state['_boolean'].pop_item()
-        state['_boolean'].pop_item()
-        state['_boolean'].push_item(result)
-boolean_invert_first_then_and_intruction = instr.PyshInstruction('_boolean_invert_first_then_and', 
+        state['_boolean'].pop()
+        state['_boolean'].pop()
+        state['_boolean'].push(result)
+boolean_invert_first_then_and_intruction = instr.PyshInstruction('_boolean_invert_first_then_and',
                                                                  boolean_invert_first_then_and,
                                                                  stack_types = ['_boolean'])
 ri.register_instruction(boolean_invert_first_then_and_intruction)
@@ -86,10 +86,10 @@ ri.register_instruction(boolean_invert_first_then_and_intruction)
 def boolean_invert_second_then_and(state):
     if len(state['_boolean']) > 1:
         result = state['_boolean'].ref(0) and (not state['_boolean'].ref(1))
-        state['_boolean'].pop_item()
-        state['_boolean'].pop_item()
-        state['_boolean'].push_item(result)
-boolean_invert_second_then_and_intruction = instr.PyshInstruction('_boolean_invert_second_then_and', 
+        state['_boolean'].pop()
+        state['_boolean'].pop()
+        state['_boolean'].push(result)
+boolean_invert_second_then_and_intruction = instr.PyshInstruction('_boolean_invert_second_then_and',
                                                                   boolean_invert_second_then_and,
                                                                   stack_types = ['_boolean'])
 ri.register_instruction(boolean_invert_second_then_and_intruction)
@@ -101,8 +101,8 @@ ri.register_instruction(boolean_invert_second_then_and_intruction)
 def boolean_from_integer(state):
     if len(state['_integer']) > 0:
         new_bool = not (state['_integer'].ref(0) == 0)
-        state['_integer'].pop_item()
-        state['_boolean'].push_item(new_bool)
+        state['_integer'].pop()
+        state['_boolean'].push(new_bool)
 boolean_from_integer_instruction = instr.PyshInstruction('_boolean_from_integer',
                                                          boolean_from_integer,
                                                          stack_types = ['_boolean', '_integer'])
@@ -115,8 +115,8 @@ ri.register_instruction(boolean_from_integer_instruction)
 def boolean_from_float(state):
     if len(state['_float']) > 0:
         new_bool = not (state['_float'].ref(0) == 0.0)
-        state['_float'].pop_item()
-        state['_boolean'].push_item(new_bool)
+        state['_float'].pop()
+        state['_boolean'].push(new_bool)
 boolean_from_float_instruction = instr.PyshInstruction('_boolean_from_float',
                                                        boolean_from_float,
                                                        stack_types = ['_boolean', '_float'])

@@ -37,8 +37,8 @@ def code_maker(pysh_type):
     def f(state):
         if len(state[pysh_type]) > 0:
             new_code = state[pysh_type].ref(0)
-            state[pysh_type].pop_item()
-            state['_code'].push_item(new_code)
+            state[pysh_type].pop()
+            state['_code'].push(new_code)
         return state
     instruction = instr.PyshInstruction('_code_from' + pysh_type,
                                         f,
@@ -71,9 +71,9 @@ ri.register_instruction(code_maker('_exec'))
 def code_append(state):
     if len(state['_code']) > 1:
         new_item = u.ensure_list(state['_code'].ref(0)) + u.ensure_list(state['_code'].ref(1))
-        state['_code'].pop_item()
-        state['_code'].pop_item()
-        state['_code'].push_item(new_item)
+        state['_code'].pop()
+        state['_code'].pop()
+        state['_code'].push(new_item)
     return state
 code_append_instruction = instr.PyshInstruction('_code_append',
                                                 code_append,
@@ -87,8 +87,8 @@ ri.register_instruction(code_append_instruction)
 def code_atom(state):
     if len(state['_code']) > 0:
         top_code = state['_code'].ref(0)
-        state['_code'].pop_item()
-        state['_boolean'].push_item(not (type(top_code) == list))
+        state['_code'].pop()
+        state['_boolean'].push(not (type(top_code) == list))
     return state
 code_atom_instruction = instr.PyshInstruction('_code_atom',
                                               code_atom,
@@ -103,8 +103,8 @@ ri.register_instruction(code_atom_instruction)
 def code_car(state):
     if len(state['_code']) > 0 and len(u.ensure_list(state['_code'].ref(0))) > 0:
         top_code = u.ensure_list(state['_code'].ref(0))[0]
-        state['_code'].pop_item()
-        state['_code'].push_item(top_code)
+        state['_code'].pop()
+        state['_code'].push(top_code)
     return state
 code_car_instruction = instr.PyshInstruction('_code_car',
                                              code_car,
@@ -119,9 +119,9 @@ ri.register_instruction(code_car_instruction)
 def code_cdr(state):
     if len(state['_code']) > 0:
         top_code = u.ensure_list(state['_code'].ref(0))[1:]
-        state['_code'].pop_item()
-        state['_code'].push_item(top_code)
-    return state        
+        state['_code'].pop()
+        state['_code'].push(top_code)
+    return state
 code_cdr_instruction = instr.PyshInstruction('_code_cdr',
                                              code_cdr,
                                              stack_types = ['_code'])
@@ -135,9 +135,9 @@ ri.register_instruction(code_cdr_instruction)
 def code_cons(state):
     if len(state['_code']) > 1:
         new_item = [state['_code'].ref(1)] + u.ensure_list(state['_code'].ref(0))
-        state['_code'].pop_item()
-        state['_code'].pop_item()
-        state['_code'].push_item(new_item)
+        state['_code'].pop()
+        state['_code'].pop()
+        state['_code'].push(new_item)
     return state
 code_cons_instruction = instr.PyshInstruction('_code_cons',
                                               code_cons,
@@ -152,8 +152,8 @@ ri.register_instruction(code_cons_instruction)
 def code_do(state):
     if len(state['_code']) > 0:
         top_code = state['_code'].ref(0)
-        state['_exec'].push_item(instr.JustInTimeInstruction('_code_pop'))
-        state['_exec'].push_item(top_code)
+        state['_exec'].push(instr.JustInTimeInstruction('_code_pop'))
+        state['_exec'].push(top_code)
     return state
 code_do_instruction = instr.PyshInstruction('_code_do',
                                             code_do,
@@ -168,8 +168,8 @@ ri.register_instruction(code_do_instruction)
 def code_do_star(state):
     if len(state['_code']) > 0:
         top_code = state['_code'].ref(0)
-        state['_code'].pop_item()
-        state['_exec'].push_item(top_code)
+        state['_code'].pop()
+        state['_exec'].push(top_code)
     return state
 code_do_star_instruction = instr.PyshInstruction('_code_do*',
                                                  code_do_star,
@@ -186,9 +186,9 @@ def code_do_range(state):
         to_do = state['_code'].ref(0)
         current_index = state['_integer'].ref(1)
         destination_index = state['_integer'].ref(0)
-        state['_integer'].pop_item()
-        state['_integer'].pop_item()
-        state['_code'].pop_item()
+        state['_integer'].pop()
+        state['_integer'].pop()
+        state['_code'].pop()
 
         increment = 0
         if current_index < destination_index:
@@ -197,13 +197,13 @@ def code_do_range(state):
             increment = -1
 
         if not increment == 0:
-            state['_exec'].push_item([(current_index + increment), 
-                                              destination_index, 
-                                              instr.JustInTimeInstruction('_code_from_exec'), 
+            state['_exec'].push([(current_index + increment),
+                                              destination_index,
+                                              instr.JustInTimeInstruction('_code_from_exec'),
                                               to_do,
                                               instr.JustInTimeInstruction('_code_do*range')])
-        state['_integer'].push_item(current_index)
-        state['_exec'].push_item(to_do)
+        state['_integer'].push(current_index)
+        state['_exec'].push(to_do)
     return state
 code_do_range_intruction = instr.PyshInstruction('_code_do*range',
                                                  code_do_range,
@@ -223,9 +223,9 @@ def exec_do_range(state):
         to_do = state['_exec'].ref(0)
         current_index = state['_integer'].ref(1)
         destination_index = state['_integer'].ref(0)
-        state['_integer'].pop_item()
-        state['_integer'].pop_item()
-        state['_exec'].pop_item()
+        state['_integer'].pop()
+        state['_integer'].pop()
+        state['_exec'].pop()
 
         increment = 0
         if current_index < destination_index:
@@ -234,13 +234,13 @@ def exec_do_range(state):
             increment = -1
 
         if not increment == 0:
-            state['_exec'].push_item([(current_index + increment), 
-                                              destination_index, 
-                                              instr.JustInTimeInstruction('_exec_do*range'), 
+            state['_exec'].push([(current_index + increment),
+                                              destination_index,
+                                              instr.JustInTimeInstruction('_exec_do*range'),
                                               to_do])
 
-        state['_integer'].push_item(current_index)
-        state['_exec'].push_item(to_do)
+        state['_integer'].push(current_index)
+        state['_exec'].push(to_do)
     return state
 
 exec_do_range_intruction = instr.PyshInstruction('_exec_do*range',
@@ -256,14 +256,14 @@ ri.register_instruction(exec_do_range_intruction)
 
 def code_do_count(state):
     if not (len(state['_integer']) == 0 or state['_integer'].ref(0) < 1 or len(state['_code']) == 0):
-        to_push = [0, 
-                   state['_integer'].ref(0) - 1, 
+        to_push = [0,
+                   state['_integer'].ref(0) - 1,
                    instr.JustInTimeInstruction('_code_from_exec'),
                    state['_code'].ref(0),
                    instr.JustInTimeInstruction('_code_do*range')]
-        state['_code'].pop_item()
-        state['_integer'].pop_item()
-        state['_exec'].push_item(to_push)
+        state['_code'].pop()
+        state['_integer'].pop()
+        state['_exec'].push(to_push)
     return state
 
 code_do_count_intruction = instr.PyshInstruction('_code_do*count',
@@ -272,7 +272,7 @@ code_do_count_intruction = instr.PyshInstruction('_code_do*count',
 ri.register_instruction(code_do_count_intruction)
 #<instr_open>
 #<instr_name>code_do*count
-#<instr_desc>An iteration instruction that performs a loop (the body of which is taken from the `code` stack) the number of times indicated by the `integer` argument, pushing an index (which runs from zero to one less than the number of iterations) onto the `integer` stack prior to each execution of the loop body. 
+#<instr_desc>An iteration instruction that performs a loop (the body of which is taken from the `code` stack) the number of times indicated by the `integer` argument, pushing an index (which runs from zero to one less than the number of iterations) onto the `integer` stack prior to each execution of the loop body.
 #<instr_close>
 
 
@@ -281,13 +281,13 @@ def exec_do_count(state):
     differs from code.do*count only in the source of the code and the recursive call
     '''
     if not (len(state['_integer']) == 0 or state['_integer'].ref(0) < 1 or len(state['_exec']) == 0):
-        to_push = [0, 
-                   state['_integer'].ref(0) - 1, 
+        to_push = [0,
+                   state['_integer'].ref(0) - 1,
                    instr.JustInTimeInstruction('_exec_do*range'),
                    state['_exec'].ref(0)]
-        state['_exec'].pop_item()
-        state['_integer'].pop_item()
-        state['_exec'].push_item(to_push)
+        state['_exec'].pop()
+        state['_integer'].pop()
+        state['_exec'].push(to_push)
     return state
 
 exec_do_count_intruction = instr.PyshInstruction('_exec_do*count',
@@ -308,9 +308,9 @@ def code_do_times(state):
                    instr.JustInTimeInstruction('_code_from_exec'),
                    [instr.JustInTimeInstruction('_integer_pop')] + u.ensure_list(state['_code'].ref(0)),
                    instr.JustInTimeInstruction('_code_do*range')]
-        state['_code'].pop_item()
-        state['_integer'].pop_item()
-        state['_exec'].push_item(to_push)
+        state['_code'].pop()
+        state['_integer'].pop()
+        state['_exec'].push(to_push)
 code_do_times_intruction = instr.PyshInstruction('_code_do*times',
                                                  code_do_times,
                                                  stack_types = ['_code', '_integer'])
@@ -326,13 +326,13 @@ def exec_do_times(state):
     differs from code.do*times only in the source of the code and the recursive call
     '''
     if not (len(state['_integer']) == 0 or state['_integer'].ref(0) < 1 or len(state['_exec']) == 0):
-        to_push = [0, 
-                   state['_integer'].ref(0) - 1, 
+        to_push = [0,
+                   state['_integer'].ref(0) - 1,
                    instr.JustInTimeInstruction('_exec_do*range'),
                    [instr.JustInTimeInstruction('_integer_pop')] + u.ensure_list(state['_exec'].ref(0))]
-        state['_exec'].pop_item()
-        state['_integer'].pop_item()
-        state['_exec'].push_item(to_push)
+        state['_exec'].pop()
+        state['_integer'].pop()
+        state['_exec'].push(to_push)
     return state
 
 exec_do_times_intruction = instr.PyshInstruction('_exec_do*times',
@@ -349,15 +349,15 @@ ri.register_instruction(exec_do_times_intruction)
 def exec_while(state):
     if len(state['_exec']) > 0:
         if len(state['_boolean']) == 0:
-            state['_exec'].pop_item()
+            state['_exec'].pop()
         elif not state['_boolean'].ref(0):
-            state['_exec'].pop_item()
-            state['_boolean'].pop_item()
+            state['_exec'].pop()
+            state['_boolean'].pop()
         else:
             block = state['_exec'].ref(0)
-            state['_exec'].push_item(instr.JustInTimeInstruction('_exec_while'))
-            state['_exec'].push_item(block)
-            state['_boolean'].pop_item()
+            state['_exec'].push(instr.JustInTimeInstruction('_exec_while'))
+            state['_exec'].push(block)
+            state['_boolean'].pop()
     return state
 exec_while_intruction = instr.PyshInstruction('_exec_while',
                                               exec_while,
@@ -373,8 +373,8 @@ ri.register_instruction(exec_while_intruction)
 def exec_do_while(state):
     if len(state['_exec']) > 0:
             block = state['_exec'].ref(0)
-            state['_exec'].push_item(instr.JustInTimeInstruction('_exec_while'))
-            state['_exec'].push_item(block)
+            state['_exec'].push(instr.JustInTimeInstruction('_exec_while'))
+            state['_exec'].push(block)
     return state
 exec_do_while_intruction = instr.PyshInstruction('_exec_do*while',
                                                  exec_do_while,
@@ -400,10 +400,10 @@ def code_if(state):
         to_push = state['_code'].ref(0)
         if state['_boolean'].ref(0):
             to_push = state['_code'].ref(1)
-        state['_code'].pop_item()
-        state['_code'].pop_item()
-        state['_boolean'].pop_item()
-        state['_exec'].push_item(to_push)
+        state['_code'].pop()
+        state['_code'].pop()
+        state['_boolean'].pop()
+        state['_exec'].push(to_push)
 code_if_instruction = instr.PyshInstruction('_code_if',
                                             code_if,
                                             stack_types = ['_code', '_exec', '_boolean'])
@@ -419,10 +419,10 @@ def exec_if(state):
         to_push = state['_exec'].ref(1)
         if state['_boolean'].ref(0):
             to_push = state['_exec'].ref(0)
-        state['_exec'].pop_item()
-        state['_exec'].pop_item()
-        state['_boolean'].pop_item()
-        state['_exec'].push_item(to_push)
+        state['_exec'].pop()
+        state['_exec'].pop()
+        state['_boolean'].pop()
+        state['_exec'].push(to_push)
 exec_if_instruction = instr.PyshInstruction('_exec_if',
                                             exec_if,
                                             stack_types = ['_exec', '_boolean'],
@@ -437,8 +437,8 @@ ri.register_instruction(exec_if_instruction)
 def exec_when(state):
     if len(state['_exec']) > 0 and len(state['_boolean']) > 0:
         if not state['_boolean'].ref(0):
-            state['_exec'].pop_item()
-        state['_boolean'].pop_item()
+            state['_exec'].pop()
+        state['_boolean'].pop()
 exec_when_instruction = instr.PyshInstruction('_exec_when',
                                               exec_when,
                                               stack_types = ['_exec', '_boolean'],
@@ -453,8 +453,8 @@ ri.register_instruction(exec_when_instruction)
 def code_length(state):
     if len(state['_code']) > 0:
         l = len(u.ensure_list(state['_code'].ref(0)))
-        state['_code'].pop_item()
-        state['_integer'].push_item(l)
+        state['_code'].pop()
+        state['_integer'].push(l)
 code_length_instruction = instr.PyshInstruction('_code_length',
                                                 code_length,
                                                 stack_types = ['_code', '_integer'])
@@ -469,9 +469,9 @@ def code_list(state):
     if len(state['_code']) > 1:
         new_item = [state['_code'].ref(1), state['_code'].ref(0)]
         if u.count_points(new_item) <= c.global_max_points:
-            state['_code'].pop_item()
-            state['_code'].pop_item()
-            state['_code'].push_item(new_item)
+            state['_code'].pop()
+            state['_code'].pop()
+            state['_code'].push(new_item)
 code_list_instruction = instr.PyshInstruction('_code_list',
                                               code_list,
                                               stack_types = ['_code'])
@@ -486,8 +486,8 @@ def code_wrap(state):
     if len(state['_code']) > 0:
         new_item = [state['_code'].ref(0)]
         if u.count_points(new_item) <= c.global_max_points:
-            state['_code'].pop_item()
-            state['_code'].push_item(new_item)
+            state['_code'].pop()
+            state['_code'].push(new_item)
 code_wrap_instruction = instr.PyshInstruction('_code_wrap',
                                               code_wrap,
                                               stack_types = ['_code'])
@@ -501,9 +501,9 @@ ri.register_instruction(code_wrap_instruction)
 def code_member(state):
     if len(state['_code']) > 1:
         new_bool = state['_code'].ref(1) in u.ensure_list(state['_code'].ref(0))
-        state['_code'].pop_item()
-        state['_code'].pop_item()
-        state['_boolean'].push_item(new_bool)
+        state['_code'].pop()
+        state['_code'].pop()
+        state['_boolean'].push(new_bool)
 code_member_instruction = instr.PyshInstruction('_code_member',
                                                 code_member,
                                                 stack_types = ['_code', '_boolean'])
@@ -519,9 +519,9 @@ def code_nth(state):
         top_code_as_list = u.ensure_list(state['_code'].ref(0))
         i = abs(state['_integer'].ref(0)) % len(top_code_as_list)
         new_item = top_code_as_list[i]
-        state['_code'].pop_item()
-        state['_integer'].pop_item()
-        state['_code'].push_item(new_item)
+        state['_code'].pop()
+        state['_integer'].pop()
+        state['_code'].push(new_item)
 code_nth_instruction = instr.PyshInstruction('_code_nth',
                                              code_nth,
                                              stack_types = ['_code', '_integer'])
@@ -537,9 +537,9 @@ def code_nthcdr(state):
         top_code_as_list = u.ensure_list(state['_code'].ref(0))
         i = abs(state['_integer'].ref(0)) % len(top_code_as_list)
         new_item = top_code_as_list[:i] + top_code_as_list[i+1:]
-        state['_code'].pop_item()
-        state['_integer'].pop_item()
-        state['_code'].push_item(new_item)
+        state['_code'].pop()
+        state['_integer'].pop()
+        state['_code'].push(new_item)
 code_nthcdr_instruction = instr.PyshInstruction('_code_nthcdr',
                                                 code_nthcdr,
                                                 stack_types = ['_code', '_integer'])
@@ -548,8 +548,3 @@ ri.register_instruction(code_nthcdr_instruction)
 #<instr_name>code_nthcdr
 #<instr_desc>Pushes the top item on the `code` stack, without the nth item. To avoid indexing out of bounds, index of nth idem comes form the top `integer` mod the length of the top `code` item.
 #<instr_close>
-
-
-
-
-

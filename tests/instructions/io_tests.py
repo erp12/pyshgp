@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, unicode_literals 
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from pyshgp import utils as u
 from pyshgp import exceptions as e
@@ -19,21 +19,25 @@ vote_bad_type_2 = instr.PyshClassVoteInstruction(1, 'abc')
 
 
 io_tests = [
-	# _input#
-	[{'_input' : ['A', 'B', 'C']}, inpt_valid, {'_input' : ['A', 'B', 'C'], '_string' : ['B']}],
-	[{'_input' : ['A', 'B', 'C']}, inpt_too_big, e.InvalidInputStackIndex],
-	[{'_input' : ['A', 'B', 'C']}, inpt_negative, e.InvalidInputStackIndex],
-	# _classVote#
-	### [{'_float' : [1.23]}, vote_float, {'_output' : ['', 1.23]}],
-	### [{'_float' : [4]}, vote_int, {'_output' : ['', 4]}],
-	# _print_[type]
-	[{'_integer' : [7]}, '_print_integer', {'_output' : ['7']}],
-	# _print_newline
-	[{}, '_print_newline', {'_output' : ['\n']}],
-	]
+    # _input#
+    [{'_input': ['A', 'B', 'C']}, inpt_valid, {
+        '_input': ['A', 'B', 'C'], '_string': ['B']}],
+    [{'_input': ['A', 'B', 'C']}, inpt_too_big, e.InvalidInputStackIndex],
+    [{'_input': ['A', 'B', 'C']}, inpt_negative, e.InvalidInputStackIndex],
+    # _classVote#
+    # [{'_float' : [1.23]}, vote_float, {'_output' : ['', 1.23]}],
+    # [{'_float' : [4]}, vote_int, {'_output' : ['', 4]}],
+    # _print_[type]
+    [{'_integer': [7], '_output': {'stdout': ''}}, '_print_integer',
+     {'_output': {'stdout': '7'}}
+     ],
+    # _print_newline
+    [{'_output': {'stdout': ''}}, '_print_newline',
+     {'_output': {'stdout': '\n'}}],
+]
 
 for t in io_tests:
-	passed = i_t.run_test(t, True)
-	if not passed:
-		raise Exception("The following test failed: " + str(t))
+    passed = i_t.run_test(t, False)
+    if not passed:
+        raise Exception("The following test failed: " + str(t))
 print("All IO instructions passed.")

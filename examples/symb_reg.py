@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 from pyshgp.gp.base import PushGPRegressor
 
-X_train = np.arange(-2.0, 2.0, 0.1).reshape(-1, 1)
+X_train = np.round(np.arange(-2.0, 2.0, 0.1).reshape(-1, 1), 1)
 
 def target_func(a): return (a ** 6) + (2 * a**4) + (a**2)
 
@@ -18,8 +18,8 @@ print(Y_train)
 print
 
 symbReg = PushGPRegressor(max_generations=200, population_size=100, n_jobs=1,
-                          verbose=1)
-symbReg.fit(X_train, X_train)
+                          verbose=2)
+symbReg.fit(X_train, Y_train)
 
 print(symbReg.best_error_)
 print(symbReg.best_)

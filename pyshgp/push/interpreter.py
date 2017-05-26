@@ -14,7 +14,7 @@ import copy # <- This one is actually needed.
 from .. import utils as u
 from .. import constants as c
 from .. import exceptions as e
-from . import stack 
+from . import stack
 
 def _handle_input_instruction(instruction, state):
     '''Allows Push to handle input instructions.
@@ -43,12 +43,64 @@ def _handle_vote_instruction(instruction, state):
         state[instruction.vote_stack].pop_item()
         state['_output'][class_index] += float(vote_value)
 
+class PushState(dict):
+    """Dictionary that holds PyshStacks.
+    """
+
+    def __init__(self, inputs=[], outputs={}):
+        if not isinstance(inputs, list):
+            msg = "Push inputs must be a list, got {}"
+            raise ValueError(msg.format(type(inputs)))
+        if not isinstance(outputs, dict):
+            msg = "Push outputs must be a dict, got {}"
+            raise ValueError(msg.format(type(outputs)))
+        self['_input'] = inputs[::-1]
+        self['_ouput'] = outputs
+
+        for t in c.pysh_types:
+            self[t] = stack.PyshStack(t)
+
+    def __len__(self):
+        """Returns the size of the PushState.
+        """
+        return sum([len(s) for s in self.values()])
+
+    def from_dict(self, d):
+        """Sets the state to match the given dictionary.
+
+        .. warning::
+            This is written to be used in ``pyshgp`` tests, NOT as part of
+            push program execution or evolution. There are no checks to confirm
+            that the ``d`` can be converted to a valid Push state.
+
+        :param dict d: Dict that is converted into a Push state.
+        """
+        # Clear existing stacks.
+        for t in c.pysh_types:
+            self[t] = stack.PyshStack(t)
+        # Overwrite stacks found in dict
+        for k in d.keys():
+            if k in ['_input', '_output']:
+                # Make output field the same as dictionary. Should be a dict.
+                self[k] = d[k]
+            else:
+                # Append all values from dictionary onto corrisponding stack.
+                for v in d[k]:
+                    self[k].push(v)
+
+    def pretty_print(self):
+        """Prints state of all stacks in the PushState.
+        """
+        for t in c.pysh_types:
+            print(self[t].pysh_type, ":", self[t])
+
+
 class PushInterpreter:
     """Object that can run Push programs and stores the state of the Push
     stacks.
     """
 
-    #: Current Push state of the interpreter.
+    #: Current PushState of the interpreter.
     state = None
 
     #: Current status of the interpreter. Either '_normal' or some kind of
@@ -56,71 +108,9 @@ class PushInterpreter:
     status = '_normal'
 
 
-    def __init__(self, inputs = None):
-        self.reset_state()
+    def __init__(self, inputs=[], outputs={}):
+        self.state = PushState(inputs, outputs)
         self.status = '_normal'
-
-        # Load inputs
-        if not (inputs is None):
-            for i in inputs:
-                self.state['_input'].push_item(i)
-
-    def reset_state(self):
-        """Clears the Push state and resets status.
-        """
-        self.state = {}
-        for t in c.pysh_types:
-            self.state[t] = stack.PyshStack(t)
-        self.status = '_normal'
-
-    def state_size(self):
-        """Returns the number of items on the stacks, not including output str.
-
-        :returns: Int of size.
-        """
-        i = 0
-        for stk in self.state.values():
-            i += len(stk)
-        # if output stack exists, subtract 1 from total because the
-        # first element of the output stack is the printing string.
-        if '_output' in self.state.keys():
-            i -= 1
-        return i
-
-    def state_as_dict(self):
-        """Returns the state as a python dictionary.
-
-        :returns: Dict of all values in state.
-        """
-        dct = {}
-        for k in self.state.keys():
-            dct[k] = self.state[k][:]
-        return dct
-
-    def state_from_dict(self, state_dict):
-        """Repalces the Push state with an Push state based on given dict.
-
-        .. warning::
-            This is written to be used in ``pyshgp`` tests, NOT as part of 
-            push program execution or evolution. There are no checks to confirm
-            that the ``state_dict`` can be converted to a valid Push state.
-
-        :param dict state_dict: Dict that is converted into a Push state.
-        """
-        self.reset_state()
-        for k in state_dict.keys():
-            if str(k) == '_output':
-                stck = state_dict[k][1:]
-            else:
-                stck = state_dict[k][::]
-            for val in stck:
-                self.state[k].push_item(val)
-
-    def state_pretty_print(self):
-        '''Prints state of all stacks in the pysh_state
-        '''
-        for t in c.pysh_types:
-            print(self.state[t].pysh_type, ":", self.state[t])
 
     def execute_instruction(self, instruction):
         """Executes a push instruction or literal.
@@ -160,48 +150,48 @@ class PushInterpreter:
                 self.state['_exec'].push_item(i)
         elif pysh_type == False:
             # If pysh type was not found, raise exception.
-            raise e.UnknownPyshType(instruction) 
+            raise e.UnknownPyshType(instruction)
         else:
             # If here, instruction is a pysh literal and will be pushed
             # on to its corrisponding stack.
             self.state[pysh_type].push_item(instruction)
-    
+
     def eval_push(self, print_steps):
         """Executes the contents of the exec stack.
-        
+
         Aborts prematurely if execution limits are exceeded. If execution
         limits are reached, status will be denoted.
 
         :param bool print_steps: Denotes if stack state should be printed.
-        """      
+        """
         iteration = 1
         time_limit = 0
         if c.global_evalpush_time_limit != 0:
             time_limit = time.time() + c.global_evalpush_time_limit
-        
-        while len(self.state['_exec']) > 0:        
-            
-            # Check for adnormal stops            
+
+        while len(self.state['_exec']) > 0:
+
+            # Check for adnormal stops
             if iteration > c.global_evalpush_limit:
                 self.status = '_evalpush_limit_reached'
                 break
             if time_limit != 0 and time.time() > time_limit:
                 self.status = '_evalpush_time_limit_reached'
                 break;
-            
+
             # Advance program 1 step
             top_exec = self.state['_exec'].top_item()
             self.state['_exec'].pop_item()
             self.execute_instruction(top_exec)
-            
+
             # print steps
             if print_steps:
                 print( "\nState after " + str(iteration) + " steps:")
-                self.state_pretty_print()
-            
+                self.state.pretty_print()
+
             iteration += 1
-    
-    
+
+
     def run_push(self, code, print_steps=False):
         """The top level method of the push interpreter.
 
@@ -210,11 +200,11 @@ class PushInterpreter:
         :param list code: The push program to run.
         :param bool print_steps: Denotes if stack states should be printed.
         """
-        # If you don't copy the code, the reference to the program will be 
+        # If you don't copy the code, the reference to the program will be
         # reversed and other bad things.
         code_copy = copy.deepcopy(code)
         self.state['_exec'].push_item(code_copy)
         self.eval_push(print_steps)
         if print_steps:
             print("=== Finished Push Execution ===")
-
+        return self.state['_exec']

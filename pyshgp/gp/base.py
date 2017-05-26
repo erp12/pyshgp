@@ -33,9 +33,6 @@ DEFAULT_ATOM_GENERATORS=list(merge_sets(
     ri.registered_instructions,
     [lambda: randint(0, 100), lambda: random()]))
 REGRESSION_ATOM_GENERATORS=list(merge_sets(
-    ri.get_instructions_by_pysh_type('_exec'),
-    ri.get_instructions_by_pysh_type('_boolean'),
-    ri.get_instructions_by_pysh_type('_integer'),
     ri.get_instructions_by_pysh_type('_float'),
     [lambda: randint(0, 100), lambda: random()]))
 CLASSIFICATION_ATOM_GENERATORS=list(merge_sets(
@@ -125,6 +122,14 @@ class PyshMixin:
             new_ind=Individual(gn)
             self.population.append(new_ind)
 
+    def evaluate_with_function(self, error_function):
+        """TODO: Write method docstring
+        """
+        if hasattr(self, 'pool'):
+            self.population.evaluate_with_function(error_function, self.pool)
+        else:
+            self.population.evaluate_with_function(error_function)
+
     def print_monitor(self, generation):
         """TODO: Write method docstring
         """
@@ -141,6 +146,7 @@ class PyshMixin:
         print('| Lowest Error:', self.population.lowest_error()),
         print('| Avg Error:', self.population.average_error()),
         print('| Number of Unique Programs:', self.population.unique())
+        print('| Best Program:', self.population.best_program())
 
     def predict(self, X):
         """Predict using the best program found by evolution.
@@ -159,8 +165,80 @@ class PyshMixin:
         return np.apply_along_axis(self.best_.run_program, 1, X)
 
 
+class SimplePushGPEvolver(PyshMixin):
+    """A simple evolutionary aglorithm to evolve a push program based on a
+    error function.
+
+    Attributes
+    ----------
+
+    best_ : Individual
+        Best Individual present in the last generation of evolution.
+
+    best_error_ : float
+        Total error of the Individual stored in best_. This is considered the
+        overall training error of the SymbolicRegressor.
+    """
+
+    def __init__(self, error_threshold=0,
+        max_generations=1000, population_size=300,
+        selection_method='epsilon_lexicase', n_jobs=1,
+        operators=DEFAULT_GENETICS, initial_max_genome_size=50,
+        program_growth_cap=100, atom_generators=REGRESSION_ATOM_GENERATORS,
+        verbose=0, epsilon='auto', tournament_size=7, simplification_steps=500):
+
+        PyshMixin.__init__(self, max_generations=max_generations,
+            population_size=population_size,selection_method=selection_method,
+            n_jobs=n_jobs, operators=operators,
+            program_growth_cap=program_growth_cap,
+            initial_max_genome_size=initial_max_genome_size,
+            atom_generators=atom_generators, verbose=verbose,
+            simplification_steps=simplification_steps, epsilon=epsilon,
+            tournament_size=tournament_size)
+
+    def evolve(self, error_function, n_inputs):
+
+        self.make_spawner(n_inputs)
+        self.init_population()
+        self.evaluate_with_function(error_function)
+
+        for g in range(self.max_generations):
+
+            # Verbose mode monitor printing
+            if self.verbose == 1:
+                self.print_monitor(g)
+            elif self.verbose > 1:
+                self.print_monitor_verbose(g)
+
+            # Check for solution
+            if self.population.lowest_error() <= self.error_threshold:
+                break
+
+            # Create next generation
+            next_gen=Population()
+            for i in range(self.population_size):
+                op=self.choose_genetic_operator()
+
+                parents=[
+                    self.population.select(self.selection_method, self.epsilon,
+                                           self.tournament_size)
+                    for p in range(op._num_parents)
+                ]
+                next_gen.append(op.produce(parents, self.spawner))
+            self.population=next_gen
+
+            # Evaluate the population
+            self.evaluate_with_function(error_function)
+
+        self.best_error_ = min([i.total_error for i in self.population])
+        test = lambda i: i.total_error == self.best_error_
+        self.best_ = [i for i in self.population if test(i)][0]
+        self.best_.simplify(error_function, self.simplification_steps,
+                            self.verbose)
+
+
 class PushGPRegressor(BaseEstimator, PyshMixin):
-    """A Scikit-learn estimator that uses PushGP for symbolic regression tasks.
+    """A Scikit-learn estimator that uses PushGP for regression tasks.
     TODO: Write fit_metric docstring
 
     Attributes
@@ -203,19 +281,6 @@ class PushGPRegressor(BaseEstimator, PyshMixin):
         y : {array-like, sparse matrix}, shape = (n_samples, 1)
             Target values.
         """
-
-        def error_function(program):
-            errors=[]
-            for i in list(range(len(X))):
-                interpr=PushInterpreter(inputs=X[i])
-                interpr.run_push(program)
-                result=interpr.state["_float"].ref(0)
-                if type(result) == float:
-                    errors.append(abs(result - y[i, 0]))
-                else:
-                    errors.append(99999)
-            return errors
-
         n_feats=X.shape[1]
         self.make_spawner(n_feats)
         self.init_population()

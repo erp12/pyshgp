@@ -35,7 +35,6 @@ class VariationOperator(with_metaclass(ABCMeta)):
         """Produces a child.
         """
 
-
 class VariationOperatorPipeline(VariationOperator):
     """Variation operator that chains together other variation operators.
     """
@@ -152,7 +151,6 @@ class UniformMutation(VariationOperator):
             return pl.Gene(atom, True, token.closes, token.is_silent)
         else:
             return self.spawner.random_plush_gene()
-
 
 # def uniform_close_mutation(genome, evo_params):
 #     """Uniformly mutates the ``_close`` markers in the individual's genome.

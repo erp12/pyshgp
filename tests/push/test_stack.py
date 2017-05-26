@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function, unicode_literals 
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import unittest
 
@@ -10,18 +10,18 @@ class TestStackMethods(unittest.TestCase):
     def setUp(self):
         self.stck = stack.PyshStack('_integer')
 
-    def test_push_item(self):
-        self.stck.push_item(7)
+    def test_push(self):
+        self.stck.push(7)
         self.assertEqual(len(self.stck), 1)
         self.assertEqual(self.stck[0], 7)
 
-    def test_pop_item(self):
-        self.stck.push_item(7)
-        self.stck.pop_item()
+    def test_pop(self):
+        self.stck.push(7)
+        self.stck.pop()
         self.assertEqual(len(self.stck), 0)
 
     def test_top_item_A(self):
-        self.stck.push_item(7)
+        self.stck.push(7)
         i = self.stck.top_item()
         self.assertEqual(i, 7)
 
@@ -30,9 +30,9 @@ class TestStackMethods(unittest.TestCase):
         self.assertIsInstance(i, u.NoStackItem)
 
     def test_ref(self):
-        self.stck.push_item("a")
-        self.stck.push_item("b")
-        self.stck.push_item("c")
+        self.stck.push("a")
+        self.stck.push("b")
+        self.stck.push("c")
         c = self.stck.ref(0)
         b = self.stck.ref(1)
         a = self.stck.ref(2)
@@ -52,8 +52,7 @@ class TestStackMethods(unittest.TestCase):
         self.assertEqual(c, "c")
 
     def test_flush(self):
-        self.stck.push_item("a")
-        self.stck.push_item("b")
+        self.stck.push("a")
+        self.stck.push("b")
         self.stck.flush()
         self.assertEqual(len(self.stck), 0)
-

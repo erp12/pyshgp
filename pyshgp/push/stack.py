@@ -14,7 +14,7 @@ class PyshStack(list):
 
     #: The push type that the stack holds.
     pysh_type = None
-    
+
     def __init__(self, pysh_type_str):
         self.pysh_type = pysh_type_str
 
@@ -22,33 +22,29 @@ class PyshStack(list):
         # the outut stack.
         if pysh_type_str == '_output':
             self.push_item('')
-        
-    def push_item(self, value):
-        '''Pushes a value to the top of the stack.
+
+    def push(self, value):
+        '''Pushes a value to the top of the stack. An alias for `append` which
+        makes the definition of push instructions more clear.
 
         :param value: Value to push onto stack.
         '''
         self.append(value)
-        
-    def pop_item(self):
-        '''Pops the top value off the stack.
-        '''
-        self.pop();
-    
+
     def top_item(self):
         '''Returns the top item on the stack, or a NoStackItem if empty.
 
         :returns: Returns the top element of the stack, or NoStackItem if empty.
         '''
-        if len(self) > 0:        
+        if len(self) > 0:
             return self[-1]
         else:
             return u.NoStackItem()
-    
+
     def ref(self, position):
         '''Returns the element at a given position.
 
-        If stack is empty, returns NoStackItem. If ``position < 0`` or 
+        If stack is empty, returns NoStackItem. If ``position < 0`` or
         ``position > len(self)`` returns StackOutOfBounds.
 
         :param int position: Position in stack to get item.
@@ -60,7 +56,7 @@ class PyshStack(list):
             return u.NoStackItem()
         else:
             return self[(len(self) - 1) - position]
-        
+
     def insert(self, position, value):
         """Inserts value at position in stack.'
 

@@ -7,7 +7,8 @@ import math, random
 from copy import copy
 import numpy as np
 
-from ..utils import keep_number_reasonable, median_absolute_deviation
+from ..utils import (keep_number_reasonable, median_absolute_deviation,
+                     UnevaluatableStackResponse)
 from ..push import translation as tran
 from ..push import interpreter as interp
 from ..push import simplification as simp
@@ -18,12 +19,12 @@ from ..push import simplification as simp
 
 class Individual(object):
     """Holds all information about an individual.
+
+    TODO: Write attribute docstrings
 	"""
 
     _genome = None
     _program = None
-    _total_error = None
-    _error_vector = None
 
     # Genome
     @property
@@ -49,26 +50,6 @@ class Individual(object):
         raise AttributeError("Cannot set Individual's program directly. Must \
                              set genome.")
 
-    # Error vector
-    @property
-    def error_vector(self):
-        return self._error_vector
-
-    @error_vector.setter
-    def error_vector(self, value):
-        self._error_vector = value
-        self._total_error = sum(value)
-
-    # Total error
-    @property
-    def total_error(self):
-        return self._total_error
-
-    @total_error.setter
-    def total_error(self, value):
-        raise AttributeError("Cannot set Individual's total error directly." +
-                             " Must set error vector.")
-
     def __init__(self, genome):
         self.genome = genome
 
@@ -90,7 +71,41 @@ class Individual(object):
         i.run_push(self.program, print_trace)
         return i
 
-    def evaluate(self, error_function):
+    def evaluate(self, X, y, output_stack, metric):
+        """Evaluates the individual.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = (n_samples, n_features)
+            Samples.
+
+        y : {array-like, sparse matrix}, shape = (n_samples, 1)
+            Labels.
+
+        output_stack : str
+            Name of stack which will contain the output values.
+
+        metric : function
+            Function to used to calculate the error of the individual. All
+            sklearn regression metrics are supported.
+        """
+        y_hat = []
+        error_vec = []
+        row_index = 0
+        for r in X:
+            result = self.run_program(inputs=r)
+            out = result.state[output_stack].top_item()
+            if isinstance(out, UnevaluatableStackResponse):
+                y_hat.append(-9999)
+                error_vec.append(9999)
+            else:
+                y_hat.append(out)
+                error_vec.append(abs(y[row_index] - out))
+            row_index += 1
+        self.error_vector = error_vec
+        self.total_error = metric(y, y_hat)
+
+    def evaluate_with_function(self, error_function):
         """Evaluates the individual by passing it's program to the error
         function.
 
@@ -112,22 +127,48 @@ class Population(list):
     """Pyshgp population of Individuals.
     """
 
-    def evaluate(self, error_function):
+    def evaluate_with_function(self, error_function, pool=None):
         """Evaluates every individual in the population, if the individual has
         not been previously evaluated.
 
         :param func error_function: The error function.
         """
-        for i in self:
-            if i.error_vector is None:
-                i.evaluate(error_function)
+        if pool is None:
+            evaluated_inds = pool.map(lambda i: i.evaluate(error_function), self)
+            for i in range(len(evaluated_inds)):
+                self[i] = evaluated_inds[i]
+        else:
+            for i in self:
+                if not hasattr(i, 'error_vector'):
+                    i.evaluate(error_function)
 
-    def p_evaluate(self, error_function, pool):
-        """TODO: Write method docstring.
+    def evaluate(self, X, y, output_stack, metric):
+        """Evaluates every individual in the population, if the individual has
+        not been previously evaluated.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = (n_samples, n_features)
+            Samples.
+
+        y : {array-like, sparse matrix}, shape = (n_samples, 1)
+            Target values.
+
+        output_stack : str
+            Name of stack which will contain the output values.
+
+        metric : function
+            Function to used to calculate the error of an individual. All
+            sklearn regression metrics are supported.
         """
-        evaluated_inds = pool.map(lambda i: i.evaluate(error_function), self)
-        for i in range(len(evaluated_inds)):
-            self[i] = evaluated_inds[i]
+        def f(i):
+            if not hasattr(i, 'error_vector'):
+                i.evaluate(X, y, output_stack, metric)
+
+        if pool is None:
+            pool.map(f, self)
+        else:
+            map(f, i)
 
     def select(self, method='lexicase', epsilon='auto', tournament_size=7):
         """Selects a individual from the population with the given selection
@@ -243,3 +284,10 @@ class Population(list):
         """
         programs_set = {str(ind.program) for ind in self}
         return len(programs_set)
+
+    def best_program(self):
+        """Returns the program of the Individual with the lowest total error.
+        """
+        e = self.lowest_error()
+        test = lambda i: i.total_error == e
+        return [i.program for i in self if test(i)][0]

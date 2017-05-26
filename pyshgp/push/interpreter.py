@@ -35,12 +35,19 @@ def _handle_input_instruction(instruction, state):
     else:
         state[pysh_type].push(input_value)
 
+def _handle_output_instruction(instruction, state):
+    """Allows Push to handle class output instructions.
+    """
+    output_value = state[instruction.from_stack].ref(0)
+    state[instruction.from_stack].pop()
+    state['_output'][class_index] = output_value
+
 def _handle_vote_instruction(instruction, state):
     '''Allows Push to handle class voting instructions.
     '''
     output_name = 'class-'+instruction.class_id
-    if not output_name in state['_output'].keys():
-        return
+    # if not output_name in state['_output'].keys():
+    #     return
     vote_value = state[instruction.vote_stack].ref(0)
     state[instruction.vote_stack].pop()
     state['_output'][class_index] += float(vote_value)
@@ -141,6 +148,9 @@ class PushInterpreter:
         elif pysh_type == '_input_instruction':
             # If the instruction is an input_instruction, handle it.
             _handle_input_instruction(instruction, self.state)
+        elif pysh_type == '_output_instruction':
+            # If the instruction is an output instruction, handle it.
+            _handle_output_instruction(instruction, self.state)
         elif pysh_type == '_class_vote_instruction':
             # If the instruction is an class_instruction, handle it.
             _handle_vote_instruction(instruction, self.state)

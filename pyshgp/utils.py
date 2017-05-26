@@ -152,6 +152,8 @@ def recognize_pysh_type(thing):
     """
     if type(thing) == instr.PyshInputInstruction:
         return '_input_instruction'
+    elif type(thing) == instr.PyshOutputInstruction:
+        return '_output_instruction'
     elif type(thing) == instr.PyshClassVoteInstruction:
         return '_class_vote_instruction'
     elif type(thing) == instr.PyshInstruction:

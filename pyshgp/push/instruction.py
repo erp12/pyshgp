@@ -14,7 +14,8 @@ class PyshInstruction(object):
     """A instruction for the push language.
 
     :param str name: A string name for the instruction.
-    :param function func: The python function that manipulates a Push state in the desired way.
+    :param function func: The python function that manipulates a Push state in
+    the desired way.
     :param list stack_types: List of related Pysh types.
     :param int parentheses: Specifies number of paren groups. (0, 1, 2, ... etc)
     """
@@ -38,9 +39,8 @@ class PyshInstruction(object):
         return str(self.name)
 
 class PyshInputInstruction(PyshInstruction):
-    """A push instruction that will handle input values.
-
-    Input instructions which are generated based on initial state of the _input stack.
+    """A push instruction that will handle input values. Input instructions
+    which are generated based on initial state of the _input stack.
 
     :param int input_index: The index in the input stack to get value from.
     """
@@ -68,10 +68,9 @@ class PyshOutputInstruction(PyshInstruction):
         return str(self.name)
 
 class PyshClassVoteInstruction(PyshInstruction):
-    """A push instruction that will handle Class Voting.
-
-    Pulls from a numerical stack to add "votes" to an element of the output stack.
-    Intended to be used in classification problems.
+    """A push instruction that will handle Class Voting. Pulls from a numerical
+    stack to add "votes" to an element of the output stack. Intended to be used
+    in classification problems.
 
     :param int class_id:   The index in the output stack to place vote.
     :param str vote_stack: The numerical stack from which to pull a vote.

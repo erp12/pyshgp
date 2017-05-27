@@ -8,10 +8,11 @@ from copy import copy
 import numpy as np
 
 from ..utils import (keep_number_reasonable, median_absolute_deviation,
-                     UnevaluatableStackResponse)
+                     UnevaluatableStackResponse, levenshtein_distance,
+                     is_int_type, is_str_type, count_points)
 from ..push import translation as tran
 from ..push import interpreter as interp
-from ..push import simplification as simp
+from .simplification import simplify_once
 
 ###########
 # Classes #
@@ -68,10 +69,9 @@ class Individual(object):
         program.
         """
         i = interp.PushInterpreter(inputs)
-        i.run_push(self.program, print_trace)
-        return i
+        return i.run_push(self.program, print_trace)
 
-    def evaluate(self, X, y, output_stack, metric):
+    def evaluate(self, X, y, metric=None):
         """Evaluates the individual.
 
         Parameters
@@ -91,19 +91,21 @@ class Individual(object):
         """
         y_hat = []
         error_vec = []
-        row_index = 0
-        for r in X:
-            result = self.run_program(inputs=r)
-            out = result.state[output_stack].top_item()
-            if isinstance(out, UnevaluatableStackResponse):
-                y_hat.append(-9999)
-                error_vec.append(9999)
-            else:
-                y_hat.append(out)
-                error_vec.append(abs(y[row_index] - out))
-            row_index += 1
+        for i in range(X.shape[0]):
+            result = self.run_program(inputs=X[i])
+            outputs = list(result.values())
+            y_hat.append(outputs)
+            targets = list(y[i])
+            for j in range(len(outputs)):
+                if is_int_type(outputs[j]) or isinstance(outputs[j], (float, np.float)):
+                    error_vec.append(abs(outputs[j] - targets[j]))
+                elif is_str_type(outputs[j]):
+                    levenshtein_distance(outputs[j], targets[j])
         self.error_vector = error_vec
-        self.total_error = metric(y, y_hat)
+        if metric is None:
+            self.total_error = sum(self.error_vector)
+        else:
+            self.total_error = metric(y, y_hat)
 
     def evaluate_with_function(self, error_function):
         """Evaluates the individual by passing it's program to the error
@@ -113,34 +115,66 @@ class Individual(object):
         """
         errs = error_function(self.program)
         self.error_vector = errs
+        self.total_error = sum(self.error_vector)
         return self
 
-    def simplify(self, error_function, steps, verbose=0):
-        """Simplifies the individual's program by randomly removing some
-        elements of the program and confirming that the total error remains the
-        same or lower. This is acheived by silencing some genes in the
-        individual's genome.
+    def simplify(self, X, y, metric=None, steps=1000, verbose=0):
+        """Simplifies the genome (and program) of the individual based on
+        a dataset by randomly removing some elements of the program and
+        confirming that the total error remains the same or lower. This is
+        acheived by silencing some genes in the individual's genome.
         """
-        simp.auto_simplify(self, error_function, steps, verbose)
+        # Print the origional size of the individual.
+        if verbose > 0:
+            print("Autosimplifying program of size:",
+                  count_points(individual.program))
+        for i in range(steps):
+            orig_err = copy(self.total_error)
+            orig_gn = copy(self.genome)
+            # Evalaute the current individual and copy of the genome and error.
+            self.evaluate(X, y, metric)
+            simplify_once(self)
+            # Evaluate the individual again.
+            self.evaluate(X, y, metric)
+            # Decide if the simplification impacted performance, and revert.
+            if self.total_error > orig_err:
+                self.genome = orig_gn
+        # Print the final size of the individual.
+        if verbose > 0:
+            print("Finished simplifying program. New size:",
+                  u.count_points(individual.program))
+            print(individual.program)
+
+    def simplify_with_function(self, error_function, steps=1000, verbose=0):
+        """Simplifies the genome (and program) of the individual based on
+        an error function by randomly removing some elements of the program and
+        confirming that the total error remains the same or lower. This is
+        acheived by silencing some genes in the individual's genome.
+        """
+        # Print the origional size of the individual.
+        if verbose > 0:
+            print("Autosimplifying program of size:",
+                  count_points(individual.program))
+        for i in range(steps):
+            orig_err = copy(self.total_error)
+            orig_gn = copy(self.genome)
+            # Evalaute the current individual and copy of the genome and error.
+            self.evaluate_with_function(error_function)
+            simplify_once(self)
+            # Evaluate the individual again.
+            self.evaluate_with_function(error_function)
+            # Decide if the simplification impacted performance, and revert.
+            if self.total_error > orig_err:
+                self.genome = orig_gn
+        # Print the final size of the individual.
+        if verbose > 0:
+            print("Finished simplifying program. New size:",
+                  u.count_points(individual.program))
+            print(individual.program)
 
 class Population(list):
     """Pyshgp population of Individuals.
     """
-
-    def evaluate_with_function(self, error_function, pool=None):
-        """Evaluates every individual in the population, if the individual has
-        not been previously evaluated.
-
-        :param func error_function: The error function.
-        """
-        if pool is None:
-            evaluated_inds = pool.map(lambda i: i.evaluate(error_function), self)
-            for i in range(len(evaluated_inds)):
-                self[i] = evaluated_inds[i]
-        else:
-            for i in self:
-                if not hasattr(i, 'error_vector'):
-                    i.evaluate(error_function)
 
     def evaluate(self, X, y, output_stack, metric):
         """Evaluates every individual in the population, if the individual has
@@ -165,10 +199,28 @@ class Population(list):
             if not hasattr(i, 'error_vector'):
                 i.evaluate(X, y, output_stack, metric)
 
-        if pool is None:
+        if not pool is None:
             pool.map(f, self)
         else:
-            map(f, i)
+            for i in self:
+                f(i)
+
+    def evaluate_with_function(self, error_function, pool=None):
+        """Evaluates every individual in the population, if the individual has
+        not been previously evaluated.
+
+        :param func error_function: The error function.
+        """
+        def f(i):
+            if not hasattr(i, 'error_vector'):
+                i.evaluate_with_function(error_function)
+
+        if not pool is None:
+            pool.map(f, self)
+        else:
+            for i in self:
+                f(i)
+
 
     def select(self, method='lexicase', epsilon='auto', tournament_size=7):
         """Selects a individual from the population with the given selection

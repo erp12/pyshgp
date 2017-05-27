@@ -11,6 +11,7 @@ __metaclass__ = type
 import time
 from copy import deepcopy # <- This one is actually needed.
 from collections import OrderedDict
+import numpy as np
 
 from .. import utils as u
 from .. import constants as c
@@ -57,7 +58,7 @@ class PushState(dict):
     """
 
     def __init__(self, inputs=[], outputs=OrderedDict()):
-        if not isinstance(inputs, list):
+        if not isinstance(inputs, (list, np.ndarray)):
             msg = "Push inputs must be a list, got {}"
             raise ValueError(msg.format(type(inputs)))
         if not isinstance(outputs, dict):
@@ -121,7 +122,16 @@ class PushInterpreter:
 
 
     def __init__(self, inputs=[], outputs=OrderedDict()):
+        self.inputs = inputs
+        self.outputs = outputs
         self.state = PushState(inputs, outputs)
+        self.status = '_normal'
+
+    def reset(self):
+        """Resets the PushInterpreter. Should be called between push program
+        executions.
+        """
+        self.state = PushState(self.inputs, self.outputs)
         self.status = '_normal'
 
     def execute_instruction(self, instruction):
@@ -215,6 +225,7 @@ class PushInterpreter:
         :param list code: The push program to run.
         :param bool print_steps: Denotes if stack states should be printed.
         """
+        self.reset()
         # If you don't copy the code, the reference to the program will get
         # reversed and other bad things.
         code_copy = deepcopy(code)
@@ -222,4 +233,4 @@ class PushInterpreter:
         self.eval_push(print_steps)
         if print_steps:
             print("=== Finished Push Execution ===")
-        return self.state['_exec']
+        return self.state['_output']

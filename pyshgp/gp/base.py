@@ -88,6 +88,9 @@ class PyshMixin:
         :param dict max_workers: Number of worker to put in pool. -1 uses
         same number as available cores.
         """
+        if self.n_jobs == 1:
+            return
+
         from pathos.multiprocessing import ProcessingPool as Pool
 
         if self.n_jobs == -1:

@@ -14,7 +14,7 @@ class Gene(object):
 
     #: An instance of the instruction class or a literal
     atom = None
-    
+
     #: Denotes if the gene is holding a literal or an instruction.
     is_literal = None
 
@@ -24,7 +24,7 @@ class Gene(object):
     #: If true, do not include instruction in translated program.
     is_silent = None
 
-    def __init__(self, atom, is_literal, closes, is_silent):
+    def __init__(self, atom, is_literal, closes, is_silent=False):
         self.atom = atom
         self.is_literal = is_literal
         self.closes = closes
@@ -35,4 +35,3 @@ class Gene(object):
                                              self.is_literal,
                                              self.closes,
                                              self.is_silent)
-        

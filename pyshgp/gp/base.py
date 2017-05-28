@@ -56,7 +56,7 @@ class PyshMixin:
                  operators=DEFAULT_GENETICS, initial_max_genome_size=50,
                  program_growth_cap=100, atom_generators=DEFAULT_ATOM_GENERATORS,
                  verbose=0, epsilon='auto', tournament_size=7,
-                 simplification_steps=500):
+                 simplification_steps=2000):
         self.error_threshold = error_threshold
         self.max_generations = max_generations
         self.population_size = population_size
@@ -192,17 +192,19 @@ class SimplePushGPEvolver(PyshMixin):
                  max_generations=1000, population_size=300,
                  selection_method='epsilon_lexicase', n_jobs=1,
                  operators=DEFAULT_GENETICS, initial_max_genome_size=50,
-                 program_growth_cap=100, atom_generators=REGRESSION_ATOM_GENERATORS,
-                 verbose=0, epsilon='auto', tournament_size=7, simplification_steps=500):
+                 program_growth_cap=100,
+                 atom_generators=REGRESSION_ATOM_GENERATORS, verbose=0,
+                 epsilon='auto', tournament_size=7, simplification_steps=2000):
 
         PyshMixin.__init__(self, max_generations=max_generations,
-                           population_size=population_size, selection_method=selection_method,
+                           population_size=population_size,
+                           selection_method=selection_method,
                            n_jobs=n_jobs, operators=operators,
                            program_growth_cap=program_growth_cap,
                            initial_max_genome_size=initial_max_genome_size,
                            atom_generators=atom_generators, verbose=verbose,
-                           simplification_steps=simplification_steps, epsilon=epsilon,
-                           tournament_size=tournament_size)
+                           simplification_steps=simplification_steps,
+                           epsilon=epsilon, tournament_size=tournament_size)
 
     def fit(self, error_function, n_inputs, outputs_dict):
         """Fits the SimplePushGPEvolver.
@@ -261,11 +263,6 @@ class SimplePushGPEvolver(PyshMixin):
         self.best_.simplify_with_function(error_function,
                                           self.simplification_steps,
                                           self.verbose)
-
-    def predict(self, inputs):
-        """
-        """
-
 
 class PushGPRegressor(BaseEstimator, PyshMixin):
     """A Scikit-learn estimator that uses PushGP for regression tasks.

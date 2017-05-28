@@ -8,6 +8,8 @@ into Push programs.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from copy import copy, deepcopy
+
 from .. import utils as u
 
 from . import instruction
@@ -84,7 +86,7 @@ def genome_to_program(genome):
     prog = []
 
     # The linear Plush genome being translated. List of Plush_Gene objects.
-    gn = genome
+    gn = copy(genome)
 
      # The number of parens that still need to be added at this location.
     num_parens_here = 0

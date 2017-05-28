@@ -57,7 +57,11 @@ class Individual(object):
     def __repr__(self):
         return "PyshIndividual<"+str(self.total_error)+">"
 
-    def run_program(self, inputs=None, print_trace=False):
+    def sync_program_to_genome(self):
+        """If single genes of a
+        """
+
+    def run_program(self, inputs=[], print_trace=False):
         """Runs the Individual's program.
 
         :param list inputs: List of input values that can be accessed by the
@@ -82,17 +86,17 @@ class Individual(object):
         y : {array-like, sparse matrix}, shape = (n_samples, 1)
             Labels.
 
-        output_stack : str
+        output_dict : dict
             Name of stack which will contain the output values.
 
         metric : function
-            Function to used to calculate the error of the individual. All
-            sklearn regression metrics are supported.
+            Function to used to calculate the error of the individual. Sklearn
+            scoring functions are supported.
         """
         y_hat = []
         error_vec = []
         for i in range(X.shape[0]):
-            result = self.run_program(inputs=X[i])
+            result = self.run_program(X[i])
             outputs = list(result.values())
             y_hat.append(outputs)
             targets = list(y[i])
@@ -118,7 +122,7 @@ class Individual(object):
         self.total_error = sum(self.error_vector)
         return self
 
-    def simplify(self, X, y, metric=None, steps=1000, verbose=0):
+    def simplify(self, X, y, metric=None, steps=2000, verbose=0):
         """Simplifies the genome (and program) of the individual based on
         a dataset by randomly removing some elements of the program and
         confirming that the total error remains the same or lower. This is
@@ -133,7 +137,7 @@ class Individual(object):
             orig_gn = copy(self.genome)
             # Evalaute the current individual and copy of the genome and error.
             self.evaluate(X, y, metric)
-            simplify_once(self)
+            self.genome = simplify_once(self.genome)
             # Evaluate the individual again.
             self.evaluate(X, y, metric)
             # Decide if the simplification impacted performance, and revert.
@@ -145,7 +149,7 @@ class Individual(object):
                   u.count_points(individual.program))
             print(individual.program)
 
-    def simplify_with_function(self, error_function, steps=1000, verbose=0):
+    def simplify_with_function(self, error_function, steps=2000, verbose=0):
         """Simplifies the genome (and program) of the individual based on
         an error function by randomly removing some elements of the program and
         confirming that the total error remains the same or lower. This is
@@ -160,7 +164,7 @@ class Individual(object):
             orig_gn = copy(self.genome)
             # Evalaute the current individual and copy of the genome and error.
             self.evaluate_with_function(error_function)
-            simplify_once(self)
+            self.genome = simplify_once(self.genome)
             # Evaluate the individual again.
             self.evaluate_with_function(error_function)
             # Decide if the simplification impacted performance, and revert.
@@ -176,7 +180,7 @@ class Population(list):
     """Pyshgp population of Individuals.
     """
 
-    def evaluate(self, X, y, output_stack, metric):
+    def evaluate(self, X, y, metric):
         """Evaluates every individual in the population, if the individual has
         not been previously evaluated.
 
@@ -188,16 +192,13 @@ class Population(list):
         y : {array-like, sparse matrix}, shape = (n_samples, 1)
             Target values.
 
-        output_stack : str
-            Name of stack which will contain the output values.
-
         metric : function
             Function to used to calculate the error of an individual. All
             sklearn regression metrics are supported.
         """
         def f(i):
             if not hasattr(i, 'error_vector'):
-                i.evaluate(X, y, output_stack, metric)
+                i.evaluate(X, y, metric)
 
         if not pool is None:
             pool.map(f, self)

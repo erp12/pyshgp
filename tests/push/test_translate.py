@@ -12,7 +12,7 @@ class TestTranslateMethods(unittest.TestCase):
         self.balenced = ["_open", 1, "_close", "_open", 2, "_close"]
         self.unbalenced = ["_open", "_open", 1, "_close", "_close", 3, "_close"]
         R = r.PushSpawner([lambda: 0])
-        self.gn = R.random_plush_genome(5)
+        self.gn = R.random_plush_genome_with_size(5)
 
     def test_get_matcing_close_index(self):
         i = t.get_matcing_close_index(self.unbalenced)
@@ -25,3 +25,4 @@ class TestTranslateMethods(unittest.TestCase):
     def test_genome_to_program(self):
         p = t.genome_to_program(self.gn)
         self.assertIsInstance(p, list)
+        self.assertEqual(len(self.gn), 5)

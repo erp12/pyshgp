@@ -17,11 +17,11 @@ class TestIndividualMethods(unittest.TestCase):
             lambda: np.random.random(),
         ]
         self.R = r.PushSpawner(self.atom_gens)
-        self.i = p.Individual(self.R.random_plush_genome(5))
+        self.i = p.Individual(self.R.random_plush_genome_with_size(4))
 
     def test_run_program(self):
         inputs = [1,2,3]
-        result = self.i.run_program(inputs=inputs)
+        result = self.i.run_program(inputs, {})
         self.assertEqual(len(result), 0)
 
     def test_evaluate(self):
@@ -37,16 +37,18 @@ class TestIndividualMethods(unittest.TestCase):
 
     def test_simplify(self):
         X = np.arange(3).reshape(-1, 1)
-        y = np.array([0.5, 0.5, 0.5]).reshape(-1, 1)
+        y = np.array(['a', 'b', 'c']).reshape(-1, 1)
         self.i.evaluate(X, y)
         self.i.simplify(X, y)
         self.assertEqual(self.i.program, [])
+        self.assertEqual(len(self.i.genome), 4)
 
     def test_simplify_with_function(self):
         ef = lambda program: [1, 2, 3]
         self.i.evaluate_with_function(ef)
         self.i.simplify_with_function(ef)
         self.assertEqual(self.i.program, [])
+        self.assertEqual(len(self.i.genome), 4)
 
 class TestPopulationMethods(unittest.TestCase):
 

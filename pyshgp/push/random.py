@@ -78,7 +78,7 @@ class PushSpawner:
         instruction = None
         is_literal = False
         closes = None
-        silent = None
+        silent = False
 
         # For each marker that is present
         for m in self.epigenetic_markers:

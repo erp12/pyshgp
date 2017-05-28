@@ -18,21 +18,17 @@ def silent_n_random_genes(genome, n):
     """Returns a new genome that is identical to input genome, with n genes
     marked as silent.
     """
-    gn = copy(genome)
-    genes_to_silence = randint(0, len(gn), n)
+    genes_to_silence = randint(0, len(genome), n)
     for i in genes_to_silence:
-        gn[i].is_silent = True
-    return copy(gn)
+        genome[i].is_silent = True
 
 def noop_n_random_genes(genome, n):
     """Returns a new genome that is identical to input genome, with n genes
     replaced with noop instructions.
     """
-    gn = copy(genome)
-    genes_to_silence = randint(0, len(gn), n)
+    genes_to_silence = randint(0, len(genome), n)
     for i in genes_to_silence:
-        gn[i].atom = copy(exec_noop_instruction)
-    return copy(gn)
+        genome[i].atom = copy(exec_noop_instruction)
 
 def simplify_once(genome):
     """Silences or noops between 1 and 3 random genes.
@@ -41,7 +37,7 @@ def simplify_once(genome):
     n = randint(1,4)
     action = choice(['silent', 'noop'])
     if action == 'silent':
-        new_gn = silent_n_random_genes(gn, n)
+        silent_n_random_genes(gn, n)
     else:
-        new_gn = noop_n_random_genes(gn, n)
-    return copy(new_gn)
+        noop_n_random_genes(gn, n)
+    return gn

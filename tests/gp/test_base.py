@@ -34,10 +34,10 @@ class TestPyshMixinMethods(unittest.TestCase):
 class TestSimplePushGPEvolverMethods(unittest.TestCase):
 
     def setUp(self):
-        self.reg = SimplePushGPEvolver(max_generations=3, population_size=5,
+        self.evo = SimplePushGPEvolver(max_generations=3, population_size=5,
                                       simplification_steps=50)
         self.ef = lambda s: [np.random.random(), np.random.random()]
 
     def test_fit(self):
-        self.reg.fit(self.ef, 0, {})
-        self.assertTrue(hasattr(self.reg, 'best_'))
+        self.evo.fit(self.ef, 0, {})
+        self.assertTrue(hasattr(self.evo, 'best_'))

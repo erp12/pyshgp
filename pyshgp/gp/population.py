@@ -135,7 +135,7 @@ class Individual(object):
                   count_points(self.program))
         for i in range(steps):
             # Evalaute the current individual and copy of the genome and error.
-            self.evaluate_with_function(error_function)
+            self.evaluate(X, y, metric)
             orig_err = copy(self.total_error)
             orig_gn = copy(self.genome)
             self.genome = simplify_once(self.genome)

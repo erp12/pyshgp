@@ -28,8 +28,8 @@ def error_func(program):
         interpreter = PushInterpreter([inpt])
         outputs = interpreter.run_push(program)
         # Get output
-        y_hat = outputs['y_hat']
-        if type(y_hat) == float:
+        if 'y_hat' in outputs.keys():
+            y_hat = outputs['y_hat']
             # compare to target output
             target_float = target_function(inpt)
             # calculate error

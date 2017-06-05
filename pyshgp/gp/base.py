@@ -123,6 +123,9 @@ class PyshMixin:
                 output_instr = PyshOutputInstruction(k, pysh_type)
                 all_atom_gens.append(output_instr)
         self.spawner = r.PushSpawner(all_atom_gens)
+        if self.verbose > 1:
+            print('Creating Spawner with following atom generators:')
+            print(self.spawner.atom_generators)
 
     def init_population(self):
         """Generate random population of Individuals with Push programs.

@@ -59,7 +59,7 @@ class PyshOutputInstruction(PyshInstruction):
     """
 
     def __init__(self, output_name, from_stack):
-        name = '_output_'+from_stack+'_as_'+output_name
+        name = '_output'+from_stack+'_as_'+output_name
         PyshInstruction.__init__(self, name, None)
         self.output_name = output_name
         self.from_stack = from_stack

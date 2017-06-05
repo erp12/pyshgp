@@ -15,7 +15,6 @@ from pyshgp.push.instructions import registered_instructions as ri
 from pyshgp.push.instruction import PyshInputInstruction
 from pyshgp.gp.base import SimplePushGPEvolver
 from pyshgp.gp.variation import UniformMutation, Alternation
-from pyshgp.utils import NoStackItem, StackOutOfBounds
 
 '''
 Take the input string, remove the last 2 characters, and then concat this result with itself.
@@ -79,8 +78,7 @@ ops = [
     (Alternation(), 0.5)
 ]
 
-atom_generators = [PyshInputInstruction(0),
-                   ri.get_instruction("_string_length"),
+atom_generators = [ri.get_instruction("_string_length"),
                    ri.get_instruction("_string_head"),
                    ri.get_instruction("_string_concat"),
                    ri.get_instruction("_string_stack_depth"),

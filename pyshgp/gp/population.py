@@ -134,10 +134,10 @@ class Individual(object):
             print("Autosimplifying program of size:",
                   count_points(self.program))
         for i in range(steps):
+            # Evalaute the current individual and copy of the genome and error.
+            self.evaluate_with_function(error_function)
             orig_err = copy(self.total_error)
             orig_gn = copy(self.genome)
-            # Evalaute the current individual and copy of the genome and error.
-            self.evaluate(X, y, metric)
             self.genome = simplify_once(self.genome)
             # Evaluate the individual again.
             self.evaluate(X, y, metric)
@@ -161,17 +161,15 @@ class Individual(object):
             print("Autosimplifying program of size:",
                   count_points(self.program))
         for i in range(steps):
-            orig_err = copy(self.total_error)
-            orig_gn = deepcopy(self.genome)
             # Evalaute the current individual and copy of the genome and error.
             self.evaluate_with_function(error_function)
+            orig_err = self.total_error
+            orig_gn = self.genome
             self.genome = simplify_once(self.genome)
             # Evaluate the individual again.
             self.evaluate_with_function(error_function)
             # Decide if the simplification impacted performance, and revert.
-            print(orig_err, self.total_error, '||', count_points(self.program))
             if self.total_error > orig_err:
-                print('REVERT')
                 self.genome = orig_gn
         # Print the final size of the individual.
         if verbose > 0:

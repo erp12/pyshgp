@@ -26,15 +26,14 @@ def error_func(program):
         inpt = float(x)
         # Create the push interpreter
         interpreter = PushInterpreter([inpt])
-        interpreter.run_push(program)
+        outputs = interpreter.run_push(program)
         # Get output
-        top_float = interpreter.state["_float"].ref(0)
-
-        if type(top_float) == float:
+        y_hat = outputs['y_hat']
+        if type(y_hat) == float:
             # compare to target output
             target_float = target_function(inpt)
             # calculate error
-            errors.append((top_float - target_float)**2)
+            errors.append((y_hat - target_float)**2)
         else:
             errors.append(1000)
 
@@ -44,4 +43,4 @@ if __name__ == "__main__":
     evo = SimplePushGPEvolver(n_jobs=-1, verbose=1,
                               selection_method='epsilon_lexicase',
                               atom_generators=REGRESSION_ATOM_GENERATORS)
-    evo.evolve(error_func, 1)
+    evo.fit(error_func, 1, {'y_hat' : -9999.0})

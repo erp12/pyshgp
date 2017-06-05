@@ -63,18 +63,15 @@ def string_error_func(program):
     for inpt in inputs:
         # Create the push interpreter
         interpreter = PushInterpreter([inpt])
-        interpreter.run_push(program)
-        # Get output
-        prog_output = interpreter.state["_string"].ref(0)
-
-        if isinstance(prog_output, NoStackItem) or isinstance(prog_output, StackOutOfBounds):
-            # If response is un-evaluatable, add a bad error.
-            errors.append(1000)
-        else:
+        outputs = interpreter.run_push(program)
+        if 'y_hat' in outputs.keys():
+            y_hat = outputs['y_hat']
             # compare to target output
             target_output = inpt[:-2] + inpt[:-2]
-            errors.append(string_difference(prog_output, target_output) +
-                          string_char_counts_difference(prog_output, target_output))
+            errors.append(string_difference(y_hat, target_output) +
+                          string_char_counts_difference(y_hat, target_output))
+        else:
+            errors.append(2000)
     return errors
 
 ops = [
@@ -100,4 +97,4 @@ atom_generators = [PyshInputInstruction(0),
 if __name__ == "__main__":
     evo = SimplePushGPEvolver(n_jobs=-1, verbose=1, operators=ops,
                               atom_generators=atom_generators)
-    evo.evolve(string_error_func, 1)
+    evo.fit(string_error_func, 1, {'y_hat' : ''})

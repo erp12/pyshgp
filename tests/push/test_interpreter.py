@@ -5,6 +5,8 @@ import unittest
 import pyshgp.utils as u
 import pyshgp.push.interpreter as interp
 
+#TODO: WRITE _handle_?_instruction TESTS
+
 class TestPushStateMethods(unittest.TestCase):
 
     def setUp(self):
@@ -33,3 +35,5 @@ class TestPushStateMethods(unittest.TestCase):
         self.assertEqual(len(self.i.state), 4)
         self.assertEqual(self.i.state['_integer'].top_item(), 5)
         self.assertEqual(len(self.i.state['_integer']), 1)
+
+#TODO: WRITE INTERPRETER TESTS

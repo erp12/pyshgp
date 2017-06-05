@@ -4,7 +4,7 @@ Classes that reperesents Individuals and Populations in evolutionary algorithms.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math, random
-from copy import copy
+from copy import copy, deepcopy
 import numpy as np
 
 from ..utils import (keep_number_reasonable, median_absolute_deviation,
@@ -110,6 +110,7 @@ class Individual(object):
             self.total_error = sum(self.error_vector)
         else:
             self.total_error = metric(y, y_hat)
+        return self
 
     def evaluate_with_function(self, error_function):
         """Evaluates the individual by passing it's program to the error
@@ -131,7 +132,7 @@ class Individual(object):
         # Print the origional size of the individual.
         if verbose > 0:
             print("Autosimplifying program of size:",
-                  count_points(individual.program))
+                  count_points(self.program))
         for i in range(steps):
             orig_err = copy(self.total_error)
             orig_gn = copy(self.genome)
@@ -146,8 +147,8 @@ class Individual(object):
         # Print the final size of the individual.
         if verbose > 0:
             print("Finished simplifying program. New size:",
-                  u.count_points(individual.program))
-            print(individual.program)
+                  count_points(self.program))
+            print(self.program)
 
     def simplify_with_function(self, error_function, steps=2000, verbose=0):
         """Simplifies the genome (and program) of the individual based on
@@ -158,23 +159,25 @@ class Individual(object):
         # Print the origional size of the individual.
         if verbose > 0:
             print("Autosimplifying program of size:",
-                  count_points(individual.program))
+                  count_points(self.program))
         for i in range(steps):
             orig_err = copy(self.total_error)
-            orig_gn = copy(self.genome)
+            orig_gn = deepcopy(self.genome)
             # Evalaute the current individual and copy of the genome and error.
             self.evaluate_with_function(error_function)
             self.genome = simplify_once(self.genome)
             # Evaluate the individual again.
             self.evaluate_with_function(error_function)
             # Decide if the simplification impacted performance, and revert.
+            print(orig_err, self.total_error, '||', count_points(self.program))
             if self.total_error > orig_err:
+                print('REVERT')
                 self.genome = orig_gn
         # Print the final size of the individual.
         if verbose > 0:
             print("Finished simplifying program. New size:",
-                  u.count_points(individual.program))
-            print(individual.program)
+                  count_points(self.program))
+            print(self.program)
 
 class Population(list):
     """Pyshgp population of Individuals.
@@ -198,10 +201,11 @@ class Population(list):
         """
         def f(i):
             if not hasattr(i, 'error_vector'):
-                i.evaluate(X, y, metric)
+                return i.evaluate(X, y, metric)
+            return i
 
         if not pool is None:
-            pool.map(f, self)
+            self[:] = pool.map(f, self)
         else:
             for i in self:
                 f(i)
@@ -214,14 +218,14 @@ class Population(list):
         """
         def f(i):
             if not hasattr(i, 'error_vector'):
-                i.evaluate_with_function(error_function)
+                return i.evaluate_with_function(error_function)
+            return i
 
         if not pool is None:
-            pool.map(f, self)
+            self[:] = pool.map(f, self)
         else:
             for i in self:
                 f(i)
-
 
     def select(self, method='lexicase', epsilon='auto', tournament_size=7):
         """Selects a individual from the population with the given selection

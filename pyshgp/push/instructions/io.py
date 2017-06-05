@@ -37,7 +37,8 @@ def printer(pysh_type):
         top_thing = state[pysh_type].ref(0)
         top_thing_str = str(top_thing)
         if not 'stdout' in state['_output'].keys():
-            return
+            # stdout is not an output yet, create it.
+            state['_output']['stdout'] = ''
         if len(state['_output']['stdout'])+len(top_thing_str) > c.max_string_length:
             return
         state[pysh_type].pop()

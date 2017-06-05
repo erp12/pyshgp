@@ -39,9 +39,11 @@ def _handle_input_instruction(instruction, state):
 def _handle_output_instruction(instruction, state):
     """Allows Push to handle class output instructions.
     """
+    if len(state[instruction.from_stack]) == 0:
+        return
     output_value = state[instruction.from_stack].ref(0)
     state[instruction.from_stack].pop()
-    state['_output'][class_index] = output_value
+    state['_output'][instruction.output_name] = output_value
 
 def _handle_vote_instruction(instruction, state):
     '''Allows Push to handle class voting instructions.
@@ -57,15 +59,12 @@ class PushState(dict):
     """Dictionary that holds PyshStacks.
     """
 
-    def __init__(self, inputs=[], outputs=OrderedDict()):
+    def __init__(self, inputs=[]):
         if not isinstance(inputs, (list, np.ndarray)):
             msg = "Push inputs must be a list, got {}"
             raise ValueError(msg.format(type(inputs)))
-        if not isinstance(outputs, dict):
-            msg = "Push outputs must be a dict, got {}"
-            raise ValueError(msg.format(type(outputs)))
         self['_input'] = inputs[::-1]
-        self['_output'] = outputs
+        self['_output'] = OrderedDict()
 
         for t in c.pysh_types:
             self[t] = stack.PyshStack(t)
@@ -87,7 +86,6 @@ class PushState(dict):
         """
         # Clear existing stacks.
         self['_input'] = []
-        self['_output'] = OrderedDict()
         for t in c.pysh_types:
             self[t] = stack.PyshStack(t)
         # Overwrite stacks found in dict
@@ -121,17 +119,16 @@ class PushInterpreter:
     status = '_normal'
 
 
-    def __init__(self, inputs=[], outputs=OrderedDict()):
+    def __init__(self, inputs=[]):
         self.inputs = inputs
-        self.outputs = outputs
-        self.state = PushState(inputs, outputs)
+        self.state = PushState(inputs)
         self.status = '_normal'
 
     def reset(self):
         """Resets the PushInterpreter. Should be called between push program
         executions.
         """
-        self.state = PushState(self.inputs, self.outputs)
+        self.state = PushState(self.inputs)
         self.status = '_normal'
 
     def execute_instruction(self, instruction):
@@ -233,4 +230,7 @@ class PushInterpreter:
         self.eval_push(print_steps)
         if print_steps:
             print("=== Finished Push Execution ===")
-        return self.state['_output']
+        if '_output' in self.state.keys():
+            return self.state['_output']
+        else:
+            return {}

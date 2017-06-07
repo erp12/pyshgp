@@ -10,7 +10,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from copy import copy, deepcopy
 
-from .. import utils as u
+from ..utils import is_str_type
 
 from . import instruction
 from . import plush as pl
@@ -27,9 +27,9 @@ def get_matcing_close_index(sequence):
     """
     open_count = 0
     for i in range(len(sequence)):
-        if u.is_str_type(sequence[i]) and sequence[i] == '_open':
+        if is_str_type(sequence[i]) and sequence[i] == '_open':
             open_count += 1
-        elif u.is_str_type(sequence[i]) and sequence[i] == '_close':
+        elif is_str_type(sequence[i]) and sequence[i] == '_close':
             open_count -= 1
         if open_count == 0:
             return i
@@ -53,7 +53,7 @@ def open_close_sequence_to_list(sequence):
         result = []
         rest = sequence
         while len(rest) > 0:
-            if u.is_str_type(rest[0]) and rest[0] == '_open':
+            if is_str_type(rest[0]) and rest[0] == '_open':
                 i = get_matcing_close_index(rest)
                 sub_seq = rest[1:i]
                 result.append( open_close_sequence_to_list(sub_seq) )

@@ -8,7 +8,6 @@ Plush genomes are python lists of plush genes.
 Plush genes are python objects defined below.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
-__metaclass__ = type
 
 class Gene(object):
 

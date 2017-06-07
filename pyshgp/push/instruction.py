@@ -6,7 +6,6 @@ instructions that can be handled by the ``pyshgp`` Push interpreter.
 """
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-__metaclass__ = type
 
 from .instructions import registered_instructions as ri
 

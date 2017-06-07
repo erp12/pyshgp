@@ -13,12 +13,12 @@ for r in X_train:
     Y_train.append(target_func(*r))
 Y_train = np.array(Y_train).reshape(-1, 1)
 
-print(X_train)
-print(Y_train)
-print
+# print(X_train)
+# print(Y_train)
+# print
 
-symbReg = PushGPRegressor(max_generations=200, population_size=100, n_jobs=1,
-                          verbose=2)
+symbReg = PushGPRegressor(max_generations=100, n_jobs=-1,
+                          verbose=1)
 symbReg.fit(X_train, Y_train)
 
 print(symbReg.best_error_)

@@ -27,7 +27,7 @@ class TestIndividualMethods(unittest.TestCase):
     def test_evaluate(self):
         X = np.arange(3).reshape(-1, 1)
         y = np.array([0.5, 0.5, 0.5]).reshape(-1, 1)
-        self.i.evaluate(X, y)
+        self.i.evaluate(X, y, {'?':-999})
 
     def test_evaluate_with_function(self):
         ef = lambda program: [1, 2, 3]
@@ -38,8 +38,7 @@ class TestIndividualMethods(unittest.TestCase):
     def test_simplify(self):
         X = np.arange(3).reshape(-1, 1)
         y = np.array(['a', 'b', 'c']).reshape(-1, 1)
-        self.i.evaluate(X, y)
-        self.i.simplify(X, y)
+        self.i.simplify(X, y, {'?':-999})
         self.assertEqual(self.i.program, [])
         self.assertEqual(len(self.i.genome), 4)
 

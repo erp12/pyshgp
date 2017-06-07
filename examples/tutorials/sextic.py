@@ -40,7 +40,8 @@ def error_func(program):
     return errors
 
 if __name__ == "__main__":
-    evo = SimplePushGPEvolver(n_jobs=-1, verbose=1,
+    evo = SimplePushGPEvolver(n_jobs=-1, verbose=2,
                               selection_method='epsilon_lexicase',
-                              atom_generators=REGRESSION_ATOM_GENERATORS)
-    evo.fit(error_func, 1, {'y_hat' : -9999.0})
+                              atom_generators=REGRESSION_ATOM_GENERATORS,
+                              max_generations=50)
+    evo.fit(error_func, 1, {'y_hat' : -1.0e4})

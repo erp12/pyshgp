@@ -28,9 +28,7 @@ class TestSimplificationFunctions(unittest.TestCase):
         self.assertTrue(self.gn[0].atom.name == '_exec_noop')
 
     def test_simplify_once(self):
-        #print('A', self.i.genome)
         self.gn = simplify_once(self.gn)
-        #print('A', self.i.genome)
         a = self.gn[0].is_silent
         b = (hasattr(self.gn[0].atom, 'name') and
              self.gn[0].atom.name == '_exec_noop')

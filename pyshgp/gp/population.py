@@ -9,7 +9,7 @@ import numpy as np
 
 from ..utils import (keep_number_reasonable, median_absolute_deviation,
                      UnevaluatableStackResponse, levenshtein_distance,
-                     is_int_type, is_str_type, count_points)
+                     is_int_type, is_str_type, is_float_type, count_points)
 from ..push import translation as tran
 from ..push import interpreter as interp
 from .simplification import simplify_once
@@ -75,7 +75,7 @@ class Individual(object):
         i = interp.PushInterpreter(inputs)
         return i.run_push(self.program, print_trace)
 
-    def evaluate(self, X, y, metric=None):
+    def evaluate(self, X, y, output_dict, metric=None):
         """Evaluates the individual.
 
         Parameters
@@ -87,7 +87,9 @@ class Individual(object):
             Labels.
 
         output_dict : dict
-            Name of stack which will contain the output values.
+            Dict where keys are names of output values used in
+            OutputInstructions and values are default output values for that
+            output.
 
         metric : function
             Function to used to calculate the error of the individual. Sklearn
@@ -97,14 +99,19 @@ class Individual(object):
         error_vec = []
         for i in range(X.shape[0]):
             result = self.run_program(X[i])
-            outputs = list(result.values())
-            y_hat.append(outputs)
+            pred = []
+            for k,v in output_dict.items():
+                if k in result.keys():
+                    pred.append(result[k])
+                else:
+                    pred.append(output_dict[k])
+            y_hat.append(pred)
             targets = list(y[i])
-            for j in range(len(outputs)):
-                if is_int_type(outputs[j]) or isinstance(outputs[j], (float, np.float)):
-                    error_vec.append(abs(outputs[j] - targets[j]))
-                elif is_str_type(outputs[j]):
-                    levenshtein_distance(outputs[j], targets[j])
+            for j in range(len(targets)):
+                if is_int_type(targets[j]) or is_float_type(targets[j]):
+                    error_vec.append(abs(float(pred[j]) - targets[j]))
+                elif is_str_type(targets[j]):
+                    levenshtein_distance(str(pred[j]), targets[j])
         self.error_vector = error_vec
         if metric is None:
             self.total_error = sum(self.error_vector)
@@ -123,7 +130,7 @@ class Individual(object):
         self.total_error = sum(self.error_vector)
         return self
 
-    def simplify(self, X, y, metric=None, steps=2000, verbose=0):
+    def simplify(self, X, y, output_dict, metric=None, steps=2000, verbose=0):
         """Simplifies the genome (and program) of the individual based on
         a dataset by randomly removing some elements of the program and
         confirming that the total error remains the same or lower. This is
@@ -135,12 +142,12 @@ class Individual(object):
                   count_points(self.program))
         for i in range(steps):
             # Evalaute the current individual and copy of the genome and error.
-            self.evaluate(X, y, metric)
+            self.evaluate(X, y, output_dict, metric)
             orig_err = copy(self.total_error)
             orig_gn = copy(self.genome)
             self.genome = simplify_once(self.genome)
             # Evaluate the individual again.
-            self.evaluate(X, y, metric)
+            self.evaluate(X, y, output_dict, metric)
             # Decide if the simplification impacted performance, and revert.
             if self.total_error > orig_err:
                 self.genome = orig_gn
@@ -181,7 +188,7 @@ class Population(list):
     """Pyshgp population of Individuals.
     """
 
-    def evaluate(self, X, y, metric):
+    def evaluate(self, X, y, output_dict, metric, pool=None):
         """Evaluates every individual in the population, if the individual has
         not been previously evaluated.
 
@@ -199,7 +206,7 @@ class Population(list):
         """
         def f(i):
             if not hasattr(i, 'error_vector'):
-                return i.evaluate(X, y, metric)
+                return i.evaluate(X, y, output_dict, metric)
             return i
 
         if not pool is None:

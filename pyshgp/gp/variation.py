@@ -88,7 +88,7 @@ class UniformMutation(VariationOperator):
     #: TODO: Write attribute docstring.
     string_char_change_rate = None
 
-    def __init__(self, rate=0.1, constant_tweak_rate=0.5,
+    def __init__(self, rate=0.01, constant_tweak_rate=0.5,
                  float_standard_deviation=1.0, int_standard_deviation=1,
                  string_char_change_rate=0.1):
         # Initialize as a mutation operator
@@ -188,7 +188,7 @@ class Alternation(VariationOperator):
     #: when switching between parents.
     alignment_deviation = None
 
-    def __init__(self, rate=0.1, alignment_deviation=10,
+    def __init__(self, rate=0.01, alignment_deviation=10,
                  max_genome_size=200):
         # Initialize as a recombination operator
         VariationOperator.__init__(self, 2)

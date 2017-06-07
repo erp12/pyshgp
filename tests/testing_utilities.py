@@ -1,6 +1,7 @@
-from __future__ import absolute_import, division, print_function, unicode_literals 
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import random
+import numpy as np
 
 import pyshgp.utils as u
 
@@ -22,10 +23,13 @@ def rand_med_int():
 def rand_large_int():
     return random.randint(-1000000,1000000)
 
+def np_int():
+    return np.random.randint(-100, 100, dtype='int64')
+
 def random_test_ints(num_of_each):
     test_ints = [0]
     for i in list(range(num_of_each)):
-        test_ints += [rand_tiny_int(), rand_small_int(), rand_med_int(), rand_large_int()]
+        test_ints += [rand_tiny_int(), rand_small_int(), rand_med_int(), rand_large_int(), np_int()]
     return test_ints
 
 # Generating Floats
@@ -78,5 +82,3 @@ def random_test_strings(num):
 
 def random_test_bools():
     return [True, False]
-
-

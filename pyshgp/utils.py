@@ -102,7 +102,7 @@ def flatten_all(lst):
     """
     result = []
     for i in lst:
-        if type(i) == list:
+        if isinstance(i, list):
             result += flatten_all(i)
         else:
             result.append(i)
@@ -111,28 +111,40 @@ def flatten_all(lst):
 def is_str_type(thing):
     """Returns true if thing is a string, agnostic to Python version.
 
+    TODO: I think these functions need unit tests...
+
     :param thing: Anything!
     :returns: True if thing is a string, False otherwise.
     """
     if sys.version_info[0] == 3:
-        return type(thing) is str or type(thing) is bytes
+        return isinstance(thing, (str, bytes))
     elif sys.version_info[0] == 2:
-        return type(thing) is str or type(thing) is unicode
+        return isinstance(thing, (str, unicode))
     else:
         raise Exception("Uknown python version?")
 
 def is_int_type(thing):
     """Returns true if thing is an int or long, agnostic to Python version.
 
+    TODO: I think these functions need unit tests...
+
     :param thing: Anything!
     :returns: True if thing is an int or long, False otherwise.
     """
+    if isinstance(thing, np.int64):
+        return True
     if sys.version_info[0] == 3:
-        return type(thing) is int
+        return isinstance(thing, int)
     elif sys.version_info[0] == 2:
-        return type(thing) is int or type(thing) is long
+        return isinstance(thing, (int, long))
     else:
         raise Exception("Uknown python version?")
+
+def is_float_type(thing):
+    """TODO: Write function docstring.
+    TODO: I think these functions need unit tests...
+    """
+    return isinstance(thing, (float, np.float, np.float64))
 
 def recognize_pysh_type(thing):
     """If thing is a literal, return its type -- otherwise return False.
@@ -150,28 +162,28 @@ def recognize_pysh_type(thing):
         >>> recognize_pysh_type(abs)
         False
     """
-    if type(thing) == instr.PyshInputInstruction:
+    if isinstance(thing, instr.PyshInputInstruction):
         return '_input_instruction'
-    elif type(thing) == instr.PyshOutputInstruction:
+    elif isinstance(thing, instr.PyshOutputInstruction):
         return '_output_instruction'
-    elif type(thing) == instr.PyshClassVoteInstruction:
+    elif isinstance(thing, instr.PyshClassVoteInstruction):
         return '_class_vote_instruction'
-    elif type(thing) == instr.PyshInstruction:
+    elif isinstance(thing, instr.PyshInstruction):
         return '_instruction'
+    elif isinstance(thing, (bool, np.bool_)):
+        return '_boolean'
     elif is_int_type(thing):
         return '_integer'
-    elif isinstance(thing, np.float):
+    elif is_float_type(thing):
         return '_float'
     elif is_str_type(thing):
         return '_string'
-    elif type(thing) == Character:
+    elif isinstance(thing, Character):
         return '_char'
-    elif type(thing) is bool or isinstance(thing, np.bool_):
-        return '_boolean'
-    elif type(thing) is PushVector:
+    elif isinstance(thing, PushVector):
         t = recognize_pysh_type(thing.typ())
         return '_vector' + t
-    elif type(thing) is list:
+    elif isinstance(thing, list):
         return '_list'
     else:
         print("Could not find pysh type for", thing, "of type", type(thing))
@@ -200,11 +212,11 @@ def count_parens(tree):
     total = 0
 
     while True:
-        if type(remaining) != list:
+        if not isinstance(remaining, list):
             return total
         elif len(remaining) == 0:
             return total + 1
-        elif type(remaining[0]) != list:
+        elif isinstance(remaining[0], list):
             remaining.pop(0)
         else:
             remaining = remaining[0] + remaining[1:]
@@ -222,11 +234,11 @@ def count_points(tree):
     total = 0
 
     while True:
-        if type(remaining) != list:
+        if not isinstance(remaining, list):
             return total + 1
         elif len(remaining) == 0:
             return total + 1
-        elif type(remaining[0]) != list:
+        elif not type(remaining[0], list):
             remaining = remaining[1:]
             total += 1
         else:
@@ -246,11 +258,11 @@ def reductions(f, l):
         [1, 3, 15, 105]
     """
     result = []
-    for i in range(len(l)):
+    for i, val in enumerate(l):
         if i == 0:
-            result.append(l[i])
+            result.append(val)
         else:
-            result.append(f(result[-1], l[i]))
+            result.append(f(result[-1], val))
     return result
 
 def merge_dicts(*dict_args):
@@ -418,12 +430,16 @@ def load_program_from_list(lst):
     program = []
     for el in lst:
         # For each element in the list
-        if type(el) == int or type(el) == float or type(el) == bool or type(el) == u.Character or type(el) == u.PushVector:
-            # If ``el`` is an int, float, bool, Character object or PushVector object simply
-            # append to the program because these are push literals.
+        pysh_type = recognize_pysh_type(el)
+        if pysh_type in ['_integer', '_float', '_boolean', '_char', '_vector']:
+            # If ``el`` is an int, float, bool, Character object or PushVector
+            # object simply append to the program because these are push
+            # literals.
             program.append(el)
-        elif type(el) == instr.PyshInstruction or type(el) == instr.PyshInputInstruction or type(el) == instr.PyshClassVoteInstruction:
-            # If ``el`` an instance of any of the instruction types, append to the program.
+        elif pysh_type in ['_instruction', '_input_instruction',
+                           '_output_instruction', '_class_vote_instruction']:
+            # If ``el`` an instance of any of the instruction types, append to
+            # the program.
             program.append(el)
         elif u.is_str_type(el):
             # If ``el`` is a string:
@@ -432,14 +448,14 @@ def load_program_from_list(lst):
             matching_instruction = None
             try:
                 matching_instruction = ri.get_instruction(el)
-            except e.UnknownInstructionName():
+            except e.UnknownInstructionName(el):
                 pass
             # If matching_instruction is None, it must be a ssring literal.
             if matching_instruction == None:
                 program.append(el)
             else:
                 program.append(matching_instruction)
-        elif type(el) == list:
+        elif pysh_type == '_list':
             # If ``el`` is a list (but not PushVector) turn it into a program
             # and append it to (aka. nest it in) the program.
             program.append(load_program_from_list(el))

@@ -136,14 +136,6 @@ class PyshMixin:
             new_ind = Individual(gn)
             self.population.append(new_ind)
 
-    def evaluate_with_function(self, error_function):
-        """TODO: Write method docstring
-        """
-        if hasattr(self, 'pool'):
-            self.population.evaluate_with_function(error_function, self.pool)
-        else:
-            self.population.evaluate_with_function(error_function)
-
     def print_monitor(self, generation):
         """TODO: Write method docstring
         """
@@ -161,23 +153,6 @@ class PyshMixin:
         print('| Avg Error:', self.population.average_error()),
         print('| Number of Unique Programs:', self.population.unique())
         print('| Best Program:', self.population.best_program())
-
-    def predict(self, X):
-        """Predict using the best program found by evolution.
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape = (n_samples, n_features)
-            Samples.
-
-        Returns
-        -------
-        C : array, shape = (n_samples,)
-            Returns predicted values.
-        """
-        validation.check_is_fitted(self, 'best_')
-        return np.apply_along_axis(self.best_.run_program, 1, X)
-
 
 class SimplePushGPEvolver(PyshMixin):
     """A simple evolutionary aglorithm to evolve a push program based on a
@@ -211,6 +186,15 @@ class SimplePushGPEvolver(PyshMixin):
                            atom_generators=atom_generators, verbose=verbose,
                            simplification_steps=simplification_steps,
                            epsilon=epsilon, tournament_size=tournament_size)
+
+    def evaluate_with_function(self, error_function):
+        """TODO: Write method docstring.
+        TODO: Check for population.
+        """
+        if hasattr(self, 'pool'):
+            self.population.evaluate_with_function(error_function, self.pool)
+        else:
+            self.population.evaluate_with_function(error_function)
 
     def fit(self, error_function, n_inputs, outputs_dict):
         """Fits the SimplePushGPEvolver.
@@ -270,6 +254,22 @@ class SimplePushGPEvolver(PyshMixin):
                                           self.simplification_steps,
                                           self.verbose)
 
+    def predict(self, X):
+        """Predict using the best program found by evolution.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = (n_samples, n_features)
+            Samples.
+
+        Returns
+        -------
+        C : array, shape = (n_samples,)
+            Returns predicted values.
+        """
+        validation.check_is_fitted(self, 'best_')
+        return np.apply_along_axis(self.best_.run_program, 1, X)
+
 class PushGPRegressor(BaseEstimator, PyshMixin):
     """A Scikit-learn estimator that uses PushGP for regression tasks.
     TODO: Write fit_metric docstring
@@ -285,23 +285,36 @@ class PushGPRegressor(BaseEstimator, PyshMixin):
         overall training error of the SymbolicRegressor.
     """
 
-    def __init__(self, fit_metric=mean_squared_error, error_threshold=0,
-                 max_generations=1000, population_size=300,
+    def __init__(self, fit_metric=mean_squared_error, error_threshold=1e-5,
+                 max_generations=1000, population_size=500,
                  selection_method='epsilon_lexicase', n_jobs=1,
                  operators=DEFAULT_GENETICS, initial_max_genome_size=50,
-                 program_growth_cap=100, atom_generators=REGRESSION_ATOM_GENERATORS,
-                 verbose=0, epsilon='auto', tournament_size=7, simplification_steps=500):
+                 program_growth_cap=100,
+                 atom_generators=REGRESSION_ATOM_GENERATORS, verbose=0,
+                 epsilon='auto', tournament_size=7, simplification_steps=500):
 
         PyshMixin.__init__(self, error_threshold=error_threshold,
-                           max_generations=max_generations, population_size=population_size,
+                           max_generations=max_generations,
+                           population_size=population_size,
                            selection_method=selection_method, n_jobs=n_jobs,
-                           operators=operators, program_growth_cap=program_growth_cap,
+                           operators=operators,
+                           program_growth_cap=program_growth_cap,
                            initial_max_genome_size=initial_max_genome_size,
                            atom_generators=atom_generators, verbose=verbose,
-                           simplification_steps=simplification_steps, epsilon=epsilon,
-                           tournament_size=tournament_size)
+                           simplification_steps=simplification_steps,
+                           epsilon=epsilon, tournament_size=tournament_size)
 
         self.fit_metric = fit_metric
+        self._output_dict = {'y_hat' : 0.0}
+
+    def evaluate(self, X, y):
+        """TODO: Write method docstring
+        """
+        if hasattr(self, 'pool'):
+            self.population.evaluate(X, y, self._output_dict, self.fit_metric,
+                                     self.pool)
+        else:
+            self.population.evaluate(X, y, self._output_dict, self.fit_metric)
 
     def fit(self, X, y):
         """Fits the PushGPRegressor.
@@ -315,13 +328,10 @@ class PushGPRegressor(BaseEstimator, PyshMixin):
             Target values.
         """
         n_feats = X.shape[1]
-        self.make_spawner(n_feats)
+        self.make_spawner(n_feats, self._output_dict)
         self.init_population()
 
-        if hasattr(self, 'pool'):
-            self.population.p_evaluate(error_function, self.pool)
-        else:
-            self.population.evaluate(error_function)
+        self.evaluate(X, y)
 
         for g in range(self.max_generations):
 
@@ -349,14 +359,33 @@ class PushGPRegressor(BaseEstimator, PyshMixin):
             self.population = next_gen
 
             # Evaluate population
-            if hasattr(self, 'pool'):
-                self.population.p_evaluate(error_function, self.pool)
-            else:
-                self.population.evaluate(error_function)
+            self.evaluate(X, y)
 
         self.best_error_ = min([i.total_error for i in self.population])
 
         def test(i): return i.total_error == self.best_error_
         self.best_ = [i for i in self.population if test(i)][0]
-        self.best_.simplify(error_function, self.simplification_steps,
-                            self.verbose)
+        self.best_.simplify(X, y, self._output_dict, self.fit_metric,
+                            self.simplification_steps, self.verbose)
+
+    def predict(self, X):
+        """Predict using the best program found by evolution.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = (n_samples, n_features)
+            Samples.
+
+        Returns
+        -------
+        C : array, shape = (n_samples,)
+            Returns predicted values.
+        """
+        validation.check_is_fitted(self, 'best_')
+        def f(x):
+            result = self.best_.run_program(x)
+            if 'y_hat' in result.keys():
+                return result['y_hat']
+            else:
+                return self._output_dict['y_hat']
+        return np.apply_along_axis(f, 1, X)

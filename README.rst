@@ -1,5 +1,7 @@
 Pysh
 ====
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fc15a23a8626411994234a3cc0a1a43c)](https://www.codacy.com/app/erp12/pyshgp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=erp12/pyshgp&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/fc15a23a8626411994234a3cc0a1a43c)](https://www.codacy.com/app/erp12/pyshgp?utm_source=github.com&utm_medium=referral&utm_content=erp12/pyshgp&utm_campaign=Badge_Coverage)
 
 Push Genetic Programming in Python. For the most complete documentation,
 refer to the `ReadTheDocs`_.
@@ -15,7 +17,7 @@ stack per data type, including code. Programs are represented by lists
 of instructions, which modify the values on the stacks. Instuctions are
 executed in order.
 
-More information about PushGP can be found on the 
+More information about PushGP can be found on the
 `Push Redux <https://erp12.github.io/push-redux/>`_ and the
 `Push Homepage <http://faculty.hampshire.edu/lspector/push.html>`_.
 
@@ -73,7 +75,7 @@ Odd problem source:
         for i in range(10):
             # Create the push interpreter
             interpreter = interp.PushInterpreter([i])
-            # Run program           
+            # Run program
             interpreter.run_push(program, debug)
             # Get output
             prog_output = interpreter.state.stacks["_boolean"].ref(0)

@@ -1,5 +1,5 @@
-Pysh
-====
+# Pysh
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/fc15a23a8626411994234a3cc0a1a43c)](https://www.codacy.com/app/erp12/pyshgp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=erp12/pyshgp&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/fc15a23a8626411994234a3cc0a1a43c)](https://www.codacy.com/app/erp12/pyshgp?utm_source=github.com&utm_medium=referral&utm_content=erp12/pyshgp&utm_campaign=Badge_Coverage)
 
@@ -8,8 +8,7 @@ refer to the `ReadTheDocs`_.
 
 http://pysh2.readthedocs.io/en/latest/
 
-Push Genetic Programming
-------------------------
+## Push Genetic Programming
 
 Push is programming language that plays nice with evolutionay computing
 / genetic programming. It is a stack-based language that features 1
@@ -24,19 +23,17 @@ More information about PushGP can be found on the
 For the most cutting edge PushGP framework, see the `Clojure`_
 implementaion called `Clojush`_.
 
-Installing Pysh
----------------
+## Installing Pysh
 
-    Pysh is compatale with python ``2.7.x`` and ``3.5.x``
+  Pysh is compatale with python ``2.7.x``, ``3.5.x``, and ``3.6.x``
 
-Install from pip
-~~~~~~~~~~~~~~~~
+### Install from pip
 
-Coming whith first beta release of ``pyshgp``. Check the `Roadmap`_ to get a
+Coming with first beta release of ``pyshgp``. Check the `Roadmap`_ to get a
 sense of how far off this is.
 
-Build Frome source
-~~~~~~~~~~~~~~~~~~
+### Build Frome source
+
 
 1. Clone the repo
 2. ``cd`` into the pysh repo directory
@@ -45,16 +42,14 @@ Build Frome source
    for more information.
 
 
-Example Usage
-~~~~~~~~~~~~~
+## Example Usage
 
 To run one of the examples, such as the odd problem, simply run
 ``python [/path/to/pysh]/examples/odd.py``
 
 Odd problem source:
 
-.. code:: python
-
+```py
     """
     This problem evolves a program to determine if a number is odd or not.
 
@@ -97,12 +92,12 @@ Odd problem source:
 
     if __name__ == "__main__":
         gp.evolution(odd_error_func, odd_params)
-
+```
 
 More demonstrations of this can be found on `Pysh’s ReadTheDocs page`_.
 
-Pysh Roadmap / Contributing
----------------------------
+## Pysh Roadmap / Contributing
+
 
 Pysh is continuously being developed for applications of genetic
 proramming, as well as reasearch in Evolutionary Computation.

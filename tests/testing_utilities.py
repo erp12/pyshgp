@@ -4,6 +4,59 @@ import random
 import numpy as np
 
 import pyshgp.utils as u
+import pyshgp.push.interpreter as interp
+import pyshgp.push.instruction as instr
+import pyshgp.push.instructions.registered_instructions as ri
+from pyshgp.push.instructions import *
+
+##             ##
+# Running Tests #
+##             ##
+
+
+def dict_matches_state(interpreter, state_dict):
+    i = 0
+    for k in state_dict.keys():
+        if not state_dict[k] == interpreter.state[k]:
+            return False
+        i += len(state_dict[k])
+    if i == len(interpreter.state):
+        return True
+    else:
+        return False
+
+
+def run_test(before, after, instruction, print_test=False):
+    interpreter = interp.PushInterpreter()
+    interpreter.state.from_dict(before)
+
+    if not isinstance(instruction, instr.PyshInstruction):
+        instruction = ri.get_instruction(instruction)
+
+    if print_test:
+        print(instruction.name)
+        print("Before:")
+        interpreter.state.pretty_print()
+
+    if type(after) == dict:
+        interpreter.execute_instruction(instruction)
+        if print_test:
+            print("After:")
+            interpreter.state.pretty_print()
+            print()
+        return dict_matches_state(interpreter, after)
+    else:
+        try:
+            interpreter.execute_instruction(instruction)
+        except Exception as e:
+            if print_test:
+                print("Raises error: ", type(e))
+                print()
+            if isinstance(e, after):
+                return True
+            else:
+                return False
+
 
 ##                    ##
 # Generating Constants #

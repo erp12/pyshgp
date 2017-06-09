@@ -18,7 +18,7 @@ def print_newline(state):
     """Appends a newline to the stdout string in the output field.
     """
     if not 'stdout' in state['_output'].keys():
-        return
+        state['_output']['stdout'] = ''
     if len(state['_output']['stdout'])+1 > c.max_string_length:
         return
     state['_output']['stdout'] += '\n'

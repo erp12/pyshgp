@@ -238,7 +238,7 @@ def count_points(tree):
             return total + 1
         elif len(remaining) == 0:
             return total + 1
-        elif not type(remaining[0], list):
+        elif not isinstance(remaining[0], list):
             remaining = remaining[1:]
             total += 1
         else:

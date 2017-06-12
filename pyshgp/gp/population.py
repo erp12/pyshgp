@@ -61,7 +61,7 @@ class Individual(object):
         """If single genes of a
         """
 
-    def run_program(self, inputs=[], print_trace=False):
+    def run_program(self, inputs, print_trace=False):
         """Runs the Individual's program.
 
         :param list inputs: List of input values that can be accessed by the

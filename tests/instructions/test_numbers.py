@@ -250,7 +250,7 @@ class TestIntegerInstructions(unittest.TestCase):
         after = {'_integer' : [0]}
         self.assertTrue(t_u.run_test(before, after, i))
 
-    def test_integer_from_float(self):
+    def test_integer_from_boolean(self):
         i = '_integer_from_boolean'
         #1
         before = {'_boolean' : [False]}

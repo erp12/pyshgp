@@ -19,7 +19,7 @@ class PyshInstruction(object):
     :param int parentheses: Specifies number of paren groups. (0, 1, 2, ... etc)
     """
 
-    def __init__(self, name, func, stack_types = [], parentheses = 0):
+    def __init__(self, name, func, stack_types, parentheses = 0):
         self.name = name
         self.func = func
         self.stack_types = stack_types

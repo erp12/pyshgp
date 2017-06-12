@@ -16,7 +16,6 @@ from .. import exceptions as e
 
 from . import translation as t
 from . import plush as pl
-from .instructions import registered_instructions as ri
 
 class PushSpawner:
 
@@ -111,7 +110,7 @@ class PushSpawner:
                 else:
                     silent = False
             else:
-                raise e.UnkownEpigeneticMarker()
+                raise e.UnkownEpigeneticMarker(m)
         # Create and return the gene tuple.
         return pl.Gene(instruction, is_literal, closes, silent)
 

@@ -48,17 +48,17 @@ def _handle_vote_instruction(instruction, state):
     '''Allows Push to handle class voting instructions.
     '''
     output_name = 'class-'+instruction.class_id
-    # if not output_name in state['_output'].keys():
-    #     return
+    if not output_name in state['_output'].keys():
+        state['_output'][output_name] = 0.0
     vote_value = state[instruction.vote_stack].ref(0)
     state[instruction.vote_stack].pop()
-    state['_output'][class_index] += float(vote_value)
+    state['_output'][output_name] += float(vote_value)
 
 class PushState(dict):
     """Dictionary that holds PyshStacks.
     """
 
-    def __init__(self, inputs=[]):
+    def __init__(self, inputs):
         if not isinstance(inputs, (list, np.ndarray)):
             msg = "Push inputs must be a list, got {}"
             raise ValueError(msg.format(type(inputs)))

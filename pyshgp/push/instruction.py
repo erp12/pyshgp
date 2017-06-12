@@ -23,7 +23,7 @@ class PyshInstruction(object):
         self.name = name
         self.func = func
         self.stack_types = stack_types
-        self.parentheses = parentheses # Specifies parens group. (0, 1, 2, ... etc)
+        self.parentheses = parentheses # Specifies parens group. (0, 1, 2, etc)
 
     def __eq__(self, other):
         if isinstance(other, PyshInstruction):
@@ -46,7 +46,7 @@ class PyshInputInstruction(PyshInstruction):
 
     def __init__(self, input_index):
         name = "_input" + str(input_index)
-        PyshInstruction.__init__(self, name, None)
+        PyshInstruction.__init__(self, name, None, ['_input'])
         self.input_index = input_index
         self.stack_types = '_input'
 
@@ -59,7 +59,7 @@ class PyshOutputInstruction(PyshInstruction):
 
     def __init__(self, output_name, from_stack):
         name = '_output'+from_stack+'_as_'+output_name
-        PyshInstruction.__init__(self, name, None)
+        PyshInstruction.__init__(self, name, None, ['_output'])
         self.output_name = output_name
         self.from_stack = from_stack
 
@@ -76,7 +76,8 @@ class PyshClassVoteInstruction(PyshInstruction):
     """
 
     def __init__(self, class_id, vote_stack):
-        PyshInstruction.__init__(self, "_vote"+str(class_id)+vote_stack, None)
+        PyshInstruction.__init__(self, "_vote"+str(class_id)+vote_stack,
+                                 None, ['_output'])
         self.class_id = class_id
         self.vote_stack = vote_stack
         self.stack_types = '_class'

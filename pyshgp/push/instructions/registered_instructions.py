@@ -10,16 +10,15 @@ import warnings
 
 from ... import exceptions as e
 
-'''
-List of all registered push instructions.
-'''
+
+#: List of all registered push instructions.
 registered_instructions = set()
 
 def register_instruction(instruction):
     """Registers an instruction, excluding duplicates.
 
     :param PushInstruction instruction: The instruction object to register.
-    """   
+    """
     if len([i for i in registered_instructions if i.name == instruction.name]) > 0:
         warnings.warn('Duplicate instructions registered: ' + instruction.name + '. Duplicate ignored.')
     else:

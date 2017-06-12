@@ -5,7 +5,6 @@ TODO: Add a lot of validation checks.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import inspect
 import numpy as np
 from numpy.random import choice
 from random import random, randint
@@ -19,7 +18,6 @@ from .variation import VariationOperatorPipeline, UniformMutation, Alternation
 from ..push import random as r
 from ..push.instruction import (PyshInputInstruction, PyshOutputInstruction,
                                 PyshClassVoteInstruction)
-from ..push.interpreter import PushInterpreter
 from ..utils import merge_sets, recognize_pysh_type
 from ..push.instructions import registered_instructions as ri
 

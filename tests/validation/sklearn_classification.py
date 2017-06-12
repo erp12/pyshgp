@@ -18,5 +18,5 @@ X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target,
                                                     test_size=0.5)
 
 model = gp.PushGPClassifier(population_size = 100, max_generations = 5,
-	final_simplification_steps = 500)
+	simplification_steps = 500)
 model.fit(X_train, y_train)

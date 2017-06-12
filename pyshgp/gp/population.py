@@ -3,7 +3,7 @@ Classes that reperesents Individuals and Populations in evolutionary algorithms.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import math, random
+import random
 from copy import copy, deepcopy
 import numpy as np
 

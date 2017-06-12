@@ -18,5 +18,5 @@ X_t = np.arange(0, 1, 0.1)
 y_t = np.array([target_function(x) for x in X_t])
 
 model = gp.PushGPRegressor(population_size = 100, max_generations = 5,
-	final_simplification_steps = 500)
+	simplification_steps = 500)
 model.fit(X_t, y_t)

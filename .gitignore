@@ -1,7 +1,7 @@
 pysh_job.alf
 tractor_pysh_run.sh
-pyshgp-venv-3.5/
-pyshgp-venv-2.7/
+venv-3.5/
+venv-2.7/
 
 *.pyc
 *.png

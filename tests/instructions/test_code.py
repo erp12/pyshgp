@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import sys, unittest, math
+import sys, unittest
 sys.path.insert(0, '..')
 import testing_utilities as t_u
 

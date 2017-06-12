@@ -88,7 +88,7 @@ def code_atom(state):
     if len(state['_code']) > 0:
         top_code = state['_code'].ref(0)
         state['_code'].pop()
-        state['_boolean'].push(not (type(top_code) == list))
+        state['_boolean'].push(not isinstance(top_code, list))
     return state
 code_atom_instruction = instr.PyshInstruction('_code_atom',
                                               code_atom,

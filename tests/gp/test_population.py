@@ -8,7 +8,6 @@ import pyshgp.gp.population as p
 import pyshgp.push.random as r
 import pyshgp.push.plush as pl
 import pyshgp.push.instruction as instr
-import pyshgp.push.interpreter as interp
 
 class TestIndividualMethods(unittest.TestCase):
 

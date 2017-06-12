@@ -368,9 +368,8 @@ registered_instructions.register_instruction(decrementer('_float'))
 
 
 def float_sin(state):
-    '''
-
-    '''
+    """Function for the sin Push instruction.
+    """
     if len(state['_float']) > 0:
         new_float = math.sin(state['_float'].ref(0))
         state['_float'].pop()
@@ -386,9 +385,8 @@ registered_instructions.register_instruction(float_sin_instruction)
 
 
 def float_cos(state):
-    '''
-
-    '''
+    """Function for the cos Push instruction.
+    """
     if len(state['_float']) > 0:
         new_float = math.cos(state['_float'].ref(0))
         state['_float'].pop()
@@ -404,9 +402,8 @@ registered_instructions.register_instruction(float_cos_instruction)
 
 
 def float_tan(state):
-    '''
-
-    '''
+    """Function for the tan Push instruction.
+    """
     if len(state['_float']) > 0:
         new_float = math.tan(state['_float'].ref(0))
         state['_float'].pop()

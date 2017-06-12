@@ -23,7 +23,7 @@ class TestPyshMixinMethods(unittest.TestCase):
 
     def test_init_population(self):
         self.mixin.make_spawner(3, {})
-        op = self.mixin.init_population()
+        self.mixin.init_population()
         self.assertTrue(hasattr(self.mixin, 'population'))
         self.assertEqual(len(self.mixin.population), 300)
 

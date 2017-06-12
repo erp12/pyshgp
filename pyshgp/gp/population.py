@@ -4,7 +4,7 @@ Classes that reperesents Individuals and Populations in evolutionary algorithms.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import random
-from copy import copy, deepcopy
+from copy import copy
 import numpy as np
 
 from ..utils import (keep_number_reasonable, median_absolute_deviation,

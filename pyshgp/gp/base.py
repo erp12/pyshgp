@@ -11,7 +11,7 @@ from random import random, randint
 
 from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 from sklearn.metrics import mean_squared_error, euclidean_distances
-from sklearn.utils import validation, check_array
+from sklearn.utils import validation, check_X_y
 
 from .population import Population, Individual
 from .variation import VariationOperatorPipeline, UniformMutation, Alternation
@@ -268,7 +268,7 @@ class SimplePushGPEvolver(PyshMixin):
         validation.check_is_fitted(self, 'best_')
         return np.apply_along_axis(self.best_.run_program, 1, X)
 
-class PushGPRegressor(BaseEstimator, PyshMixin):
+class PushGPRegressor(BaseEstimator, PyshMixin, RegressorMixin):
     """A Scikit-learn estimator that uses PushGP for regression tasks.
     TODO: Write fit_metric docstring
 
@@ -325,6 +325,7 @@ class PushGPRegressor(BaseEstimator, PyshMixin):
         y : {array-like, sparse matrix}, shape = (n_samples, 1)
             Target values.
         """
+         X, y = check_X_y(X, y)
         n_feats = X.shape[1]
         self.make_spawner(n_feats, self._output_dict)
         self.init_population()

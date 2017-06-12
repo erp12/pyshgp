@@ -325,7 +325,7 @@ class PushGPRegressor(BaseEstimator, PyshMixin, RegressorMixin):
         y : {array-like, sparse matrix}, shape = (n_samples, 1)
             Target values.
         """
-         X, y = check_X_y(X, y)
+        X, y = check_X_y(X, y)
         n_feats = X.shape[1]
         self.make_spawner(n_feats, self._output_dict)
         self.init_population()

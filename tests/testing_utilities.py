@@ -27,7 +27,7 @@ def dict_matches_state(interpreter, state_dict):
 
 
 def run_test(before, after, instruction, print_test=False):
-    interpreter = interp.PushInterpreter()
+    interpreter = interp.PushInterpreter(inputs=[])
     interpreter.state.from_dict(before)
 
     if not isinstance(instruction, instr.PyshInstruction):

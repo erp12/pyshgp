@@ -1,7 +1,46 @@
-# _*_ coding: utf_8 _*_
 """
 The goal of the Odd problem is to evolve a program that will produce a True if
 the input integer is odd, and a False if its even.
+
+Running The Example
+###################
+
+To run the odd problem, install ``pyshgp`` and run the example file.::
+
+    python pyshgp/examples/tutorials/odd.py
+
+The Error Function
+##################
+
+Every Genetic Programming problem requires an error function, sometimes called a
+fitness function. This function takes a program produced by evolution, executes
+it, and evaluates how well it solved the problem.
+
+In Pysh, error functions return a vector of numbers representing the program's
+error on each test case. The total error of the program is the sum of the error
+vector. During evolution, some selection methods select parents based on a
+program's total error, while other utilize the dis-aggregated error vector.
+
+A program whose total error is equal to, or below, the stopping threshold
+paremeter (default to 0) is considered a solution.
+
+.. literalinclude:: /../examples/tutorials/odd.py
+    :pyobject: odd_error_func
+
+.. note::
+    Currently ``pyshgp`` only supports using evolution to minimize a programs
+    *errors*. It is also common to evaluate programs based on a *fitness* value
+    that evolution attempts to maximize. This feature is not implemented in
+    ``pyshgp``.
+
+Starting The Run
+#################
+
+Finally, we instanciate the ``SimplePushGPEvolver``. Then we can call the
+``fit`` method and pass three things: 1) The error function, 2) the number of
+input values that will be supplied and 3) the intial state of the
+`output structure <>`_.
+
 
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -41,5 +80,6 @@ atom_generators = list(merge_sets(ri.get_instructions_by_pysh_type("_integer"),
                                   [lambda: random.randint(0, 10)]))
 
 if __name__ == "__main__":
-    evo = SimplePushGPEvolver(n_jobs=-1, verbose=2, atom_generators=atom_generators)
+    evo = SimplePushGPEvolver(n_jobs=-1, verbose=2,
+                              atom_generators=atom_generators)
     evo.fit(odd_error_func, 1, {'y_hat' : False})

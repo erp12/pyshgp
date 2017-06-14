@@ -57,10 +57,6 @@ class Individual(object):
     def __repr__(self):
         return "PyshIndividual<"+str(self.total_error)+">"
 
-    def sync_program_to_genome(self):
-        """If single genes of a
-        """
-
     def run_program(self, inputs, print_trace=False):
         """Runs the Individual's program.
 

@@ -18,8 +18,8 @@ from .. import exceptions as e
 from . import stack
 
 def _handle_input_instruction(instruction, state):
-    '''Allows Push to handle input instructions.
-    '''
+    """Allows Push to handle input instructions.
+    """
     input_depth = int(instruction.input_index)
 
     if input_depth >= len(state['_input']) or input_depth < 0:
@@ -41,12 +41,11 @@ def _handle_output_instruction(instruction, state):
     if len(state[instruction.from_stack]) == 0:
         return
     output_value = state[instruction.from_stack].ref(0)
-    state[instruction.from_stack].pop()
     state['_output'][instruction.output_name] = output_value
 
 def _handle_vote_instruction(instruction, state):
-    '''Allows Push to handle class voting instructions.
-    '''
+    """Allows Push to handle class voting instructions.
+    """
     output_name = 'class-'+instruction.class_id
     if not output_name in state['_output'].keys():
         state['_output'][output_name] = 0.0
@@ -56,6 +55,11 @@ def _handle_vote_instruction(instruction, state):
 
 class PushState(dict):
     """Dictionary that holds PyshStacks.
+
+    Parameters
+    ----------
+    inputs : list
+        A list of all values that should be accessible as inputs.
     """
 
     def __init__(self, inputs):
@@ -81,7 +85,10 @@ class PushState(dict):
             push program execution or evolution. There are no checks to confirm
             that the ``d`` can be converted to a valid Push state.
 
-        :param dict d: Dict that is converted into a Push state.
+        Parameters
+        ----------
+        d : dict
+            Dict that is converted into a Push state.
         """
         # Clear existing stacks.
         self['_input'] = []
@@ -108,17 +115,24 @@ class PushState(dict):
 class PushInterpreter:
     """Object that can run Push programs and stores the state of the Push
     stacks.
+
+    Parameters
+    ----------
+    inputs : list
+        A list of all values that should be accessible as inputs.
+
+    Attributes
+    ----------
+    state : PushState
+        A :mod:`PushState` that hold the current state of all of the stacks.
+
+    status : str
+        Current status of the interpreter. Either '_normal' or some kind of
+        error indicator.
     """
 
-    #: Current PushState of the interpreter.
-    state = None
 
-    #: Current status of the interpreter. Either '_normal' or some kind of
-    #: error indicator.
-    status = '_normal'
-
-
-    def __init__(self, inputs=[]):
+    def __init__(self, inputs):
         self.inputs = inputs
         self.state = PushState(inputs)
         self.status = '_normal'
@@ -133,7 +147,10 @@ class PushInterpreter:
     def execute_instruction(self, instruction):
         """Executes a push instruction or literal.
 
-        :param PushInstruction instruction: The instruction to the executed.
+        Parameters
+        ----------
+        instruction : PushInstruction
+            The instruction to the executed.
         """
         # If the instruction is None, return.
         if instruction is None:
@@ -177,13 +194,16 @@ class PushInterpreter:
             # on to its corrisponding stack.
             self.state[pysh_type].push(instruction)
 
-    def eval_push(self, print_steps):
+    def eval_push(self, print_steps=False):
         """Executes the contents of the exec stack.
 
         Aborts prematurely if execution limits are exceeded. If execution
         limits are reached, status will be denoted.
 
-        :param bool print_steps: Denotes if stack state should be printed.
+        Parameters
+        ----------
+        print_steps : bool, optional
+            Denotes if stack state should be printed.
         """
         iteration = 1
         time_limit = 0
@@ -218,8 +238,16 @@ class PushInterpreter:
 
         Calls eval-push between appropriate code/exec pushing/popping.
 
-        :param list code: The push program to run.
-        :param bool print_steps: Denotes if stack states should be printed.
+        Parameters
+        ----------
+        code : list
+            The push program to run.
+        print_steps : bool, optional
+            Denotes if stack states should be printed.
+
+        Returns
+        -------
+        Returns the output structure as a dictionary.
         """
         self.reset()
         # If you don't copy the code, the reference to the program will get

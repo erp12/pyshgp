@@ -2,6 +2,8 @@
 """
 The :mod:`stack` module defines the ``PyshStack`` class which is used to hold
 values of a certain type in a ``PyshState`` object.
+
+TODO: Consider optimization with Cython.
 """
 
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -22,14 +24,19 @@ class PyshStack(list):
         '''Pushes a value to the top of the stack. An alias for `append` which
         makes the definition of push instructions more clear.
 
-        :param value: Value to push onto stack.
+        Parameters
+        ----------
+        value :
+            Value to push onto stack.
         '''
         self.append(value)
 
     def top_item(self):
         '''Returns the top item on the stack, or a NoStackItem if empty.
 
-        :returns: Returns the top element of the stack, or NoStackItem if empty.
+        Returns
+        --------
+        Returns the top element of the stack, or NoStackItem if empty.
         '''
         if len(self) > 0:
             return self[-1]
@@ -42,8 +49,14 @@ class PyshStack(list):
         If stack is empty, returns NoStackItem. If ``position < 0`` or
         ``position > len(self)`` returns StackOutOfBounds.
 
-        :param int position: Position in stack to get item.
-        :returns: Element at ``positon`` in stack.
+        Parameters
+        ----------
+        position : int
+            Position in stack to get item.
+
+        Returns
+        --------
+        Element at ``positon`` in stack.
         '''
         if len(self) <= position:
             return u.StackOutOfBounds()
@@ -55,8 +68,12 @@ class PyshStack(list):
     def insert(self, position, value):
         """Inserts value at position in stack.'
 
-        :param int position: Position in stack to insert value.
-        :param value: Value to insert into stack.
+        Parameters
+        ----------
+        position : int
+            Position in stack to get item.
+        value :
+            Value to insert into stack.
         """
         super(PyshStack, self).insert(len(self) - position, value)
 

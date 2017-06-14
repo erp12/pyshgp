@@ -4,7 +4,7 @@ import numpy as np
 
 import unittest
 
-from pyshgp.gp.base import PyshMixin, SimplePushGPEvolver, PushGPRegressor
+from pyshgp.gp.base import (PyshMixin, SimplePushGPEvolver, PushGPRegressor)
 from pyshgp.gp.variation import VariationOperator
 from pyshgp.utils import is_float_type
 

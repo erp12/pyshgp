@@ -10,18 +10,18 @@ Plush genes are python objects defined below.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 class Gene(object):
-
-    #: An instance of the instruction class or a literal
-    atom = None
-
-    #: Denotes if the gene is holding a literal or an instruction.
-    is_literal = None
-
-    #: Denotes how many close parens to place after instruction in program.
-    closes = None
-
-    #: If true, do not include instruction in translated program.
-    is_silent = None
+    """
+    Attributes
+    ----------
+    atom : {Instruction, literal}
+        An instance of the instruction class or a literal
+    is_literal : bool
+        Denotes if the gene is holding a literal or an instruction.
+    closes : int
+        Denotes how many close parens to place after instruction in program.
+    is_silent : bool, optional
+        If true, do not include instruction in translated program.
+    """
 
     def __init__(self, atom, is_literal, closes, is_silent=False):
         self.atom = atom

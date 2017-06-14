@@ -1,45 +1,29 @@
 *****
-GP
+gp
 *****
 
-GP
+.. include:: ../detail/gp_design.rst
+
+Base
 ===========
 
-.. automodule:: pyshgp.gp.gp
-	:members:
+.. automodule:: pyshgp.gp.base
+  :members:
 
-Individual
+Population
 ===========
 
-.. automodule:: pyshgp.gp.individual
-	:members:
+.. automodule:: pyshgp.gp.population
+  :members:
 
-Monitors
+Simplificaiton
+==============
+
+.. automodule:: pyshgp.gp.simplification
+  :members:
+
+Variation
 ===========
 
-.. automodule:: pyshgp.gp.monitors
-	:members:
-
-Operators
-===========
-
-.. automodule:: pyshgp.gp.operators
-	:members:
-
-Params
-===========
-
-.. automodule:: pyshgp.gp.params
-	:members:
-
-Reporting
-===========
-
-.. automodule:: pyshgp.gp.reporting
-	:members:
-
-Selection
-===========
-
-.. automodule:: pyshgp.gp.selection
-	:members:
+.. automodule:: pyshgp.gp.variation
+  :members:

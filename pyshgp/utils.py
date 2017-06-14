@@ -19,13 +19,16 @@ from . import constants as c
 ##             ##
 
 class Character(object):
-    '''Holds a string of length 1.
+    """Holds a string of length 1.
 
     Used to distinguish between string and char literals
     in Push program interpretation.
 
-    :attributes: :attr:`char` - String of length 1.
-    '''
+    Attributes
+    ----------
+    char : str
+        String of length 1.
+    """
     def __init__(self, char):
         if len(char) == 0:
             raise e.EmptyCharacterException()
@@ -46,16 +49,21 @@ class Character(object):
         return False
 
 class PushVector(list):
-    '''List where elements are all of same pysh literal type.
+    """List where elements are all of same pysh literal type. Is a subclass of
+    the Python list, and has access to all list methods.
 
-    Args:
-        lst (list): Python list where all elements are of type ``typ``.
-        typ (type): Python Type that denotes the type of the vector.
+    Parameters
+    ----------
+    lst : list of :obj:`typ`
+        Python list where all elements are of type ``typ``.
+    typ : data-type
+        Python Type that denotes the type of the vector.
 
-    Is a subclass of the Python list, and has access to all list methods.
-
-    :attributes: :attr:`typ` - Python type that all elements must be.
-    '''
+    Attributes
+    ----------
+    typ : type
+        Python type that all elements must be.
+    """
     def __init__(self, lst, typ):
         self.typ = typ
         if typ == None:
@@ -67,21 +75,33 @@ class PushVector(list):
             else:
                 raise e.PushVectorTypeException(typ, type(el))
 
+    def append(self, item):
+        """Overload of the ``append`` method to ensure that only items of the
+        correct type are placed in the PushVector.
+
+        Parameters
+        ----------
+        item : The thing trying to be placed into the PushVector.
+        """
+        if not isinstance(item, self.typ):
+            raise TypeError, 'item is not of type %s' % self.type
+        super(PushVector, self).append(item)
+
 class UnevaluatableStackResponse:
-    '''Used as the superclass for other bad stack responses.
-    '''
+    """Used as the superclass for other bad stack responses.
+    """
     def __repr__(self):
         return 'UNEVALUATABLE_STACK_RESPONSE'
 
 class NoStackItem(UnevaluatableStackResponse):
-    '''Used as a response when getting value from empty PushStack.
-    '''
+    """Used as a response when getting value from empty PushStack.
+    """
     def __repr__(self):
         return 'NO_STACK_ITEM'
 
 class StackOutOfBounds(UnevaluatableStackResponse):
-    '''Used as a response when getting value from empty PushStack.
-    '''
+    """Used as a response when getting value from empty PushStack.
+    """
     def __repr__(self):
         return 'NO_STACK_ITEM'
 
@@ -93,12 +113,18 @@ class StackOutOfBounds(UnevaluatableStackResponse):
 def flatten_all(lst):
     """Recursively flattens nested lists into a single list.
 
-    :param list lst: Nested lists
-    :returns: Flattened lists.
+    Parameters
+    ----------
+    lst : Nested lists.
 
-    :example:
-        >>> flatten_all([1, [2, 3, [4], 5]])
-        [1, 2, 3, 4, 5]
+    Returns
+    --------
+    Flattened lists.
+
+    Examples
+    --------
+    >>> flatten_all([1, [2, 3, [4], 5]])
+    [1, 2, 3, 4, 5]
     """
     result = []
     for i in lst:
@@ -111,10 +137,22 @@ def flatten_all(lst):
 def is_str_type(thing):
     """Returns true if thing is a string, agnostic to Python version.
 
-    TODO: I think these functions need unit tests...
+    .. TODO:: TODO: This function needs a unit test.
 
-    :param thing: Anything!
-    :returns: True if thing is a string, False otherwise.
+    Parameters
+    ----------
+    thing : Any python obect or primitive.
+
+    Returns
+    --------
+    True if ``thing`` is a str. False otherwise.
+
+    Examples
+    --------
+    >>> is_str_type('Hello')
+    True
+    >>> is_str_type(7)
+    False
     """
     if sys.version_info[0] == 3:
         return isinstance(thing, (str, bytes))
@@ -126,10 +164,22 @@ def is_str_type(thing):
 def is_int_type(thing):
     """Returns true if thing is an int or long, agnostic to Python version.
 
-    TODO: I think these functions need unit tests...
+    .. TODO:: TODO: This function needs a unit test.
 
-    :param thing: Anything!
-    :returns: True if thing is an int or long, False otherwise.
+    Parameters
+    ----------
+    thing : Any python obect or primitive.
+
+    Returns
+    --------
+    True if ``thing`` is an int. False otherwise.
+
+    Examples
+    --------
+    >>> is_int_type('Hello')
+    False
+    >>> is_int_type(7)
+    True
     """
     if isinstance(thing, np.int64):
         return True
@@ -141,26 +191,48 @@ def is_int_type(thing):
         raise Exception("Uknown python version?")
 
 def is_float_type(thing):
-    """TODO: Write function docstring.
-    TODO: I think these functions need unit tests...
+    """Returns true if thing is an float, agnostic to numpy or not.
+
+    .. TODO:: TODO: This function needs a unit test.
+
+    Parameters
+    ----------
+    thing : Any python obect or primitive.
+
+    Returns
+    --------
+    True if ``thing`` is an float. False otherwise.
+
+    Examples
+    --------
+    >>> is_float_type('Hello')
+    False
+    >>> is_float_type(1.23)
+    True
     """
     return isinstance(thing, (float, np.float, np.float64))
 
 def recognize_pysh_type(thing):
-    """If thing is a literal, return its type -- otherwise return False.
+    """Returns a string denoting the Push type of ``thing``.
 
-    :param thing: anything!
-    :returns: A string with a ``_`` as the first char. This is how Pysh types
-        are denoted throughout the entire package.
-        If there is no appropriate Pysh type, returns False.
+    Parameters
+    ----------
+    thing : Any python obect or primitive.
 
-    :example:
-        >>> recognize_pysh_type(True)
-        '_bool'
-        >>> recognize_pysh_type(77)
-        '_integer'
-        >>> recognize_pysh_type(abs)
-        False
+    Returns
+    --------
+    A string with a ``_`` as the first char. This is how Pysh types are denoted
+    throughout the entire package. If there is no appropriate Pysh type,
+    returns False.
+
+    Examples
+    --------
+    >>> recognize_pysh_type(True)
+    '_bool'
+    >>> recognize_pysh_type(77)
+    '_integer'
+    >>> recognize_pysh_type(abs)
+    False
     """
     if isinstance(thing, instr.PyshInputInstruction):
         return '_input_instruction'
@@ -190,11 +262,17 @@ def recognize_pysh_type(thing):
         return False
 
 def keep_number_reasonable(n):
-    '''Returns a version of n that obeys the limits set in :mod:`constants`.
+    """Returns a version of n that obeys the limits set in :mod:`constants`.
 
-    :param n: Any numeric value.
-    :returns: ``n`` clamped to ``-c.max_number_magnitude < n < c.max_number_magnitude``
-    '''
+    Parameters
+    ----------
+    n : int or float
+        Any numeric value.
+
+    Returns
+    --------
+    ``n`` clamped to ``-max_number_magnitude < n < max_number_magnitude``
+    """
     if n > c.max_number_magnitude:
         n = c.max_number_magnitude
     elif n < -c.max_number_magnitude:
@@ -202,12 +280,17 @@ def keep_number_reasonable(n):
     return n
 
 def count_parens(tree):
-    '''Returns the number of paren pairs in tree.
+    """Returns the number of paren pairs in tree.
 
-    :param list tree: Nested list structure equivalent to tree.
-    :returns: Integer equal to the number of paren pairs.
+    Parameters
+    ----------
+    tree : list
+        Nested list structure equivalent to tree.
 
-    '''
+    Returns
+    --------
+    Integer equal to the number of paren/bracket pairs.
+    """
     remaining = tree
     total = 0
 
@@ -223,12 +306,17 @@ def count_parens(tree):
             total += 1
 
 def count_points(tree):
-    """Returns the number of points in tree.
+    """Returns the number of points in tree. Each atom and each pair of
+    parentheses counts as a point.
 
-    Each atom and each pair of parentheses counts as a point.
+    Parameters
+    ----------
+    tree : list
+        Nested list structure equivalent to tree.
 
-    :param list tree: Nested list structure equivalent to tree.
-    :returns: Integer equal to the number of points.
+    Returns
+    --------
+    Integer equal to the number of points.
     """
     remaining = tree
     total = 0
@@ -249,13 +337,22 @@ def count_points(tree):
 def reductions(f, l):
     """Returns intermediate values of the reduction of ``l`` by ``f``.
 
-    :param f: Function to be reduced down ``l``.
-    :param l: List to reduce ``f`` down.
-    :returns: List of intermediate values.
+    Parameters
+    ----------
+    f : function
+        Function to be reduced down ``l``.
 
-    :example:
-        >>> reductions(lambda x,y: x * y, [1, 3, 5, 7])
-        [1, 3, 15, 105]
+    l : list
+        List to reduce ``f`` down.
+
+    Returns
+    --------
+    List of intermediate values.
+
+    Examples
+    --------
+    >>> reductions(lambda x,y: x * y, [1, 3, 5, 7])
+    [1, 3, 15, 105]
     """
     result = []
     for i, val in enumerate(l):
@@ -272,8 +369,14 @@ def merge_dicts(*dict_args):
     precedence goes to key value pairs in latter dicts.
     Taken From: http://stackoverflow.com/a/26853961/4297413 Thanks to Aaron Hall
 
-    :param *dict_args: Arbitrary number of arguments, all must be dicts.
-    :returns: Result of merging all dicts into a single dict.
+    Parameters
+    ----------
+    dict_args: dicts
+        Arbitrary number of arguments, all must be dicts.
+
+    Returns
+    --------
+    Result of merging all dicts into a single dict.
     """
     result = {}
     for dictionary in dict_args:
@@ -283,8 +386,14 @@ def merge_dicts(*dict_args):
 def merge_sets(*set_args):
     """Given any number of sets, shallow copy and merge into a new set.
 
-    :param *set_args: Arbitrary number of arguments, all must be sets.
-    :returns: Result of union-ing all sets into a single set.
+    Parameters
+    ----------
+    set_args: dicts
+        Arbitrary number of arguments, all must be sets.
+
+    Returns
+    --------
+    Result of union-ing all sets into a single set.
     """
     result = set()
     for s in set_args:
@@ -294,14 +403,22 @@ def merge_sets(*set_args):
 def ensure_list(thing):
     """Returns argument inside of a list if it is not already a list.
 
-    :param thing: Anything!
-    :returns: If ``thing`` is a list, returns ``thing``
-        otherwise returns ``[thing]``.
-    :example:
-        >>> ensure_list("ABC")
-        ["ABC"]
-        >>> ensure_list([1, 2, 3])
-        [1, 2, 3]
+    Parameters
+    ----------
+    thing :
+        Anything!
+
+    Returns
+    --------
+    If ``thing`` is a list, returns ``thing``, otherwise returns ``[thing]``.
+
+
+    Examples
+    --------
+    >>> ensure_list("ABC")
+    ["ABC"]
+    >>> ensure_list([1, 2, 3])
+    [1, 2, 3]
     """
     if isinstance(thing, list):
         return thing
@@ -319,9 +436,17 @@ def levenshtein_distance(s1, s2):
         If ``s1`` and ``s2`` must both be strings or both be list. Cannot mix
         types.
 
-    :param s1: String or list
-    :param s2: Other string or list
-    :returns: Integer equal to the number of edits to get from ``s1`` to ``s2``.
+    Parameters
+    ----------
+    s1 : {str, list}
+        String or list.
+
+    s1 : {str, list}
+        Other string or list.
+
+    Returns
+    --------
+    Integer equal to the number of edits to get from ``s1`` to ``s2``.
     """
     if len(s1) < len(s2):
         return levenshtein_distance(s2, s1)
@@ -373,44 +498,65 @@ def test_and_train_data_from_domains(domains):
     return [train_set, test_set]
 
 def int_to_char(i):
-    '''Convert int ``i`` to chars and only get English-friendly chars
+    """Convert int ``i`` to chars and only get English-friendly chars
 
-    :param int i: Any integer.
-    :returns: English-friendly string of length 1.
-    :example:
-        >>> int_to_char(42)
-        'J'
-        >>> int_to_char(-42)
-        'v'
-    '''
+    Parameters
+    ----------
+    i : int
+        Any integer.
+
+    Returns
+    --------
+    English-friendly string of length 1.
+
+    Examples
+    --------
+    >>> int_to_char(42)
+    'J'
+    >>> int_to_char(-42)
+    'v'
+    """
     i = (i + 32) % 128
     return chr(i)
 
 def gaussian_noise_factor():
-    '''Returns Gaussian noise of mean 0, std dev 1.
+    """Returns Gaussian noise of mean 0, std dev 1.
 
-    :returns: Float samples from Gaussian distribution.
+    Returns
+    --------
+    Float samples from Gaussian distribution.
 
-    :example:
-        >>> gaussian_noise_factor()
-        1.43412557975
-        >>> gaussian_noise_factor()
-        -0.0410900866765
-    '''
+    Examples
+    --------
+    >>> gaussian_noise_factor()
+    1.43412557975
+    >>> gaussian_noise_factor()
+    -0.0410900866765
+    """
     return math.sqrt(-2.0 * math.log(random.random())) * math.cos(2.0 * math.pi * random.random())
 
 def perturb_with_gaussian_noise(sd, n):
-    '''Returns n perturbed with standard deviation.
+    """Returns n perturbed with standard deviation.
 
-    :param float sd: Standard deviation
-    :param float n: number to perturb.
-    :returns: Perturbed float.
-    :example:
-        >>> perturb_with_gaussian_noise(5, 0)
-        5.03608878454
-        >>> perturb_with_gaussian_noise(1, 100)
-        99.9105032498
-    '''
+    Parameters
+    ----------
+    sd : float
+        Standard deviation
+
+    n : float
+        Number to perturb.
+
+    Returns
+    --------
+    Perturbed float.
+    
+    Examples
+    --------
+    >>> perturb_with_gaussian_noise(5, 0)
+    5.03608878454
+    >>> perturb_with_gaussian_noise(1, 100)
+    99.9105032498
+    """
     return n + (sd * gaussian_noise_factor())
 
 def load_program_from_list(lst):
@@ -471,8 +617,5 @@ def median_absolute_deviation(a):
     Returns
     -------
     mad : float
-
-    :param list a: List of numbers.
-    :returns: MAD of list.
     """
     return np.median(np.abs(a - np.median(a)))

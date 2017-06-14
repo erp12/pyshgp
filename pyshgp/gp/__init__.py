@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thurs, May 25, 2017
-
-@author: Eddie
+The GP sub-package contains a genetic programming framework that evolves Push
+programs.
 """
 
 # Forces this directory to become a python package.

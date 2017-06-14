@@ -22,8 +22,14 @@ def get_matcing_close_index(sequence):
     """Returns the index of the the matching ``"_close"``
     to the first ``"_open"``.
 
-    :param sequence: List with some ``"_open"`` and ``"_close"`` elements.
-    :returns: Int of index to match ``"_close"``.
+    Parameters
+    ----------
+    sequence : list
+        List with some ``"_open"`` and ``"_close"`` elements.
+
+    Returns
+    --------
+    Int of index to match ``"_close"``.
     """
     open_count = 0
     for i in range(len(sequence)):
@@ -39,11 +45,15 @@ def open_close_sequence_to_list(sequence):
     """Converts flat list with ``"_open"`` and ``"_close"`` elements to
     nested lists.
 
-    :param sequence: List with some ``"_open"`` and ``"_close"`` elements.
+    Parameters
+    ----------
+    sequence : list
+        List with some ``"_open"`` and ``"_close"`` elements.
 
-    :example:
-        >>> open_close_sequence_to_list(["_open", 1, "_close", "_open", 2, "_close"]))
-        [[1], [2]]
+    Examples
+    --------
+    >>> open_close_sequence_to_list(["_open", 1, "_close", "_open", 2, "_close"]))
+    [[1], [2]]
     """
     if not type(sequence) == list:
         return sequence
@@ -75,8 +85,14 @@ def genome_to_program(genome):
     are still needed (as indicated by the paren-stack), parens are added until
     the paren stack is empty.
 
-    :param list genome: List of Plush genes to be translated.
-    :returns: A Push program.
+    Parameters
+    ----------
+    genome : list
+        List of Plush genes to be translated.
+
+    Returns
+    --------
+    A Push program.
     """
 
     # The program being built after being translated from open-close sequence.

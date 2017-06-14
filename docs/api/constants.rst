@@ -1,6 +1,6 @@
-**********
-Constants
-**********
+************
+constants.py
+************
 
 .. automodule:: pyshgp.constants
 	:members:

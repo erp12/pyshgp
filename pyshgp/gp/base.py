@@ -46,13 +46,13 @@ class PyshMixin:
     """Contains all evoluationary
 
     TODO: Add validation checks.
-    TODO: add attribute docstrings.
+    TODO: add attribute docstrings
     """
 
-    def __init__(self, error_threshold=0, max_generations=1000,
-                 population_size=300, selection_method='lexicase', n_jobs=1,
-                 operators=DEFAULT_GENETICS, initial_max_genome_size=50,
-                 program_growth_cap=100, atom_generators=DEFAULT_ATOM_GENERATORS,
+    def __init__(self, atom_generators='default', operators='default',
+                 error_threshold=0, max_generations=1000, population_size=300,
+                 selection_method='lexicase', n_jobs=1,
+                 initial_max_genome_size=50, program_growth_cap=100,
                  verbose=0, epsilon='auto', tournament_size=7,
                  simplification_steps=2000):
         self.error_threshold = error_threshold
@@ -71,6 +71,12 @@ class PyshMixin:
 
         if not self.n_jobs == 1:
             self.init_executor()
+
+        if atom_generators == 'default':
+            self.atom_generators = DEFAULT_ATOM_GENERATORS
+
+        if operators == 'default':
+            self.operators = DEFAULT_GENETICS
 
     def init_executor(self):
         """Initializes a pool of processes.
@@ -165,23 +171,30 @@ class SimplePushGPEvolver(PyshMixin):
     best_error_ : float
         Total error of the Individual stored in best_. This is considered the
         overall training error of the SymbolicRegressor.
+
     """
 
-    def __init__(self, error_threshold=0,
-                 max_generations=1000, population_size=300,
-                 selection_method='epsilon_lexicase', n_jobs=1,
-                 operators=DEFAULT_GENETICS, initial_max_genome_size=50,
-                 program_growth_cap=100,
-                 atom_generators=REGRESSION_ATOM_GENERATORS, verbose=0,
+    def __init__(self, atom_generators='default', operators='default',
+                 error_threshold=0, max_generations=1000,
+                 population_size=300, selection_method='epsilon_lexicase',
+                 n_jobs=1, initial_max_genome_size=50,
+                 program_growth_cap=100, verbose=0,
                  epsilon='auto', tournament_size=7, simplification_steps=2000):
 
-        PyshMixin.__init__(self, max_generations=max_generations,
+        if atom_generators == 'default':
+            atom_generators = REGRESSION_ATOM_GENERATORS
+
+        if operators == 'default':
+            operators = DEFAULT_GENETICS
+
+        PyshMixin.__init__(self, atom_generators=atom_generators,
+                           operators=operators,
+                           max_generations=max_generations,
                            population_size=population_size,
                            selection_method=selection_method,
-                           n_jobs=n_jobs, operators=operators,
-                           program_growth_cap=program_growth_cap,
+                           n_jobs=n_jobs, program_growth_cap=program_growth_cap,
                            initial_max_genome_size=initial_max_genome_size,
-                           atom_generators=atom_generators, verbose=verbose,
+                           verbose=verbose,
                            simplification_steps=simplification_steps,
                            epsilon=epsilon, tournament_size=tournament_size)
 
@@ -286,21 +299,21 @@ class PushGPRegressor(BaseEstimator, PyshMixin, RegressorMixin):
     def __init__(self, fit_metric=mean_squared_error, error_threshold=1e-5,
                  max_generations=1000, population_size=500,
                  selection_method='epsilon_lexicase', n_jobs=1,
-                 operators=DEFAULT_GENETICS, initial_max_genome_size=50,
-                 program_growth_cap=100,
-                 atom_generators=REGRESSION_ATOM_GENERATORS, verbose=0,
-                 epsilon='auto', tournament_size=7, simplification_steps=500):
+                 initial_max_genome_size=50, program_growth_cap=100,
+                 verbose=0, epsilon='auto', tournament_size=7,
+                 simplification_steps=500):
 
-        PyshMixin.__init__(self, error_threshold=error_threshold,
+        PyshMixin.__init__(self,  atom_generators=DEFAULT_ATOM_GENERATORS,
+                           operators=DEFAULT_GENETICS,
+                           error_threshold=error_threshold,
                            max_generations=max_generations,
                            population_size=population_size,
                            selection_method=selection_method, n_jobs=n_jobs,
-                           operators=operators,
                            program_growth_cap=program_growth_cap,
                            initial_max_genome_size=initial_max_genome_size,
-                           atom_generators=atom_generators, verbose=verbose,
+                           verbose=verbose, epsilon=epsilon,
                            simplification_steps=simplification_steps,
-                           epsilon=epsilon, tournament_size=tournament_size)
+                           tournament_size=tournament_size)
 
         self.fit_metric = fit_metric
         self._output_dict = {'y_hat' : 0.0}

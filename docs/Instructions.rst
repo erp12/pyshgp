@@ -158,7 +158,7 @@ An iteration instruction that executes the top item on the `exec` stack a number
 
 code_do*count
 """""""""""""
-An iteration instruction that performs a loop (the body of which is taken from the `code` stack) the number of times indicated by the `integer` argument, pushing an index (which runs from zero to one less than the number of iterations) onto the `integer` stack prior to each execution of the loop body. 
+An iteration instruction that performs a loop (the body of which is taken from the `code` stack) the number of times indicated by the `integer` argument, pushing an index (which runs from zero to one less than the number of iterations) onto the `integer` stack prior to each execution of the loop body.
 
 
 exec_do*count
@@ -927,6 +927,4 @@ Special Instructions
 .. toctree::
    :maxdepth: 1
 
-   Input_Output_Instr
    custom_instructions
-

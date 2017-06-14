@@ -18,18 +18,19 @@ from . import translation as t
 from . import plush as pl
 
 class PushSpawner:
-
-    #: List of atoms to choose from.
-    atom_generators = None
-
-    #: List of epigenetic marker names as strings.
-    epigenetic_markers = None
-
-    #: List of probabilities that sum to 1. Determines distribution of closes.
-    close_parens_probabilities = None
-
-    #: Probability of gene being silent.
-    silent_gene_probability = None
+    """
+    Parameters
+    ----------
+    atom_generators : list
+        List of atoms, and functions that produce atoms, to choose from when
+        generating random code.
+    epigenetic_markers : list
+        TODO: Remove epigenetic_markers.
+    close_parens_probabilities : int
+        TODO: Refactor use of close_parens_probabilities.
+    silent_gene_probability : float
+        TODO: Remove epigenetic_markers.
+    """
 
     def __init__(self, atom_generators,
                  epigenetic_markers = ['_instruction', '_close'],
@@ -54,7 +55,9 @@ class PushSpawner:
         p(2) = 0.021
         p(3) = 0.001
 
-        :returns: Integer between 0 and 3, inclusive. Denoted number of closes.
+        Returns
+        --------
+         Integer between 0 and 3, inclusive. Denoted number of closes.
         """
         prob = random.random()
         close_probabilities = u.reductions(
@@ -71,8 +74,14 @@ class PushSpawner:
     def atom_to_plush_gene(self, atom):
         """Converts an atom into a plush gene.
 
-        :param atom: The atom (instruction or literal) to convert to a gene.
-        :returns: Instance of Gene.
+        Parameters
+        ----------
+        atom : Instruction or literal
+            The atom (instruction or literal) to convert to a gene.
+
+        Returns
+        --------
+            Instance of Gene.
         """
         instruction = None
         is_literal = False
@@ -118,7 +127,9 @@ class PushSpawner:
         """Returns a random plush gene given atom_generators and
         epigenetic-markers.
 
-        :returns: A random Plush gene from the ``atom_generators``.
+        Returns
+        --------
+            A random Plush gene from the ``atom_generators``.
         """
         atom = random.choice(list(self.atom_generators))
         return self.atom_to_plush_gene(atom)
@@ -126,8 +137,14 @@ class PushSpawner:
     def random_plush_genome_with_size(self, genome_size):
         """Returns a random Plush genome with size ``genome_size``.
 
-        :param int genome_size: The number of genes to be put in the Plush genome.
-        :returns: List of Plush genes (tuples). This is considered a genome.
+        Parameters
+        ----------
+        genome_size : int
+            The number of genes to be put in the Plush genome.
+
+        Returns
+        --------
+            List of Plush genes. This is considered a genome.
         """
         atoms = rand.choice(list(self.atom_generators), size=genome_size)
         return [self.atom_to_plush_gene(atom) for atom in atoms]
@@ -135,8 +152,14 @@ class PushSpawner:
     def random_plush_genome(self, max_genome_size):
         """Returns a random Plush genome with size limited by max_genome_size.
 
-        :param int max_genome_size: Max number of genes that could be in the genome.
-        :returns: List of Plush genes (tuples). This is considered a genome.
+        Parameters
+        ----------
+        max_genome_size : int
+            Max number of genes that could be in the genome.
+
+        Returns
+        --------
+            List of Plush genes (tuples). This is considered a genome.
         """
         genome_size = random.randint(1, max_genome_size)
         return self.random_plush_genome_with_size(genome_size)
@@ -144,8 +167,14 @@ class PushSpawner:
     def random_push_code(self, max_points):
         """Returns a random Push expression with size limited by max_points.
 
-        :param int max_points: Max number of instructions, literals and parens.
-        :returns: A random Push program.
+        Parameters
+        ----------
+        max_points : int
+            Max number of instructions, literals and parens.
+
+        Returns
+        --------
+             A random Push program.
         """
         max_genome_size = max(int(max_points /  2), 1)
         genome = self.random_plush_genome(max_genome_size)

@@ -243,6 +243,54 @@ class SimplePushGPEvolver(PyshMixin):
     Parameters
     ----------
     atom_generators : list or str, optional (default='default')
+        Atom generators used to generate random Push programs. If ``'default'``
+        then all atom generators are used.
+
+    operators : list or str, optional (default='default')
+        List of tuples. Each tuple contains a VariationOperator and a float. The
+        float determines the relative probability of using the VariationOperator
+        to produce a child. If ``'default'`` a commonly used set of genetic
+        operators is used.
+
+    error_threshold : int or float, optional (default=0)
+        If a program's total error is ever less than or equal to this value, the
+        program is considered a solution.
+
+    max_generations : int, optional (default=1000)
+        Max number of generation before stopping evolution.
+
+    population_size : int, optional (default=300)
+        Number of Individuals to have in the population at any given generation.
+
+    selection_method : str, optional (default='lexicase')
+        Method to use when selecting parents. Supported options are 'lexicase',
+        'epsilon_lexicase', and 'tournament'.
+
+    n_jobs : int or str, optional (default=1)
+        Number of processes to run at once during program evaluation. If ``-1``
+        the number of processes will be equal to the number of cores.
+
+    initial_max_genome_size : int, optional (default=50)
+        Max number of genes to have in each randomly generated genome.
+
+    program_growth_cap : int, optional (default=100)
+        TODO: Implement this feature.
+
+    verbose : int, optional (default=0)
+        If 1, will print minimal information while evolving. If 2, will print
+        as much information as possible during evolution however this might
+        slightly impact runtime. If 0, prints nothing during evolution.
+
+    epsilon : float or str, optional (default='auto')
+        The value of epsilon when using 'epsilon_lexicase' as the selection
+        method. If `auto`, epsilon is set to be equal to the Median Absolute
+        Deviation of each error.
+
+    tournament_size : int, optional (default=7)
+        The size of each tournament when using 'tournament' selection.
+
+    simplification_steps : int, optional (default=2000)
+        Number of steps of automatic program simplification to perform.
 
     Attributes
     ----------
@@ -264,7 +312,7 @@ class SimplePushGPEvolver(PyshMixin):
                  epsilon='auto', tournament_size=7, simplification_steps=2000):
 
         if atom_generators == 'default':
-            atom_generators = REGRESSION_ATOM_GENERATORS
+            atom_generators = DEFAULT_ATOM_GENERATORS
 
         if operators == 'default':
             operators = DEFAULT_GENETICS
@@ -281,8 +329,16 @@ class SimplePushGPEvolver(PyshMixin):
                            epsilon=epsilon, tournament_size=tournament_size)
 
     def evaluate_with_function(self, error_function):
-        """TODO: Write method docstring.
+        """Evaluates the population using an error function. If a process pool
+        is setup, then evaluation is parallelized using it.
+
         TODO: Check for population.
+
+        Parameters
+        ----------
+        error_function : function
+            A function with takes a push program as input and returns an error
+            vector.
         """
         if hasattr(self, 'pool'):
             self.population.evaluate_with_function(error_function, self.pool)
@@ -368,6 +424,62 @@ class PushGPRegressor(BaseEstimator, PyshMixin, RegressorMixin):
     """A Scikit-learn estimator that uses PushGP for regression tasks.
     TODO: Write fit_metric docstring
 
+    Parameters
+    ----------
+    fit_metric : function
+        A sklearn scoring function to use when calculating an Individual's
+        total error.
+
+    atom_generators : list or str, optional (default='default')
+        Atom generators used to generate random Push programs. If ``'default'``
+        then all atom generators are used.
+
+    operators : list or str, optional (default='default')
+        List of tuples. Each tuple contains a VariationOperator and a float. The
+        float determines the relative probability of using the VariationOperator
+        to produce a child. If ``'default'`` a commonly used set of genetic
+        operators is used.
+
+    error_threshold : int or float, optional (default=0)
+        If a program's total error is ever less than or equal to this value, the
+        program is considered a solution.
+
+    max_generations : int, optional (default=1000)
+        Max number of generation before stopping evolution.
+
+    population_size : int, optional (default=300)
+        Number of Individuals to have in the population at any given generation.
+
+    selection_method : str, optional (default='lexicase')
+        Method to use when selecting parents. Supported options are 'lexicase',
+        'epsilon_lexicase', and 'tournament'.
+
+    n_jobs : int or str, optional (default=1)
+        Number of processes to run at once during program evaluation. If ``-1``
+        the number of processes will be equal to the number of cores.
+
+    initial_max_genome_size : int, optional (default=50)
+        Max number of genes to have in each randomly generated genome.
+
+    program_growth_cap : int, optional (default=100)
+        TODO: Implement this feature.
+
+    verbose : int, optional (default=0)
+        If 1, will print minimal information while evolving. If 2, will print
+        as much information as possible during evolution however this might
+        slightly impact runtime. If 0, prints nothing during evolution.
+
+    epsilon : float or str, optional (default='auto')
+        The value of epsilon when using 'epsilon_lexicase' as the selection
+        method. If `auto`, epsilon is set to be equal to the Median Absolute
+        Deviation of each error.
+
+    tournament_size : int, optional (default=7)
+        The size of each tournament when using 'tournament' selection.
+
+    simplification_steps : int, optional (default=2000)
+        Number of steps of automatic program simplification to perform.
+
     Attributes
     ----------
 
@@ -379,12 +491,19 @@ class PushGPRegressor(BaseEstimator, PyshMixin, RegressorMixin):
         overall training error of the SymbolicRegressor.
     """
 
-    def __init__(self, fit_metric=mean_squared_error, error_threshold=1e-5,
+    def __init__(self, fit_metric=mean_squared_error, atom_generators='default',
+                 operators='default',error_threshold=1e-5,
                  max_generations=1000, population_size=500,
                  selection_method='epsilon_lexicase', n_jobs=1,
                  initial_max_genome_size=50, program_growth_cap=100,
                  verbose=0, epsilon='auto', tournament_size=7,
                  simplification_steps=500):
+
+        if atom_generators == 'default':
+            atom_generators = REGRESSION_ATOM_GENERATORS
+
+        if operators == 'default':
+            operators = DEFAULT_GENETICS
 
         PyshMixin.__init__(self,  atom_generators=DEFAULT_ATOM_GENERATORS,
                            operators=DEFAULT_GENETICS,
@@ -402,7 +521,18 @@ class PushGPRegressor(BaseEstimator, PyshMixin, RegressorMixin):
         self._output_dict = {'y_hat' : 0.0}
 
     def evaluate(self, X, y):
-        """TODO: Write method docstring
+        """Evaluates the population using a dataset. If a process pool exists
+        then evaluation is parallelized.
+
+        TODO: Check for population.
+        
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = (n_samples, n_features)
+            Samples.
+
+        y : {array-like, sparse matrix}, shape = (n_samples, 1)
+            Target values.
         """
         if hasattr(self, 'pool'):
             self.population.evaluate(X, y, self._output_dict, self.fit_metric,

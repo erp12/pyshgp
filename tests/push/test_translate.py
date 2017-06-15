@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import unittest
 
-import pyshgp.utils as u
 import pyshgp.push.random as r
 import pyshgp.push.translation as t
 

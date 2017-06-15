@@ -1,8 +1,6 @@
 # _*_ coding: utf_8 _*_
 """
-@author: Eddie
-
-Tests PushGPClassifier class
+Tests start to finish usage of PushGPClassifier class.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 

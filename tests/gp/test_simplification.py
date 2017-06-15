@@ -7,8 +7,6 @@ import unittest
 from pyshgp.gp.simplification import (silent_n_random_genes, simplify_once,
                                       noop_n_random_genes)
 from pyshgp.push.random import PushSpawner
-from pyshgp.gp.population import Individual
-
 
 class TestSimplificationFunctions(unittest.TestCase):
 

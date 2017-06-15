@@ -6,7 +6,6 @@ Created on July 24, 2016
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from ... import utils as u
 from ... import constants as c
 from ... import exceptions as e
 

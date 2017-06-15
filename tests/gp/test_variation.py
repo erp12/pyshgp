@@ -8,7 +8,6 @@ import pyshgp.gp.variation as v
 import pyshgp.gp.population as p
 import pyshgp.push.random as r
 import pyshgp.push.plush as pl
-import pyshgp.push.interpreter as interp
 
 class TestUniformMutationMethods(unittest.TestCase):
 

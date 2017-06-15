@@ -13,9 +13,9 @@ dependencies:
 test:
     post:
         # Validation tests
-        # - python2.7 -m tests.validation.sklearn_regression
+        - python2.7 -m tests.validation.sklearn_regression
         # - python2.7 -m tests.validation.sklearn_classification
-        # - python3.6 -m tests.validation.sklearn_regression
+        - python3.6 -m tests.validation.sklearn_regression
         # - python3.6 -m tests.validation.sklearn_classification
         # Coverage reports
         - python3.6 -m coverage run ./setup.py test

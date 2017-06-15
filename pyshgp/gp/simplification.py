@@ -7,11 +7,10 @@ TODO: function parameter docstrings
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from numpy.random import random, randint, choice
+from numpy.random import randint, choice
 from copy import copy, deepcopy
 
 from ..push.instructions.code import exec_noop_instruction
-from .. import utils as u
 
 def silent_n_random_genes(genome, n):
     """Returns a new genome that is identical to input genome, with n genes

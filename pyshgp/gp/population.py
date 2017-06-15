@@ -1,7 +1,8 @@
 """
 Classes that reperesents Individuals and Populations in evolutionary algorithms.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import random
 from copy import copy
@@ -19,9 +20,31 @@ from .simplification import simplify_once
 ###########
 
 class Individual(object):
-    """Holds all information about an individual.
+    """Holds all information about an individual in the PushGP framework.
 
-    TODO: Write attribute docstrings
+    The main role of an Individual is to hold a Push program that determines
+    the Individual's behavior. An Individual's push program comes from a Plush
+    genome, which is also stored in the Individual. Genomes are what pyshgp's
+    VariationOperators manipulation. An Individual is created based off a
+    genome, and it's program is set by translating the genome into into a
+    program.
+
+    Parameters
+    ----------
+    genome : list of genes
+        List of plush genes.
+
+    Attributes
+    ----------
+    genome : list of genes
+        List of plush genes.
+    program : list
+        A Push program.
+    error_vector : list
+        A list of numeric error values.
+    total_error : float
+        A single numeric error value. Generally some aggregate of the
+        ``error_vector``.
 	"""
 
     _genome = None
@@ -60,19 +83,25 @@ class Individual(object):
     def run_program(self, inputs, print_trace=False):
         """Runs the Individual's program.
 
-        :param list inputs: List of input values that can be accessed by the
-        Individual's program.
-        :param bool print_trace: If true, prints the current program element and
-        the state of the stack at each step of executing the program. Defaults
-        to False.
-        :returns: The final state of the push Interpreter after executing the
-        program.
+        Parameters
+        ----------
+        inputs : list
+            List of input values that can be accessed by the Individual's
+            program.
+        print_trace : bool, optional
+            If ``True``, prints the current program element and the state of the
+            stack at each step of executing the program.
+
+        Returns
+        --------
+        The final state of the push Interpreter after executing the program.
         """
         i = interp.PushInterpreter(inputs)
         return i.run_push(self.program, print_trace)
 
     def evaluate(self, X, y, output_dict, metric=None):
-        """Evaluates the individual.
+        """Evaluates the individual. Sets the ``error_vec`` and ``total_error``
+        attributes.
 
         Parameters
         ----------
@@ -87,7 +116,7 @@ class Individual(object):
             OutputInstructions and values are default output values for that
             output.
 
-        metric : function
+        metric : function, optional
             Function to used to calculate the error of the individual. Sklearn
             scoring functions are supported.
         """
@@ -117,9 +146,13 @@ class Individual(object):
 
     def evaluate_with_function(self, error_function):
         """Evaluates the individual by passing it's program to the error
-        function.
+        function. Sets the ``error_vec`` and ``total_error`` attributes.
 
-        :param func error_function: The error function.
+        Parameters
+        ----------
+        error_function : function
+            The error function which takes a push program as input and Returns
+            an error vector.
         """
         errs = error_function(self.program)
         self.error_vector = errs
@@ -131,6 +164,29 @@ class Individual(object):
         a dataset by randomly removing some elements of the program and
         confirming that the total error remains the same or lower. This is
         acheived by silencing some genes in the individual's genome.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = (n_samples, n_features)
+            Samples.
+
+        y : {array-like, sparse matrix}, shape = (n_samples, 1)
+            Labels.
+
+        output_dict : dict
+            Dict where keys are names of output values used in
+            OutputInstructions and values are default output values for that
+            output.
+
+        metric : function, optional
+            Function to used to calculate the error of the individual. Sklearn
+            scoring functions are supported.
+
+        steps : int, optional
+            Number of steps of simplification to perform.
+
+        verbose : int, optional
+            If greater than 0, prints size of program before and after.
         """
         # Print the origional size of the individual.
         if verbose > 0:
@@ -158,6 +214,18 @@ class Individual(object):
         an error function by randomly removing some elements of the program and
         confirming that the total error remains the same or lower. This is
         acheived by silencing some genes in the individual's genome.
+
+        Parameters
+        ----------
+        error_function : function
+            The error function which takes a push program as input and Returns
+            an error vector.
+
+        steps : int, optional
+            Number of steps of simplification to perform.
+
+        verbose : int, optional
+            If greater than 0, prints size of program before and after.
         """
         # Print the origional size of the individual.
         if verbose > 0:
@@ -196,9 +264,17 @@ class Population(list):
         y : {array-like, sparse matrix}, shape = (n_samples, 1)
             Target values.
 
+        output_dict : dict
+            Dict where keys are names of output values used in
+            OutputInstructions and values are default output values for that
+            output.
+
         metric : function
             Function to used to calculate the error of an individual. All
             sklearn regression metrics are supported.
+
+        pool : pathos.multiprocessing.Pool, optional
+            Pool of processes to evaluate in parallel.
         """
         def f(i):
             if not hasattr(i, 'error_vector'):
@@ -215,7 +291,14 @@ class Population(list):
         """Evaluates every individual in the population, if the individual has
         not been previously evaluated.
 
-        :param func error_function: The error function.
+        Parameters
+        ----------
+        error_function : function
+            The error function which takes a push program as input and Returns
+            an error vector.
+
+        pool : pathos.multiprocessing.Pool, optional
+            Pool of processes to evaluate in parallel.
         """
         def f(i):
             if not hasattr(i, 'error_vector'):
@@ -232,7 +315,19 @@ class Population(list):
         """Selects a individual from the population with the given selection
         method.
 
-        TODO: Write method docstring.
+        Parameters
+        ----------
+        method : str, optional (default='lexicase')
+            The selection method to be used when selecting parents. Supported
+            options are 'lexicase', 'epsilon_lexicase', and 'tournament'.
+
+        epsilon : int, str, optional (default='auto')
+            The value of epsilon when using 'epsilon_lexicase' as the selection
+            method. If `auto`, epsilon is set to be equal to the Median Absolute
+            Deviation of each error.
+
+        tournament_size : int, optional (default=7)
+            The size of each tournament when using 'tournament' selection.
         """
         if method == 'epsilon_lexicase':
             return self.epsilon_lexicase_selection(epsilon)
@@ -269,11 +364,11 @@ class Population(list):
 
         Parameters
         ----------
-        epsilon : {'auto', float, array-like}
-            If an individual is within epsilon of being elite, it will
-            remain in the selection pool. If 'auto', epsilon is set at
-            the start of each selection even to be equal to the
-            Median Absolute Deviation of each test case.
+        epsilon : float, array-like or str, optional (default='auto')
+            If an individual is within epsilon of being elite, it will remain in
+            the selection pool. If 'auto', epsilon is set at the start of each
+            selection even to be equal to the Median Absolute Deviation of each
+            error.
 
         Returns
         -------
@@ -309,7 +404,7 @@ class Population(list):
 
         Parameters
         ----------
-        tournament_size : int
+        tournament_size : int, optional (default=7)
             Size of each tournament.
 
         Returns
@@ -326,25 +421,37 @@ class Population(list):
         return best_in_tourn[0]
 
     def lowest_error(self):
-        """Returns the lowest total error found in the population.
+        """
+        Returns
+        -------
+        The lowest total error found in the population.
         """
         gnrtr = (ind.total_error for ind in self)
         return np.min(np.fromiter(gnrtr, np.float))
 
     def average_error(self):
-        """Returns the average total error found in the population.
+        """
+        Returns
+        -------
+        The average total error found in the population.
         """
         gnrtr = (ind.total_error for ind in self)
         return np.mean(np.fromiter(gnrtr, np.float))
 
     def unique(self):
-        """Returns the number of unique programs found in the population.
+        """
+        Returns
+        -------
+        The number of unique programs found in the population.
         """
         programs_set = {str(ind.program) for ind in self}
         return len(programs_set)
 
     def best_program(self):
-        """Returns the program of the Individual with the lowest total error.
+        """
+        Returns
+        -------
+        The program of the Individual with the lowest total error.
         """
         e = self.lowest_error()
         test = lambda i: i.total_error == e

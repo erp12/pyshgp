@@ -16,6 +16,14 @@ from .. import utils as u
 def silent_n_random_genes(genome, n):
     """Returns a new genome that is identical to input genome, with n genes
     marked as silent.
+
+    Parameters
+    ----------
+    genome : list of Genes
+        List of Plush genes.
+
+    n : int
+        Number of gnese to switch to silent.
     """
     genes_to_silence = randint(0, len(genome), n)
     for i in genes_to_silence:
@@ -24,6 +32,14 @@ def silent_n_random_genes(genome, n):
 def noop_n_random_genes(genome, n):
     """Returns a new genome that is identical to input genome, with n genes
     replaced with noop instructions.
+
+    Parameters
+    ----------
+    genome : list of Genes
+        List of Plush genes.
+
+    n : int
+        Number of gnese to switch to noop.
     """
     genes_to_silence = randint(0, len(genome), n)
     for i in genes_to_silence:
@@ -31,6 +47,11 @@ def noop_n_random_genes(genome, n):
 
 def simplify_once(genome):
     """Silences or noops between 1 and 3 random genes.
+
+    Parameters
+    ----------
+    genome : list of Genes
+        List of Plush genes.
     """
     gn = deepcopy(genome)
     n = randint(1,4)

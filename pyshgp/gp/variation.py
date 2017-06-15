@@ -1,6 +1,8 @@
 # _*_ coding: utf_8 _*_
 """
-The :mod:`variation` module defines classes for each genetic oper
+The :mod:`variation` module defines classes for variation operators (aka
+genetic operators). These operators are used in evoluation to create new
+children from selected parents.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 from future.utils import with_metaclass
@@ -15,11 +17,15 @@ from ..utils import perturb_with_gaussian_noise, gaussian_noise_factor
 
 
 class VariationOperator(with_metaclass(ABCMeta)):
-    """TODO: Write me
+    """The base class for all variation operators.
+
+    Parameters
+    ----------
+    num_parents : int
+        Number of parent Individuals the operator needs to produce a child
+        Individual.
     """
 
-    #:Number of genomes to expect as input. Needs to be set to be usable in a
-    #:VariationOperatorPipeline
     _num_parents = None
 
     def __init__(self, num_parents):
@@ -37,16 +43,28 @@ class VariationOperator(with_metaclass(ABCMeta)):
 
 class VariationOperatorPipeline(VariationOperator):
     """Variation operator that chains together other variation operators.
+
+    Parameters
+    ----------
+    operators : list of VariationOperators
+        A list of operators to apply in order to produce the child Individual.
     """
 
     def __init__(self, operators):
         self.operators = operators
-
         needed_genomes = max([op._num_parents for op in self.operators])
         VariationOperator.__init__(self, needed_genomes)
 
     def produce(self, parents, spawner):
-        """TODO: Write method docstring.
+        """Produces a child using the VariationOperatorPipeline.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
         child = parents[0]
@@ -101,8 +119,17 @@ class UniformMutation(VariationOperator):
         self.string_char_change_rate = string_char_change_rate
 
     def produce(self, parents, spawner):
-        """TODO: Write method docstring.
+        """Produces a child using the UniformMutation operator.
+
         TODO: Re-write so that only constants get constant tweak.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
         self.spawner = spawner
@@ -179,26 +206,36 @@ class Alternation(VariationOperator):
 
     More information can be found on the `this Push-Redux page
     <https://erp12.github.io/push-redux/pages/genetic_operators/index.html#recombination>`_.
+
+    Parameters
+    ----------
+    rate : float, optional (default=0.01)
+        The probablility of switching which parent program elements are being
+        copied from. Must be 0 <= rate <= 1. Defaults to 0.1.
+
+    alignment_deviation : int, optional (default=10)
+        The standard deviation of how far alternation may jump between indices
+        when switching between parents.
     """
-    #: The probablility of switching which parent program elements are being
-    #: scopied from. Must be 0 <= rate <= 1. Defaults to 0.1.
-    rate = None
 
-    #: The standard deviation of how far alternation may jump between indices
-    #: when switching between parents.
-    alignment_deviation = None
-
-    def __init__(self, rate=0.01, alignment_deviation=10,
-                 max_genome_size=200):
+    def __init__(self, rate=0.01, alignment_deviation=10):
         # Initialize as a recombination operator
         VariationOperator.__init__(self, 2)
         # Set attributes
         self.rate = rate
         self.alignment_deviation = alignment_deviation
-        self.max_genome_size = max_genome_size
 
     def produce(self, parents, spawner=None):
-        """TODO: Write method docstring
+        """Produces a child using the UniformMutation operator.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner, optional
+            A spawner that can be used to create random Push code. NOT USED BY
+            THIS OPERATOR.
         """
         self.check_num_parents(parents)
         gn1 = parents[0].genome

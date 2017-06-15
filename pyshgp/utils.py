@@ -56,6 +56,7 @@ class PushVector(list):
     ----------
     lst : list of :obj:`typ`
         Python list where all elements are of type ``typ``.
+
     typ : data-type
         Python Type that denotes the type of the vector.
 
@@ -81,10 +82,11 @@ class PushVector(list):
 
         Parameters
         ----------
-        item : The thing trying to be placed into the PushVector.
+        item :
+            The thing trying to be placed into the PushVector.
         """
         if not isinstance(item, self.typ):
-            raise TypeError, 'item is not of type %s' % self.type
+            raise TypeError('Item is not of type {}'.format(self.type))
         super(PushVector, self).append(item)
 
 class UnevaluatableStackResponse:
@@ -549,7 +551,7 @@ def perturb_with_gaussian_noise(sd, n):
     Returns
     --------
     Perturbed float.
-    
+
     Examples
     --------
     >>> perturb_with_gaussian_noise(5, 0)

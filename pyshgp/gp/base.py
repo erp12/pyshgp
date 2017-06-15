@@ -32,6 +32,7 @@ DEFAULT_ATOM_GENERATORS = list(merge_sets(
     ri.registered_instructions,
     [lambda: randint(0, 100), lambda: random()]))
 REGRESSION_ATOM_GENERATORS = list(merge_sets(
+    ri.get_instructions_by_pysh_type('_exec'),
     ri.get_instructions_by_pysh_type('_float'),
     [lambda: randint(0, 100), lambda: random()]))
 CLASSIFICATION_ATOM_GENERATORS = list(merge_sets(
@@ -43,10 +44,61 @@ CLASSIFICATION_ATOM_GENERATORS = list(merge_sets(
 
 
 class PyshMixin:
-    """Contains all evoluationary
+    """Contains methods that can be helpful
 
     TODO: Add validation checks.
-    TODO: add attribute docstrings
+
+    Parameters
+    ----------
+    atom_generators : list or str, optional (default='default')
+        Atom generators used to generate random Push programs. If ``'default'``
+        then all atom generators are used.
+
+    operators : list or str, optional (default='default')
+        List of tuples. Each tuple contains a VariationOperator and a float. The
+        float determines the relative probability of using the VariationOperator
+        to produce a child. If ``'default'`` a commonly used set of genetic
+        operators is used.
+
+    error_threshold : int or float, optional (default=0)
+        If a program's total error is ever less than or equal to this value, the
+        program is considered a solution.
+
+    max_generations : int, optional (default=1000)
+        Max number of generation before stopping evolution.
+
+    population_size : int, optional (default=300)
+        Number of Individuals to have in the population at any given generation.
+
+    selection_method : str, optional (default='lexicase')
+        Method to use when selecting parents. Supported options are 'lexicase',
+        'epsilon_lexicase', and 'tournament'.
+
+    n_jobs : int or str, optional (default=1)
+        Number of processes to run at once during program evaluation. If ``-1``
+        the number of processes will be equal to the number of cores.
+
+    initial_max_genome_size : int, optional (default=50)
+        Max number of genes to have in each randomly generated genome.
+
+    program_growth_cap : int, optional (default=100)
+        TODO: Implement this feature.
+
+    verbose : int, optional (default=0)
+        If 1, will print minimal information while evolving. If 2, will print
+        as much information as possible during evolution however this might
+        slightly impact runtime. If 0, prints nothing during evolution.
+
+    epsilon : float or str, optional (default='auto')
+        The value of epsilon when using 'epsilon_lexicase' as the selection
+        method. If `auto`, epsilon is set to be equal to the Median Absolute
+        Deviation of each error.
+
+    tournament_size : int, optional (default=7)
+        The size of each tournament when using 'tournament' selection.
+
+    simplification_steps : int, optional (default=2000)
+        Number of steps of automatic program simplification to perform.
     """
 
     def __init__(self, atom_generators='default', operators='default',
@@ -264,6 +316,7 @@ class SimplePushGPEvolver(PyshMixin):
         self.best_.simplify_with_function(error_function,
                                           self.simplification_steps,
                                           self.verbose)
+        return self
 
     def predict(self, X):
         """Predict using the best program found by evolution.
@@ -379,6 +432,7 @@ class PushGPRegressor(BaseEstimator, PyshMixin, RegressorMixin):
         self.best_ = [i for i in self.population if test(i)][0]
         self.best_.simplify(X, y, self._output_dict, self.fit_metric,
                             self.simplification_steps, self.verbose)
+        return self
 
     def predict(self, X):
         """Predict using the best program found by evolution.

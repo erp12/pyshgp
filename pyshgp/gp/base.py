@@ -137,12 +137,9 @@ class PyshMixin:
         multiprocessing library does not support pickling lambda and non-top
         level functions. Pathos specifically makes use of the dill package.
 
-        .. todo::
-            If there is away around using pathos, it would be great to remove
+        .. TODO::
+            TODO: If there is away around using pathos, it would be great to remove
             this dependency.
-
-        :param dict max_workers: Number of worker to put in pool. -1 uses
-        same number as available cores.
         """
         if self.n_jobs == 1:
             return
@@ -165,6 +162,19 @@ class PyshMixin:
 
     def make_spawner(self, num_inputs, outputs_dict):
         """Creates a spawner object used to generate random code.
+
+        Parameters
+        ----------
+        num_inputs : int
+            The number of inputs instructions to generate at add to the Spawner.
+            This should be set to the number of input values (features) that
+            will be supplied to Push programs during evaluation.
+
+        outputs_dict : dict
+            A dictionary describing the initial state of the output structure.
+            Each key should be the name of an output value. The values should
+            be the initial value to appear in the ouput structure, and thus the
+            default output value for that particular output.
         """
         input_instrs = [PyshInputInstruction(i) for i in range(num_inputs)]
         all_atom_gens = self.atom_generators + input_instrs
@@ -193,7 +203,15 @@ class PyshMixin:
             self.population.append(new_ind)
 
     def print_monitor(self, generation):
-        """TODO: Write method docstring
+        """Prints a basic set of values that can be used to manually monitor
+        run health.
+
+        TODO: Add validation check for if population exists.
+
+        Parameters
+        ----------
+        generation : int
+            The generation number.
         """
         print('Generation:', generation,
               '| Lowest Error:', self.population.lowest_error(),
@@ -201,7 +219,15 @@ class PyshMixin:
               '| Number of Unique Programs:', self.population.unique())
 
     def print_monitor_verbose(self, generation):
-        """TODO: Write method docstring
+        """Prints all implemented values that can be used to manually monitor
+        run health.
+
+        TODO: Add validation check for if population exists.
+
+        Parameters
+        ----------
+        generation : int
+            The generation number.
         """
         print()
         print('Generation:', generation),
@@ -213,6 +239,10 @@ class PyshMixin:
 class SimplePushGPEvolver(PyshMixin):
     """A simple evolutionary aglorithm to evolve a push program based on a
     error function.
+
+    Parameters
+    ----------
+    atom_generators : list or str, optional (default='default')
 
     Attributes
     ----------

@@ -1,14 +1,14 @@
-from __future__ import absolute_import, division, print_function, unicode_literals 
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import numpy as np
 
 import unittest
-import testing_utility as tu
+import testing_utilities as tu
 
 import pyshgp.utils as u
 import pyshgp.push.instruction as instr
 
-class TestUtilMethods(unittest.TestCase):
+class TestUtilsMethods(unittest.TestCase):
 
     # Standard use case
     def test_flatten_all_A(self):
@@ -42,7 +42,7 @@ class TestUtilMethods(unittest.TestCase):
             self.assertEqual(u.recognize_pysh_type(i), '_float')
 
     # Detect numpy float
-    def test_recognize_pysh_type_float(self):
+    def test_recognize_pysh_type_float_np(self):
         self.assertEqual(u.recognize_pysh_type(np.float64(1.1)), '_float')
 
     # Detect string

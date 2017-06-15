@@ -1,5 +1,7 @@
 pysh_job.alf
 tractor_pysh_run.sh
+venv-3.5/
+venv-2.7/
 
 *.pyc
 *.png

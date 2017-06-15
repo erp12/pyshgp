@@ -1,37 +1,23 @@
 machine:
     post:
-        - pyenv global 2.7.12 3.5.2
+        - pyenv global 2.7.12 3.6.1
 
 dependencies:
     pre:
-        - pip install numpy
-        - pip install scipy
-        - pip install scikit-learn
-        - pip install pathos
-        - pip3 install numpy
-        - pip3 install scipy
-        - pip3 install scikit-learn
-        - pip3 install pathos
+        - pip2.7 install -r requirements.txt
+        - pip2.7 install coverage
+        - pip2.7 install codacy-coverage
+        - pip3.6 install -r requirements.txt
+        - pip3.6 install coverage
+        - pip3.6 install codacy-coverage
 test:
     post:
-        # Instruction set tests are custom for now. Running in post to
-        # not to override the unit tests specified in setup.py
-        - python2.7 -m tests.instructions.boolean_tests
-        - python2.7 -m tests.instructions.number_tests
-        - python2.7 -m tests.instructions.char_tests
-        - python2.7 -m tests.instructions.code_tests
-        - python2.7 -m tests.instructions.io_tests
-        - python2.7 -m tests.instructions.string_tests
-        - python2.7 -m tests.instructions.common_tests
-        - python3.5 -m tests.instructions.boolean_tests
-        - python3.5 -m tests.instructions.number_tests
-        - python3.5 -m tests.instructions.char_tests
-        - python3.5 -m tests.instructions.code_tests
-        - python3.5 -m tests.instructions.io_tests
-        - python3.5 -m tests.instructions.string_tests
-        - python3.5 -m tests.instructions.common_tests
         # Validation tests
         - python2.7 -m tests.validation.sklearn_regression
-        - python2.7 -m tests.validation.sklearn_classification
-        - python3.5 -m tests.validation.sklearn_regression
-        - python3.5 -m tests.validation.sklearn_classification
+        # - python2.7 -m tests.validation.sklearn_classification
+        - python3.6 -m tests.validation.sklearn_regression
+        # - python3.6 -m tests.validation.sklearn_classification
+        # Coverage reports
+        - python3.6 -m coverage run ./setup.py test
+        - python3.6 -m coverage xml
+        - python-codacy-coverage -r coverage.xml

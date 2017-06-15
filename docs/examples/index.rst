@@ -7,10 +7,8 @@ The following examples are deomonstrations of the basic usage of ``pyshgp``.
 .. toctree::
    :maxdepth: 1
 
-   integer_regression
-   iris_classification
    odd
-   sextic
+   simple_regression
    string_demo
 
 More Examples

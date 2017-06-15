@@ -18,11 +18,14 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import random
 
-import pyshgp.utils as u
-import pyshgp.gp.gp as gp
-import pyshgp.push.interpreter as interp
-import pyshgp.push.instructions.registered_instructions as ri
-import pyshgp.push.instruction as instr
+from pyshgp.push.interpreter import PushInterpreter
+from pyshgp.push.instructions import registered_instructions as ri
+from pyshgp.push.instruction import PyshInputInstruction
+from pyshgp.gp.base import SimplePushGPEvolver
+from pyshgp.gp.variation import UniformMutation, Alternation
+from pyshgp.utils import (UnevaluatableStackResponse, Character, merge_sets,
+                          test_and_train_data_from_domains,
+                          levenshtein_distance)
 
 
 def random_str(str_length):
@@ -36,14 +39,15 @@ def random_str(str_length):
 
 
 def make_RSWN_data_domains():
-    dd_1 = {"inputs" : ["", "A", "*", " ", "s", "B ", "  ", " D", "ef", "!!", " F ", "T L", "4ps", "q  ", "   ", "  e", "hi ", "  $  ", "      9",
-                        "i !i !i !i !i", "88888888888888888888", "                    ", "ssssssssssssssssssss", "1 1 1 1 1 1 1 1 1 1 ",
-                        " v v v v v v v v v v", "Ha Ha Ha Ha Ha Ha Ha", "x y!x y!x y!x y!x y!", "G5G5G5G5G5G5G5G5G5G5", ">_=]>_=]>_=]>_=]>_=]",
-                        "^_^ ^_^ ^_^ ^_^ ^_^ "],
-            "train_test_split" : [30, 0]}
-    dd_2 = {"inputs" : lambda: random_str(random.randint(2, 19)),
-            "train_test_split" : [0, 0]} # 70 , 1000
+    dd_1 = {"inputs": ["", "A", "*", " ", "s", "B ", "  ", " D", "ef", "!!", " F ", "T L", "4ps", "q  ", "   ", "  e", "hi ", "  $  ", "      9",
+                       "i !i !i !i !i", "88888888888888888888", "                    ", "ssssssssssssssssssss", "1 1 1 1 1 1 1 1 1 1 ",
+                       " v v v v v v v v v v", "Ha Ha Ha Ha Ha Ha Ha", "x y!x y!x y!x y!x y!", "G5G5G5G5G5G5G5G5G5G5", ">_=]>_=]>_=]>_=]>_=]",
+                       "^_^ ^_^ ^_^ ^_^ ^_^ "],
+            "train_test_split": [30, 0]}
+    dd_2 = {"inputs": lambda: random_str(random.randint(2, 19)),
+            "train_test_split": [0, 0]}  # 70 , 1000
     return (dd_1, dd_2)
+
 
 def RSWN_test_cases(inputs):
     '''
@@ -52,26 +56,23 @@ def RSWN_test_cases(inputs):
     '''
     return list(map(lambda inpt: [inpt, [str.replace(str(inpt), " ", "\n"), len(list(filter(lambda x: not x == " ", inpt)))]], inputs))
 
-def make_RSWN_error_func_from_cases(train_cases, test_cases):
-    def actual_RSWN_func(program, data_cases = "train", print_outputs = False, debug = False):
+
+def make_RSWN_error_func_from_cases(train_cases):
+    def actual_RSWN_func(program, debug=False):
         errors = []
 
-        cases = train_cases
-        if data_cases == "test":
-            cases = test_cases
-
-        for io_pair in cases:
-            interpreter = interp.PushInterpreter([io_pair[0]])
+        for io_pair in train_cases:
+            interpreter = PushInterpreter([io_pair[0]])
             interpreter.run_push(program, debug)
-            str_result = interpreter.state.stacks["_string"].ref(0)
-            int_result = interpreter.state.stacks["_integer"].ref(0)
+            str_result = interpreter.state["_string"].ref(0)
+            int_result = interpreter.state["_integer"].ref(0)
 
-            if isinstance(str_result, u.UnevaluatableStackResponse):
+            if isinstance(str_result, UnevaluatableStackResponse):
                 # If response is un-evaluatable, add a bad error.
                 errors += [1000, 1000]
             else:
                 # If response is evaluatable, compute actual error
-                s_er = u.levenshtein_distance(io_pair[1][0], str_result)
+                s_er = levenshtein_distance(io_pair[1][0], str_result)
                 i_er = 1000
                 if type(int_result) == int:
                     i_er = abs(int_result - io_pair[1][1])
@@ -80,62 +81,40 @@ def make_RSWN_error_func_from_cases(train_cases, test_cases):
         return errors
     return actual_RSWN_func
 
+
 def get_RSWN_train_and_test():
     '''
     Returns the train and test cases.
     '''
     data_domains = make_RSWN_data_domains()
-    io_pairs = list(map(RSWN_test_cases, u.test_and_train_data_from_domains(data_domains)))
+    io_pairs = list(
+        map(RSWN_test_cases, test_and_train_data_from_domains(data_domains)))
     return io_pairs
 
-RSWN_params = {
-    "atom_generators" : list(u.merge_sets(ri.get_instructions_by_pysh_type("_integer"),
-                                          ri.get_instructions_by_pysh_type("_boolean"),
-                                          ri.get_instructions_by_pysh_type("_string"),
-                                          ri.get_instructions_by_pysh_type("_char"),
-                                          ri.get_instructions_by_pysh_type("_exec"),
-                                          ri.get_instructions_by_pysh_type("_print"),
-                                          [# Constants
-                                           lambda: u.Character(" "),
-                                           lambda: u.Character("\n"),
-                                           # ERCs
-                                           lambda: u.Character(random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t")),
-                                           lambda: random_str(random.randint(0, 21)),
-                                           # Input instruction
-                                           instr.PyshInputInstruction(0)])),
-    "max_points" : 3200,
-    "max_genome_size_in_initial_program" : 400,
-    "evalpush_limit" : 1600,
-    "population_size" : 1000,
-    "max_generations" : 300,
-    "genetic_operator_probabilities" : {"alternation" : 0.2,
-                                        "uniform_mutation" : 0.2,
-                                        "alternation & uniform_mutation" : 0.5,
-                                        "uniform_close_mutation" : 0.1},
-    "alternation_rate" : 0.01,
-    "alignment_deviation" : 10,
-    "uniform_mutation_rate" : 0.01,
-    "final_report_simplifications" : 5000
-}
 
-def test_RSWN_solution(err_func):
-    print(list(ri.registered_instructions.keys()))
-    prog_lst = [u.Character(" "), instr.PyshInputInstruction(0), u.Character("\n"), '_string_replace_char', '_print_string', 
-                u.Character(" "), instr.PyshInputInstruction(0), '_string_remove_char', '_char_all_from_string', '_char_stack_depth']
-    prog = gp.load_program_from_list(prog_lst)
-    print(prog)
-    errors = err_func(prog, debug = True)
-    print("Errors:", errors)
-
-def test_RSWN_funcs(inputs):
-    print(RSWN_test_cases(inputs))
-
+atom_generators = list(merge_sets(
+    ri.get_instructions_by_pysh_type("_integer"),
+    ri.get_instructions_by_pysh_type("_boolean"),
+    ri.get_instructions_by_pysh_type("_string"),
+    ri.get_instructions_by_pysh_type("_char"),
+    ri.get_instructions_by_pysh_type("_exec"),
+    ri.get_instructions_by_pysh_type("_print"),
+    [  # Constants
+        lambda: Character(" "),
+        lambda: Character("\n"),
+        # ERCs
+        lambda: Character(random.choice(
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t")),
+        lambda: random_str(
+            random.randint(0, 21)),
+        # Input instruction
+        PyshInputInstruction(0)]))
 
 if __name__ == "__main__":
     train_and_test = get_RSWN_train_and_test()
-    #print(train_and_test)
-    gp.evolution(make_RSWN_error_func_from_cases(train_and_test[0], train_and_test[1]), RSWN_params)
-
-    #test_RSWN_solution(make_RSWN_error_func_from_cases(train_and_test[0], train_and_test[1]))
-    #test_RSWN_funcs([""])
-
+    err_func = make_RSWN_error_func_from_cases(train_and_test[0])
+    evo = SimplePushGPEvolver(n_jobs=-1, verbose=1,
+                              atom_generators=atom_generators,
+                              initial_max_genome_size=400,
+                              )
+    evo.evolve(err_func, 1)

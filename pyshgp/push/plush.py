@@ -1,74 +1,36 @@
 # -*- coding: utf-8 -*-
 
 """
-The :mod:`plush` module defines functions that create tuples that represent 
-genes in a Plush genome.
+The :mod:`plush` module contains code pertaining the Plush genenomes.
 
 Plush genomes are linear representations of Push programs.
 Plush genomes are python lists of plush genes.
-Plush genes are python tuples.
-
-.. todo::
-    Consider change plush gene back to a class, opposed to immutable tuples. 
+Plush genes are python objects defined below.
 """
-
-
 from __future__ import absolute_import, division, print_function, unicode_literals
-__metaclass__ = type
 
-def make_plush_gene(instruction, is_literal = False, closes = None, silent = None):
-	"""Creates a plush gene tuple from an instruction ojbect.
+class Gene(object):
+    """
+    Attributes
+    ----------
+    atom : {Instruction, literal}
+        An instance of the instruction class or a literal
+    is_literal : bool
+        Denotes if the gene is holding a literal or an instruction.
+    closes : int
+        Denotes how many close parens to place after instruction in program.
+    is_silent : bool, optional
+        If true, do not include instruction in translated program.
+    """
 
-	:param PushInstruction instruction: An instance of the instruction class.
-	:param bool is_literal: Denotes if the gene is holding a literal or an instruction.
-	:param int closes: The close epigenetic marker. Denotes how many close parens to place after instruction in program.
-	:param bool silent: If true, do not include instruction in translated program.
-	:returns: Tuple containing all gene information.
-	"""
-	return (instruction, is_literal, closes, silent)
+    def __init__(self, atom, is_literal, closes, is_silent=False):
+        self.atom = atom
+        self.is_literal = is_literal
+        self.closes = closes
+        self.is_silent = is_silent
 
-def plush_gene_to_string(gene):
-	"""Returns a single string representing the gene.
-
-	:param tuple gene: Plush gene to print.
-	:returns: String of gene.
-	"""
-	if not gene[1]:
-		s = "PLUSH_" + gene[0] 
-		if gene[3]:
-			s += "_SILENT"
-		return s
-	else:
-		return "LITERAL_" + type(gene[0]) + "_" + gene[0]
-
-def plush_gene_get_instruction(gene):
-	"""Returns a gene's instruction.
-
-	:param tuple gene: The gene.
-	:returns: Instruction
-	"""
-	return gene[0]
-
-def plush_gene_is_literal(gene):
-	"""Return if a gene is a literal or not.
-
-	:param tuple gene: The gene.
-	:returns: Boolean where ``true`` if gene is a literal.
-	"""
-	return gene[1]
-
-def plush_gene_get_closes(gene):
-	"""Returns a gene's number of close markers.
-
-	:param tuple gene: The gene.
-	:returns: Integer denoting number of close markers on the gene.
-	"""
-	return gene[2]
-
-def plush_gene_is_silent(gene):
-	"""Returns if a gene is silent or not.
-
-	:param tuple gene: The gene.
-	:returns: Boolean where ``true`` if gene is silent.
-	"""
-	return gene[3]
+    def __repr__(self):
+        return "Gene<{}, {}, {}, {}>".format(self.atom,
+                                             self.is_literal,
+                                             self.closes,
+                                             self.is_silent)

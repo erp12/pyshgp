@@ -1,6 +1,9 @@
 *****
-Push
+push
 *****
+
+.. include:: ../detail/push_design.rst
+
 
 Instruction
 ===========
@@ -26,23 +29,12 @@ Random
 .. automodule:: pyshgp.push.random
 	:members:
 
-Simplificaiton
-==============
-
-.. automodule:: pyshgp.push.simplification
-	:members:
-
 Stack
 =====
 
 .. automodule:: pyshgp.push.stack
 	:members:
 
-State
-=====
-
-.. automodule:: pyshgp.push.state
-	:members:
 
 Translation
 ===========

@@ -6,25 +6,30 @@ instructions that can be handled by the ``pyshgp`` Push interpreter.
 """
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-__metaclass__ = type
 
 from .instructions import registered_instructions as ri
 
 class PyshInstruction(object):
     """A instruction for the push language.
 
-    :param str name: A string name for the instruction.
-    :param function func: The python function that manipulates a Push state in the desired way.
-    :param list stack_types: List of related Pysh types.
-    :param int parentheses: Specifies number of paren groups. (0, 1, 2, ... etc)
+    Parameters
+    ----------
+    nane : str
+         A string name for the instruction.
+    func : function
+        The python function that manipulates a Push state in the desired way.
+    stack_types : list of str
+        List of related pyshgp types.
+    parentheses : int
+        Specifies number of paren groups. (0, 1, 2, ... etc)
     """
 
-    def __init__(self, name, func, stack_types = [], parentheses = 0):
+    def __init__(self, name, func, stack_types, parentheses = 0):
         self.name = name
         self.func = func
         self.stack_types = stack_types
-        self.parentheses = parentheses # Specifies parens group. (0, 1, 2, ... etc)
-        
+        self.parentheses = parentheses # Specifies parens group. (0, 1, 2, etc)
+
     def __eq__(self, other):
         if isinstance(other, PyshInstruction):
             return self.name == other.name
@@ -38,38 +43,66 @@ class PyshInstruction(object):
         return str(self.name)
 
 class PyshInputInstruction(PyshInstruction):
-    """A push instruction that will handle input values.
+    """A push instruction that will handle input values. Input instructions
+    which are generated based on initial state of the _input stack.
 
-    Input instructions which are generated based on initial state of the _input stack.
-
-    :param int input_index: The index in the input stack to get value from.
+    Parameters
+    ----------
+    input_index : int
+         The index in the input stack to get value from.
     """
 
     def __init__(self, input_index):
         name = "_input" + str(input_index)
-        PyshInstruction.__init__(self, name, None)
+        PyshInstruction.__init__(self, name, None, ['_input'])
         self.input_index = input_index
         self.stack_types = '_input'
-        
+
+    def __repr__(self):
+        return str(self.name)
+
+class PyshOutputInstruction(PyshInstruction):
+    """A push instruction that will handle output values.
+
+    Parameters
+    ----------
+    output_name : str
+         The name of the key on the output structure to assign a value to.
+
+    from_stack : str
+         The name of the stack to copy values from.
+    """
+
+    def __init__(self, output_name, from_stack):
+        name = '_output'+from_stack+'_as_'+output_name
+        PyshInstruction.__init__(self, name, None, ['_output'])
+        self.output_name = output_name
+        self.from_stack = from_stack
+
     def __repr__(self):
         return str(self.name)
 
 class PyshClassVoteInstruction(PyshInstruction):
-    """A push instruction that will handle Class Voting.
+    """A push instruction that will handle Class Voting. Pulls from a numerical
+    stack to add "votes" to an element of the output stack. Intended to be used
+    in classification problems.
 
-    Pulls from a numerical stack to add "votes" to an element of the output stack.
-    Intended to be used in classification problems.
+    Parameters
+    ----------
+    class_id : int
+         The class number to vote for.
 
-    :param int class_id:   The index in the output stack to place vote.
-    :param str vote_stack: The numerical stack from which to pull a vote.
+    vote_stack : str
+        The numerical stack from which to pull a vote.
     """
 
     def __init__(self, class_id, vote_stack):
-        PyshInstruction.__init__(self, "_vote"+str(class_id)+vote_stack, None)
+        PyshInstruction.__init__(self, "_vote"+str(class_id)+vote_stack,
+                                 None, ['_output'])
         self.class_id = class_id
         self.vote_stack = vote_stack
         self.stack_types = '_class'
-        
+
     def __repr__(self):
         return str(self.name)
 
@@ -82,16 +115,21 @@ class JustInTimeInstruction(PyshInstruction):
     instruction must be defined in a way that creates an instance of another
     Push instruction that is not yet registered.
 
+    Parameters
+    ----------
+    instruction_name : str
+         The name of the instruction to look-up and run when this JiT
+         instruction is called.
     """
-
-    #: Name of the instruction to look up and use in place of this instruction
-    #: during program execution.
-    name = None
 
     def __init__(self, instruction_name):
         self.name = instruction_name
 
     def __call__(self):
+        """
+        When the JiT instruction is called, it returns the registered
+        instruction by the same name.
+        """
         return ri.get_instruction(self.name)
 
     def __repr__(self):

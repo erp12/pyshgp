@@ -32,11 +32,15 @@ sys.path.insert(0, os.path.abspath('..'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'numpydoc',
     'sphinx.ext.doctest',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
 ]
+
+autodoc_default_flags = ['members', 'inherited-members']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -47,6 +51,9 @@ templates_path = ['_templates']
 # source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
 
+# generate autosummary even if no references
+autosummary_generate = True
+
 # The encoding of source files.
 #
 # source_encoding = 'utf-8-sig'
@@ -55,7 +62,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Pysh'
+project = u'pyshgp'
 copyright = u'2016, Edward Pantridge'
 author = u'Edward Pantridge'
 

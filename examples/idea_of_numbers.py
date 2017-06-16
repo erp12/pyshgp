@@ -3,55 +3,55 @@
 Created on 3/17/2017
 
 @author: Tozier
+
+This problem evolves a program (using the full Push instruction set) to fit the
+symbolic regression problem `9x^2-11x + 1964`. But it is given no numeric
+constants at all to work with, and has to "MacGuyver" a mechanism to build
+large-enough constants to fit the training cases.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-import random
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-import pyshgp.utils as u
-import pyshgp.gp.gp as gp
-import pyshgp.push.interpreter as interp
-import pyshgp.push.instructions.registered_instructions as ri
-import pyshgp.push.instruction as instr
-
-'''
-This problem evolves a program (using the full Push instruction set) to fit the symbolic regression problem `9x^2-11x + 1964`. But it is given no numeric constants at all to work with, and has to "MacGuyver" a mechanism to build large-enough constants to fit the training cases.
-'''
+from pyshgp.push.interpreter import PushInterpreter
+from pyshgp.push.instructions import registered_instructions as ri
+from pyshgp.gp.variation import (UniformMutation, Alternation,
+                                 VariationOperatorPipeline)
+from pyshgp.gp.base import SimplePushGPEvolver
 
 def target_function(x):
     return 9 * x**2 - 11 * x + 1964
 
 def error_func(program):
     errors = []
-
-    for x in range(20):
+    for x in range(10):
         # Create the push interpreter and run program
-        interpreter = interp.PushInterpreter(inputs=[x])
-        interpreter.run_push(program)
+        interpreter = PushInterpreter(inputs=[x])
+        outputs = interpreter.run_push(program)
         # Get output
-        top_int = interpreter.state.stacks["_integer"].ref(0)
-
-        if type(top_int) == int:
+        if 'y_hat' in outputs.keys():
+            y_hat = outputs['y_hat']
             # compare to target output
             target_int = target_function(x)
             # calculate error
-            errors.append(abs(top_int - target_int))
+            errors.append((y_hat - target_int)**2)
         else:
             errors.append(100000000)
-
     return errors
 
-problem_params = {
-    "atom_generators" : list(u.merge_sets(ri.registered_instructions,
-                                          [instr.PyshInputInstruction(0)])),
-    "epigenetic_markers" : [],
-    "selection_method" : "epsilon_lexicase",
-    "genetic_operator_probabilities" : {"alternation" : 0.5,
-                                        "uniform_mutation" : 0.5},
-    "alternation_rate" : 0.1,
-    "uniform_mutation_rate" : 0.1
-}
+
+# Genetic operators
+mut = UniformMutation()
+alt = Alternation()
+ops = [
+    (Alternation(), 0.6),
+    (UniformMutation(), 0.2),
+    (VariationOperatorPipeline((alt, mut)), 0.2)
+]
 
 
 if __name__ == "__main__":
-    gp.evolution(error_func, problem_params)
+    evo = SimplePushGPEvolver(n_jobs=-1, verbose=1, operators=ops,
+                              selection_method='epsilon_lexicase',
+                              atom_generators=list(ri.registered_instructions))
+    evo.fit(error_func, 1, {'y_hat' : 0})

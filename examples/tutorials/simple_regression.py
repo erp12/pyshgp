@@ -45,7 +45,6 @@ input values that will be supplied and 3) the intial state of the
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import numpy as np
-import random
 
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.gp.base import SimplePushGPEvolver, REGRESSION_ATOM_GENERATORS

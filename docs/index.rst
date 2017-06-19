@@ -30,6 +30,7 @@ Table Of Contents
    api/index
    Instructions
    examples/index
+   contributing
 
 Installation
 =============

@@ -51,3 +51,6 @@ Pysh is continuously being developed for applications of genetic
 proramming, as well as reasearch in Evolutionary Computation. You can see what
 is coming up next for pyshgp on its
 [Roadmap](https://github.com/erp12/pyshgp/projects/1).
+
+For information about contributing, see the
+[Contributing Guide](http://pysh2.readthedocs.io/en/latest/contributing.html).

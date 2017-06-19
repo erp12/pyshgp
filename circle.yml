@@ -5,11 +5,9 @@ machine:
 dependencies:
     pre:
         - pip2.7 install -r requirements.txt
-        - pip2.7 install coverage
-        - pip2.7 install codacy-coverage
+        - pip2.7 install -r requirements-dev.txt
         - pip3.6 install -r requirements.txt
-        - pip3.6 install coverage
-        - pip3.6 install codacy-coverage
+        - pip3.6 install -r requirements-dev.txt
 test:
     post:
         # Validation tests

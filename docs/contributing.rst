@@ -17,11 +17,10 @@ to make change to the pyshgp code base (including tests and documentation) you
 must first fork `the repository <https://github.com/erp12/pyshgp>`_.
 
 After cloning your fork, open a new branch. **Do not add your changes to
-``master``.** If your changes are meant to address an open GitHub issue, it
-would be helpful if you named your branch starting witht the issue number.
-
-Once you have finished making your changes, you must open a pull request, which
-will be reviewed and eventually merged.
+``master``.** Once you have finished making your changes, you must open a pull
+request, which will be reviewed and eventually merged. If your changes are meant
+to address an open GitHub issue, it would be helpful if you mentioned the issue
+in the body of the pull request.
 
 Code Reviews
 ------------

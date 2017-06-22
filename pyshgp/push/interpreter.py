@@ -17,41 +17,6 @@ from .. import constants as c
 from .. import exceptions as e
 from . import stack
 
-def _handle_input_instruction(instruction, state):
-    """Allows Push to handle input instructions.
-    """
-    input_depth = int(instruction.input_index)
-
-    if input_depth >= len(state['_input']) or input_depth < 0:
-        raise e.InvalidInputStackIndex(input_depth)
-
-    input_value = state['_input'][input_depth]
-    pysh_type = u.recognize_pysh_type(input_value)
-
-    if pysh_type == '_instruction':
-        state['_exec'].push(input_value)
-    elif pysh_type == '_list':
-        state['_exec'].push(input_value)
-    else:
-        state[pysh_type].push(input_value)
-
-def _handle_output_instruction(instruction, state):
-    """Allows Push to handle class output instructions.
-    """
-    if len(state[instruction.from_stack]) == 0:
-        return
-    output_value = state[instruction.from_stack].ref(0)
-    state['_output'][instruction.output_name] = output_value
-
-def _handle_vote_instruction(instruction, state):
-    """Allows Push to handle class voting instructions.
-    """
-    output_name = 'class-'+instruction.class_id
-    if not output_name in state['_output'].keys():
-        state['_output'][output_name] = 0.0
-    vote_value = state[instruction.vote_stack].ref(0)
-    state[instruction.vote_stack].pop()
-    state['_output'][output_name] += float(vote_value)
 
 class PushState(dict):
     """Dictionary that holds PyshStacks.
@@ -144,7 +109,7 @@ class PushInterpreter:
         self.state = PushState(self.inputs)
         self.status = '_normal'
 
-    def execute_instruction(self, instruction):
+    def eval_atom(self, instruction):
         """Executes a push instruction or literal.
 
         Parameters
@@ -164,19 +129,11 @@ class PushInterpreter:
         # Detect the pysh type of the instruction.
         pysh_type = u.recognize_pysh_type(instruction)
 
-        if pysh_type == '_instruction':
+        if pysh_type in ['_instruction', '_input_instruction',
+                         '_output_instruction', '_class_vote_instruction']:
             # If the instruction is a standard push instruction, call it's
             # function on the current push state.
-            instruction.func(self.state)
-        elif pysh_type == '_input_instruction':
-            # If the instruction is an input_instruction, handle it.
-            _handle_input_instruction(instruction, self.state)
-        elif pysh_type == '_output_instruction':
-            # If the instruction is an output instruction, handle it.
-            _handle_output_instruction(instruction, self.state)
-        elif pysh_type == '_class_vote_instruction':
-            # If the instruction is an class_instruction, handle it.
-            _handle_vote_instruction(instruction, self.state)
+            instruction.execute(self.state)
         elif pysh_type == '_list':
             # If the instruction is a list, then decompose it.
             # Copy the list to avoid mutability madness
@@ -223,7 +180,7 @@ class PushInterpreter:
             # Advance program 1 step
             top_exec = self.state['_exec'].top_item()
             self.state['_exec'].pop()
-            self.execute_instruction(top_exec)
+            self.eval_atom(top_exec)
 
             # print steps
             if print_steps:

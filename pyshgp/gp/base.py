@@ -525,7 +525,7 @@ class PushGPRegressor(BaseEstimator, PyshMixin, RegressorMixin):
         then evaluation is parallelized.
 
         TODO: Check for population.
-        
+
         Parameters
         ----------
         X : {array-like, sparse matrix}, shape = (n_samples, n_features)

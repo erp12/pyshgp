@@ -26,8 +26,8 @@ class TestIOInstructions(unittest.TestCase):
 
     def test_inpt_valid(self):
         before = {'_input': ['A', 'B', 'C']}
-        after = {'_input': ['A', 'B', 'C'], '_string': ['B']}
-        self.assertTrue(t_u.run_test(before, after, inpt_valid))
+        after = {'_input': ['A', 'B', 'C'], '_exec': ['B']}
+        self.assertTrue(t_u.run_test(before, after, inpt_valid, True))
 
     def test_inpt_too_big(self):
         before = {'_input': ['A', 'B', 'C']}

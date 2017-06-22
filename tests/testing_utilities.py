@@ -39,7 +39,7 @@ def run_test(before, after, instruction, print_test=False):
         interpreter.state.pretty_print()
 
     if type(after) == dict:
-        interpreter.execute_instruction(instruction)
+        interpreter.eval_atom(instruction)
         if print_test:
             print("After:")
             interpreter.state.pretty_print()
@@ -47,7 +47,7 @@ def run_test(before, after, instruction, print_test=False):
         return dict_matches_state(interpreter, after)
     else:
         try:
-            interpreter.execute_instruction(instruction)
+            interpreter.eval_atom(instruction)
         except Exception as e:
             if print_test:
                 print("Raises error: ", type(e))

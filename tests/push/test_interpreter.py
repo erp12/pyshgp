@@ -2,14 +2,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import unittest
 
-import pyshgp.push.interpreter as interp
-
-#TODO: WRITE _handle_?_instruction TESTS
+from pyshgp.push.interpreter import PushInterpreter
 
 class TestPushStateMethods(unittest.TestCase):
 
     def setUp(self):
-        self.i = interp.PushInterpreter(inputs=["a", "b", "c"])
+        self.i = PushInterpreter(inputs=["a", "b", "c"])
         self.d = {'_auxiliary': [],
                   '_boolean': [],
                   '_char': [],
@@ -35,4 +33,24 @@ class TestPushStateMethods(unittest.TestCase):
         self.assertEqual(self.i.state['_integer'].top_item(), 5)
         self.assertEqual(len(self.i.state['_integer']), 1)
 
-#TODO: WRITE INTERPRETER TESTS
+class TestPushInterpreterMethods(unittest.TestCase):
+
+    def setUp(self):
+        self.i = PushInterpreter(inputs=["a", "b", "c"])
+
+    def test_reset(self):
+        self.i.reset()
+
+    def test_eval_atom_literal(self):
+        self.i.eval_atom(5)
+        self.assertEqual(self.i.state['_integer'][0], 5)
+
+    def test_eval_atom_list(self):
+        self.i.eval_atom([1, 2, 3, 4, 5])
+        self.assertEqual(len(self.i.state['_exec']), 5)
+
+    def test_eval_push(self):
+        self.i.state['_exec'].push([1, 2, [3, 4], 5])
+        self.i.eval_push()
+        self.assertEqual(len(self.i.state['_integer']), 5)
+        self.assertEqual(len(self.i.state['_exec']), 0)

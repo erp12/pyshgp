@@ -8,6 +8,8 @@ instructions that can be handled by the ``pyshgp`` Push interpreter.
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from .instructions import registered_instructions as ri
+from ..exceptions import InvalidInputStackIndex
+
 
 class PyshInstruction(object):
     """A instruction for the push language.
@@ -42,6 +44,17 @@ class PyshInstruction(object):
     def __repr__(self):
         return str(self.name)
 
+    def execute(self, state):
+        """Executes the input instruction on the given PushState.
+
+        Parameters
+        ----------
+        state : PushState
+            The PushState to execute the input instruction on.
+        """
+        self.func(state)
+
+
 class PyshInputInstruction(PyshInstruction):
     """A push instruction that will handle input values. Input instructions
     which are generated based on initial state of the _input stack.
@@ -60,6 +73,23 @@ class PyshInputInstruction(PyshInstruction):
 
     def __repr__(self):
         return str(self.name)
+
+    def execute(self, state):
+        """Executes the input instruction on the given PushState.
+
+        Parameters
+        ----------
+        state : PushState
+            The PushState to execute the input instruction on.
+        """
+        input_depth = int(self.input_index)
+
+        if input_depth >= len(state['_input']) or input_depth < 0:
+            raise InvalidInputStackIndex(input_depth)
+
+        input_value = state['_input'][input_depth]
+        state['_exec'].push(input_value)
+
 
 class PyshOutputInstruction(PyshInstruction):
     """A push instruction that will handle output values.
@@ -81,6 +111,20 @@ class PyshOutputInstruction(PyshInstruction):
 
     def __repr__(self):
         return str(self.name)
+
+    def execute(self, state):
+        """Executes the output instruction on the given PushState.
+
+        Parameters
+        ----------
+        state : PushState
+            The PushState to execute the input instruction on.
+        """
+        if len(state[self.from_stack]) == 0:
+            return
+        output_value = state[self.from_stack].ref(0)
+        state['_output'][self.output_name] = output_value
+
 
 class PyshClassVoteInstruction(PyshInstruction):
     """A push instruction that will handle Class Voting. Pulls from a numerical
@@ -105,6 +149,22 @@ class PyshClassVoteInstruction(PyshInstruction):
 
     def __repr__(self):
         return str(self.name)
+
+    def execute(self, state):
+        """Executes the class vote instruction on the given PushState.
+
+        Parameters
+        ----------
+        state : PushState
+            The PushState to execute the input instruction on.
+        """
+        output_name = 'class-'+self.class_id
+        if not output_name in state['_output'].keys():
+            state['_output'][output_name] = 0.0
+        vote_value = state[self.vote_stack].ref(0)
+        state[self.vote_stack].pop()
+        state['_output'][output_name] += float(vote_value)
+
 
 class JustInTimeInstruction(PyshInstruction):
     """A callable object that, when processed in by the push interpreter,

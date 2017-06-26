@@ -17,7 +17,8 @@ from .population import Population, Individual
 from .variation import VariationOperatorPipeline, UniformMutation, Alternation
 from ..push import random as r
 from ..push.instruction import (PyshInputInstruction, PyshOutputInstruction,
-                                PyshClassVoteInstruction)
+                                PyshClassVoteInstruction,
+                                make_vote_instruction_set)
 from ..utils import merge_sets, recognize_pysh_type
 from ..push.instructions import registered_instructions as ri
 
@@ -176,18 +177,23 @@ class PyshMixin:
             be the initial value to appear in the ouput structure, and thus the
             default output value for that particular output.
         """
+        # Add input instructions.
         input_instrs = [PyshInputInstruction(i) for i in range(num_inputs)]
         all_atom_gens = self.atom_generators + input_instrs
+
+        # Add output instructions, but not class instructions. Record classes.
+        classes = []
         for k in outputs_dict.keys():
             if k[:6] == 'class-':
-                class_num = int(k[6:])
-                vote_instrs = [PyshClassVoteInstruction(class_num, '_integer'),
-                               PyshClassVoteInstruction(class_num, '_float')]
-                all_atom_gens = all_atom_gens + vote_instrs
+                classes.append(k)
             else:
                 pysh_type = recognize_pysh_type(outputs_dict[k])
                 output_instr = PyshOutputInstruction(k, pysh_type)
                 all_atom_gens.append(output_instr)
+        # Make class instructions.
+        vote_instrs = make_vote_instruction_set(classes)
+        all_atom_gens = all_atom_gens + vote_instrs
+        # Create spawner
         self.spawner = r.PushSpawner(all_atom_gens)
         if self.verbose > 1:
             print('Creating Spawner with following atom generators:')
@@ -422,7 +428,6 @@ class SimplePushGPEvolver(PyshMixin):
 
 class PushGPRegressor(BaseEstimator, PyshMixin, RegressorMixin):
     """A Scikit-learn estimator that uses PushGP for regression tasks.
-    TODO: Write fit_metric docstring
 
     Parameters
     ----------

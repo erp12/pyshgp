@@ -7,6 +7,8 @@ instructions that can be handled by the ``pyshgp`` Push interpreter.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import numbers
+
 from .instructions import registered_instructions as ri
 from ..exceptions import InvalidInputStackIndex
 
@@ -136,16 +138,17 @@ class PyshClassVoteInstruction(PyshInstruction):
     class_id : int
          The class number to vote for.
 
-    vote_stack : str
-        The numerical stack from which to pull a vote.
+    vote : int, float, or str
+        If ``int`` or ``float``, the amount to vote. If ``str`` the name of the
+        numeric stack to take vote from.
     """
 
-    def __init__(self, class_id, vote_stack):
-        PyshInstruction.__init__(self, "_vote"+str(class_id)+vote_stack,
+    def __init__(self, output_name, vote):
+        PyshInstruction.__init__(self, "_vote_{}_{}".format(output_name, vote),
                                  None, ['_output'])
-        self.class_id = class_id
-        self.vote_stack = vote_stack
-        self.stack_types = '_class'
+        self.output_name = output_name
+        self.vote = vote
+        self.stack_types = '_vote'
 
     def __repr__(self):
         return str(self.name)
@@ -158,12 +161,40 @@ class PyshClassVoteInstruction(PyshInstruction):
         state : PushState
             The PushState to execute the input instruction on.
         """
-        output_name = 'class-'+self.class_id
-        if not output_name in state['_output'].keys():
-            state['_output'][output_name] = 0.0
-        vote_value = state[self.vote_stack].ref(0)
-        state[self.vote_stack].pop()
-        state['_output'][output_name] += float(vote_value)
+        if not self.output_name in state['_output'].keys():
+            state['_output'][self.output_name] = 0.0
+        vote_value = self.vote
+        if isinstance(vote_value, numbers.Number):
+            state['_output'][self.output_name] += float(vote_value)
+        else:
+            if len(state[vote_value]) > 0:
+                v = state[vote_value].ref(0)
+                state[vote_value].pop()
+                state['_output'][self.output_name] += float(v)
+
+
+def make_vote_instruction_set(classes):
+    """Returns a list of PyshClassVoteInstruction instances that vote for and
+    against a each class.
+
+    Parameters
+    ----------
+    classes : list of str
+         A list of class names.
+    """
+    vote_instrs = []
+    for c in classes:
+        vote_instrs += [
+            PyshClassVoteInstruction(c, 1),
+            PyshClassVoteInstruction(c, 2),
+            PyshClassVoteInstruction(c, 4),
+            PyshClassVoteInstruction(c, -1),
+            PyshClassVoteInstruction(c, -2),
+            PyshClassVoteInstruction(c, -4),
+            PyshClassVoteInstruction(c, '_integer'),
+            PyshClassVoteInstruction(c, '_float'),
+        ]
+    return vote_instrs
 
 
 class JustInTimeInstruction(PyshInstruction):

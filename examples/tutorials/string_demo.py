@@ -104,9 +104,9 @@ import random
 import collections
 
 from pyshgp.push.interpreter import PushInterpreter
-from pyshgp.push.instructions import registered_instructions as ri
+from pyshgp.push.registered_instructions import get_instruction
 from pyshgp.push.instruction import PyshInputInstruction
-from pyshgp.gp.base import SimplePushGPEvolver
+from pyshgp.gp.evolvers import SimplePushGPEvolver
 from pyshgp.gp.variation import UniformMutation, Alternation
 
 
@@ -147,16 +147,15 @@ def string_error_func(program):
 
     for inpt in inputs:
         # Create the push interpreter
-        interpreter = PushInterpreter([inpt])
-        outputs = interpreter.run_push(program)
-        if 'y_hat' in outputs.keys():
-            y_hat = outputs['y_hat']
+        interpreter = PushInterpreter([inpt], ['_string'])
+        y_hat = interpreter.run(program)[0]
+        if y_hat is None:
+            errors.append(1e5)
+        else:
             # compare to target output
             target_output = inpt[:-2] + inpt[:-2]
             errors.append(string_difference(y_hat, target_output) +
                           string_char_counts_difference(y_hat, target_output))
-        else:
-            errors.append(2000)
     return errors
 
 ops = [
@@ -164,21 +163,22 @@ ops = [
     (Alternation(), 0.5)
 ]
 
-atom_generators = [ri.get_instruction("_string_length"),
-                   ri.get_instruction("_string_head"),
-                   ri.get_instruction("_string_concat"),
-                   ri.get_instruction("_string_stack_depth"),
-                   ri.get_instruction("_string_swap"),
-                   ri.get_instruction("_string_dup"),
-                   ri.get_instruction("_integer_add"),
-                   ri.get_instruction("_integer_sub"),
-                   ri.get_instruction("_integer_dup"),
-                   ri.get_instruction("_integer_swap"),
-                   ri.get_instruction("_integer_stack_depth"),
+atom_generators = [get_instruction("_string_length"),
+                   get_instruction("_string_head"),
+                   get_instruction("_string_concat"),
+                   get_instruction("_string_stack_depth"),
+                   get_instruction("_string_swap"),
+                   get_instruction("_string_dup"),
+                   get_instruction("_integer_add"),
+                   get_instruction("_integer_sub"),
+                   get_instruction("_integer_dup"),
+                   get_instruction("_integer_swap"),
+                   get_instruction("_integer_stack_depth"),
+                   get_instruction("_integer_inc"),
                    lambda: random.randint(0, 10),
                    lambda: random_str()]
 
 if __name__ == "__main__":
     evo = SimplePushGPEvolver(n_jobs=-1, verbose=1, operators=ops,
                               atom_generators=atom_generators)
-    evo.fit(string_error_func, 1, {'y_hat' : ''})
+    evo.fit(string_error_func, 1, ['_string'])

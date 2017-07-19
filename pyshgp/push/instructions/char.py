@@ -8,7 +8,6 @@ from ... import utils as u
 
 from .. import instruction as instr
 
-from . import registered_instructions
 
 def char_all_from_string(state):
     if len(state['_string']) > 0:
@@ -20,11 +19,10 @@ def char_all_from_string(state):
 char_all_from_string_instruction = instr.PyshInstruction('_char_all_from_string',
                                                           char_all_from_string,
                                                           stack_types = ['_string', '_char'])
-registered_instructions.register_instruction(char_all_from_string_instruction)
-#<instr_open>
-#<instr_name>char_all_from_string
-#<instr_desc>Pushes every charecter of the top `string` to the `char` stack.
-#<instr_close>
+# <instr_open>
+# <instr_name>char_all_from_string
+# <instr_desc>Pushes every charecter of the top `string` to the `char` stack.
+# <instr_close>
 
 
 def char_from_integer(state):
@@ -36,11 +34,10 @@ def char_from_integer(state):
 char_from_integer_instruction = instr.PyshInstruction('_char_from_integer',
                                                        char_from_integer,
                                                        stack_types = ['_integer', '_char'])
-registered_instructions.register_instruction(char_from_integer_instruction)
-#<instr_open>
-#<instr_name>char_from_integer
-#<instr_desc>Push the top `integer` converted to a `char`.
-#<instr_close>
+# <instr_open>
+# <instr_name>char_from_integer
+# <instr_desc>Push the top `integer` converted to a `char`.
+# <instr_close>
 
 
 def char_from_float(state):
@@ -52,11 +49,10 @@ def char_from_float(state):
 char_from_float_instruction = instr.PyshInstruction('_char_from_float',
                                                      char_from_float,
                                                      stack_types = ['_float', '_char'])
-registered_instructions.register_instruction(char_from_float_instruction)
-#<instr_open>
-#<instr_name>char_from_float
-#<instr_desc>Push the top `float` converted to a `char`.
-#<instr_close>
+# <instr_open>
+# <instr_name>char_from_float
+# <instr_desc>Push the top `float` converted to a `char`.
+# <instr_close>
 
 
 def char_is_letter(state):
@@ -68,11 +64,10 @@ def char_is_letter(state):
 char_is_letter_instruction = instr.PyshInstruction('_char_is_letter',
                                                      char_is_letter,
                                                      stack_types = ['_boolean', '_char'])
-registered_instructions.register_instruction(char_is_letter_instruction)
-#<instr_open>
-#<instr_name>char_is_letter
-#<instr_desc>Pushes True if top `char` is a letter. Pushes False otherwise.
-#<instr_close>
+# <instr_open>
+# <instr_name>char_is_letter
+# <instr_desc>Pushes True if top `char` is a letter. Pushes False otherwise.
+# <instr_close>
 
 
 def char_is_digit(state):
@@ -84,11 +79,10 @@ def char_is_digit(state):
 char_is_digit_instruction = instr.PyshInstruction('_char_is_digit',
                                                   char_is_digit,
                                                   stack_types = ['_boolean', '_char'])
-registered_instructions.register_instruction(char_is_digit_instruction)
-#<instr_open>
-#<instr_name>char_is_digit
-#<instr_desc>Pushes True if top `char` is a digit. Pushes False otherwise.
-#<instr_close>
+# <instr_open>
+# <instr_name>char_is_digit
+# <instr_desc>Pushes True if top `char` is a digit. Pushes False otherwise.
+# <instr_close>
 
 
 def char_is_white_space(state):
@@ -100,8 +94,7 @@ def char_is_white_space(state):
 char_is_white_space_instruction = instr.PyshInstruction('_char_is_white_space',
                                                         char_is_white_space,
                                                         stack_types = ['_boolean', '_char'])
-registered_instructions.register_instruction(char_is_white_space_instruction)
-#<instr_open>
-#<instr_name>char_is_white_space
-#<instr_desc>Pushes True if top `char` is a whitespace character. Pushes False otherwise.
-#<instr_close>
+# <instr_open>
+# <instr_name>char_is_white_space
+# <instr_desc>Pushes True if top `char` is a whitespace character. Pushes False otherwise.
+# <instr_close>

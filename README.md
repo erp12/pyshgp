@@ -33,11 +33,11 @@ sense of how far off this is.
 
 1. Clone the repo
 2. ``cd`` into the pyshgp repo directory
-3. run ``pip install . --upgrade``
-4. Thats it! Check out the examples and
+3. run ``pip install -r requirements.txt``
+4. run ``pip install . --upgrade``
+5. Thats it! Check out the examples and
    [pyshgp ReadTheDocs](http://pysh2.readthedocs.io/en/latest/) for more
    information.
-
 
 ## Example Usage
 

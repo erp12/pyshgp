@@ -10,8 +10,8 @@ import sys, random, math
 import numpy as np
 
 from . import exceptions as e
-from .push import instruction as instr
 from . import constants as c
+from .push import instruction as instr
 
 
 ##             ##
@@ -236,13 +236,7 @@ def recognize_pysh_type(thing):
     >>> recognize_pysh_type(abs)
     False
     """
-    if isinstance(thing, instr.PyshInputInstruction):
-        return '_input_instruction'
-    elif isinstance(thing, instr.PyshOutputInstruction):
-        return '_output_instruction'
-    elif isinstance(thing, instr.PyshClassVoteInstruction):
-        return '_class_vote_instruction'
-    elif isinstance(thing, instr.PyshInstruction):
+    if isinstance(thing, instr.PyshInstruction):
         return '_instruction'
     elif isinstance(thing, (bool, np.bool_)):
         return '_boolean'
@@ -561,53 +555,6 @@ def perturb_with_gaussian_noise(sd, n):
     """
     return n + (sd * gaussian_noise_factor())
 
-def load_program_from_list(lst):
-    """Loads a program from a list, and checks each string in list for an
-    instruction with the same name.
-
-    .. warning::
-        This function will attempt to look up all strings in the registered
-        instructions to see if an instruction with a matching name exists.
-        This limits you to only using strings that are not exact matches of
-        instruction names. This is mitigated by the fact that all instruction
-        names begin with a ``'_'``.
-
-    :param list lst: List that should be translated into a Push program.
-    :returns: List that can be executed as a Push program.
-    """
-    program = []
-    for el in lst:
-        # For each element in the list
-        pysh_type = recognize_pysh_type(el)
-        if pysh_type in ['_integer', '_float', '_boolean', '_char', '_vector']:
-            # If ``el`` is an int, float, bool, Character object or PushVector
-            # object simply append to the program because these are push
-            # literals.
-            program.append(el)
-        elif pysh_type in ['_instruction', '_input_instruction',
-                           '_output_instruction', '_class_vote_instruction']:
-            # If ``el`` an instance of any of the instruction types, append to
-            # the program.
-            program.append(el)
-        elif u.is_str_type(el):
-            # If ``el`` is a string:
-            el = str(el)
-            # Attempt to find an instruction with ``el`` as its name.
-            matching_instruction = None
-            try:
-                matching_instruction = ri.get_instruction(el)
-            except e.UnknownInstructionName(el):
-                pass
-            # If matching_instruction is None, it must be a ssring literal.
-            if matching_instruction == None:
-                program.append(el)
-            else:
-                program.append(matching_instruction)
-        elif pysh_type == '_list':
-            # If ``el`` is a list (but not PushVector) turn it into a program
-            # and append it to (aka. nest it in) the program.
-            program.append(load_program_from_list(el))
-    return program
 
 def median_absolute_deviation(a):
     """Returns the MAD of X.

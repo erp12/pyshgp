@@ -27,7 +27,7 @@ def error_func(program):
     for x in range(10):
         # Create the push interpreter and run program
         interpreter = PushInterpreter(inputs=[x])
-        outputs = interpreter.run_push(program)
+        outputs = interpreter.run(program)
         # Get output
         if 'y_hat' in outputs.keys():
             y_hat = outputs['y_hat']

@@ -6,7 +6,8 @@ genomes and random Push programs.
 TODO: There should be better structure here in terms of what goes in the
 spawner class and what is a global function.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import random
 import numpy.random as rand
@@ -16,6 +17,7 @@ from .. import exceptions as e
 
 from . import translation as t
 from . import plush as pl
+
 
 class PushSpawner:
     """
@@ -33,9 +35,9 @@ class PushSpawner:
     """
 
     def __init__(self, atom_generators,
-                 epigenetic_markers = ['_instruction', '_close'],
-                 close_parens_probabilities = [0.772, 0.206, 0.021, 0.001],
-                 silent_gene_probability = 0.2):
+                 epigenetic_markers=['_instruction', '_close'],
+                 close_parens_probabilities=[0.772, 0.206, 0.021, 0.001],
+                 silent_gene_probability=0.2):
         self.atom_generators = atom_generators
         self.close_parens_probabilities = close_parens_probabilities
         self.silent_gene_probability = silent_gene_probability
@@ -96,7 +98,7 @@ class PushSpawner:
                     # If it is callable, then it is likely a function that will
                     # produce a literal.
                     fn_element = atom()
-                    if callable(fn_element): # It's another function!
+                    if callable(fn_element):  # It's another function!
                         instruction = fn_element()
                     else:
                         instruction = fn_element
@@ -176,6 +178,6 @@ class PushSpawner:
         --------
              A random Push program.
         """
-        max_genome_size = max(int(max_points /  2), 1)
+        max_genome_size = max(int(max_points / 2), 1)
         genome = self.random_plush_genome(max_genome_size)
         return t.genome_to_program(genome)

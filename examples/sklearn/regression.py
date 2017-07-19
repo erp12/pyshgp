@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from pyshgp.gp.base import PushGPRegressor
+from pyshgp.gp.evolvers import PushGPRegressor
 
 X_train = np.round(np.arange(-2.0, 2.0, 0.1).reshape(-1, 1), 1)
 
@@ -11,18 +11,18 @@ def target_func(a): return (a ** 6) + (2 * a**4) + (a**2)
 Y_train = []
 for r in X_train:
     Y_train.append(target_func(*r))
-Y_train = np.array(Y_train).reshape(-1, 1)
+Y_train = np.array(Y_train)
 
-# print(X_train)
-# print(Y_train)
-# print
+print(X_train)
+print(Y_train)
+print
 
-symbReg = PushGPRegressor(max_generations=100, n_jobs=-1,
-                          verbose=1)
+symbReg = PushGPRegressor(max_generations=70, population_size=200,
+                          n_jobs=-1, verbose=2)
 symbReg.fit(X_train, Y_train)
 
 print(symbReg.best_error_)
-print(symbReg.best_)
+print(symbReg.best_.program)
 
 preds = symbReg.predict(X_train)
 

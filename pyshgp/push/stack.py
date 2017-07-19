@@ -6,9 +6,11 @@ values of a certain type in a ``PyshState`` object.
 TODO: Consider optimization with Cython.
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from .. import utils as u
+
 
 class PyshStack(list):
     """Stack that holds elements of a sinlge push type. Extends Python list.

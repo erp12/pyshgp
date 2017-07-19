@@ -12,9 +12,9 @@ To run the odd problem, install ``pyshgp`` and run the example file.::
 The Error Function
 ##################
 
-Every Genetic Programming problem requires an error function, sometimes called a
-fitness function. This function takes a program produced by evolution, executes
-it, and evaluates how well it solved the problem.
+Every Genetic Programming problem requires an error function, sometimes called
+a fitness function. This function takes a program produced by evolution,
+executes it, and evaluates how well it solved the problem.
 
 In Pysh, error functions return a vector of numbers representing the program's
 error on each test case. The total error of the program is the sum of the error
@@ -38,25 +38,20 @@ Starting The Run
 
 Finally, we instanciate the ``SimplePushGPEvolver``. Then we can call the
 ``fit`` method and pass three things: 1) The error function, 2) the number of
-input values that will be supplied and 3) the intial state of the
-`output structure <>`_.
-
-
+input values that will be supplied and 3) a list of pysh types to output.
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import random
 
-from pyshgp.push.registered_instructions import (instruction_set,
-    get_instructions_by_pysh_type)
+from pyshgp.push.registered_instructions import get_instructions_by_pysh_type
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.gp.evolvers import SimplePushGPEvolver
-from pyshgp.gp.variation import UniformMutation, Alternation
 from pyshgp.utils import merge_sets
 
 
-def odd_error_func(program, debug = False):
+def odd_error_func(program, debug=False):
     errors = []
     for i in range(20):
         # Create the push interpreter
@@ -67,7 +62,7 @@ def odd_error_func(program, debug = False):
         if y_hat is None:
             errors.append(1e5)
         else:
-            #compare to target output
+            # compare to target output
             y = bool(i % 2)
             if y_hat == y:
                 errors.append(0)

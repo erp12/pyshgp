@@ -7,7 +7,8 @@ based on measurements of 150 iris flowers. This example is intended to
 demonstrate the use of class voting instructions in classification problems.
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split

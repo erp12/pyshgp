@@ -7,7 +7,8 @@ used to perform simple classification tasks.
 
 The problem consists of predicting the species of iris.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import numpy as np
 from sklearn import datasets

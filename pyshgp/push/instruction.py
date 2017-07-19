@@ -212,6 +212,7 @@ class PyshTweakOutputInstruction(PyshInstruction):
         current = state.outputs[self.output_index]
         state.outputs[self.output_index] = self.tweaker(current)
 
+
 def make_numeric_output_instructions(output, int_only=False):
     """Returns a list of instructions that treat the output value as numeric
     value that can be set or perturbed.
@@ -226,16 +227,16 @@ def make_numeric_output_instructions(output, int_only=False):
     """
     instrs = [
         PyshSetOutputInstruction(output, '_integer'),
-        PyshReduceOutputInstruction(output, '_integer', lambda x,y: x + y,
-                                    'add')
+        PyshReduceOutputInstruction(output, '_integer', lambda x,y: x + y, '+')
     ]
     if not int_only:
         instrs = instrs + [
             PyshSetOutputInstruction(output, '_float'),
             PyshReduceOutputInstruction(output, '_float', lambda x,y: x + y,
-                                        'add')
+                                        '+')
         ]
     return instrs
+
 
 def make_classification_instructions(class_index):
     """Returns a list of instructions that treat the output value as a class to
@@ -249,10 +250,10 @@ def make_classification_instructions(class_index):
     return [
         PyshSetOutputInstruction(class_index, '_integer'),
         PyshSetOutputInstruction(class_index, '_float'),
-        PyshReduceOutputInstruction(class_index, '_integer', lambda x,y: x+y,
-                                    'add'),
-        PyshReduceOutputInstruction(class_index, '_float', lambda x,y: x+y,
-                                    'add'),
+        PyshReduceOutputInstruction(class_index, '_integer', lambda x,y: x + y,
+                                    '+'),
+        PyshReduceOutputInstruction(class_index, '_float', lambda x,y: x + y,
+                                    '+'),
         PyshTweakOutputInstruction(class_index, lambda x: x + 1, 'inc'),
         PyshTweakOutputInstruction(class_index, lambda x: x - 1, 'dec')
     ]

@@ -34,7 +34,7 @@ Also the ``REGRESSION_ATOM_GENERATORS`` are used because only numeric
 operations
 
 .. literalinclude:: /../examples/tutorials/simple_regression.py
-   :lines: 75-80
+   :lines: 77-82
 
 Finally, we instanciate the ``SimplePushGPEvolver``. Then we can call the
 ``fit`` method and pass three things: 1) The error function, 2) the number of
@@ -42,7 +42,8 @@ input values that will be supplied and 3) the intial state of the
 `output structure <>`_.
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import numpy as np
 
@@ -50,8 +51,10 @@ from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.gp.base import REGRESSION_ATOM_GENERATORS
 from pyshgp.gp.evolvers import SimplePushGPEvolver
 
+
 def target_function(x):
     return x**6 + -2 * (x**4) + x**2
+
 
 def error_func(program):
     errors = []
@@ -69,6 +72,7 @@ def error_func(program):
             # calculate error
             errors.append((y_hat - target_float)**2)
     return errors
+
 
 if __name__ == "__main__":
     evo = SimplePushGPEvolver(n_jobs=-1, verbose=1,

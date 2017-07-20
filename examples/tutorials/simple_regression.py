@@ -4,7 +4,7 @@
 This problem consists of using float instructions and float constants to fit
 the following polynomial:
 
-.. literalinclude:: /../examples/tutorials/sextic.py
+.. literalinclude:: /../examples/tutorials/simple_regression.py
     :pyobject: target_function
 
 Running The Example
@@ -34,12 +34,11 @@ Also the ``REGRESSION_ATOM_GENERATORS`` are used because only numeric
 operations
 
 .. literalinclude:: /../examples/tutorials/simple_regression.py
-   :lines: 77-82
+   :lines: 77-81
 
 Finally, we instanciate the ``SimplePushGPEvolver``. Then we can call the
 ``fit`` method and pass three things: 1) The error function, 2) the number of
-input values that will be supplied and 3) the intial state of the
-`output structure <>`_.
+input values that will be supplied and 3) a list of pysh types to output.
 
 """
 from __future__ import (absolute_import, division, print_function,

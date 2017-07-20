@@ -2,7 +2,6 @@
 Contributing
 ************
 
-
 Reporting Bugs and Feature Requests
 ===================================
 
@@ -30,7 +29,7 @@ automated code review performed by `Codacy <https://www.codacy.com/>`_. The
 second will be a manual code review done by project's maintainers on the GitHub
 page.
 
-Both code reviews will be done on the GitHub page for the open pull request.
+Both code reviews will be done on the GitHub page on open pull requests.
 
 Code Style
 ----------

@@ -1,63 +1,64 @@
-# _*_ coding: utf_8 _*_
-"""
-Created on 11/30/2016
-
-@author: Eddie
-"""
-import pyshgp.utils as u
-import pyshgp.gp.gp as gp
-import pyshgp.push.interpreter as interp
-import pyshgp.push.instructions.registered_instructions as ri
-import pyshgp.push.instruction as instr
+from pyshgp.utils import merge_sets
+from pyshgp.push.interpreter import PushInterpreter
+from pyshgp.push.registered_instructions import get_instructions_by_pysh_type
+from pyshgp.gp.evolvers import SimplePushGPEvolver
+from pyshgp.gp.variation import (UniformMutation, Alternation,
+                                 VariationOperatorPipeline)
 
 
-test_cases = [(0, 0, 0),
-              (0, 0, 1),
-              (0, 1, 0),
-              (0, 1, 1),
-              (1, 0, 0),
-              (1, 0, 1),
-              (1, 1, 0),
-              (1, 1, 1)]
+cases = [(0, 0, 0),
+         (0, 0, 1),
+         (0, 1, 0),
+         (0, 1, 1),
+         (1, 0, 0),
+         (1, 0, 1),
+         (1, 1, 0),
+         (1, 1, 1)]
 
-def error_func(program):
+
+def two_bit_control_shift(a, b, c):
+    if 
+
+
+def error_function(program):
     errors = []
-    for t in test_cases:
-        interpreter = interp.PushInterpreter(t)
-        interpreter.run_push(program)
-        prog_output = interpreter.state.stacks['_integer'][-2:]
-
+    for case in cases:
+        interpreter = PushInterpreter(case,
+                                      ['_boolean', '_boolean', '_boolean'])
+        outputs = interpreter.run(program)
+        targets =
         e = 0
-        if len(prog_output) < 2:
-            e += 1000
-        else:
-            if t[0] == 1:
-                if not prog_output[0] == t[2]:
-                    e += 1
-                if not prog_output[1] == t[1]:
-                    e += 1
-            else:
-                if not prog_output[0] == t[1]:
-                    e += 1
-                if not prog_output[1] == t[2]:
-                    e += 1
+
+        if outputs[0] is None:
+            e += 1e4
+        elif outputs[0] != targets[0]:
+            e += 1
+
+        if outputs[1] is None:
+            e += 1e4
+        elif outputs[1] != targets[1]:
+            e += 1
+
+        if outputs[2] is None:
+            e += 1e4
+        elif outputs[2] != targets[2]:
+            e += 1
+
         errors.append(e)
     return errors
 
-params = {
-    "atom_generators" : list(u.merge_sets(ri.registered_instructions,
-                                          [instr.PyshInputInstruction(0),
-                                           instr.PyshInputInstruction(1),
-                                           instr.PyshInputInstruction(2)])),
-    "genetic_operator_probabilities" : {"alternation" : 0.2,
-                                        "uniform_mutation" : 0.2,
-                                        "alternation & uniform_mutation" : 0.5,
-                                        "uniform_close_mutation" : 0.1},
-    "alternation_rate" : 0.01,
-    "alignment_deviation" : 10,
-    "uniform_mutation_rate" : 0.01,
-    "final_report_simplifications" : 5000
-}
+
+atom_generators = list(merge_sets(get_instructions_by_pysh_type('_boolean'),
+                                  get_instructions_by_pysh_type('_exec')))
+mut = UniformMutation(rate=0.1)
+alt = Alternation(rate=0.1, alignment_deviation=10)
+ops = [(alt, 0.2), (mut, 0.3), (VariationOperatorPipeline((mut, alt)), 0.5)]
+
 
 if __name__ == "__main__":
-    gp.evolution(error_func, params)
+    evo = SimplePushGPEvolver(n_jobs=-1, verbose=1, operators=ops,
+                              atom_generators=atom_generators,
+                              initial_max_genome_size=300,
+                              population_size=500, max_generations=300,
+                              simplification_steps=5000)
+    evo.fit(error_function, 3, ['_boolean', '_boolean', '_boolean'])

@@ -44,10 +44,11 @@ Build Frome source
 """"""""""""""""""
 
 1. Clone the repo
-2. :code:`cd` into the pyshgp repo directory
-3. run :code:`pip install . --upgrade`
+2. :code:`cd` into the ``pyshgp`` repo directory
+3. run :code:`pip install -r requirements.txt`
+4. run :code:`pip install . --upgrade`
 
-Thats it! You should be ready to use Pysh.
+Thats it! You should be ready to use ``pyshgp``.
 
 Examples / Usage
 =================

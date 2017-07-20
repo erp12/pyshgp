@@ -434,10 +434,10 @@ def levenshtein_distance(s1, s2):
 
     Parameters
     ----------
-    s1 : {str, list}
+    s1 : str or list
         String or list.
 
-    s1 : {str, list}
+    s1 : str or list
         Other string or list.
 
     Returns
@@ -461,7 +461,6 @@ def levenshtein_distance(s1, s2):
         previous_row = current_row
 
     return previous_row[-1]
-
 
 
 def test_and_train_data_from_domains(domains):

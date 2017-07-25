@@ -116,10 +116,7 @@ class PushSpawner:
             elif m == '_silent':
                 # Determines if the gene should be marked as silent (will not
                 # appear in program)
-                if random.random() > self.silent_gene_probability:
-                    silent = True
-                else:
-                    silent = False
+                silent = random.random() > self.silent_gene_probability
             else:
                 raise e.UnkownEpigeneticMarker(m)
         # Create and return the gene tuple.

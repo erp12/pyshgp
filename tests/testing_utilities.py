@@ -25,10 +25,7 @@ def dict_matches_state(interpreter, state_dict):
         elif not state_dict[k] == interpreter.state[k]:
             return False
         i += len(state_dict[k])
-    if i == len(interpreter.state):
-        return True
-    else:
-        return False
+    return i == len(interpreter.state)
 
 
 def run_test(before, after, instruction, print_test=False):
@@ -57,12 +54,7 @@ def run_test(before, after, instruction, print_test=False):
             if print_test:
                 print("Raises error: ", type(e))
                 print()
-            if isinstance(e, after):
-                return True
-            else:
-                return False
-
-# Generating Integers
+            return isinstance(e, after)
 
 
 def rand_tiny_int():

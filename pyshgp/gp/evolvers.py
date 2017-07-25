@@ -15,7 +15,6 @@ from .base import (PyshBase, PyshEstimatorMixin, DEFAULT_GENETICS,
                    CLASSIFICATION_ATOM_GENERATORS)
 from .population import Population
 from .simplification import simplify_by_function, simplify_by_dataset
-from ..utils import merge_dicts
 
 
 class SimplePushGPEvolver(PyshBase):
@@ -212,6 +211,7 @@ class SimplePushGPEvolver(PyshBase):
             Returns predicted values.
         """
         validation.check_is_fitted(self, 'best_')
+
         def f(x):
             return self.best_.run_program(x, self.output_types)
         return np.apply_along_axis(f, 1, X)
@@ -289,7 +289,7 @@ class PushGPRegressor(PyshBase, PyshEstimatorMixin, BaseEstimator,
     """
 
     def __init__(self, atom_generators='default',
-                 operators='default',error_threshold=1e-5,
+                 operators='default', error_threshold=1e-5,
                  max_generations=1000, population_size=500,
                  selection_method='epsilon_lexicase', n_jobs=1,
                  initial_max_genome_size=50, program_growth_cap=100,
@@ -378,6 +378,7 @@ class PushGPRegressor(PyshBase, PyshEstimatorMixin, BaseEstimator,
             Returns predicted values.
         """
         validation.check_is_fitted(self, 'best_')
+
         def f(x):
             return self.best_.run_program(x, self.output_types)[0]
         return np.apply_along_axis(f, 1, X)
@@ -455,7 +456,7 @@ class PushGPClassifier(PyshBase, PyshEstimatorMixin, BaseEstimator,
     """
 
     def __init__(self, atom_generators='default',
-                 operators='default',error_threshold=1e-5,
+                 operators='default', error_threshold=1e-5,
                  max_generations=1000, population_size=500,
                  selection_method='epsilon_lexicase', n_jobs=1,
                  initial_max_genome_size=50, program_growth_cap=100,
@@ -546,6 +547,7 @@ class PushGPClassifier(PyshBase, PyshEstimatorMixin, BaseEstimator,
             Returns predicted values.
         """
         validation.check_is_fitted(self, 'best_')
+
         def f(x):
             output_vector = self.best_.run_program(x, self.output_types)
             not_none = [x for x in output_vector if x is not None]

@@ -8,12 +8,11 @@ from __future__ import (absolute_import, division, print_function,
 import random
 import numpy as np
 
-from ..utils import median_absolute_deviation, count_points
+from ..utils import median_absolute_deviation
 from ..push import translation as tran
 from ..push import interpreter as interp
-from .simplification import simplify_once
 from .evaluate import (evaluate_with_function, evaluate_for_regression,
-    evaluate_for_classification)
+                       evaluate_for_classification)
 
 ###########
 # Classes #
@@ -213,7 +212,7 @@ class Population(list):
         random.shuffle(cases)
         while len(cases) > 0 and len(candidates) > 1:
             best_val_for_case = min([i.error_vector[cases[0]]
-                                    for i in candidates])
+                                     for i in candidates])
 
             def test(i): return i.error_vector[cases[0]] == best_val_for_case
             candidates = [ind for ind in candidates if test(ind)]
@@ -249,8 +248,8 @@ class Population(list):
 
         while len(cases) > 0 and len(candidates) > 1:
             case = cases[0]
-            errors_this_case=[i.error_vector[case] for i in candidates]
-            best_val_for_case=min(errors_this_case)
+            errors_this_case = [i.error_vector[case] for i in candidates]
+            best_val_for_case = min(errors_this_case)
             if isinstance(epsilon, (list, tuple, np.ndarray)):
                 max_error = best_val_for_case + epsilon[case]
             else:
@@ -261,7 +260,7 @@ class Population(list):
             cases.pop(0)
         return random.choice(candidates)
 
-    def tournament_selection(self, tournament_size = 7):
+    def tournament_selection(self, tournament_size=7):
         """Returns the individual with the lowest error within a random
         tournament.
 
@@ -276,13 +275,13 @@ class Population(list):
             An individual from the population selected using tournament
             selection.
         """
-        tournament=[]
+        tournament = []
         for _ in range(tournament_size):
             tournament.append(random.choice(self[:]))
-        min_error_in_tourn=min([ind.total_error for ind in tournament])
+        min_error_in_tourn = min([ind.total_error for ind in tournament])
 
         def test(i): return i.total_error == min_error_in_tourn
-        best_in_tourn=[ind for ind in tournament if test(ind)]
+        best_in_tourn = [ind for ind in tournament if test(ind)]
         return best_in_tourn[0]
 
     def lowest_error(self):
@@ -291,7 +290,7 @@ class Population(list):
         -------
         The lowest total error found in the population.
         """
-        gnrtr=(ind.total_error for ind in self)
+        gnrtr = (ind.total_error for ind in self)
         return np.min(np.fromiter(gnrtr, np.float))
 
     def average_error(self):
@@ -300,7 +299,7 @@ class Population(list):
         -------
         The average total error found in the population.
         """
-        gnrtr=(ind.total_error for ind in self)
+        gnrtr = (ind.total_error for ind in self)
         return np.mean(np.fromiter(gnrtr, np.float))
 
     def unique(self):
@@ -309,7 +308,7 @@ class Population(list):
         -------
         The number of unique programs found in the population.
         """
-        programs_set={str(ind.program) for ind in self}
+        programs_set = {str(ind.program) for ind in self}
         return len(programs_set)
 
     def best_program(self):
@@ -318,7 +317,7 @@ class Population(list):
         -------
         The program of the Individual with the lowest total error.
         """
-        e=self.lowest_error()
+        e = self.lowest_error()
 
         def test(i): return i.total_error == e
         return [i.program for i in self if test(i)][0]
@@ -329,8 +328,8 @@ class Population(list):
         -------
         The program of the Individual with the lowest total error.
         """
-        e=self.lowest_error()
+        e = self.lowest_error()
 
         def test(i): return i.total_error == e
-        best=[i for i in self if test(i)][0]
+        best = [i for i in self if test(i)][0]
         return [round(x, 2) for x in best.error_vector]

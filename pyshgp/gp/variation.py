@@ -14,7 +14,11 @@ import copy
 
 from .population import Individual
 from ..push import plush as pl
-from ..utils import perturb_with_gaussian_noise, gaussian_noise_factor
+from ..utils import (
+    perturb_with_gaussian_noise,
+    gaussian_noise_factor,
+    is_str_type
+)
 
 
 class VariationOperator(with_metaclass(ABCMeta)):
@@ -166,17 +170,16 @@ class UniformMutation(VariationOperator):
         if token.is_literal:
             const = token.atom
             atom = None
-
-            if type(const) == float:
+            if isinstance(const, bool):
+                atom = random.choice([True, False])
+            elif isinstance(const, float):
                 atom = perturb_with_gaussian_noise(
                     self.float_standard_deviation, const)
-            elif type(const) == int:
+            elif isinstance(const, int):
                 atom = int(perturb_with_gaussian_noise(
                     self.int_standard_deviation, const))
-            elif type(const) == str:
+            elif is_str_type(const):
                 atom = self.string_tweak(const)
-            elif type(const) == bool:
-                atom = random.choice([True, False])
             return pl.Gene(atom, True, token.closes, token.is_silent)
         else:
             return self.spawner.random_plush_gene()

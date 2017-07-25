@@ -7,8 +7,6 @@ instructions that can be handled by the ``pyshgp`` Push interpreter.
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import numbers
-
 
 class PyshInstruction(object):
     """A instruction for the push language.

@@ -4,12 +4,10 @@ TODO: Module docstg
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import numpy as np
 from numpy.random import choice
 from random import random, randint
-from copy import copy
 
-from sklearn.utils import validation, check_X_y
+from sklearn.utils import check_X_y
 
 from pathos.multiprocessing import ProcessingPool as Pool
 
@@ -20,7 +18,7 @@ from ..push.registered_instructions import (instruction_set,
                                             get_instructions_by_pysh_type)
 from ..push.instruction import (PyshInputInstruction, PyshSetOutputInstruction,
                                 make_numeric_output_instructions, make_classification_instructions)
-from ..utils import merge_sets, recognize_pysh_type, count_points
+from ..utils import merge_sets, count_points
 
 DEFAULT_GENETICS = [
     (Alternation(), 0.7),

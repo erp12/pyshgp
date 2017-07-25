@@ -6,7 +6,9 @@ the push interpreter and GP modules.
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import sys, random, math
+import sys
+import random
+import math
 import numpy as np
 
 from . import exceptions as e
@@ -29,6 +31,7 @@ class Character(object):
     char : str
         String of length 1.
     """
+
     def __init__(self, char):
         if len(char) == 0:
             raise e.EmptyCharacterException()
@@ -38,15 +41,16 @@ class Character(object):
 
     def __repr__(self):
         if self.char == '\n':
-          return 'c_newline'
+            return 'c_newline'
         if self.char == ' ':
-          return 'c_space'
+            return 'c_space'
         return "c_" + self.char
 
     def __eq__(self, other):
         if isinstance(other, Character):
-          return self.char == other.char
+            return self.char == other.char
         return False
+
 
 class PushVector(list):
     """List where elements are all of same pysh literal type. Is a subclass of
@@ -65,13 +69,14 @@ class PushVector(list):
     typ : type
         Python type that all elements must be.
     """
+
     def __init__(self, lst, typ):
         self.typ = typ
         if typ == None:
             self.typ = '_exec'
 
         for el in lst:
-            if type(el) == typ:
+            if isinstance(el, typ):
                 self.append(el)
             else:
                 raise e.PushVectorTypeException(typ, type(el))
@@ -89,21 +94,27 @@ class PushVector(list):
             raise TypeError('Item is not of type {}'.format(self.type))
         super(PushVector, self).append(item)
 
+
 class UnevaluatableStackResponse:
     """Used as the superclass for other bad stack responses.
     """
+
     def __repr__(self):
         return 'UNEVALUATABLE_STACK_RESPONSE'
+
 
 class NoStackItem(UnevaluatableStackResponse):
     """Used as a response when getting value from empty PushStack.
     """
+
     def __repr__(self):
         return 'NO_STACK_ITEM'
+
 
 class StackOutOfBounds(UnevaluatableStackResponse):
     """Used as a response when getting value from empty PushStack.
     """
+
     def __repr__(self):
         return 'NO_STACK_ITEM'
 
@@ -136,6 +147,7 @@ def flatten_all(lst):
             result.append(i)
     return result
 
+
 def is_str_type(thing):
     """Returns true if thing is a string, agnostic to Python version.
 
@@ -162,6 +174,7 @@ def is_str_type(thing):
         return isinstance(thing, (str, unicode))
     else:
         raise Exception("Uknown python version?")
+
 
 def is_int_type(thing):
     """Returns true if thing is an int or long, agnostic to Python version.
@@ -192,6 +205,7 @@ def is_int_type(thing):
     else:
         raise Exception("Uknown python version?")
 
+
 def is_float_type(thing):
     """Returns true if thing is an float, agnostic to numpy or not.
 
@@ -213,6 +227,7 @@ def is_float_type(thing):
     True
     """
     return isinstance(thing, (float, np.float, np.float64))
+
 
 def recognize_pysh_type(thing):
     """Returns a string denoting the Push type of ``thing``.
@@ -257,6 +272,7 @@ def recognize_pysh_type(thing):
         print("Could not find pysh type for", thing, "of type", type(thing))
         return False
 
+
 def keep_number_reasonable(n):
     """Returns a version of n that obeys the limits set in :mod:`constants`.
 
@@ -274,6 +290,7 @@ def keep_number_reasonable(n):
     elif n < -c.max_number_magnitude:
         n = -c.max_number_magnitude
     return n
+
 
 def count_parens(tree):
     """Returns the number of paren pairs in tree.
@@ -300,6 +317,7 @@ def count_parens(tree):
         else:
             remaining = remaining[0] + remaining[1:]
             total += 1
+
 
 def count_points(tree):
     """Returns the number of points in tree. Each atom and each pair of
@@ -330,6 +348,7 @@ def count_points(tree):
             total += 1
     return total
 
+
 def reductions(f, l):
     """Returns intermediate values of the reduction of ``l`` by ``f``.
 
@@ -358,6 +377,7 @@ def reductions(f, l):
             result.append(f(result[-1], val))
     return result
 
+
 def merge_dicts(*dict_args):
     """Merges arbitrary number of dicts into one dict.
 
@@ -379,6 +399,7 @@ def merge_dicts(*dict_args):
         result.update(dictionary)
     return result
 
+
 def merge_sets(*set_args):
     """Given any number of sets, shallow copy and merge into a new set.
 
@@ -395,6 +416,7 @@ def merge_sets(*set_args):
     for s in set_args:
         result.update(s)
     return result
+
 
 def ensure_list(thing):
     """Returns argument inside of a list if it is not already a list.
@@ -420,6 +442,7 @@ def ensure_list(thing):
         return thing
     else:
         return [thing]
+
 
 def levenshtein_distance(s1, s2):
     """Computes the string edit distance based on the Levenshtein Distance.
@@ -482,7 +505,7 @@ def test_and_train_data_from_domains(domains):
 
         inpts = d["inputs"]
         if callable(inpts):
-            inpts = [inpts() for x in range(num_train+num_test)]
+            inpts = [inpts() for x in range(num_train + num_test)]
         else:
             inpts = inpts[:]
 
@@ -491,6 +514,7 @@ def test_and_train_data_from_domains(domains):
         test_set += inpts[-num_test:]
 
     return [train_set, test_set]
+
 
 def int_to_char(i):
     """Convert int ``i`` to chars and only get English-friendly chars
@@ -514,6 +538,7 @@ def int_to_char(i):
     i = (i + 32) % 128
     return chr(i)
 
+
 def gaussian_noise_factor():
     """Returns Gaussian noise of mean 0, std dev 1.
 
@@ -529,6 +554,7 @@ def gaussian_noise_factor():
     -0.0410900866765
     """
     return math.sqrt(-2.0 * math.log(random.random())) * math.cos(2.0 * math.pi * random.random())
+
 
 def perturb_with_gaussian_noise(sd, n):
     """Returns n perturbed with standard deviation.

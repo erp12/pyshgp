@@ -53,7 +53,7 @@ def open_close_sequence_to_list(sequence):
     >>> open_close_sequence_to_list(["_open", 1, "_close", 2]))
     [[1], 2]
     """
-    if not type(sequence) == list:
+    if not isinstance(sequence, list):
         return sequence
     elif len(sequence) == 0:
         return []
@@ -65,7 +65,7 @@ def open_close_sequence_to_list(sequence):
                 i = get_matcing_close_index(rest)
                 sub_seq = rest[1:i]
                 result.append(open_close_sequence_to_list(sub_seq))
-                rest = rest[i+1:]
+                rest = rest[i + 1:]
             else:
                 result.append(rest[0])
                 rest.pop(0)

@@ -77,3 +77,20 @@ the example file.
 
 Exampls should never import pyshgp modules using relative paths. Instead assume
 pyshgp has been installed as a package.
+
+Release Pattern
+===============
+
+The GitHub repository's master branch is always kept in sync with what is
+available on PyPi.
+
+In anticipation of a new release, a "pre-version" branch will be created with
+the naming convention "v##-pre" where "##" is the anticipated version.
+
+As feature branches (and forks) are opened to address issues, they will be
+reviewed via PR and merged into the "pre-version" branch.
+
+Once the pre-version branch contains all the feautres required for the release
+of the next version (as dictated by the project boards on the GitHub page)
+the pre-version branch will be merged with master, a new release will be put on
+PyPI, and a locked version branch will be created.

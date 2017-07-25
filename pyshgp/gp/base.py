@@ -17,11 +17,10 @@ from .population import Population, Individual
 from .variation import VariationOperatorPipeline, UniformMutation, Alternation
 from ..push import random as r
 from ..push.registered_instructions import (instruction_set,
-    get_instructions_by_pysh_type)
+                                            get_instructions_by_pysh_type)
 from ..push.instruction import (PyshInputInstruction, PyshSetOutputInstruction,
-    make_numeric_output_instructions, make_classification_instructions)
+                                make_numeric_output_instructions, make_classification_instructions)
 from ..utils import merge_sets, recognize_pysh_type, count_points
-
 
 DEFAULT_GENETICS = [
     (Alternation(), 0.7),

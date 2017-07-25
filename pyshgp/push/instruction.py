@@ -25,11 +25,12 @@ class PyshInstruction(object):
         Specifies number of paren groups. (0, 1, 2, ... etc)
     """
 
-    def __init__(self, name, func, stack_types, parentheses = 0):
+    def __init__(self, name, func, stack_types, parentheses=0):
         self.name = name
         self.func = func
         self.stack_types = stack_types
-        self.parentheses = parentheses # Specifies parens group. (0, 1, 2, etc)
+        # Specifies parens group. (0, 1, 2, etc)
+        self.parentheses = parentheses
 
     def __eq__(self, other):
         if isinstance(other, PyshInstruction):
@@ -140,6 +141,7 @@ class PyshReduceOutputInstruction(PyshInstruction):
         A function that takes two arguments, the current output value and the
         top value from ``output_type`` stack. Function returns new output value.
 
+<<<<<<< HEAD
     name : str
         A name for the reducer function.
     """
@@ -160,7 +162,7 @@ class PyshReduceOutputInstruction(PyshInstruction):
 
         Parameters
         ----------
-        state : PushState
+        state: PushState
             The PushState to execute the input instruction on.
         """
         if len(state[self.output_type]) == 0:
@@ -179,14 +181,14 @@ class PyshTweakOutputInstruction(PyshInstruction):
 
     Parameters
     ----------
-    output_index : str
+    output_index: str
          The name of the key on the output structure to assign a value to.
 
-    tweaker : function
+    tweaker: function
         A function that takes one argument, the current output value, and
         returns the new output value.
 
-    name : str
+    name: str
         A name for the tweaker function.
     """
 
@@ -204,7 +206,7 @@ class PyshTweakOutputInstruction(PyshInstruction):
 
         Parameters
         ----------
-        state : PushState
+        state: PushState
             The PushState to execute the input instruction on.
         """
         if state.outputs[self.output_index] is None:
@@ -219,20 +221,21 @@ def make_numeric_output_instructions(output, int_only=False):
 
     Parameters
     ----------
-    output : int
+    output: int
         Index of the output value to create output instructions for.
 
-    int_only : bool, optional (default=False)
+    int_only: bool, optional(default=False)
         If true, only returns instructions that utilize the integer stack.
     """
     instrs = [
         PyshSetOutputInstruction(output, '_integer'),
-        PyshReduceOutputInstruction(output, '_integer', lambda x,y: x + y, '+')
+        PyshReduceOutputInstruction(
+            output, '_integer', lambda x, y: x + y, '+')
     ]
     if not int_only:
         instrs = instrs + [
             PyshSetOutputInstruction(output, '_float'),
-            PyshReduceOutputInstruction(output, '_float', lambda x,y: x + y,
+            PyshReduceOutputInstruction(output, '_float', lambda x, y: x + y,
                                         '+')
         ]
     return instrs
@@ -244,15 +247,15 @@ def make_classification_instructions(class_index):
 
     Parameters
     ----------
-    class_index : int
+    class_index: int
          An integer greater than or equal to 0.
     """
     return [
         PyshSetOutputInstruction(class_index, '_integer'),
         PyshSetOutputInstruction(class_index, '_float'),
-        PyshReduceOutputInstruction(class_index, '_integer', lambda x,y: x + y,
+        PyshReduceOutputInstruction(class_index, '_integer', lambda x, y: x + y,
                                     '+'),
-        PyshReduceOutputInstruction(class_index, '_float', lambda x,y: x + y,
+        PyshReduceOutputInstruction(class_index, '_float', lambda x, y: x + y,
                                     '+'),
         PyshTweakOutputInstruction(class_index, lambda x: x + 1, 'inc'),
         PyshTweakOutputInstruction(class_index, lambda x: x - 1, 'dec')

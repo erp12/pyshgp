@@ -1,4 +1,4 @@
-# Pysh
+# pyshgp
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/fc15a23a8626411994234a3cc0a1a43c)](https://www.codacy.com/app/erp12/pyshgp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=erp12/pyshgp&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/fc15a23a8626411994234a3cc0a1a43c)](https://www.codacy.com/app/erp12/pyshgp?utm_source=github.com&utm_medium=referral&utm_content=erp12/pyshgp&utm_campaign=Badge_Coverage)
@@ -18,9 +18,9 @@ More information about PushGP can be found on the
 [Push Redux](https://erp12.github.io/push-redux/) and the
 [Push Homepage](http://faculty.hampshire.edu/lspector/push.html).
 
-## Installing Pysh
+## Installing Pyshgp
 
-  Pysh is compatale with python ``2.7.x``, ``3.5.x``, and ``3.6.x``
+  pyshgp is compatale with python ``3.5.x``, and ``3.6.x``. Pyshgp is also _probably_ compatible with python ``2.7.x`` although it is currently not as rigorously tested.
 
 ### Install from pip
 
@@ -36,6 +36,7 @@ sense of how far off this is.
 3. run ``pip install -r requirements.txt``
 4. run ``pip install . --upgrade``
 5. Thats it! Check out the examples and
+
    [pyshgp ReadTheDocs](http://pysh2.readthedocs.io/en/latest/) for more
    information.
 

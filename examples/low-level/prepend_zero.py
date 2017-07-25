@@ -4,76 +4,79 @@ Created on 12/1/2016
 
 @author: Eddie
 """
-import pyshgp.utils as u
-import pyshgp.gp.gp as gp
-import pyshgp.push.interpreter as interp
-import pyshgp.push.instructions.registered_instructions as ri
-import pyshgp.push.instruction as instr
+from pyshgp.utils import merge_sets, PushVector, levenshtein_distance
+from pyshgp.push.interpreter import PushInterpreter
+from pyshgp.push.registered_instructions import get_instructions_by_pysh_type
+from pyshgp.gp.evolvers import SimplePushGPEvolver
+from pyshgp.gp.variation import (UniformMutation, Alternation,
+                                 VariationOperatorPipeline)
 
 
-test_cases = [u.PushVector([False, False, False, False], bool),
-              u.PushVector([False, False, False, True], bool),
-              u.PushVector([False, False, True, False], bool),
-              u.PushVector([False, False, True, True], bool),
-              u.PushVector([False, True, False, False], bool),
-              u.PushVector([False, True, False, True], bool),
-              u.PushVector([False, True, True, False], bool),
-              u.PushVector([False, True, True, True], bool),
-              u.PushVector([True, False, False, False], bool),
-              u.PushVector([True, False, False, True], bool),
-              u.PushVector([True, False, True, False], bool),
-              u.PushVector([True, False, True, True], bool),
-              u.PushVector([True, True, False, False], bool),
-              u.PushVector([True, True, False, True], bool),
-              u.PushVector([True, True, True, False], bool),
-              u.PushVector([True, True, True, True], bool),
-              u.PushVector([False, False, False, False, True, False, True, True], bool),
-              u.PushVector([False, False, False, True, True, True, False, True], bool),
-              u.PushVector([False, False, True, False, True, True, True, False], bool),
-              u.PushVector([False, False, True, True, True, True, False, True], bool),
-              u.PushVector([False, True, False, False, True, False, True, True], bool),
-              u.PushVector([False, True, True, False, True, True, True, True], bool),
-              u.PushVector([False, False, False, False, False, False, False, False], bool),
-              u.PushVector([False, True, True, True, False, True, False, True], bool)]
+cases = [PushVector([False, False, False, False], bool),
+         PushVector([False, False, False, True], bool),
+         PushVector([False, False, True, False], bool),
+         PushVector([False, False, True, True], bool),
+         PushVector([False, True, False, False], bool),
+         PushVector([False, True, False, True], bool),
+         PushVector([False, True, True, False], bool),
+         PushVector([False, True, True, True], bool),
+         PushVector([True, False, False, False], bool),
+         PushVector([True, False, False, True], bool),
+         PushVector([True, False, True, False], bool),
+         PushVector([True, False, True, True], bool),
+         PushVector([True, True, False, False], bool),
+         PushVector([True, True, False, True], bool),
+         PushVector([True, True, True, False], bool),
+         PushVector([True, True, True, True], bool),
+         PushVector([False, False, False, False, True, False, True, True],
+                    bool),
+         PushVector([False, False, False, True, True, True, False, True],
+                    bool),
+         PushVector([False, False, True, False, True, True, True, False],
+                    bool),
+         PushVector([False, False, True, True, True, True, False, True],
+                    bool),
+         PushVector([False, True, False, False, True, False, True, True],
+                    bool),
+         PushVector([False, True, True, False, True, True, True, True],
+                    bool),
+         PushVector([False, False, False, False, False, False, False, False],
+                    bool),
+         PushVector([False, True, True, True, False, True, False, True],
+                    bool)]
+
 
 def prepend_zero(inpt_bits):
     return [False] + inpt_bits
 
-def error_func(program, debug = False):
-    errors = []
-    for t in test_cases:
-        interpreter = interp.PushInterpreter([t])
-        interpreter.run_push(program, debug)
-        prog_output = interpreter.state.stacks['_boolean'][:]
-        target_output = prepend_zero(t)
 
-        if not len(prog_output) == len(target_output):
-            errors.append(1000)
+def error_function(program, debug=False):
+    errors = []
+    for case in cases:
+        interpreter = PushInterpreter([case], ['_vector_boolean'])
+        output = interpreter.run(program, debug)[0]
+        target = prepend_zero(case)
+        if output is None:
+            errors.append(1e5)
+        if len(output) != len(target):
+            errors.append(1e4)
         else:
-            errors.append(u.levenshtein_distance(prog_output, target_output))
+            errors.append(levenshtein_distance(output, target))
     return errors
 
-params = {
-    "atom_generators" : list(u.merge_sets(ri.get_instructions_by_pysh_type("_boolean"),
-                                          ri.get_instructions_by_pysh_type("_vector"),
-                                          [instr.PyshInputInstruction(0)])),
-    "genetic_operator_probabilities" : {"alternation" : 0.2,
-                                        "uniform_mutation" : 0.2,
-                                        "alternation & uniform_mutation" : 0.5,
-                                        "uniform_close_mutation" : 0.1},
-    "alternation_rate" : 0.01,
-    "alignment_deviation" : 10,
-    "uniform_mutation_rate" : 0.01,
-    "final_report_simplifications" : 5000
 
-}
+atom_generators = list(merge_sets(get_instructions_by_pysh_type('_boolean'),
+                                  get_instructions_by_pysh_type('_vector'),
+                                  get_instructions_by_pysh_type('_exec')))
+mut = UniformMutation(rate=0.01)
+alt = Alternation(rate=0.01, alignment_deviation=10)
+ops = [(alt, 0.2), (mut, 0.3), (VariationOperatorPipeline((mut, alt)), 0.5)]
 
-def test_solution():
-    prog_lst = ['_exec_empty', instr.PyshInputInstruction(0), '_exec_do*vector_boolean', '_vector_float_emptyvector']
-    prog = gp.load_program_from_list(prog_lst)
-    errors = error_func(prog, debug = True)
-    print("Errors:", errors)
 
 if __name__ == "__main__":
-    gp.evolution(error_func, params)
-    #test_solution()
+    evo = SimplePushGPEvolver(n_jobs=-1, verbose=1, operators=ops,
+                              atom_generators=atom_generators,
+                              initial_max_genome_size=300,
+                              population_size=500, max_generations=300,
+                              simplification_steps=5000)
+    evo.fit(error_function, 1, ['_vector_boolean'])

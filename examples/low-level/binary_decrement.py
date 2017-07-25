@@ -5,37 +5,46 @@ Created on 12/1/2016
 @author: Eddie
 """
 
-import pyshgp.utils as u
-import pyshgp.gp.gp as gp
-import pyshgp.push.interpreter as interp
-import pyshgp.push.instructions.registered_instructions as ri
-import pyshgp.push.instruction as instr
+from pyshgp.utils import PushVector, levenshtein_distance
+from pyshgp.push.interpreter import PushInterpreter
+from pyshgp.gp.evolvers import SimplePushGPEvolver
+from pyshgp.gp.variation import (UniformMutation, Alternation,
+                                 VariationOperatorPipeline)
 
 
-test_cases = [u.PushVector([False, False, False, False], bool),
-              u.PushVector([False, False, False, True], bool),
-              u.PushVector([False, False, True, False], bool),
-              u.PushVector([False, False, True, True], bool),
-              u.PushVector([False, True, False, False], bool),
-              u.PushVector([False, True, False, True], bool),
-              u.PushVector([False, True, True, False], bool),
-              u.PushVector([False, True, True, True], bool),
-              u.PushVector([True, False, False, False], bool),
-              u.PushVector([True, False, False, True], bool),
-              u.PushVector([True, False, True, False], bool),
-              u.PushVector([True, False, True, True], bool),
-              u.PushVector([True, True, False, False], bool),
-              u.PushVector([True, True, False, True], bool),
-              u.PushVector([True, True, True, False], bool),
-              u.PushVector([True, True, True, True], bool),
-              u.PushVector([False, False, False, False, True, False, True, True], bool),
-              u.PushVector([False, False, False, True, True, True, False, True], bool),
-              u.PushVector([False, False, True, False, True, True, True, False], bool),
-              u.PushVector([False, False, True, True, True, True, False, True], bool),
-              u.PushVector([False, True, False, False, True, False, True, True], bool),
-              u.PushVector([False, True, True, False, True, True, True, True], bool),
-              u.PushVector([False, False, False, False, False, False, False, False], bool),
-              u.PushVector([False, True, True, True, False, True, False, True], bool)]
+cases = [PushVector([False, False, False, False], bool),
+         PushVector([False, False, False, True], bool),
+         PushVector([False, False, True, False], bool),
+         PushVector([False, False, True, True], bool),
+         PushVector([False, True, False, False], bool),
+         PushVector([False, True, False, True], bool),
+         PushVector([False, True, True, False], bool),
+         PushVector([False, True, True, True], bool),
+         PushVector([True, False, False, False], bool),
+         PushVector([True, False, False, True], bool),
+         PushVector([True, False, True, False], bool),
+         PushVector([True, False, True, True], bool),
+         PushVector([True, True, False, False], bool),
+         PushVector([True, True, False, True], bool),
+         PushVector([True, True, True, False], bool),
+         PushVector([True, True, True, True], bool),
+         PushVector([False, False, False, False, True, False, True, True],
+                    bool),
+         PushVector([False, False, False, True, True, True, False, True],
+                    bool),
+         PushVector([False, False, True, False, True, True, True, False],
+                    bool),
+         PushVector([False, False, True, True, True, True, False, True],
+                    bool),
+         PushVector([False, True, False, False, True, False, True, True],
+                    bool),
+         PushVector([False, True, True, False, True, True, True, True],
+                    bool),
+         PushVector([False, False, False, False, False, False, False, False],
+                    bool),
+         PushVector([False, True, True, True, False, True, False, True],
+                    bool)]
+
 
 def binary_decrement(bitstr):
     bits = list(bitstr[::-1])
@@ -47,42 +56,28 @@ def binary_decrement(bitstr):
             bits[i] = True
     return bits[::-1]
 
-for t in test_cases:
-    print(t, binary_decrement(t))
-print()
 
-def error_func(program):
+def error_function(program):
     errors = []
-    for t in test_cases:
-        interpreter = interp.PushInterpreter([t])
-        interpreter.run_push(program)
-        prog_output = interpreter.state.stacks['_boolean'][:]
-        target_output = binary_decrement(t)
-
-        if isinstance(prog_output, u.UnevaluatableStackResponse):
-            errors.append(1000)
+    for case in cases:
+        interpreter = PushInterpreter([case], ['_vector_boolean'])
+        output = interpreter.run(program)[0]
+        if output is None:
+            errors.append(1e5)
         else:
-            errors.append(u.levenshtein_distance(prog_output, target_output))
+            target = binary_decrement(case)
+            errors.append(levenshtein_distance(output, target))
     return errors
 
-params = {
-    "atom_generators" : list(u.merge_sets(ri.registered_instructions,
-                                          [instr.PyshInputInstruction(0)])),
-    "genetic_operator_probabilities" : {"alternation" : 0.2,
-                                        "uniform_mutation" : 0.2,
-                                        "alternation & uniform_mutation" : 0.5,
-                                        "uniform_close_mutation" : 0.1},
-    "max_points" : 3200,
-    "max_genome_size_in_initial_program" : 400,
-    "evalpush_limit" : 1600,
-    "population_size" : 1000,
-    "max_generations" : 300,
-    "alternation_rate" : 0.01,
-    "alignment_deviation" : 10,
-    "uniform_mutation_rate" : 0.01,
-    "final_report_simplifications" : 5000
 
-}
+mut = UniformMutation(rate=0.01)
+alt = Alternation(rate=0.01, alignment_deviation=10)
+ops = [(alt, 0.2), (mut, 0.3), (VariationOperatorPipeline((mut, alt)), 0.5)]
+
 
 if __name__ == "__main__":
-    gp.evolution(error_func, params)
+    evo = SimplePushGPEvolver(n_jobs=-1, verbose=1, operators=ops,
+                              initial_max_genome_size=300,
+                              population_size=500, max_generations=300,
+                              simplification_steps=5000)
+    evo.fit(error_function, 1, ['_vector_boolean'])

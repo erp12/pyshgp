@@ -1,7 +1,0 @@
-Special Instructions
-====================
-The following instructions may require changes elsewhere in Pysh.
-
-- noop_delete_prev_paren_pair
-- noop_open_paren
-

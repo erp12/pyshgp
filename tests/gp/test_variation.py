@@ -1,13 +1,14 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import numpy as np
-
 import unittest
 
 import pyshgp.gp.variation as v
 import pyshgp.gp.population as p
 import pyshgp.push.random as r
 import pyshgp.push.plush as pl
+
 
 class TestUniformMutationMethods(unittest.TestCase):
 
@@ -52,6 +53,7 @@ class TestUniformMutationMethods(unittest.TestCase):
         child = um.produce([self.i1], self.R)
         self.assertEqual(len(child.genome), len(self.i1.genome))
         self.assertFalse(hasattr(child, 'total_error'))
+
 
 class TestAlternationMethods(unittest.TestCase):
 

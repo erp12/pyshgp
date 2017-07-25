@@ -1,13 +1,16 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import unittest
 
 from pyshgp.push.interpreter import PushInterpreter
 
+
 class TestPushStateMethods(unittest.TestCase):
 
     def setUp(self):
-        self.i = PushInterpreter(inputs=["a", "b", "c"])
+        self.i = PushInterpreter(inputs=["a", "b", "c"],
+                                 output_types=['_string'])
         self.d = {'_auxiliary': [],
                   '_boolean': [],
                   '_char': [],
@@ -24,7 +27,7 @@ class TestPushStateMethods(unittest.TestCase):
                   '_vector_string': []}
 
     def test_len(self):
-        self.assertEqual(len(self.i.state), 3)
+        self.assertEqual(len(self.i.state), 4)
 
     def test_from_dict(self):
         self.d['_integer'].append(5)
@@ -33,10 +36,15 @@ class TestPushStateMethods(unittest.TestCase):
         self.assertEqual(self.i.state['_integer'].top_item(), 5)
         self.assertEqual(len(self.i.state['_integer']), 1)
 
+    def test_pretty_print(self):
+        self.i.state.pretty_print()
+
+
 class TestPushInterpreterMethods(unittest.TestCase):
 
     def setUp(self):
-        self.i = PushInterpreter(inputs=["a", "b", "c"])
+        self.i = PushInterpreter(inputs=["a", "b", "c"],
+                                 output_types=['_string'])
 
     def test_reset(self):
         self.i.reset()
@@ -54,3 +62,7 @@ class TestPushInterpreterMethods(unittest.TestCase):
         self.i.eval_push()
         self.assertEqual(len(self.i.state['_integer']), 5)
         self.assertEqual(len(self.i.state['_exec']), 0)
+
+    def test_run(self):
+        outputs = self.i.run([7, 'hello'])
+        self.assertEqual(outputs, [None])

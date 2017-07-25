@@ -14,10 +14,10 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from pyshgp.push.interpreter import PushInterpreter
-from pyshgp.push.instructions import registered_instructions as ri
+from pyshgp.push.instructions import all_instructions
 from pyshgp.gp.variation import (UniformMutation, Alternation,
                                  VariationOperatorPipeline)
-from pyshgp.gp.base import SimplePushGPEvolver
+from pyshgp.gp.evolvers import SimplePushGPEvolver
 
 def target_function(x):
     return 9 * x**2 - 11 * x + 1964
@@ -26,17 +26,16 @@ def error_func(program):
     errors = []
     for x in range(10):
         # Create the push interpreter and run program
-        interpreter = PushInterpreter(inputs=[x])
-        outputs = interpreter.run_push(program)
+        interpreter = PushInterpreter(inputs=[x], output_types=['_integer'])
+        y_hat = interpreter.run(program)[0]
         # Get output
-        if 'y_hat' in outputs.keys():
-            y_hat = outputs['y_hat']
+        if y_hat is not None:
             # compare to target output
             target_int = target_function(x)
             # calculate error
             errors.append((y_hat - target_int)**2)
         else:
-            errors.append(100000000)
+            errors.append(1e5)
     return errors
 
 
@@ -53,5 +52,5 @@ ops = [
 if __name__ == "__main__":
     evo = SimplePushGPEvolver(n_jobs=-1, verbose=1, operators=ops,
                               selection_method='epsilon_lexicase',
-                              atom_generators=list(ri.registered_instructions))
-    evo.fit(error_func, 1, {'y_hat' : 0})
+                              atom_generators=list(all_instructions))
+    evo.fit(error_func, 1, ['_integer'])

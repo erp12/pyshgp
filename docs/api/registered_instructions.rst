@@ -2,5 +2,5 @@
 Registered Instructions
 ***********************
 
-.. automodule:: pyshgp.push.instructions.registered_instructions
+.. automodule:: pyshgp.push.registered_instructions
 	:members:

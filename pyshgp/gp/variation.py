@@ -4,7 +4,8 @@ The :mod:`variation` module defines classes for variation operators (aka
 genetic operators). These operators are used in evoluation to create new
 children from selected parents.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 from future.utils import with_metaclass
 
 from abc import ABCMeta, abstractmethod
@@ -33,13 +34,14 @@ class VariationOperator(with_metaclass(ABCMeta)):
 
     def check_num_parents(self, parents):
         if not len(parents) >= self._num_parents:
-            msg="{} parents passed to variation operator. Expected {}."
+            msg = "{} parents passed to variation operator. Expected {}."
             raise ValueError(msg.format(len(parents), self._num_parents))
 
     @abstractmethod
     def produce(self, parents, spawner):
         """Produces a child.
         """
+
 
 class VariationOperatorPipeline(VariationOperator):
     """Variation operator that chains together other variation operators.
@@ -80,27 +82,27 @@ class VariationOperatorPipeline(VariationOperator):
 class UniformMutation(VariationOperator):
     """Uniformly mutates individual.
 
-    For each token in program, there is *rate* probability of being mutated. If a token
-    is to be mutated, it has a *constant_tweak_rate* probability of being mutated using
-    a constant mutator (which varies depending on the type of the token), and
-    otherwise is replaced with a random instruction.
+    For each token in program, there is *rate* probability of being mutated. If
+    a token is to be mutated, it has a *constant_tweak_rate* probability of
+    being mutated using a constant mutator (which varies depending on the type
+    of the token), and otherwise is replaced with a random instruction.
 
     More information can be found on the `this Push-Redux page
     <https://erp12.github.io/push-redux/pages/genetic_operators/index.html#mutation>`_.
     """
-    #: The probablility of mutating any given gene of the individual's genome. Must
-    #: be 0 <= rate <= 1. Defaults to 0.1.
+    #: The probablility of mutating any given gene of the individual's genome.
+    #: Must be 0 <= rate <= 1. Defaults to 0.1.
     rate = None
 
     #: TODO: Write attribute docstring.
     constant_tweak_rate = None
 
-    #: When float value is being perturbed with Gaussian noise, this is used as the
-    #: standard deviation of the noise. Defaults to 1.0.
+    #: When float value is being perturbed with Gaussian noise, this is used as
+    #: the standard deviation of the noise. Defaults to 1.0.
     float_standard_deviation = None
 
-    #: When int value is being perturbed with Gaussian noise, this is used as the
-    #: standard deviation of the noise. Defaults to 1.
+    #: When int value is being perturbed with Gaussian noise, this is used as
+    #: the standard deviation of the noise. Defaults to 1.
     int_standard_deviation = None
 
     #: TODO: Write attribute docstring.
@@ -179,27 +181,10 @@ class UniformMutation(VariationOperator):
         else:
             return self.spawner.random_plush_gene()
 
-# def uniform_close_mutation(genome, evo_params):
-#     """Uniformly mutates the ``_close`` markers in the individual's genome.
-#
-#     Each ``_close`` will have a ``uniform_close_mutation_rate`` probability of
-#     being changed, and those that are changed have a ``close_increment_rate``
-#     chance of being incremented, and are otherwise decremented.
-#
-#     More information can be found on the `this Push-Redux page
-#     <https://erp12.github.io/push-redux/pages/genetic_operators/index.html#mutation>`_.
-#
-#     :param list genome: Plush genome to mutate.
-#     :param dict evo_params: Parameters for evolution.
-#     :returns: The new mutated genome.
-#     """
-#     if not "_close" in evo_params["epigenetic_markers"]:
-#         return genome
-#     return [close_mutator(gene, evo_params) for gene in genome]
+# #               # #
+#   Recombination   #
+# #               # #
 
-##
-#   Recombination
-##
 
 class Alternation(VariationOperator):
     """Uniformly alternates between the two parents.

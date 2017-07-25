@@ -35,7 +35,7 @@ for file_name in os.listdir(instructions_dir):
         with open(instructions_dir+file_name) as file:
             lines = file.readlines()
             # Filter out the instruction doc string lines.
-            doc_lines = filter(lambda line: line[:8] == '#<instr_', lines)
+            doc_lines = filter(lambda line: line[:8] == '# <instr_', lines)
 
             in_instruction = False
             # For each doc string line

@@ -5,14 +5,15 @@ The :mod:`interpreter` module defines the ``PushInterpreter`` class which is
 capable of running Push programs.
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import time
-from copy import deepcopy # <- This one is actually needed.
+from copy import deepcopy  # <- This one is actually needed.
 from collections import OrderedDict
 import numpy as np
 
-from .. import utils as u
+from ..utils import recognize_pysh_type
 from .. import constants as c
 from .. import exceptions as e
 from . import stack
@@ -27,12 +28,13 @@ class PushState(dict):
         A list of all values that should be accessible as inputs.
     """
 
-    def __init__(self, inputs):
+    def __init__(self, inputs, output_types):
         if not isinstance(inputs, (list, np.ndarray)):
             msg = "Push inputs must be a list, got {}"
             raise ValueError(msg.format(type(inputs)))
-        self['_input'] = inputs[::-1]
-        self['_output'] = OrderedDict()
+        self.inputs = inputs[::-1]
+        self.outputs = [None for o in output_types]
+        self.stdout = ''
 
         for t in c.pysh_types:
             self[t] = stack.PyshStack(t)
@@ -40,7 +42,9 @@ class PushState(dict):
     def __len__(self):
         """Returns the size of the PushState.
         """
-        return sum([len(s) for s in self.values()])
+        return (sum([len(s) for s in self.values()]) +
+                len(self.inputs) +
+                len(self.outputs))
 
     def from_dict(self, d):
         """Sets the state to match the given dictionary.
@@ -56,14 +60,16 @@ class PushState(dict):
             Dict that is converted into a Push state.
         """
         # Clear existing stacks.
-        self['_input'] = []
         for t in c.pysh_types:
             self[t] = stack.PyshStack(t)
         # Overwrite stacks found in dict
         for k in d.keys():
-            if k == '_input' or k == '_output':
-                # Make output field the same as dictionary. Should be a dict.
-                self[k] = d[k]
+            if k == '_input':
+                self.inputs = d[k]
+            elif k == '_output':
+                self.outputs = d[k]
+            elif k == '_stdout':
+                self.stdout += d[k]
             else:
                 # Append all values from dictionary onto corrisponding stack.
                 for v in d[k]:
@@ -74,8 +80,10 @@ class PushState(dict):
         """
         for t in c.pysh_types:
             print(self[t].pysh_type, ":", self[t])
-        print('_input :', self['_input'])
-        print('_output :', self['_output'])
+        print('Inputs :', self.inputs)
+        print('Outputs :', self.outputs)
+        print('Stdout :', self.stdout)
+
 
 class PushInterpreter:
     """Object that can run Push programs and stores the state of the Push
@@ -96,17 +104,17 @@ class PushInterpreter:
         error indicator.
     """
 
-
-    def __init__(self, inputs):
+    def __init__(self, inputs, output_types):
         self.inputs = inputs
-        self.state = PushState(inputs)
+        self.output_types = output_types
+        self.state = PushState(inputs, output_types)
         self.status = '_normal'
 
     def reset(self):
         """Resets the PushInterpreter. Should be called between push program
         executions.
         """
-        self.state = PushState(self.inputs)
+        self.state = PushState(self.inputs, self.output_types)
         self.status = '_normal'
 
     def eval_atom(self, instruction):
@@ -127,10 +135,9 @@ class PushInterpreter:
             instruction = instruction()
 
         # Detect the pysh type of the instruction.
-        pysh_type = u.recognize_pysh_type(instruction)
+        pysh_type = recognize_pysh_type(instruction)
 
-        if pysh_type in ['_instruction', '_input_instruction',
-                         '_output_instruction', '_class_vote_instruction']:
+        if pysh_type == '_instruction':
             # If the instruction is a standard push instruction, call it's
             # function on the current push state.
             instruction.execute(self.state)
@@ -143,7 +150,7 @@ class PushInterpreter:
             # Push all contents of the list to the ``exec`` stack.
             for i in instruction_cpy:
                 self.state['_exec'].push(i)
-        elif pysh_type == False:
+        elif not pysh_type:
             # If pysh type was not found, raise exception.
             raise e.UnknownPyshType(instruction)
         else:
@@ -175,7 +182,7 @@ class PushInterpreter:
                 break
             if time_limit != 0 and time.time() > time_limit:
                 self.status = '_evalpush_time_limit_reached'
-                break;
+                break
 
             # Advance program 1 step
             top_exec = self.state['_exec'].top_item()
@@ -184,13 +191,12 @@ class PushInterpreter:
 
             # print steps
             if print_steps:
-                print( "\nState after " + str(iteration) + " steps:")
+                print("\nState after " + str(iteration) + " steps:")
                 self.state.pretty_print()
 
             iteration += 1
 
-
-    def run_push(self, code, print_steps=False):
+    def run(self, code, print_steps=False):
         """The top level method of the push interpreter.
 
         Calls eval-push between appropriate code/exec pushing/popping.
@@ -214,7 +220,4 @@ class PushInterpreter:
         self.eval_push(print_steps)
         if print_steps:
             print("=== Finished Push Execution ===")
-        if '_output' in self.state.keys():
-            return self.state['_output']
-        else:
-            return {}
+        return self.state.outputs

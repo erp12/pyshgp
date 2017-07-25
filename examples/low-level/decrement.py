@@ -34,7 +34,9 @@ def error_function(program):
         elif len(output) != len(target):
             errors.append(1e4)
         else:
-            rmse = np.linalg.norm(np.array(output) - np.array(target)) / np.sqrt(len(output))
+            rmse = np.linalg.norm(
+                np.array(output) - np.array(target)
+            ) / np.sqrt(len(output))
             errors.append(rmse)
     return errors
 

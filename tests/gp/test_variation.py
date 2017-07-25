@@ -1,13 +1,14 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import numpy as np
-
 import unittest
 
 import pyshgp.gp.variation as v
 import pyshgp.gp.population as p
 import pyshgp.push.random as r
 import pyshgp.push.plush as pl
+
 
 class TestUniformMutationMethods(unittest.TestCase):
 
@@ -20,8 +21,8 @@ class TestUniformMutationMethods(unittest.TestCase):
 
     def test_string_tweak(self):
         um = v.UniformMutation()
-        new_s = um.string_tweak('a'*300)
-        self.assertTrue(not new_s == 'a'*300)
+        new_s = um.string_tweak('a' * 300)
+        self.assertTrue(not new_s == 'a' * 300)
 
     def test_constant_mutator_int(self):
         um = v.UniformMutation()
@@ -37,21 +38,22 @@ class TestUniformMutationMethods(unittest.TestCase):
 
     def test_constant_mutator_string(self):
         um = v.UniformMutation()
-        g = pl.Gene('a'*300, True, 0, False)
+        g = pl.Gene('a' * 300, True, 0, False)
         result = um.constant_mutator(g)
-        self.assertTrue(not result.atom == 'a'*300)
+        self.assertTrue(not result.atom == 'a' * 300)
 
     def test_constant_mutator_bool(self):
         um = v.UniformMutation()
         g = pl.Gene(True, True, 0, False)
         result = um.constant_mutator(g)
-        self.assertTrue(type(result.atom) == bool)
+        self.assertIsInstance(result.atom, bool)
 
     def test_produce(self):
         um = v.UniformMutation(rate=0.9)
         child = um.produce([self.i1], self.R)
         self.assertEqual(len(child.genome), len(self.i1.genome))
         self.assertFalse(hasattr(child, 'total_error'))
+
 
 class TestAlternationMethods(unittest.TestCase):
 

@@ -1,12 +1,13 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import numpy as np
-
 import unittest
 
 import pyshgp.push.random as r
 import pyshgp.push.plush as pl
 import pyshgp.push.instruction as instr
+
 
 class TestRandomMethods(unittest.TestCase):
 

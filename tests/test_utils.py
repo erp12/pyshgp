@@ -1,12 +1,12 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import numpy as np
-
 import unittest
 import testing_utilities as tu
-
 import pyshgp.utils as u
 import pyshgp.push.instruction as instr
+
 
 class TestUtilsMethods(unittest.TestCase):
 
@@ -24,12 +24,7 @@ class TestUtilsMethods(unittest.TestCase):
     # Detect Input Instruction
     def test_recognize_pysh_type_PyshInputInstruction(self):
         i = instr.PyshInputInstruction(0)
-        self.assertEqual(u.recognize_pysh_type(i), '_input_instruction')
-
-    # Detect Class Vote Instruction
-    def test_recognize_pysh_type_PyshClassVoteInstruction(self):
-        i = instr.PyshClassVoteInstruction(1, '_integer')
-        self.assertEqual(u.recognize_pysh_type(i), '_class_vote_instruction')
+        self.assertEqual(u.recognize_pysh_type(i), '_instruction')
 
     # Detect int
     def test_recognize_pysh_type_int(self):
@@ -67,22 +62,23 @@ class TestUtilsMethods(unittest.TestCase):
 
     # Test 3 dicts
     def test_merge_dicts_stnrd(self):
-        d1 = {"a" : 1, "b" : 2}
-        d2 = {"c" : 3, "a" : 4}
-        d3 = {"b" : 5}
+        d1 = {"a": 1, "b": 2}
+        d2 = {"c": 3, "a": 4}
+        d3 = {"b": 5}
         self.assertEqual(u.merge_dicts(d1, d2, d3),
-                         {"a" : 4, "b" : 5, "c" : 3})
+                         {"a": 4, "b": 5, "c": 3})
 
     # Test 1 dicts
     def test_merge_dicts_single(self):
-        d = {"a" : 1, "b" : 2}
-        self.assertEqual(u.merge_dicts(d), {"a" : 1, "b" : 2})
+        d = {"a": 1, "b": 2}
+        self.assertEqual(u.merge_dicts(d), {"a": 1, "b": 2})
 
     # Test No arguments
     def test_merge_dicts_empty(self):
         self.assertEqual(u.merge_dicts(), {})
 
     # Test with non-dict argument
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -19,13 +19,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import random
 
 from pyshgp.push.interpreter import PushInterpreter
-from pyshgp.push.instructions import registered_instructions as ri
-from pyshgp.push.instruction import PyshInputInstruction
-from pyshgp.gp.base import SimplePushGPEvolver
-from pyshgp.gp.variation import UniformMutation, Alternation
-from pyshgp.utils import (UnevaluatableStackResponse, Character, merge_sets,
-                          test_and_train_data_from_domains,
-                          levenshtein_distance)
+from pyshgp.push.registered_instructions import get_instructions_by_pysh_type
+from pyshgp.gp.evolvers import SimplePushGPEvolver
+from pyshgp.utils import (Character, merge_sets, levenshtein_distance,
+                          test_and_train_data_from_domains)
 
 
 def random_str(str_length):
@@ -62,22 +59,18 @@ def make_RSWN_error_func_from_cases(train_cases):
         errors = []
 
         for io_pair in train_cases:
-            interpreter = PushInterpreter([io_pair[0]])
-            interpreter.run_push(program, debug)
-            str_result = interpreter.state["_string"].ref(0)
-            int_result = interpreter.state["_integer"].ref(0)
+            interpreter = PushInterpreter([io_pair[0]], ['_integer'])
+            int_result = interpreter.run(program, debug)[0]
+            str_result = interpreter.state.stdout
 
-            if isinstance(str_result, UnevaluatableStackResponse):
+            int_error = None
+            str_error = levenshtein_distance(io_pair[1][0], str_result)
+            if int_result is None:
                 # If response is un-evaluatable, add a bad error.
-                errors += [1000, 1000]
+                int_error = 1e5
             else:
-                # If response is evaluatable, compute actual error
-                s_er = levenshtein_distance(io_pair[1][0], str_result)
-                i_er = 1000
-                if type(int_result) == int:
-                    i_er = abs(int_result - io_pair[1][1])
-                errors += [s_er, i_er]
-
+                int_error = abs(int_result - io_pair[1][1])
+            errors += [str_error, int_error]
         return errors
     return actual_RSWN_func
 
@@ -93,22 +86,19 @@ def get_RSWN_train_and_test():
 
 
 atom_generators = list(merge_sets(
-    ri.get_instructions_by_pysh_type("_integer"),
-    ri.get_instructions_by_pysh_type("_boolean"),
-    ri.get_instructions_by_pysh_type("_string"),
-    ri.get_instructions_by_pysh_type("_char"),
-    ri.get_instructions_by_pysh_type("_exec"),
-    ri.get_instructions_by_pysh_type("_print"),
-    [  # Constants
-        lambda: Character(" "),
-        lambda: Character("\n"),
-        # ERCs
-        lambda: Character(random.choice(
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t")),
-        lambda: random_str(
-            random.randint(0, 21)),
-        # Input instruction
-        PyshInputInstruction(0)]))
+    get_instructions_by_pysh_type("_integer"),
+    get_instructions_by_pysh_type("_boolean"),
+    get_instructions_by_pysh_type("_string"),
+    get_instructions_by_pysh_type("_char"),
+    get_instructions_by_pysh_type("_exec"),
+    get_instructions_by_pysh_type("_print"),
+    [lambda: Character(" "),
+     lambda: Character("\n"),
+     # ERCs
+     lambda: Character(random.choice(
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n\t")),
+     lambda: random_str(random.randint(0, 21))
+    ]))
 
 if __name__ == "__main__":
     train_and_test = get_RSWN_train_and_test()
@@ -117,4 +107,4 @@ if __name__ == "__main__":
                               atom_generators=atom_generators,
                               initial_max_genome_size=400,
                               )
-    evo.evolve(err_func, 1)
+    evo.fit(err_func, 1, ['_integer'])

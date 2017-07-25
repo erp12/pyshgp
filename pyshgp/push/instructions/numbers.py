@@ -12,8 +12,6 @@ from ... import utils as u
 
 from .. import instruction as instr
 
-from . import registered_instructions
-
 
 def adder(pysh_type):
     '''
@@ -30,16 +28,16 @@ def adder(pysh_type):
                                         add,
                                         stack_types = [pysh_type])
     return instruction
-registered_instructions.register_instruction(adder('_integer'))
-registered_instructions.register_instruction(adder('_float'))
-#<instr_open>
-#<instr_name>integer_add
-#<instr_desc>Pushes the result of adding the top two integers.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_add
-#<instr_desc>Pushes the result of adding the top two floats.
-#<instr_close>
+add_integer_instr = adder('_integer')
+add_float_instr = adder('_float')
+# <instr_open>
+# <instr_name>integer_add
+# <instr_desc>Pushes the result of adding the top two integers.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_add
+# <instr_desc>Pushes the result of adding the top two floats.
+# <instr_close>
 
 
 def subtracter(pysh_type):
@@ -57,16 +55,16 @@ def subtracter(pysh_type):
                                         sub,
                                         stack_types = [pysh_type])
     return instruction
-registered_instructions.register_instruction(subtracter('_integer'))
-registered_instructions.register_instruction(subtracter('_float'))
-#<instr_open>
-#<instr_name>integer_sub
-#<instr_desc>Pushes the difference of the top two integers.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_sub
-#<instr_desc>Pushes the difference of the top two floats.
-#<instr_close>
+sub_integer_instr = subtracter('_integer')
+sub_float_instr = subtracter('_float')
+# <instr_open>
+# <instr_name>integer_sub
+# <instr_desc>Pushes the difference of the top two integers.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_sub
+# <instr_desc>Pushes the difference of the top two floats.
+# <instr_close>
 
 
 def multiplier(pysh_type):
@@ -84,16 +82,16 @@ def multiplier(pysh_type):
                                         mult,
                                         stack_types = [pysh_type])
     return instruction
-registered_instructions.register_instruction(multiplier('_integer'))
-registered_instructions.register_instruction(multiplier('_float'))
-#<instr_open>
-#<instr_name>integer_mult
-#<instr_desc>Pushes the product of the top two integers.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_mult
-#<instr_desc>Pushes the product of the top two floats.
-#<instr_close>
+mult_integer_instr = multiplier('_integer')
+mult_float_instr = multiplier('_float')
+# <instr_open>
+# <instr_name>integer_mult
+# <instr_desc>Pushes the product of the top two integers.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_mult
+# <instr_desc>Pushes the product of the top two floats.
+# <instr_close>
 
 
 def divider(pysh_type):
@@ -116,16 +114,16 @@ def divider(pysh_type):
                                         div,
                                         stack_types = [pysh_type])
     return instruction
-registered_instructions.register_instruction(divider('_integer'))
-registered_instructions.register_instruction(divider('_float'))
-#<instr_open>
-#<instr_name>integer_div
-#<instr_desc>Pushes the quotient of the top two integers.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_div
-#<instr_desc>Pushes the quotient of the top two floats.
-#<instr_close>
+div_integer_instr = divider('_integer')
+div_float_instr = divider('_float')
+# <instr_open>
+# <instr_name>integer_div
+# <instr_desc>Pushes the quotient of the top two integers.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_div
+# <instr_desc>Pushes the quotient of the top two floats.
+# <instr_close>
 
 
 def modder(pysh_type):
@@ -145,16 +143,16 @@ def modder(pysh_type):
                                         mod,
                                         stack_types = [pysh_type])
     return instruction
-registered_instructions.register_instruction(modder('_integer'))
-registered_instructions.register_instruction(modder('_float'))
-#<instr_open>
-#<instr_name>integer_mod
-#<instr_desc>Pushes the result of the second integer modulous the first integer.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_mod
-#<instr_desc>Pushes the result of the second float modulous the first float.
-#<instr_close>
+mod_integer_instr = modder('_integer')
+mod_float_instr = modder('_float')
+# <instr_open>
+# <instr_name>integer_mod
+# <instr_desc>Pushes the result of the second integer modulous the first integer.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_mod
+# <instr_desc>Pushes the result of the second float modulous the first float.
+# <instr_close>
 
 
 def less_than(pysh_type):
@@ -172,16 +170,16 @@ def less_than(pysh_type):
                                         lt,
                                         stack_types = [pysh_type, '_boolean'])
     return instruction
-registered_instructions.register_instruction(less_than('_integer'))
-registered_instructions.register_instruction(less_than('_float'))
-#<instr_open>
-#<instr_name>integer_lt
-#<instr_desc>Push a boolean based on if the second integer is less than the top integer.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_lt
-#<instr_desc>Push a boolean based on if the second float is less than the top float.
-#<instr_close>
+lt_integer_instr = less_than('_integer')
+lt_float_instr = less_than('_float')
+# <instr_open>
+# <instr_name>integer_lt
+# <instr_desc>Push a boolean based on if the second integer is less than the top integer.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_lt
+# <instr_desc>Push a boolean based on if the second float is less than the top float.
+# <instr_close>
 
 
 def less_than_equal(pysh_type):
@@ -199,16 +197,16 @@ def less_than_equal(pysh_type):
                                         lte,
                                         stack_types = [pysh_type, '_boolean'])
     return instruction
-registered_instructions.register_instruction(less_than_equal('_integer'))
-registered_instructions.register_instruction(less_than_equal('_float'))
-#<instr_open>
-#<instr_name>integer_lte
-#<instr_desc>Push a boolean based on if the second integer is less than, or equal to, the top integer.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_lte
-#<instr_desc>Push a boolean based on if the second float is less than, or equal to, the top float.
-#<instr_close>
+lte_integer_instr = less_than_equal('_integer')
+lte_float_instr = less_than_equal('_float')
+# <instr_open>
+# <instr_name>integer_lte
+# <instr_desc>Push a boolean based on if the second integer is less than, or equal to, the top integer.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_lte
+# <instr_desc>Push a boolean based on if the second float is less than, or equal to, the top float.
+# <instr_close>
 
 
 def greater_than(pysh_type):
@@ -226,16 +224,16 @@ def greater_than(pysh_type):
                                         gt,
                                         stack_types = [pysh_type, '_boolean'])
     return instruction
-registered_instructions.register_instruction(greater_than('_integer'))
-registered_instructions.register_instruction(greater_than('_float'))
-#<instr_open>
-#<instr_name>integer_gt
-#<instr_desc>Push a boolean based on if the second integer is greater than the top integer.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_gt
-#<instr_desc>Push a boolean based on if the second float is greater than the top float.
-#<instr_close>
+gt_integer_instr = greater_than('_integer')
+gt_float_instr = greater_than('_float')
+# <instr_open>
+# <instr_name>integer_gt
+# <instr_desc>Push a boolean based on if the second integer is greater than the top integer.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_gt
+# <instr_desc>Push a boolean based on if the second float is greater than the top float.
+# <instr_close>
 
 
 def greater_than_equal(pysh_type):
@@ -253,16 +251,16 @@ def greater_than_equal(pysh_type):
                                         gte,
                                         stack_types = [pysh_type, '_boolean'])
     return instruction
-registered_instructions.register_instruction(greater_than_equal('_integer'))
-registered_instructions.register_instruction(greater_than_equal('_float'))
-#<instr_open>
-#<instr_name>integer_gte
-#<instr_desc>Push a boolean based on if the second integer is greater than, or equal to, the top integer.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_gte
-#<instr_desc>Push a boolean based on if the second float is greater than, or equal to, the top float.
-#<instr_close>
+gte_integer_instr = greater_than_equal('_integer')
+gte_float_instr = greater_than_equal('_float')
+# <instr_open>
+# <instr_name>integer_gte
+# <instr_desc>Push a boolean based on if the second integer is greater than, or equal to, the top integer.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_gte
+# <instr_desc>Push a boolean based on if the second float is greater than, or equal to, the top float.
+# <instr_close>
 
 
 def minner(pysh_type):
@@ -279,16 +277,16 @@ def minner(pysh_type):
                                         min_pysh,
                                         stack_types = [pysh_type])
     return instruction
-registered_instructions.register_instruction(minner('_integer'))
-registered_instructions.register_instruction(minner('_float'))
-#<instr_open>
-#<instr_name>integer_min
-#<instr_desc>Pushes the minimum of the top two integers.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_min
-#<instr_desc>Pushes the minimum of the top two floats.
-#<instr_close>
+min_integer_instr = minner('_integer')
+min_float_instr = minner('_float')
+# <instr_open>
+# <instr_name>integer_min
+# <instr_desc>Pushes the minimum of the top two integers.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_min
+# <instr_desc>Pushes the minimum of the top two floats.
+# <instr_close>
 
 
 def maxer(pysh_type):
@@ -305,16 +303,16 @@ def maxer(pysh_type):
                                         max_pysh,
                                         stack_types = [pysh_type])
     return instruction
-registered_instructions.register_instruction(maxer('_integer'))
-registered_instructions.register_instruction(maxer('_float'))
-#<instr_open>
-#<instr_name>integer_max
-#<instr_desc>Pushes the maximum of the top two integers.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_max
-#<instr_desc>Pushes the maximum of the top two floats.
-#<instr_close>
+max_integer_instr = maxer('_integer')
+max_float_instr = maxer('_float')
+# <instr_open>
+# <instr_name>integer_max
+# <instr_desc>Pushes the maximum of the top two integers.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_max
+# <instr_desc>Pushes the maximum of the top two floats.
+# <instr_close>
 
 
 def incrementer(pysh_type):
@@ -330,16 +328,16 @@ def incrementer(pysh_type):
                                         inc,
                                         stack_types = [pysh_type])
     return instruction
-registered_instructions.register_instruction(incrementer('_integer'))
-registered_instructions.register_instruction(incrementer('_float'))
-#<instr_open>
-#<instr_name>integer_inc
-#<instr_desc>Pushes the result of incrementing the top integer by 1.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_inc
-#<instr_desc>Pushes the result of incrementing the top float by 1.0.
-#<instr_close>
+inc_integer_instr = incrementer('_integer')
+inc_float_instr = incrementer('_float')
+# <instr_open>
+# <instr_name>integer_inc
+# <instr_desc>Pushes the result of incrementing the top integer by 1.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_inc
+# <instr_desc>Pushes the result of incrementing the top float by 1.0.
+# <instr_close>
 
 
 def decrementer(pysh_type):
@@ -355,16 +353,16 @@ def decrementer(pysh_type):
                                         dec,
                                         stack_types = [pysh_type])
     return instruction
-registered_instructions.register_instruction(decrementer('_integer'))
-registered_instructions.register_instruction(decrementer('_float'))
-#<instr_open>
-#<instr_name>integer_dec
-#<instr_desc>Pushes the result of decrementing the top integer by 1.
-#<instr_close>
-#<instr_open>
-#<instr_name>float_dec
-#<instr_desc>Pushes the result of decrementing the top float by 1.0.
-#<instr_close>
+dec_integer_instr = decrementer('_integer')
+dec_float_instr = decrementer('_float')
+# <instr_open>
+# <instr_name>integer_dec
+# <instr_desc>Pushes the result of decrementing the top integer by 1.
+# <instr_close>
+# <instr_open>
+# <instr_name>float_dec
+# <instr_desc>Pushes the result of decrementing the top float by 1.0.
+# <instr_close>
 
 
 def float_sin(state):
@@ -374,14 +372,13 @@ def float_sin(state):
         new_float = math.sin(state['_float'].ref(0))
         state['_float'].pop()
         state['_float'].push(new_float)
-float_sin_instruction = instr.PyshInstruction('_float_sin',
-                                              float_sin,
-                                              stack_types = ['_float'])
-registered_instructions.register_instruction(float_sin_instruction)
-#<instr_open>
-#<instr_name>float_sin
-#<instr_desc>Puses the sin of the top float.
-#<instr_close>
+float_sin_instr = instr.PyshInstruction('_float_sin',
+                                        float_sin,
+                                        stack_types = ['_float'])
+# <instr_open>
+# <instr_name>float_sin
+# <instr_desc>Puses the sin of the top float.
+# <instr_close>
 
 
 def float_cos(state):
@@ -391,14 +388,13 @@ def float_cos(state):
         new_float = math.cos(state['_float'].ref(0))
         state['_float'].pop()
         state['_float'].push(new_float)
-float_cos_instruction = instr.PyshInstruction('_float_cos',
-                                              float_cos,
-                                              stack_types = ['_float'])
-registered_instructions.register_instruction(float_cos_instruction)
-#<instr_open>
-#<instr_name>float_cos
-#<instr_desc>Pushes the cos of the top float.
-#<instr_close>
+float_cos_instr = instr.PyshInstruction('_float_cos',
+                                        float_cos,
+                                        stack_types = ['_float'])
+# <instr_open>
+# <instr_name>float_cos
+# <instr_desc>Pushes the cos of the top float.
+# <instr_close>
 
 
 def float_tan(state):
@@ -408,14 +404,13 @@ def float_tan(state):
         new_float = math.tan(state['_float'].ref(0))
         state['_float'].pop()
         state['_float'].push(new_float)
-float_tan_instruction = instr.PyshInstruction('_float_tan',
-                                              float_tan,
-                                              stack_types = ['_float'])
-registered_instructions.register_instruction(float_tan_instruction)
-#<instr_open>
-#<instr_name>float_tan
-#<instr_desc>Pushes the tangent of the top float.
-#<instr_close>
+float_tan_instr = instr.PyshInstruction('_float_tan',
+                                        float_tan,
+                                        stack_types = ['_float'])
+# <instr_open>
+# <instr_name>float_tan
+# <instr_desc>Pushes the tangent of the top float.
+# <instr_close>
 
 
 def integer_from_float(state):
@@ -423,14 +418,13 @@ def integer_from_float(state):
         new_int = int(state['_float'].ref(0))
         state['_float'].pop()
         state['_integer'].push(new_int)
-int_from_float_instrc = instr.PyshInstruction('_integer_from_float',
-                                              integer_from_float,
-                                              stack_types = ['_integer', '_float'])
-registered_instructions.register_instruction(int_from_float_instrc)
-#<instr_open>
-#<instr_name>integer_from_float
-#<instr_desc>Pushes the top float cast to an integer.
-#<instr_close>
+int_from_float_instr = instr.PyshInstruction('_integer_from_float',
+                                             integer_from_float,
+                                             stack_types = ['_integer', '_float'])
+# <instr_open>
+# <instr_name>integer_from_float
+# <instr_desc>Pushes the top float cast to an integer.
+# <instr_close>
 
 
 def integer_from_boolean(state):
@@ -438,14 +432,13 @@ def integer_from_boolean(state):
         new_int = int(state['_boolean'].ref(0))
         state['_boolean'].pop()
         state['_integer'].push(new_int)
-int_from_boolean_instrc = instr.PyshInstruction('_integer_from_boolean',
-                                                integer_from_boolean,
-                                                stack_types = ['_integer', '_boolean'])
-registered_instructions.register_instruction(int_from_boolean_instrc)
-#<instr_open>
-#<instr_name>integer_from_boolean
-#<instr_desc>Pushes the top boolean cast to an integer.
-#<instr_close>
+int_from_boolean_instr = instr.PyshInstruction('_integer_from_boolean',
+                                               integer_from_boolean,
+                                               stack_types = ['_integer', '_boolean'])
+# <instr_open>
+# <instr_name>integer_from_boolean
+# <instr_desc>Pushes the top boolean cast to an integer.
+# <instr_close>
 
 
 def integer_from_string(state):
@@ -457,42 +450,39 @@ def integer_from_string(state):
             return
         state['_string'].pop()
         state['_integer'].push(new_int)
-int_from_boolean_instrc = instr.PyshInstruction('_integer_from_string',
-                                                integer_from_string,
-                                                stack_types = ['_integer', '_string'])
-registered_instructions.register_instruction(int_from_boolean_instrc)
-#<instr_open>
-#<instr_name>integer_from_string
-#<instr_desc>Pushes the top string cast to an integer.
-#<instr_close>
+int_from_string_instr = instr.PyshInstruction('_integer_from_string',
+                                              integer_from_string,
+                                              stack_types = ['_integer', '_string'])
+# <instr_open>
+# <instr_name>integer_from_string
+# <instr_desc>Pushes the top string cast to an integer.
+# <instr_close>
 
 def integer_from_char(state):
     if len(state['_char']) > 0:
         item = ord(state['_char'].ref(0).char)
         state['_char'].pop()
         state['_integer'].push(item)
-integer_from_char_instrc = instr.PyshInstruction('_integer_from_char',
-                                                 integer_from_char,
-                                                 stack_types = ['_integer', '_char'])
-registered_instructions.register_instruction(integer_from_char_instrc)
-#<instr_open>
-#<instr_name>integer_from_char
-#<instr_desc>Pushes the top `char` cast to an `integer`.
-#<instr_close>
+integer_from_char_instr = instr.PyshInstruction('_integer_from_char',
+                                                integer_from_char,
+                                                stack_types = ['_integer', '_char'])
+# <instr_open>
+# <instr_name>integer_from_char
+# <instr_desc>Pushes the top `char` cast to an `integer`.
+# <instr_close>
 
 def float_from_integer(state):
     if len(state['_integer']) > 0:
         new_float = float(state['_integer'].ref(0))
         state['_integer'].pop()
         state['_float'].push(new_float)
-float_from_int_instrc = instr.PyshInstruction('_float_from_integer',
-                                              float_from_integer,
-                                              stack_types = ['_float', '_integer'])
-registered_instructions.register_instruction(float_from_int_instrc)
-#<instr_open>
-#<instr_name>float_from_integer
-#<instr_desc>Push the top integer cast to a float.
-#<instr_close>
+float_from_int_instr = instr.PyshInstruction('_float_from_integer',
+                                             float_from_integer,
+                                             stack_types = ['_float', '_integer'])
+# <instr_open>
+# <instr_name>float_from_integer
+# <instr_desc>Push the top integer cast to a float.
+# <instr_close>
 
 
 def float_from_boolean(state):
@@ -500,14 +490,13 @@ def float_from_boolean(state):
         new_float = float(state['_boolean'].ref(0))
         state['_boolean'].pop()
         state['_float'].push(new_float)
-float_from_bool_instrc = instr.PyshInstruction('_float_from_boolean',
-                                               float_from_boolean,
-                                               stack_types = ['_float', '_boolean'])
-registered_instructions.register_instruction(float_from_bool_instrc)
-#<instr_open>
-#<instr_name>foat_from_boolean
-#<instr_desc>Pushes top boolean cast to a float.
-#<instr_close>
+float_from_bool_instr = instr.PyshInstruction('_float_from_boolean',
+                                              float_from_boolean,
+                                              stack_types = ['_float', '_boolean'])
+# <instr_open>
+# <instr_name>foat_from_boolean
+# <instr_desc>Pushes top boolean cast to a float.
+# <instr_close>
 
 def float_from_string(state):
     if len(state['_string']) > 0:
@@ -518,25 +507,23 @@ def float_from_string(state):
             return
         state['_string'].pop()
         state['_float'].push(new_float)
-int_from_boolean_instrc = instr.PyshInstruction('_float_from_string',
+float_from_string_instr = instr.PyshInstruction('_float_from_string',
                                                 float_from_string,
                                                 stack_types = ['_float', '_string'])
-registered_instructions.register_instruction(int_from_boolean_instrc)
-#<instr_open>
-#<instr_name>float_from_string
-#<instr_desc>Pushes the top string cast to an float.
-#<instr_close>
+# <instr_open>
+# <instr_name>float_from_string
+# <instr_desc>Pushes the top string cast to an float.
+# <instr_close>
 
 def float_from_char(state):
     if len(state['_char']) > 0:
         item = float(ord(state['_char'].ref(0).char))
         state['_char'].pop()
         state['_float'].push(item)
-float_from_char_instrc = instr.PyshInstruction('_float_from_char',
-                                               float_from_char,
-                                               stack_types = ['_float', '_char'])
-registered_instructions.register_instruction(float_from_char_instrc)
-#<instr_open>
-#<instr_name>float_from_char
-#<instr_desc>Pushes the top `char` cast to an `float`.
-#<instr_close>
+float_from_char_instr = instr.PyshInstruction('_float_from_char',
+                                              float_from_char,
+                                              stack_types = ['_float', '_char'])
+# <instr_open>
+# <instr_name>float_from_char
+# <instr_desc>Pushes the top `char` cast to an `float`.
+# <instr_close>

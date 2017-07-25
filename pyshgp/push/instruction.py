@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
-
 """
 The :mod:`instruction` module provides classes for various kinds of Push
 instructions that can be handled by the ``pyshgp`` Push interpreter.
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-import numbers
-
-from .instructions import registered_instructions as ri
-from ..exceptions import InvalidInputStackIndex
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 
 class PyshInstruction(object):
@@ -28,11 +23,12 @@ class PyshInstruction(object):
         Specifies number of paren groups. (0, 1, 2, ... etc)
     """
 
-    def __init__(self, name, func, stack_types, parentheses = 0):
+    def __init__(self, name, func, stack_types, parentheses=0):
         self.name = name
         self.func = func
         self.stack_types = stack_types
-        self.parentheses = parentheses # Specifies parens group. (0, 1, 2, etc)
+        # Specifies parens group. (0, 1, 2, etc)
+        self.parentheses = parentheses
 
     def __eq__(self, other):
         if isinstance(other, PyshInstruction):
@@ -71,7 +67,6 @@ class PyshInputInstruction(PyshInstruction):
         name = "_input" + str(input_index)
         PyshInstruction.__init__(self, name, None, ['_input'])
         self.input_index = input_index
-        self.stack_types = '_input'
 
     def __repr__(self):
         return str(self.name)
@@ -85,31 +80,31 @@ class PyshInputInstruction(PyshInstruction):
             The PushState to execute the input instruction on.
         """
         input_depth = int(self.input_index)
-
-        if input_depth >= len(state['_input']) or input_depth < 0:
-            raise InvalidInputStackIndex(input_depth)
-
-        input_value = state['_input'][input_depth]
+        if input_depth >= len(state.inputs) or input_depth < 0:
+            msg = "Pysh state does not contain an input at index {}."
+            raise ValueError(msg.format(input_depth))
+        input_value = state.inputs[input_depth]
         state['_exec'].push(input_value)
 
 
-class PyshOutputInstruction(PyshInstruction):
-    """A push instruction that will handle output values.
+class PyshSetOutputInstruction(PyshInstruction):
+    """A push instruction that will set a particular output value to a new
+    value.
 
     Parameters
     ----------
-    output_name : str
+    output_index : str
          The name of the key on the output structure to assign a value to.
 
-    from_stack : str
+    output_type : str
          The name of the stack to copy values from.
     """
 
-    def __init__(self, output_name, from_stack):
-        name = '_output'+from_stack+'_as_'+output_name
+    def __init__(self, output_index, output_type):
+        name = '_set_output_{i}{t}'.format(i=output_index, t=output_type)
         PyshInstruction.__init__(self, name, None, ['_output'])
-        self.output_name = output_name
-        self.from_stack = from_stack
+        self.output_index = output_index
+        self.output_type = output_type
 
     def __repr__(self):
         return str(self.name)
@@ -122,106 +117,144 @@ class PyshOutputInstruction(PyshInstruction):
         state : PushState
             The PushState to execute the input instruction on.
         """
-        if len(state[self.from_stack]) == 0:
+        if len(state[self.output_type]) == 0:
             return
-        output_value = state[self.from_stack].ref(0)
-        state['_output'][self.output_name] = output_value
+        output_value = state[self.output_type].ref(0)
+        state.outputs[self.output_index] = output_value
 
 
-class PyshClassVoteInstruction(PyshInstruction):
-    """A push instruction that will handle Class Voting. Pulls from a numerical
-    stack to add "votes" to an element of the output stack. Intended to be used
-    in classification problems.
+class PyshReduceOutputInstruction(PyshInstruction):
+    """A push instruction that will modify a particular output value based on
+    the current value, a new value, and a reducer function.
 
     Parameters
     ----------
-    class_id : int
-         The class number to vote for.
+    output_index : str
+         The name of the key on the output structure to assign a value to.
 
-    vote : int, float, or str
-        If ``int`` or ``float``, the amount to vote. If ``str`` the name of the
-        numeric stack to take vote from.
+    output_type : str
+         The name of the stack to copy values from.
+
+    reducer : function
+        A function that takes two arguments, the current output value and the
+        top value from ``output_type`` stack. Function returns new output value.
+
+<<<<<<< HEAD
+    name : str
+        A name for the reducer function.
     """
 
-    def __init__(self, output_name, vote):
-        PyshInstruction.__init__(self, "_vote_{}_{}".format(output_name, vote),
-                                 None, ['_output'])
-        self.output_name = output_name
-        self.vote = vote
-        self.stack_types = '_vote'
+    def __init__(self, output_index, output_type, reducer, name):
+        name = '_{name}_output_{i}{t}'.format(i=output_index, t=output_type,
+                                              name=name)
+        PyshInstruction.__init__(self, name, None, ['_output'])
+        self.output_index = output_index
+        self.output_type = output_type
+        self.reducer = reducer
 
     def __repr__(self):
         return str(self.name)
 
     def execute(self, state):
-        """Executes the class vote instruction on the given PushState.
+        """Executes the output instruction on the given PushState.
 
         Parameters
         ----------
-        state : PushState
+        state: PushState
             The PushState to execute the input instruction on.
         """
-        if not self.output_name in state['_output'].keys():
-            state['_output'][self.output_name] = 0.0
-        vote_value = self.vote
-        if isinstance(vote_value, numbers.Number):
-            state['_output'][self.output_name] += float(vote_value)
+        if len(state[self.output_type]) == 0:
+            return
+        current = state.outputs[self.output_index]
+        new = state[self.output_type].ref(0)
+        if current is None:
+            state.outputs[self.output_index] = new
         else:
-            if len(state[vote_value]) > 0:
-                v = state[vote_value].ref(0)
-                state[vote_value].pop()
-                state['_output'][self.output_name] += float(v)
+            state.outputs[self.output_index] = self.reducer(current, new)
 
 
-def make_vote_instruction_set(classes):
-    """Returns a list of PyshClassVoteInstruction instances that vote for and
-    against a each class.
+class PyshTweakOutputInstruction(PyshInstruction):
+    """A push instruction that will tweak a particular output value using a
+    function.
 
     Parameters
     ----------
-    classes : list of str
-         A list of class names.
-    """
-    vote_instrs = []
-    for c in classes:
-        vote_instrs += [
-            PyshClassVoteInstruction(c, 1),
-            PyshClassVoteInstruction(c, 2),
-            PyshClassVoteInstruction(c, 4),
-            PyshClassVoteInstruction(c, -1),
-            PyshClassVoteInstruction(c, -2),
-            PyshClassVoteInstruction(c, -4),
-            PyshClassVoteInstruction(c, '_integer'),
-            PyshClassVoteInstruction(c, '_float'),
-        ]
-    return vote_instrs
+    output_index: str
+         The name of the key on the output structure to assign a value to.
 
+    tweaker: function
+        A function that takes one argument, the current output value, and
+        returns the new output value.
 
-class JustInTimeInstruction(PyshInstruction):
-    """A callable object that, when processed in by the push interpreter,
-    returns a specific registered instruction.
-
-    Use of these instructions is only needed when defining new Push
-    instructions that must call themselves, or other situations where a Push
-    instruction must be defined in a way that creates an instance of another
-    Push instruction that is not yet registered.
-
-    Parameters
-    ----------
-    instruction_name : str
-         The name of the instruction to look-up and run when this JiT
-         instruction is called.
+    name: str
+        A name for the tweaker function.
     """
 
-    def __init__(self, instruction_name):
-        self.name = instruction_name
-
-    def __call__(self):
-        """
-        When the JiT instruction is called, it returns the registered
-        instruction by the same name.
-        """
-        return ri.get_instruction(self.name)
+    def __init__(self, output_index, tweaker, name):
+        name = '_{name}_output_{i}'.format(name=name, i=output_index)
+        PyshInstruction.__init__(self, name, None, ['_output'])
+        self.output_index = output_index
+        self.tweaker = tweaker
 
     def __repr__(self):
-        return self.name + "_JIT"
+        return str(self.name)
+
+    def execute(self, state):
+        """Executes the output instruction on the given PushState.
+
+        Parameters
+        ----------
+        state: PushState
+            The PushState to execute the input instruction on.
+        """
+        if state.outputs[self.output_index] is None:
+            return
+        current = state.outputs[self.output_index]
+        state.outputs[self.output_index] = self.tweaker(current)
+
+
+def make_numeric_output_instructions(output, int_only=False):
+    """Returns a list of instructions that treat the output value as numeric
+    value that can be set or perturbed.
+
+    Parameters
+    ----------
+    output: int
+        Index of the output value to create output instructions for.
+
+    int_only: bool, optional(default=False)
+        If true, only returns instructions that utilize the integer stack.
+    """
+    instrs = [
+        PyshSetOutputInstruction(output, '_integer'),
+        PyshReduceOutputInstruction(
+            output, '_integer', lambda x, y: x + y, '+')
+    ]
+    if not int_only:
+        instrs = instrs + [
+            PyshSetOutputInstruction(output, '_float'),
+            PyshReduceOutputInstruction(output, '_float', lambda x, y: x + y,
+                                        '+')
+        ]
+    return instrs
+
+
+def make_classification_instructions(class_index):
+    """Returns a list of instructions that treat the output value as a class to
+    for for and against.
+
+    Parameters
+    ----------
+    class_index: int
+         An integer greater than or equal to 0.
+    """
+    return [
+        PyshSetOutputInstruction(class_index, '_integer'),
+        PyshSetOutputInstruction(class_index, '_float'),
+        PyshReduceOutputInstruction(class_index, '_integer', lambda x, y: x + y,
+                                    '+'),
+        PyshReduceOutputInstruction(class_index, '_float', lambda x, y: x + y,
+                                    '+'),
+        PyshTweakOutputInstruction(class_index, lambda x: x + 1, 'inc'),
+        PyshTweakOutputInstruction(class_index, lambda x: x - 1, 'dec')
+    ]

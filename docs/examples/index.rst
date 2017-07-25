@@ -10,6 +10,8 @@ The following examples are deomonstrations of the basic usage of ``pyshgp``.
    odd
    simple_regression
    string_demo
+   iris_classification
+   sklearn
 
 More Examples
 #############

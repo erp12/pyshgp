@@ -2,6 +2,6 @@ numpy >= 1.12.0
 scipy >= 0.18.0
 scikit-learn >= 0.18.0
 dill >= 0.2.6
-pathos >= 0.2.0
+pathos >= 0.2.1
 future >= 0.16.0
 numpydoc >= 0.6.0

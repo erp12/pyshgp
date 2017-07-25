@@ -6,16 +6,13 @@ into Push programs.
 .. todo::
     Consider breaking up some of the larger functions in this file.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from copy import copy, deepcopy
+from copy import copy
 
 from ..utils import is_str_type
-
 from . import instruction
-from . import plush as pl
-from .instructions import registered_instructions as ri
-from .instructions import *
 
 
 def get_matcing_close_index(sequence):
@@ -41,6 +38,7 @@ def get_matcing_close_index(sequence):
             return i
         i += 1
 
+
 def open_close_sequence_to_list(sequence):
     """Converts flat list with ``"_open"`` and ``"_close"`` elements to
     nested lists.
@@ -52,10 +50,10 @@ def open_close_sequence_to_list(sequence):
 
     Examples
     --------
-    >>> open_close_sequence_to_list(["_open", 1, "_close", "_open", 2, "_close"]))
-    [[1], [2]]
+    >>> open_close_sequence_to_list(["_open", 1, "_close", 2]))
+    [[1], 2]
     """
-    if not type(sequence) == list:
+    if not isinstance(sequence, list):
         return sequence
     elif len(sequence) == 0:
         return []
@@ -66,12 +64,13 @@ def open_close_sequence_to_list(sequence):
             if is_str_type(rest[0]) and rest[0] == '_open':
                 i = get_matcing_close_index(rest)
                 sub_seq = rest[1:i]
-                result.append( open_close_sequence_to_list(sub_seq) )
-                rest = rest[i+1:]
+                result.append(open_close_sequence_to_list(sub_seq))
+                rest = rest[i + 1:]
             else:
                 result.append(rest[0])
                 rest.pop(0)
         return result
+
 
 def genome_to_program(genome):
     """Given a Plush genomes, returns the equivalent Push program.
@@ -104,7 +103,7 @@ def genome_to_program(genome):
     # The linear Plush genome being translated. List of Plush_Gene objects.
     gn = copy(genome)
 
-     # The number of parens that still need to be added at this location.
+    # The number of parens that still need to be added at this location.
     num_parens_here = 0
 
     # Whenever an instruction requires parens grouping, it will push either
@@ -116,7 +115,7 @@ def genome_to_program(genome):
     looping = True
     while looping:
         # Check if need to add close parens here
-        if num_parens_here != None and 0 < num_parens_here:
+        if num_parens_here is not None and 0 < num_parens_here:
             if len(paren_stack) > 0:
                 if paren_stack[0] == '_close':
                     prog += ['_close']

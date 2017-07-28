@@ -3,9 +3,6 @@
 The :mod:`utils` module provides classes and functions that are used throughout
 the push interpreter and GP modules.
 """
-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import sys
 import random
 import math

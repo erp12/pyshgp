@@ -6,9 +6,6 @@ genomes and random Push programs.
 TODO: There should be better structure here in terms of what goes in the
 spawner class and what is a global function.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 import random
 import numpy.random as rand
 

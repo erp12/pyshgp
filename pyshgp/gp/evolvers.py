@@ -2,9 +2,6 @@
 The evolvers module contains classes which can be used to start PushGP runs
 using the pyshgp framework.
 """
-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import numpy as np
 
 from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin

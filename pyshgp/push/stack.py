@@ -5,10 +5,6 @@ values of a certain type in a ``PyshState`` object.
 
 TODO: Consider optimization with Cython.
 """
-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 from .. import utils as u
 
 

@@ -4,10 +4,6 @@
 The :mod:`interpreter` module defines the ``PushInterpreter`` class which is
 capable of running Push programs.
 """
-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 import time
 from copy import deepcopy  # <- This one is actually needed.
 from collections import OrderedDict

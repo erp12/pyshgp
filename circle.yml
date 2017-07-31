@@ -1,6 +1,6 @@
 machine:
-    post:
-        - pyenv global 3.6.1
+    python:
+        version: pypy-3.6.1
 
 dependencies:
     pre:

@@ -4,14 +4,14 @@ machine:
 
 dependencies:
     pre:
-        - pip3.6 install -r requirements.txt
-        - pip3.6 install -r requirements-dev.txt
+        - pip install -r requirements.txt
+        - pip install -r requirements-dev.txt
 test:
     post:
         # Validation tests
-        - python3.6 -m tests.validation.sklearn_regression
-        - python3.6 -m tests.validation.sklearn_classification
+        - python -m tests.validation.sklearn_regression
+        - python -m tests.validation.sklearn_classification
         # Coverage reports
-        - python3.6 -m coverage run ./setup.py test
-        - python3.6 -m coverage xml
+        - python -m coverage run ./setup.py test
+        - python -m coverage xml
         - python-codacy-coverage -r coverage.xml

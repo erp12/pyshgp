@@ -2,9 +2,6 @@
 """
 Tests start to finish usage of PushGPClassifier class.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 

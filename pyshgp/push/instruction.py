@@ -4,9 +4,6 @@ The :mod:`instruction` module provides classes for various kinds of Push
 instructions that can be handled by the ``pyshgp`` Push interpreter.
 """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 
 class PyshInstruction(object):
     """A instruction for the push language.

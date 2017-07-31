@@ -4,9 +4,6 @@ Created on December 5, 2016
 
 @author: Eddie
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 from ... import utils as u
 from ... import constants as c
 

@@ -2,9 +2,6 @@
 Classes that reperesents Individuals and Populations in evolutionary
 algorithms.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 import random
 import numpy as np
 

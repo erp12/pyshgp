@@ -2,16 +2,13 @@
 """
 Tests start to finish usage of PushGPRegressor class.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 import numpy as np
 
 from pyshgp.gp.evolvers import PushGPRegressor
 
 
 def target_function(x):
-    return x**3 - (2*(x**2)) - x
+    return x**3 - (2 * (x**2)) - x
 
 
 X_t = np.arange(0, 1, 0.1).reshape(-1, 1)

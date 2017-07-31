@@ -3,9 +3,6 @@
 The :mod:`utils` module provides classes and functions that are used throughout
 the push interpreter and GP modules.
 """
-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import sys
 import random
 import math
@@ -168,12 +165,7 @@ def is_str_type(thing):
     >>> is_str_type(7)
     False
     """
-    if sys.version_info[0] == 3:
-        return isinstance(thing, (str, bytes))
-    elif sys.version_info[0] == 2:
-        return isinstance(thing, (str, unicode))
-    else:
-        raise Exception("Uknown python version?")
+    return isinstance(thing, (str, bytes))
 
 
 def is_int_type(thing):
@@ -196,14 +188,7 @@ def is_int_type(thing):
     >>> is_int_type(7)
     True
     """
-    if isinstance(thing, np.int64):
-        return True
-    if sys.version_info[0] == 3:
-        return isinstance(thing, int)
-    elif sys.version_info[0] == 2:
-        return isinstance(thing, (int, long))
-    else:
-        raise Exception("Uknown python version?")
+    return isinstance(thing, (np.int64, int))
 
 
 def is_float_type(thing):

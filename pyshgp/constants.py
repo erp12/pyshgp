@@ -8,8 +8,6 @@ limitscor when using random instructions. These values do not generally need
 to be tuned to improve GP performance.
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 #: List of stack types that the ``pyshgp`` Push interpreter can handle.
 pysh_types = ['_exec', '_integer', '_float', '_string', '_char', '_boolean',
               '_code', '_auxiliary', '_vector_integer', '_vector_float',

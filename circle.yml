@@ -1,20 +1,16 @@
 machine:
-    post:
-        - pyenv global 2.7.12 3.6.1
+    python:
+        version: 3.6.0
 
 dependencies:
     pre:
-        - pip2.7 install -r requirements.txt
-        - pip2.7 install -r requirements-dev.txt
         - pip3.6 install -r requirements.txt
         - pip3.6 install -r requirements-dev.txt
 test:
     post:
         # Validation tests
-        - python2.7 -m tests.validation.sklearn_regression
-        # - python2.7 -m tests.validation.sklearn_classification
         - python3.6 -m tests.validation.sklearn_regression
-        # - python3.6 -m tests.validation.sklearn_classification
+        - python3.6 -m tests.validation.sklearn_classification
         # Coverage reports
         - python3.6 -m coverage run ./setup.py test
         - python3.6 -m coverage xml

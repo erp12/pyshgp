@@ -4,9 +4,6 @@ The :mod:`variation` module defines classes for variation operators (aka
 genetic operators). These operators are used in evoluation to create new
 children from selected parents.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-from future.utils import with_metaclass
 
 from abc import ABCMeta, abstractmethod
 import random
@@ -21,7 +18,7 @@ from ..utils import (
 )
 
 
-class VariationOperator(with_metaclass(ABCMeta)):
+class VariationOperator(metaclass=ABCMeta):
     """The base class for all variation operators.
 
     Parameters

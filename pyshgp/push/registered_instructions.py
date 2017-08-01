@@ -4,11 +4,11 @@ instructions from the set of instructions supported by ``pyshgp``.
 """
 
 from ..utils import recognize_pysh_type, is_str_type
-from ..exceptions import UnknownInstructionName
 
 from .instructions import all_instructions
 
 instruction_set = {i.name: i for i in all_instructions}
+
 
 def get_instruction(name):
     """Returns a registered instruction by its name.
@@ -20,12 +20,12 @@ def get_instruction(name):
 
     Returns
     -------
-    A PushInstruction with ``name``, or throws UnknownInstructionName.
+    A PushInstruction with ``name``, or throws ValueError.
     """
     if name in instruction_set.keys():
         return instruction_set[name]
     else:
-        raise UnknownInstructionName(name)
+        raise ValueError('Unknown instruction name {n}'.format(n=name))
 
 
 def get_instructions_by_pysh_type(pysh_type):
@@ -77,9 +77,9 @@ def load_program_from_list(lst):
             matching_instruction = None
             try:
                 matching_instruction = get_instruction(el)
-            except UnknownInstructionName(el):
+            except ValueError:
                 pass
-            # If matching_instruction is None, it must be a ssring literal.
+            # If matching_instruction is None, it must be a string literal.
             if matching_instruction is None:
                 program.append(el)
             else:

@@ -14,7 +14,8 @@ from ..push import plush as pl
 from ..utils import (
     perturb_with_gaussian_noise,
     gaussian_noise_factor,
-    is_str_type
+    is_str_type,
+    recognize_pysh_type
 )
 
 
@@ -78,6 +79,42 @@ class VariationOperatorPipeline(VariationOperator):
 ##
 #   Mutation
 ##
+
+
+class PerturbIntegerMutation(VariationOperator):
+    """
+    """
+
+    def __init__(self, rate=0.01, standard_deviation=1):
+        VariationOperator.__init__(self, 1)
+        self.rate = 0.01
+        self.standard_deviation = 1
+
+    def produce(self, parents, spawner=None):
+        """Produces a child by perturbing some integers in the parent.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
+        """
+        self.check_num_parents(parents)
+        new_genome = []
+        for gene in parents[0].genome:
+            if gene.is_literal:
+                atom = gene.atom
+                if recognize_pysh_type(atom) == '_integer':
+                    gene.atom = int(
+                        perturb_with_gaussian_noise(
+                            self.standard_deviation,
+                            atom
+                        )
+                    )
+            new_genome.append(gene)
+        return Individual(new_genome)
 
 
 class UniformMutation(VariationOperator):

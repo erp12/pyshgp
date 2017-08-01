@@ -76,6 +76,20 @@ class TestUtilsMethods(unittest.TestCase):
 
     # Test with non-dict argument
 
+    def test_levenshtein_distance_std(self):
+        sed = u.levenshtein_distance('Hello', 'World')
+        self.assertEqual(sed, 4)
+
+    def test_levenshtein_distance_empty(self):
+        sed = u.levenshtein_distance('Hello', '')
+        self.assertEqual(sed, 5)
+
+    def test_int_to_char_A(self):
+        self.assertEqual(u.int_to_char(42), 'J')
+
+    def test_int_to_char_B(self):
+        self.assertEqual(u.int_to_char(-42), 'v')
+
 
 if __name__ == '__main__':
     unittest.main()

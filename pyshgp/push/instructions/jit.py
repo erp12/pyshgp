@@ -4,8 +4,8 @@ instructions" which can be used in instruction definitions to retrieve other
 instructions.
 """
 
-from ...exceptions import UnknownInstructionName
 from ..instruction import PyshInstruction
+
 
 class JustInTimeInstruction(PyshInstruction):
     """A callable object that, when processed in by the push interpreter,

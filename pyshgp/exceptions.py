@@ -27,15 +27,6 @@ class UnkownEpigeneticMarker(Exception):
             'Unknown epigenetic marker: ' + str(marker))
 
 
-class UnknownInstructionName(Exception):
-    """Exception when there is no registered instruction with given name.
-    """
-
-    def __init__(self, name):
-        super(UnknownInstructionName, self).__init__(
-            'No registered instruction with name: ' + str(name))
-
-
 class UnknownPyshStack(Exception):
     """Exception when a pysh state is asked to return an unknown
     """

@@ -81,14 +81,45 @@ class VariationOperatorPipeline(VariationOperator):
 ##
 
 
+class PerturbCloseMutation(VariationOperator):
+    """
+    """
+
+    def __init__(self, rate=0.01, standard_deviation=1):
+        VariationOperator.__init__(self, 1)
+        self.rate = rate
+        self.standard_deviation = standard_deviation
+
+    def produce(self, parents, spawner=None):
+        """Produces a child by perturbing some floats in the parent.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
+        """
+        self.check_num_parents(parents)
+        new_genome = []
+        for gene in parents[0].genome:
+            if random.random() < self.rate:
+                gene.closes = perturb_with_gaussian_noise(
+                    self.standard_deviation,
+                    gene.closes)
+            new_genome.append(gene)
+        return Individual(new_genome)
+
+
 class PerturbIntegerMutation(VariationOperator):
     """
     """
 
     def __init__(self, rate=0.01, standard_deviation=1):
         VariationOperator.__init__(self, 1)
-        self.rate = 0.01
-        self.standard_deviation = 1
+        self.rate = rate
+        self.standard_deviation = standard_deviation
 
     def produce(self, parents, spawner=None):
         """Produces a child by perturbing some integers in the parent.
@@ -106,7 +137,7 @@ class PerturbIntegerMutation(VariationOperator):
         for gene in parents[0].genome:
             if gene.is_literal:
                 atom = gene.atom
-                if recognize_pysh_type(atom) == '_integer':
+                if recognize_pysh_type(atom) == '_integer' and random.random() < self.rate:
                     gene.atom = int(
                         perturb_with_gaussian_noise(
                             self.standard_deviation,
@@ -117,51 +148,17 @@ class PerturbIntegerMutation(VariationOperator):
         return Individual(new_genome)
 
 
-class UniformMutation(VariationOperator):
-    """Uniformly mutates individual.
-
-    For each token in program, there is *rate* probability of being mutated. If
-    a token is to be mutated, it has a *constant_tweak_rate* probability of
-    being mutated using a constant mutator (which varies depending on the type
-    of the token), and otherwise is replaced with a random instruction.
-
-    More information can be found on the `this Push-Redux page
-    <https://erp12.github.io/push-redux/pages/genetic_operators/index.html#mutation>`_.
+class PerturbFloatMutation(VariationOperator):
     """
-    #: The probablility of mutating any given gene of the individual's genome.
-    #: Must be 0 <= rate <= 1. Defaults to 0.1.
-    rate = None
+    """
 
-    #: TODO: Write attribute docstring.
-    constant_tweak_rate = None
-
-    #: When float value is being perturbed with Gaussian noise, this is used as
-    #: the standard deviation of the noise. Defaults to 1.0.
-    float_standard_deviation = None
-
-    #: When int value is being perturbed with Gaussian noise, this is used as
-    #: the standard deviation of the noise. Defaults to 1.
-    int_standard_deviation = None
-
-    #: TODO: Write attribute docstring.
-    string_char_change_rate = None
-
-    def __init__(self, rate=0.01, constant_tweak_rate=0.5,
-                 float_standard_deviation=1.0, int_standard_deviation=1,
-                 string_char_change_rate=0.1):
-        # Initialize as a mutation operator
+    def __init__(self, rate=0.01, standard_deviation=1):
         VariationOperator.__init__(self, 1)
-        # Set attributes
         self.rate = rate
-        self.constant_tweak_rate = constant_tweak_rate
-        self.float_standard_deviation = float_standard_deviation
-        self.int_standard_deviation = int_standard_deviation
-        self.string_char_change_rate = string_char_change_rate
+        self.standard_deviation = standard_deviation
 
-    def produce(self, parents, spawner):
-        """Produces a child using the UniformMutation operator.
-
-        TODO: Re-write so that only constants get constant tweak.
+    def produce(self, parents, spawner=None):
+        """Produces a child by perturbing some floats in the parent.
 
         Parameters
         ----------
@@ -172,51 +169,145 @@ class UniformMutation(VariationOperator):
             A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
-        self.spawner = spawner
         new_genome = []
         for gene in parents[0].genome:
-            gene = copy.copy(gene)
-            if random.random() < self.rate:
-                if random.random() < self.constant_tweak_rate:
-                    new_genome.append(self.constant_mutator(gene))
-                else:
-                    new_genome.append(self.spawner.random_plush_gene())
-            else:
-                new_genome.append(gene)
+            if gene.is_literal:
+                atom = gene.atom
+                if recognize_pysh_type(atom) == '_float' and random.random() < self.rate:
+                    gene.atom = perturb_with_gaussian_noise(self.standard_deviation, atom)
+            new_genome.append(gene)
         return Individual(new_genome)
 
+
+class TweakStringMutation(VariationOperator):
+    """
+    """
+
+    def __init__(self, rate=0.01, char_tweak_rate=0.1):
+        VariationOperator.__init__(self, 1)
+        self.rate = rate
+        self.char_tweak_rate = char_tweak_rate
+
     def string_tweak(self, s):
-        """TODO: Write method docstring.
+        """Tweaks a string.
         """
         new_s = ""
         for c in s:
-            if random.random() < self.string_char_change_rate:
+            if random.random() < self.char_tweak_rate:
                 new_s += random.choice(['\t', '\n'] +
                                        list(map(chr, range(32, 127))))
             else:
                 new_s += c
         return new_s
 
-    def constant_mutator(self, token):
-        """Mutates a literal value depending on its type.
-        TODO: Write method docstring.
+    def produce(self, parents, spawner=None):
+        """Produces a child by perturbing some floats in the parent.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
         """
-        if token.is_literal:
-            const = token.atom
-            atom = None
-            if isinstance(const, bool):
-                atom = random.choice([True, False])
-            elif isinstance(const, float):
-                atom = perturb_with_gaussian_noise(
-                    self.float_standard_deviation, const)
-            elif isinstance(const, int):
-                atom = int(perturb_with_gaussian_noise(
-                    self.int_standard_deviation, const))
-            elif is_str_type(const):
-                atom = self.string_tweak(const)
-            return pl.Gene(atom, True, token.closes, token.is_silent)
-        else:
-            return self.spawner.random_plush_gene()
+        self.check_num_parents(parents)
+        new_genome = []
+        for gene in parents[0].genome:
+            if gene.is_literal:
+                atom = gene.atom
+                if (recognize_pysh_type(atom) == '_float') and (random.random() < self.rate):
+                    gene.atom = self.string_tweak(atom)
+            new_genome.append(gene)
+        return Individual(new_genome)
+
+
+class FlipBooleanMutation(VariationOperator):
+    """
+    """
+
+    def __init__(self, rate=0.01):
+        VariationOperator.__init__(self, 1)
+        self.rate = rate
+
+    def produce(self, parents, spawner=None):
+        """Produces a child by perturbing some floats in the parent.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
+        """
+        self.check_num_parents(parents)
+        new_genome = []
+        for gene in parents[0].genome:
+            if gene.is_literal:
+                atom = gene.atom
+                if recognize_pysh_type(atom) == '_boolean' and random.random() < self.rate:
+                    gene.atom = not atom
+            new_genome.append(gene)
+        return Individual(new_genome)
+
+
+class RandomAdditionMutation(VariationOperator):
+    """
+    """
+
+    def __init__(self, rate=0.01):
+        VariationOperator.__init__(self, 1)
+        self.rate = rate
+
+    def produce(self, parents, spawner):
+        """Produces a child by perturbing some floats in the parent.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
+        """
+        self.check_num_parents(parents)
+        new_genome = []
+        for gene in parents[0].genome:
+            if random.random() < self.rate:
+                new_genome.append(spawner.random_plush_gene())
+            new_genome.append(gene)
+        return Individual(new_genome)
+
+
+class RandomReplaceMutation(VariationOperator):
+    """
+    """
+
+    def __init__(self, rate=0.01):
+        VariationOperator.__init__(self, 1)
+        self.rate = rate
+
+    def produce(self, parents, spawner):
+        """Produces a child by perturbing some floats in the parent.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
+        """
+        self.check_num_parents(parents)
+        new_genome = []
+        for gene in parents[0].genome:
+            if random.random() < self.rate:
+                new_genome.append(spawner.random_plush_gene())
+            else:
+                new_genome.append(gene)
+        return Individual(new_genome)
+
 
 # #               # #
 #   Recombination   #
@@ -256,8 +347,8 @@ class Alternation(VariationOperator):
             A list of parents to use when producing the child.
 
         spawner : pyshgp.push.random.PushSpawner, optional
-            A spawner that can be used to create random Push code. NOT USED BY
-            THIS OPERATOR.
+            A spawner that can be used to create random Push code. Not used by
+            this operator.
         """
         self.check_num_parents(parents)
         gn1 = parents[0].genome
@@ -287,3 +378,31 @@ class Alternation(VariationOperator):
             if not use_parent_1:
                 loop_times = len(gn2)
         return Individual(resulting_genome)
+
+
+##
+#   Other
+##
+
+
+class Genesis(VariationOperator):
+    """
+    """
+
+    def __init__(self, max_genome_size):
+        VariationOperator.__init__(self, 0)
+        self.max_genome_size = max_genome_size
+
+    def produce(self, parents, spawner):
+        return Individual(spawner.random_plush_genome(self.max_genome_size))
+
+
+class Reproduction(VariationOperator):
+    """
+    """
+
+    def __init__(self):
+        VariationOperator.__init__(self, 1)
+
+    def produce(self, parents, spawner=None):
+        return parents[0]

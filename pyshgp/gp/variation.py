@@ -7,14 +7,11 @@ children from selected parents.
 
 from abc import ABCMeta, abstractmethod
 import random
-import copy
 
 from .population import Individual
-from ..push import plush as pl
 from ..utils import (
     perturb_with_gaussian_noise,
     gaussian_noise_factor,
-    is_str_type,
     recognize_pysh_type
 )
 
@@ -82,7 +79,7 @@ class VariationOperatorPipeline(VariationOperator):
 
 
 class PerturbCloseMutation(VariationOperator):
-    """
+    """Randomly perturbs the number of close markers on each gene.
     """
 
     def __init__(self, rate=0.01, standard_deviation=1):
@@ -105,15 +102,18 @@ class PerturbCloseMutation(VariationOperator):
         new_genome = []
         for gene in parents[0].genome:
             if random.random() < self.rate:
-                gene.closes = perturb_with_gaussian_noise(
-                    self.standard_deviation,
-                    gene.closes)
+                gene.closes = int(
+                    perturb_with_gaussian_noise(
+                        self.standard_deviation,
+                        gene.closes))
+                if gene.closes < 0:
+                    gene.closes = 0
             new_genome.append(gene)
         return Individual(new_genome)
 
 
 class PerturbIntegerMutation(VariationOperator):
-    """
+    """Randomly perturbs the genes containing integer literals.
     """
 
     def __init__(self, rate=0.01, standard_deviation=1):
@@ -149,7 +149,7 @@ class PerturbIntegerMutation(VariationOperator):
 
 
 class PerturbFloatMutation(VariationOperator):
-    """
+    """Randomly perturbs the genes containing float literals.
     """
 
     def __init__(self, rate=0.01, standard_deviation=1):
@@ -180,7 +180,7 @@ class PerturbFloatMutation(VariationOperator):
 
 
 class TweakStringMutation(VariationOperator):
-    """
+    """Randomly tweaks the string values in string literal genes.
     """
 
     def __init__(self, rate=0.01, char_tweak_rate=0.1):
@@ -223,7 +223,7 @@ class TweakStringMutation(VariationOperator):
 
 
 class FlipBooleanMutation(VariationOperator):
-    """
+    """Randomly flips the boolean literal genes.
     """
 
     def __init__(self, rate=0.01):
@@ -252,8 +252,36 @@ class FlipBooleanMutation(VariationOperator):
         return Individual(new_genome)
 
 
-class RandomAdditionMutation(VariationOperator):
+class RandomDeletionMutation(VariationOperator):
+    """Randomly removes some genes.
     """
+
+    def __init__(self, rate=0.01):
+        VariationOperator.__init__(self, 1)
+        self.rate = rate
+
+    def produce(self, parents, spawner):
+        """Produces a child by perturbing some floats in the parent.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
+        """
+        self.check_num_parents(parents)
+        new_genome = []
+        for gene in parents[0].genome:
+            if random.random() < self.rate:
+                continue
+            new_genome.append(gene)
+        return Individual(new_genome)
+
+
+class RandomAdditionMutation(VariationOperator):
+    """Randomly adds new genes.
     """
 
     def __init__(self, rate=0.01):
@@ -281,7 +309,7 @@ class RandomAdditionMutation(VariationOperator):
 
 
 class RandomReplaceMutation(VariationOperator):
-    """
+    """Randomly replaces genes.
     """
 
     def __init__(self, rate=0.01):
@@ -386,7 +414,7 @@ class Alternation(VariationOperator):
 
 
 class Genesis(VariationOperator):
-    """
+    """Creates an entirely new (and random) genome.
     """
 
     def __init__(self, max_genome_size):
@@ -398,7 +426,7 @@ class Genesis(VariationOperator):
 
 
 class Reproduction(VariationOperator):
-    """
+    """Clones the parent genome.
     """
 
     def __init__(self):

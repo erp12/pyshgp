@@ -4,23 +4,49 @@ TODO: Module docstg
 from numpy.random import choice
 from random import random, randint
 
-from sklearn.utils import check_X_y
-
 from pathos.multiprocessing import ProcessingPool as Pool
 
 from .population import Population, Individual
-from .variation import VariationOperatorPipeline, UniformMutation, Alternation
+from .variation import (
+    VariationOperatorPipeline,
+    PerturbCloseMutation,
+    PerturbIntegerMutation,
+    PerturbFloatMutation,
+    TweakStringMutation,
+    FlipBooleanMutation,
+    RandomDeletionMutation,
+    RandomAdditionMutation,
+    RandomReplaceMutation,
+    Alternation
+)
 from ..push import random as r
-from ..push.registered_instructions import (instruction_set,
-                                            get_instructions_by_pysh_type)
-from ..push.instruction import (PyshInputInstruction, PyshSetOutputInstruction,
-                                make_numeric_output_instructions, make_classification_instructions)
-from ..utils import merge_sets, count_points
+from ..push.registered_instructions import (
+    instruction_set,
+    get_instructions_by_pysh_type
+)
+from ..push.instruction import (
+    PyshInputInstruction,
+    PyshSetOutputInstruction,
+    make_numeric_output_instructions,
+    make_classification_instructions
+)
+from ..utils import merge_sets
 
+
+_default_mutation = VariationOperatorPipeline((
+    PerturbCloseMutation(),
+    PerturbIntegerMutation(),
+    PerturbFloatMutation(),
+    TweakStringMutation(),
+    FlipBooleanMutation(),
+    RandomDeletionMutation(),
+    RandomAdditionMutation(),
+    RandomReplaceMutation(),
+))
 DEFAULT_GENETICS = [
     (Alternation(), 0.7),
-    (UniformMutation(), 0.1),
-    (VariationOperatorPipeline((Alternation(), UniformMutation())), 0.2)
+    (_default_mutation, 0.1),
+    (VariationOperatorPipeline((Alternation(), _default_mutation)), 0.2)
 ]
 DEFAULT_ATOM_GENERATORS = list(merge_sets(
     instruction_set.values(),

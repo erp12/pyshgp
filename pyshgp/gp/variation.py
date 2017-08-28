@@ -73,9 +73,141 @@ class VariationOperatorPipeline(VariationOperator):
             child = op.produce([child] + list(parents[1:]), spawner)
         return child
 
+
+class LiteralMutation(VariationOperator, metaclass=ABCMeta):
+    """Base class for all constant mutators.
+    """
+
+    def __init__(self, rate=0.01):
+        super().__init__(1)
+        self.rate = rate
+
+    def produce(self, parents, pysh_type):
+        """Produces a child by perturbing some floats in the parent.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
+        """
+        self.check_num_parents(parents)
+        new_genome = []
+        for gene in parents[0].genome:
+            if gene.is_literal:
+                literal = gene.atom
+                if (recognize_pysh_type(literal) == pysh_type) and (random.random() < self.rate):
+                    gene.atom = self._mutate_literal(literal)
+            new_genome.append(gene)
+        return Individual(new_genome)
+
+    @abstractmethod
+    def _mutate_literal(self, literal):
+        """Mutates the literal.
+        """
+
 ##
 #   Mutation
 ##
+
+
+class PerturbIntegerMutation(LiteralMutation):
+    """Randomly perturbs the genes containing integer literals.
+    """
+
+    def __init__(self, rate=0.01, standard_deviation=1):
+        super().__init__(rate)
+        self.standard_deviation = standard_deviation
+
+    def _mutate_literal(self, literal):
+        """Mutates an interger literal.
+
+        Parameters
+        ----------
+        literal : int
+            An interger to perturb.
+
+        Returns
+        --------
+        A perturbed interger.
+        """
+        return int(perturb_with_gaussian_noise(self.standard_deviation, literal))
+
+
+class PerturbFloatMutation(LiteralMutation):
+    """Randomly perturbs the genes containing float literals.
+    """
+
+    def __init__(self, rate=0.01, standard_deviation=1):
+        super().__init__(rate)
+        self.standard_deviation = standard_deviation
+
+    def _mutate_literal(self, literal):
+        """Mutates a float literal.
+
+        Parameters
+        ----------
+        literal : float
+            An float to perturb.
+
+        Returns
+        --------
+        A perturbed float.
+        """
+        return perturb_with_gaussian_noise(self.standard_deviation, literal)
+
+
+class TweakStringMutation(LiteralMutation):
+    """Randomly tweaks the string values in string literal genes.
+    """
+
+    def __init__(self, rate=0.01, char_tweak_rate=0.1):
+        super().__init__(rate)
+        self.char_tweak_rate = char_tweak_rate
+
+    def _mutate_literal(self, literal):
+        """Mutates a string literal.
+
+        Parameters
+        ----------
+        literal : str
+            An string to tweak.
+
+        Returns
+        --------
+        A tweaked string.
+        """
+        new_s = ""
+        for c in literal:
+            if random.random() < self.char_tweak_rate:
+                new_s += random.choice(['\t', '\n'] + list(map(chr, range(32, 127))))
+            else:
+                new_s += c
+        return new_s
+
+
+class FlipBooleanMutation(LiteralMutation):
+    """Randomly flips the boolean literal genes.
+    """
+
+    def __init__(self, rate=0.01):
+        super().__init__(rate)
+
+    def _mutate_literal(self, literal):
+        """Mutates a boolean literal.
+
+        Parameters
+        ----------
+        literal : str
+            An string to flip.
+
+        Returns
+        --------
+        A flipped bool.
+        """
+        return not literal
 
 
 class PerturbCloseMutation(VariationOperator):
@@ -83,7 +215,7 @@ class PerturbCloseMutation(VariationOperator):
     """
 
     def __init__(self, rate=0.01, standard_deviation=1):
-        VariationOperator.__init__(self, 1)
+        super().__init__(1)
         self.rate = rate
         self.standard_deviation = standard_deviation
 
@@ -97,6 +229,10 @@ class PerturbCloseMutation(VariationOperator):
 
         spawner : pyshgp.push.random.PushSpawner
             A spawner that can be used to create random Push code.
+
+        Returns
+        --------
+        A child Individual.
         """
         self.check_num_parents(parents)
         new_genome = []
@@ -112,152 +248,12 @@ class PerturbCloseMutation(VariationOperator):
         return Individual(new_genome)
 
 
-class PerturbIntegerMutation(VariationOperator):
-    """Randomly perturbs the genes containing integer literals.
-    """
-
-    def __init__(self, rate=0.01, standard_deviation=1):
-        VariationOperator.__init__(self, 1)
-        self.rate = rate
-        self.standard_deviation = standard_deviation
-
-    def produce(self, parents, spawner=None):
-        """Produces a child by perturbing some integers in the parent.
-
-        Parameters
-        ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
-
-        spawner : pyshgp.push.random.PushSpawner
-            A spawner that can be used to create random Push code.
-        """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if gene.is_literal:
-                atom = gene.atom
-                if recognize_pysh_type(atom) == '_integer' and random.random() < self.rate:
-                    gene.atom = int(
-                        perturb_with_gaussian_noise(
-                            self.standard_deviation,
-                            atom
-                        )
-                    )
-            new_genome.append(gene)
-        return Individual(new_genome)
-
-
-class PerturbFloatMutation(VariationOperator):
-    """Randomly perturbs the genes containing float literals.
-    """
-
-    def __init__(self, rate=0.01, standard_deviation=1):
-        VariationOperator.__init__(self, 1)
-        self.rate = rate
-        self.standard_deviation = standard_deviation
-
-    def produce(self, parents, spawner=None):
-        """Produces a child by perturbing some floats in the parent.
-
-        Parameters
-        ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
-
-        spawner : pyshgp.push.random.PushSpawner
-            A spawner that can be used to create random Push code.
-        """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if gene.is_literal:
-                atom = gene.atom
-                if recognize_pysh_type(atom) == '_float' and random.random() < self.rate:
-                    gene.atom = perturb_with_gaussian_noise(self.standard_deviation, atom)
-            new_genome.append(gene)
-        return Individual(new_genome)
-
-
-class TweakStringMutation(VariationOperator):
-    """Randomly tweaks the string values in string literal genes.
-    """
-
-    def __init__(self, rate=0.01, char_tweak_rate=0.1):
-        VariationOperator.__init__(self, 1)
-        self.rate = rate
-        self.char_tweak_rate = char_tweak_rate
-
-    def string_tweak(self, s):
-        """Tweaks a string.
-        """
-        new_s = ""
-        for c in s:
-            if random.random() < self.char_tweak_rate:
-                new_s += random.choice(['\t', '\n'] +
-                                       list(map(chr, range(32, 127))))
-            else:
-                new_s += c
-        return new_s
-
-    def produce(self, parents, spawner=None):
-        """Produces a child by perturbing some floats in the parent.
-
-        Parameters
-        ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
-
-        spawner : pyshgp.push.random.PushSpawner
-            A spawner that can be used to create random Push code.
-        """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if gene.is_literal:
-                atom = gene.atom
-                if (recognize_pysh_type(atom) == '_float') and (random.random() < self.rate):
-                    gene.atom = self.string_tweak(atom)
-            new_genome.append(gene)
-        return Individual(new_genome)
-
-
-class FlipBooleanMutation(VariationOperator):
-    """Randomly flips the boolean literal genes.
-    """
-
-    def __init__(self, rate=0.01):
-        VariationOperator.__init__(self, 1)
-        self.rate = rate
-
-    def produce(self, parents, spawner=None):
-        """Produces a child by perturbing some floats in the parent.
-
-        Parameters
-        ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
-
-        spawner : pyshgp.push.random.PushSpawner
-            A spawner that can be used to create random Push code.
-        """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if gene.is_literal:
-                atom = gene.atom
-                if recognize_pysh_type(atom) == '_boolean' and random.random() < self.rate:
-                    gene.atom = not atom
-            new_genome.append(gene)
-        return Individual(new_genome)
-
-
 class RandomDeletionMutation(VariationOperator):
     """Randomly removes some genes.
     """
 
     def __init__(self, rate=0.01):
-        VariationOperator.__init__(self, 1)
+        super().__init__(1)
         self.rate = rate
 
     def produce(self, parents, spawner):
@@ -285,7 +281,7 @@ class RandomAdditionMutation(VariationOperator):
     """
 
     def __init__(self, rate=0.01):
-        VariationOperator.__init__(self, 1)
+        super().__init__(1)
         self.rate = rate
 
     def produce(self, parents, spawner):
@@ -313,7 +309,7 @@ class RandomReplaceMutation(VariationOperator):
     """
 
     def __init__(self, rate=0.01):
-        VariationOperator.__init__(self, 1)
+        super().__init__(1)
         self.rate = rate
 
     def produce(self, parents, spawner):
@@ -361,7 +357,7 @@ class Alternation(VariationOperator):
 
     def __init__(self, rate=0.01, alignment_deviation=10):
         # Initialize as a recombination operator
-        VariationOperator.__init__(self, 2)
+        super().__init__(2)
         # Set attributes
         self.rate = rate
         self.alignment_deviation = alignment_deviation

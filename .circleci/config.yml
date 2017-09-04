@@ -25,14 +25,28 @@ jobs:
         working_directory: ~/pyshgp
         steps:
             - checkout
+            - run:
+                name: save SHA to a file
+                command: echo $CIRCLE_SHA1 > .circle-sha
             - run: sudo chmod -R 777 /usr/local
             - run: pip install -r requirements.txt
             - run: pip install -r requirements-dev.txt
+            - save_cache:
+                key: repo-{{ checksum ".circle-sha" }}
+                paths:
+                    - ~/pyshgp
+                    - /usr/local
     unit:
         docker:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
+            - run:
+                name: save SHA to a file
+                command: echo $CIRCLE_SHA1 > .circle-sha
+            - restore_cache:
+                key:
+                    - repo-{{ checksum ".circle-sha" }}
             - run: python setup.py test
 
     validation:
@@ -40,6 +54,12 @@ jobs:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
+            - run:
+                name: save SHA to a file
+                command: echo $CIRCLE_SHA1 > .circle-sha
+            - restore_cache:
+                key:
+                    - repo-{{ checksum ".circle-sha" }}
             - run: python -m tests.validation.sklearn_regression
             - run: python -m tests.validation.sklearn_classification
 
@@ -48,6 +68,12 @@ jobs:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
+            - run:
+                name: save SHA to a file
+                command: echo $CIRCLE_SHA1 > .circle-sha
+            - restore_cache:
+                key:
+                    - repo-{{ checksum ".circle-sha" }}
             - run: python -m coverage run ./setup.py test
             - run: python -m coverage xml
             - run: python-codacy-coverage -r coverage.xml

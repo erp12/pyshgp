@@ -25,8 +25,8 @@ jobs:
         working_directory: ~/pyshgp
         steps:
             - checkout
-            - run: python3 -m venv /venv
-            - run: source /venv/bin/activate
+            - run: python3 -m venv venv
+            - run: source venv/bin/activate
             - run: pip install -r requirements.txt
             - run: pip install -r requirements-dev.txt
     unit:
@@ -34,7 +34,7 @@ jobs:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
-            - run: source /venv/bin/activate
+            - run: source venv/bin/activate
             - run: python setup.py test
 
     validation:
@@ -42,7 +42,7 @@ jobs:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
-            - run: source /venv/bin/activate
+            - run: source venv/bin/activate
             - run: python -m tests.validation.sklearn_regression
             - run: python -m tests.validation.sklearn_classification
 
@@ -51,7 +51,7 @@ jobs:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
-            - run: source /venv/bin/activate
+            - run: source venv/bin/activate
             - run: python -m coverage run ./setup.py test
             - run: python -m coverage xml
             - run: python-codacy-coverage -r coverage.xml

@@ -57,5 +57,5 @@ workflows:
     build:
         jobs:
             - "unit-tests"
-            - "validation-tests'
-            - "coverage'
+            - "validation-tests"
+            - "coverage"

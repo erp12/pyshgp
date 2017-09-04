@@ -45,7 +45,7 @@ jobs:
                 name: save SHA to a file
                 command: echo $CIRCLE_SHA1 > .circle-sha
             - restore_cache:
-                key:
+                keys:
                     - repo-{{ checksum ".circle-sha" }}
             - run: python setup.py test
 
@@ -58,7 +58,7 @@ jobs:
                 name: save SHA to a file
                 command: echo $CIRCLE_SHA1 > .circle-sha
             - restore_cache:
-                key:
+                keys:
                     - repo-{{ checksum ".circle-sha" }}
             - run: python -m tests.validation.sklearn_regression
             - run: python -m tests.validation.sklearn_classification
@@ -72,7 +72,7 @@ jobs:
                 name: save SHA to a file
                 command: echo $CIRCLE_SHA1 > .circle-sha
             - restore_cache:
-                key:
+                keys:
                     - repo-{{ checksum ".circle-sha" }}
             - run: python -m coverage run ./setup.py test
             - run: python -m coverage xml

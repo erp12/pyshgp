@@ -19,35 +19,39 @@
 version: 2.0
 
 jobs:
-    "unit-tests":
+    build_setup:
         docker:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
             - checkout
+            - run: python -m venv venv
+            - run: source venv/bin/activate
             - run: pip install -r requirements.txt
             - run: pip install -r requirements-dev.txt
+    unit:
+        docker:
+            - image: circleci/python:latest
+        working_directory: ~/pyshgp
+        steps:
+            - run: source venv/bin/activate
             - run: python setup.py test
 
-    "validation-tests":
+    validation:
         docker:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
-            - checkout
-            - run: pip install -r requirements.txt
-            - run: pip install -r requirements-dev.txt
+            - run: source venv/bin/activate
             - run: python -m tests.validation.sklearn_regression
             - run: python -m tests.validation.sklearn_classification
 
-    "coverage":
+    coverage:
         docker:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
-            - checkout
-            - run: pip install -r requirements.txt
-            - run: pip install -r requirements-dev.txt
+            - run: source venv/bin/activate
             - run: python -m coverage run ./setup.py test
             - run: python -m coverage xml
             - run: python-codacy-coverage -r coverage.xml
@@ -56,6 +60,13 @@ workflows:
     version: 2
     build:
         jobs:
-            - "unit-tests"
-            - "validation-tests"
-            - "coverage"
+            - build_setup
+            - unit:
+                requires:
+                    - build_setup
+            - validation:
+                requires:
+                    - build_setup
+            - coverage:
+                requires:
+                    - build_setup

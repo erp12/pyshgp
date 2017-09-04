@@ -78,11 +78,12 @@ class LiteralMutation(VariationOperator, metaclass=ABCMeta):
     """Base class for all constant mutators.
     """
 
-    def __init__(self, rate=0.01):
+    def __init__(self, pysh_type, rate=0.01):
         super().__init__(1)
         self.rate = rate
+        self.pysh_type = pysh_type
 
-    def produce(self, parents, pysh_type):
+    def produce(self, parents, spawner):
         """Produces a child by perturbing some floats in the parent.
 
         Parameters
@@ -97,9 +98,9 @@ class LiteralMutation(VariationOperator, metaclass=ABCMeta):
         new_genome = []
         for gene in parents[0].genome:
             if gene.is_literal:
-                literal = gene.atom
-                if (recognize_pysh_type(literal) == pysh_type) and (random.random() < self.rate):
-                    gene.atom = self._mutate_literal(literal)
+                lit = gene.atom
+                if (recognize_pysh_type(lit) == self.pysh_type) and (random.random() < self.rate):
+                    gene.atom = self._mutate_literal(lit)
             new_genome.append(gene)
         return Individual(new_genome)
 
@@ -118,7 +119,7 @@ class PerturbIntegerMutation(LiteralMutation):
     """
 
     def __init__(self, rate=0.01, standard_deviation=1):
-        super().__init__(rate)
+        super().__init__('_integer', rate)
         self.standard_deviation = standard_deviation
 
     def _mutate_literal(self, literal):
@@ -141,7 +142,7 @@ class PerturbFloatMutation(LiteralMutation):
     """
 
     def __init__(self, rate=0.01, standard_deviation=1):
-        super().__init__(rate)
+        super().__init__('_float', rate)
         self.standard_deviation = standard_deviation
 
     def _mutate_literal(self, literal):
@@ -164,7 +165,7 @@ class TweakStringMutation(LiteralMutation):
     """
 
     def __init__(self, rate=0.01, char_tweak_rate=0.1):
-        super().__init__(rate)
+        super().__init__('_string', rate)
         self.char_tweak_rate = char_tweak_rate
 
     def _mutate_literal(self, literal):
@@ -193,7 +194,7 @@ class FlipBooleanMutation(LiteralMutation):
     """
 
     def __init__(self, rate=0.01):
-        super().__init__(rate)
+        super().__init__('_boolean', rate)
 
     def _mutate_literal(self, literal):
         """Mutates a boolean literal.

@@ -1,0 +1,53 @@
+# machine:
+#     python:
+#         version: 3.6.0
+#
+# dependencies:
+#     pre:
+#         - pip install -r requirements.txt
+#         - pip install -r requirements-dev.txt
+# test:
+#     post:
+#         # Validation tests
+#         - python -m tests.validation.sklearn_regression
+#         - python -m tests.validation.sklearn_classification
+#         # Coverage reports
+#         - python -m coverage run ./setup.py test
+#         - python -m coverage xml
+#         - python-codacy-coverage -r coverage.xml
+
+version: 2.0
+
+jobs:
+    "unit-tests":
+        docker:
+            - image: circleci/python:latest
+        working_directory: ~/pyshgp
+        steps:
+            - checkout
+            - run: pip install -r requirements.txt
+            - run: pip install -r requirements-dev.txt
+            - run: python setup.py test
+
+    "validation-tests":
+        docker:
+            - image: circleci/python:latest
+        working_directory: ~/pyshgp
+        steps:
+            - checkout
+            - run: pip install -r requirements.txt
+            - run: pip install -r requirements-dev.txt
+            - run: python -m tests.validation.sklearn_regression
+            - run: python -m tests.validation.sklearn_classification
+
+    "coverage":
+        docker:
+            - image: circleci/python:latest
+        working_directory: ~/pyshgp
+        steps:
+            - checkout
+            - run: pip install -r requirements.txt
+            - run: pip install -r requirements-dev.txt
+            - run: python -m coverage run ./setup.py test
+            - run: python -m coverage xml
+            - run: python-codacy-coverage -r coverage.xml

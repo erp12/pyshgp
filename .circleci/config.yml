@@ -50,8 +50,11 @@ jobs:
             - restore_cache:
                 keys:
                     - repo-{{ checksum ".circle-sha" }}
-            - run: source venv/bin/activate
-            - run: python setup.py test
+            - run:
+                name: run tests
+                command: |
+                    source venv/bin/activate
+                    python setup.py test
 
     validation:
         docker:
@@ -64,9 +67,12 @@ jobs:
             - restore_cache:
                 keys:
                     - repo-{{ checksum ".circle-sha" }}
-            - run: source venv/bin/activate
-            - run: python -m tests.validation.sklearn_regression
-            - run: python -m tests.validation.sklearn_classification
+            - run:
+                name: run tests
+                command: |
+                    source venv/bin/activate
+                    python -m tests.validation.sklearn_regression
+                    python -m tests.validation.sklearn_classification
 
     coverage:
         docker:
@@ -79,10 +85,13 @@ jobs:
             - restore_cache:
                 keys:
                     - repo-{{ checksum ".circle-sha" }}
-            - run: source venv/bin/activate
-            - run: python -m coverage run ./setup.py test
-            - run: python -m coverage xml
-            - run: python-codacy-coverage -r coverage.xml
+            - run:
+                name: compute coverage
+                command: |
+                    source venv/bin/activate
+                    python -m coverage run ./setup.py test
+                    python -m coverage xml
+                    python-codacy-coverage -r coverage.xml
 
 workflows:
     version: 2

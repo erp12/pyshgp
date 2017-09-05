@@ -8,8 +8,11 @@ import numpy as np
 from ..utils import median_absolute_deviation
 from ..push import translation as tran
 from ..push import interpreter as interp
-from .evaluate import (evaluate_with_function, evaluate_for_regression,
-                       evaluate_for_classification)
+from .evaluate import (
+    evaluate_with_function,
+    evaluate_for_regression,
+    evaluate_for_classification
+)
 
 ###########
 # Classes #
@@ -252,7 +255,7 @@ class Population(list):
             else:
                 max_error = best_val_for_case + epsilon
 
-            def test(i): return i.error_vector[case] <= max_error
+            def test(i): return i.error_vector[case] <= (max_error + 1)
             candidates = [i for i in candidates if test(i)]
             cases.pop(0)
         return random.choice(candidates)

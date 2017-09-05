@@ -3,7 +3,6 @@
 The :mod:`utils` module provides classes and functions that are used throughout
 the push interpreter and GP modules.
 """
-import sys
 import random
 import math
 import numpy as np
@@ -13,9 +12,7 @@ from . import constants as c
 from .push import instruction as instr
 
 
-##             ##
 # Utility Types #
-##             ##
 
 class Character(object):
     """Holds a string of length 1.
@@ -69,7 +66,7 @@ class PushVector(list):
 
     def __init__(self, lst, typ):
         self.typ = typ
-        if typ == None:
+        if typ is None:
             self.typ = '_exec'
 
         for el in lst:
@@ -116,9 +113,7 @@ class StackOutOfBounds(UnevaluatableStackResponse):
         return 'NO_STACK_ITEM'
 
 
-##                 ##
 # Utility Functions #
-##                 ##
 
 def flatten_all(lst):
     """Recursively flattens nested lists into a single list.
@@ -214,6 +209,40 @@ def is_float_type(thing):
     return isinstance(thing, (float, np.float, np.float64))
 
 
+def type_to_pysh_type(typ) -> str:
+    """Returns a string denoting the Push type version of given python/numpy
+    type.
+
+    Parameters
+    ----------
+    typ: A python or numpy type.
+
+    Returns
+    -------
+    A string with a ``_`` as the first char. This is how Pysh types are denoted
+    throughout the entire package. If there is no appropriate Pysh type,
+    returns False.
+
+    Examples
+    --------
+    >>> type_to_pysh_type(int)
+    '_integer'
+    """
+    if typ in (bool, np.bool_):
+        return '_boolean'
+    elif typ in (np.int64, int):
+        return '_integer'
+    elif typ in (float, np.float, np.float64):
+        return '_float'
+    elif typ in (str, bytes):
+        return '_string'
+    elif typ in (list, np.ndarray):
+        return '_list'
+    else:
+        print("Could not find pysh type for type", typ)
+        return False
+
+
 def recognize_pysh_type(thing):
     """Returns a string denoting the Push type of ``thing``.
 
@@ -249,7 +278,7 @@ def recognize_pysh_type(thing):
     elif isinstance(thing, Character):
         return '_char'
     elif isinstance(thing, PushVector):
-        t = recognize_pysh_type(thing.typ())
+        t = type_to_pysh_type(thing.typ)
         return '_vector' + t
     elif isinstance(thing, list):
         return '_list'

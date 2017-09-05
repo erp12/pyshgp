@@ -2,6 +2,7 @@ pysh_job.alf
 tractor_pysh_run.sh
 venv/
 venv2/
+*.prof
 
 *.pyc
 *.png

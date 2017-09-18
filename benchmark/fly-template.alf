@@ -1,8 +1,8 @@
-Job -title {job_name} -subtasks {
-    Task -title {task_name} -cmds {
-        RemoteCmd {/bin/sh -c {
+Job -title {job_name} -subtasks {{
+    Task -title {task_name} -cmds {{
+        RemoteCmd {{/bin/sh -c {{
             cd {pyshgp_path};
             {run_line}
-        }} -service {linux}
-    }
-}
+        }}}} -service {{linux}}
+    }}
+}}

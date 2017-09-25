@@ -23,9 +23,9 @@ def get_log_file(problem_file: str) -> str:
 
 
 def get_python_call(problem_file: str) -> str:
-    log = get_log_file(problem_file)
-    python_call = '{py} {file} > {log}'
-    return python_call.format(py=FLY_PYTHON_HOME, file=problem_file, log=log)
+    # log = get_log_file(problem_file)
+    python_call = '{py} {file}'
+    return python_call.format(py=FLY_PYTHON_HOME, file=problem_file)
 
 
 def start_fly_run(job_name: str, problem_file: str):

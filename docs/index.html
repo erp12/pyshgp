@@ -1,0 +1,202 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp &#8212; pyshgp  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="What is Push GP?" href="pushgp.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyshgp">
+<h1>pyshgp<a class="headerlink" href="#pyshgp" title="Permalink to this headline">¶</a></h1>
+<p>PushGP Genetic Programming in Python</p>
+<div class="section" id="push-genetic-programming">
+<h2>Push Genetic Programming<a class="headerlink" href="#push-genetic-programming" title="Permalink to this headline">¶</a></h2>
+<p>Push is programming language that plays nice with evolutionary computing /
+genetic programming. It is a stack-based language that features 1 stack per data
+type, including code. Programs are represented by lists of instructions, which
+modify the values on the stacks. Instructions are executed in order.</p>
+<p>More information about PushGP can be found on
+<a class="reference external" href="https://erp12.github.io/push-redux/">the Push Redux</a> where you can
+read about how PushGP works and find listings of other implementations.</p>
+</div>
+<div class="section" id="table-of-contents">
+<h2>Table Of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pushgp.html">What is Push GP?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pushgp.html#the-push-language">The Push Language</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pushgp.html#more-information">More Information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Pyshgp Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#push-language">Push Language</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#genetic-programming-framework">Genetic Programming Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#pushgp-in-pyshgp">PushGP in PyshGP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/gp.html">gp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/push.html">push</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/constants.html">constants.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/exceptions.html">exceptions.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/utils.html">utils.py</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">Pysh Instruction Set</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html#standard-instruction-set">Standard Instruction Set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html#special-instructions">Special Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#reporting-bugs-and-feature-requests">Reporting Bugs and Feature Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-code">Contributing Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-documentation">Contributing Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-examples">Contributing Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#release-pattern">Release Pattern</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="install-from-pip">
+<h3>Install from Pip<a class="headerlink" href="#install-from-pip" title="Permalink to this headline">¶</a></h3>
+<p>Coming soon!</p>
+</div>
+<div class="section" id="build-frome-source">
+<h3>Build Frome source<a class="headerlink" href="#build-frome-source" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>Clone the repo</li>
+<li><code class="code docutils literal"><span class="pre">cd</span></code> into the <code class="docutils literal"><span class="pre">pyshgp</span></code> repo directory</li>
+<li>run <code class="code docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code></li>
+<li>run <code class="code docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span> <span class="pre">--upgrade</span></code></li>
+</ol>
+<p>Thats it! You should be ready to use <code class="docutils literal"><span class="pre">pyshgp</span></code>.</p>
+</div>
+</div>
+<div class="section" id="examples-usage">
+<h2>Examples / Usage<a class="headerlink" href="#examples-usage" title="Permalink to this headline">¶</a></h2>
+<p>Pysh is compatable with Python 2.7 and Python 3.5.</p>
+<p>To run the Pysh examples, simply run one of the problem files in the
+<code class="docutils literal"><span class="pre">pysh/examples/</span></code> folder.:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">examples</span><span class="o">/</span><span class="n">tutorials</span><span class="o">/</span><span class="n">odd</span><span class="o">.</span><span class="n">py</span>
+<span class="c1"># or</span>
+<span class="n">python</span> <span class="n">examples</span><span class="o">/</span><span class="n">tutorials</span><span class="o">/</span><span class="n">string_demo</span><span class="o">.</span><span class="n">py</span>
+<span class="c1"># or</span>
+<span class="n">python</span> <span class="n">examples</span><span class="o">/</span><span class="n">software</span><span class="o">-</span><span class="n">synthesis</span><span class="o">/</span><span class="n">replace_space_with_newline</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>There are many more examples and benchmarks in the GitHub repository under the
+<code class="docutils literal"><span class="pre">examples</span></code> directory. Each example is documenting in it’s file using
+docstrings. It is recomended that you start by reading the examples in
+<a class="reference external" href="https://github.com/erp12/pyshgp/tree/master/examples/tutorials">the tutorials folder</a></p>
+</div>
+<div class="section" id="roadmap">
+<h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
+<p>Pysh is currently under active development. Feel free to submit a pull request
+if you have any additions to make.</p>
+<p>To see what features are in development, or planned for the future, check out
+the <a class="reference external" href="https://github.com/erp12/Pysh/projects/1">Github project board</a>.</p>
+<p>To see Pysh’s release notes, check out the
+<a class="reference external" href="https://github.com/erp12/Pysh/projects/2">other Github project board</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">pyshgp</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pushgp.html">What is Push GP?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Pyshgp Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">Pysh Instruction Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="pushgp.html" title="next chapter">What is Push GP?</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Edward Pantridge.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

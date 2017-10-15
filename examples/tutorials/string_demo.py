@@ -179,7 +179,7 @@ if __name__ == "__main__":
     #     simplification_steps=100,
     #     n_jobs=1)
     evo = SimplePushGPEvolver(
-        verbose=1,
+        verbose=2,
         atom_generators=atom_generators,
         n_jobs=-1)
     evo.fit(string_error_func, 1, ['_string'])

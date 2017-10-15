@@ -1,0 +1,953 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>push &#8212; pyshgp  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Registered Instructions" href="registered_instructions.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="push">
+<h1>push<a class="headerlink" href="#push" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">push</span></code> sub-package contains an implementation of the Push language.
+This includes an instruction set, interpreter, and random Push code generation
+utilities.</p>
+<p>The following paragraph has been taken from the Push language
+<a class="reference external" href="http://faculty.hampshire.edu/lspector/push.html">homepage</a>.</p>
+<blockquote>
+<div>Push is a programming language designed for evolutionary computation, to be
+used as the programming language within which evolving programs are expressed.
+Push features a stack-based execution architecture in which there is a
+separate stack for each data type. In Push, “code” itself is a data type,
+allowing programs to manipulate their own code as they run and thereby to
+implement arbitrary and potentially novel control structures. This
+expressiveness is combined with syntactic minimality: the only syntax rule is
+that parentheses must be balanced. It is therefore trivial to generate and
+transform syntactically valid Push programs.</div></blockquote>
+<div class="section" id="module-pyshgp.push.instruction">
+<span id="instruction"></span><h2>Instruction<a class="headerlink" href="#module-pyshgp.push.instruction" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">instruction</span></code> module provides classes for various kinds of Push
+instructions that can be handled by the <code class="docutils literal"><span class="pre">pyshgp</span></code> Push interpreter.</p>
+<dl class="class">
+<dt id="pyshgp.push.instruction.PyshInputInstruction">
+<em class="property">class </em><code class="descclassname">pyshgp.push.instruction.</code><code class="descname">PyshInputInstruction</code><span class="sig-paren">(</span><em>input_index</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshInputInstruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A push instruction that will handle input values. Input instructions
+which are generated based on initial state of the _input stack.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>input_index</strong> : int</p>
+<blockquote class="last">
+<div><p>The index in the input stack to get value from.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.push.instruction.PyshInputInstruction.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshInputInstruction.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the input instruction on the given PushState.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>state</strong> : PushState</p>
+<blockquote class="last">
+<div><p>The PushState to execute the input instruction on.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.push.instruction.PyshInstruction">
+<em class="property">class </em><code class="descclassname">pyshgp.push.instruction.</code><code class="descname">PyshInstruction</code><span class="sig-paren">(</span><em>name</em>, <em>func</em>, <em>stack_types</em>, <em>parentheses=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshInstruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A instruction for the push language.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nane</strong> : str</p>
+<blockquote>
+<div><p>A string name for the instruction.</p>
+</div></blockquote>
+<p><strong>func</strong> : function</p>
+<blockquote>
+<div><p>The python function that manipulates a Push state in the desired way.</p>
+</div></blockquote>
+<p><strong>stack_types</strong> : list of str</p>
+<blockquote>
+<div><p>List of related pyshgp types.</p>
+</div></blockquote>
+<p><strong>parentheses</strong> : int</p>
+<blockquote class="last">
+<div><p>Specifies number of paren groups. (0, 1, 2, … etc)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.push.instruction.PyshInstruction.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshInstruction.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the input instruction on the given PushState.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>state</strong> : PushState</p>
+<blockquote class="last">
+<div><p>The PushState to execute the input instruction on.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.push.instruction.PyshReduceOutputInstruction">
+<em class="property">class </em><code class="descclassname">pyshgp.push.instruction.</code><code class="descname">PyshReduceOutputInstruction</code><span class="sig-paren">(</span><em>output_index</em>, <em>output_type</em>, <em>reducer</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshReduceOutputInstruction" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>A push instruction that will modify a particular output value based on</dt>
+<dd>the current value, a new value, and a reducer function.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>output_index</strong> : str</p>
+<blockquote>
+<div><blockquote>
+<div><p>The name of the key on the output structure to assign a value to.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>output_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">The name of the stack to copy values from.</p>
+</dd>
+<dt>reducer <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd><p class="first last">A function that takes two arguments, the current output value and the
+top value from <code class="docutils literal"><span class="pre">output_type</span></code> stack. Function returns new output value.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</strong></p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>name <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd><p class="first last">A name for the reducer function.</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.push.instruction.PyshReduceOutputInstruction.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshReduceOutputInstruction.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the output instruction on the given PushState.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>state: PushState</strong></p>
+<blockquote class="last">
+<div><p>The PushState to execute the input instruction on.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.push.instruction.PyshSetOutputInstruction">
+<em class="property">class </em><code class="descclassname">pyshgp.push.instruction.</code><code class="descname">PyshSetOutputInstruction</code><span class="sig-paren">(</span><em>output_index</em>, <em>output_type</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshSetOutputInstruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A push instruction that will set a particular output value to a new
+value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>output_index</strong> : str</p>
+<blockquote>
+<div><p>The name of the key on the output structure to assign a value to.</p>
+</div></blockquote>
+<p><strong>output_type</strong> : str</p>
+<blockquote class="last">
+<div><p>The name of the stack to copy values from.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.push.instruction.PyshSetOutputInstruction.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshSetOutputInstruction.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the output instruction on the given PushState.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>state</strong> : PushState</p>
+<blockquote class="last">
+<div><p>The PushState to execute the input instruction on.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.push.instruction.PyshTweakOutputInstruction">
+<em class="property">class </em><code class="descclassname">pyshgp.push.instruction.</code><code class="descname">PyshTweakOutputInstruction</code><span class="sig-paren">(</span><em>output_index</em>, <em>tweaker</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshTweakOutputInstruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A push instruction that will tweak a particular output value using a
+function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>output_index: str</strong></p>
+<blockquote>
+<div><p>The name of the key on the output structure to assign a value to.</p>
+</div></blockquote>
+<p><strong>tweaker: function</strong></p>
+<blockquote>
+<div><p>A function that takes one argument, the current output value, and
+returns the new output value.</p>
+</div></blockquote>
+<p><strong>name: str</strong></p>
+<blockquote class="last">
+<div><p>A name for the tweaker function.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.push.instruction.PyshTweakOutputInstruction.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.PyshTweakOutputInstruction.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the output instruction on the given PushState.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>state: PushState</strong></p>
+<blockquote class="last">
+<div><p>The PushState to execute the input instruction on.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.instruction.make_classification_instructions">
+<code class="descclassname">pyshgp.push.instruction.</code><code class="descname">make_classification_instructions</code><span class="sig-paren">(</span><em>class_index</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.make_classification_instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of instructions that treat the output value as a class to
+for for and against.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>class_index: int</strong></p>
+<blockquote class="last">
+<div><p>An integer greater than or equal to 0.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.instruction.make_numeric_output_instructions">
+<code class="descclassname">pyshgp.push.instruction.</code><code class="descname">make_numeric_output_instructions</code><span class="sig-paren">(</span><em>output</em>, <em>int_only=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.instruction.make_numeric_output_instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of instructions that treat the output value as numeric
+value that can be set or perturbed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>output: int</strong></p>
+<blockquote>
+<div><p>Index of the output value to create output instructions for.</p>
+</div></blockquote>
+<p><strong>int_only: bool, optional(default=False)</strong></p>
+<blockquote class="last">
+<div><p>If true, only returns instructions that utilize the integer stack.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.interpreter">
+<span id="interpreter"></span><h2>Interpreter<a class="headerlink" href="#module-pyshgp.push.interpreter" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">interpreter</span></code> module defines the <code class="docutils literal"><span class="pre">PushInterpreter</span></code> class which is
+capable of running Push programs.</p>
+<dl class="class">
+<dt id="pyshgp.push.interpreter.PushInterpreter">
+<em class="property">class </em><code class="descclassname">pyshgp.push.interpreter.</code><code class="descname">PushInterpreter</code><span class="sig-paren">(</span><em>inputs</em>, <em>output_types</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object that can run Push programs and stores the state of the Push
+stacks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>inputs</strong> : list</p>
+<blockquote class="last">
+<div><p>A list of all values that should be accessible as inputs.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>state</strong></td>
+<td>(PushState) A <code class="xref py py-mod docutils literal"><span class="pre">PushState</span></code> that hold the current state of all of the stacks.</td>
+</tr>
+<tr class="row-even"><td><strong>status</strong></td>
+<td>(str) Current status of the interpreter. Either ‘_normal’ or some kind of error indicator.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.eval_atom">
+<code class="descname">eval_atom</code><span class="sig-paren">(</span><em>instruction</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.eval_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a push instruction or literal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>instruction</strong> : PushInstruction</p>
+<blockquote class="last">
+<div><p>The instruction to the executed.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.eval_push">
+<code class="descname">eval_push</code><span class="sig-paren">(</span><em>print_steps=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.eval_push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the contents of the exec stack.</p>
+<p>Aborts prematurely if execution limits are exceeded. If execution
+limits are reached, status will be denoted.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>print_steps</strong> : bool, optional</p>
+<blockquote class="last">
+<div><p>Denotes if stack state should be printed.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the PushInterpreter. Should be called between push program
+executions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>code</em>, <em>print_steps=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>The top level method of the push interpreter.</p>
+<p>Calls eval-push between appropriate code/exec pushing/popping.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>code</strong> : list</p>
+<blockquote>
+<div><p>The push program to run.</p>
+</div></blockquote>
+<p><strong>print_steps</strong> : bool, optional</p>
+<blockquote>
+<div><p>Denotes if stack states should be printed.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Returns the output structure as a dictionary.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.push.interpreter.PushState">
+<em class="property">class </em><code class="descclassname">pyshgp.push.interpreter.</code><code class="descname">PushState</code><span class="sig-paren">(</span><em>inputs</em>, <em>output_types</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.interpreter.PushState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary that holds PyshStacks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>inputs</strong> : list</p>
+<blockquote class="last">
+<div><p>A list of all values that should be accessible as inputs.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.push.interpreter.PushState.from_dict">
+<code class="descname">from_dict</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.interpreter.PushState.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the state to match the given dictionary.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is written to be used in <code class="docutils literal"><span class="pre">pyshgp</span></code> tests, NOT as part of
+push program execution or evolution. There are no checks to confirm
+that the <code class="docutils literal"><span class="pre">d</span></code> can be converted to a valid Push state.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>d</strong> : dict</p>
+<blockquote class="last">
+<div><p>Dict that is converted into a Push state.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.interpreter.PushState.pretty_print">
+<code class="descname">pretty_print</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.interpreter.PushState.pretty_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints state of all stacks in the PushState.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.plush">
+<span id="plush"></span><h2>Plush<a class="headerlink" href="#module-pyshgp.push.plush" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">plush</span></code> module contains code pertaining the Plush genenomes.</p>
+<p>Plush genomes are linear representations of Push programs.
+Plush genomes are python lists of plush genes.
+Plush genes are python objects defined below.</p>
+<dl class="class">
+<dt id="pyshgp.push.plush.Gene">
+<em class="property">class </em><code class="descclassname">pyshgp.push.plush.</code><code class="descname">Gene</code><span class="sig-paren">(</span><em>atom</em>, <em>is_literal</em>, <em>closes</em>, <em>is_silent=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.plush.Gene" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>atom</strong></td>
+<td>({Instruction, literal}) An instance of the instruction class or a literal</td>
+</tr>
+<tr class="row-even"><td><strong>is_literal</strong></td>
+<td>(bool) Denotes if the gene is holding a literal or an instruction.</td>
+</tr>
+<tr class="row-odd"><td><strong>closes</strong></td>
+<td>(int) Denotes how many close parens to place after instruction in program.</td>
+</tr>
+<tr class="row-even"><td><strong>is_silent</strong></td>
+<td>(bool, optional) If true, do not include instruction in translated program.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.random">
+<span id="random"></span><h2>Random<a class="headerlink" href="#module-pyshgp.push.random" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">random</span></code> module defines classes that produce random Plush
+genomes and random Push programs.</p>
+<p>TODO: There should be better structure here in terms of what goes in the
+spawner class and what is a global function.</p>
+<dl class="class">
+<dt id="pyshgp.push.random.PushSpawner">
+<em class="property">class </em><code class="descclassname">pyshgp.push.random.</code><code class="descname">PushSpawner</code><span class="sig-paren">(</span><em>atom_generators, epigenetic_markers=['_instruction', '_close'], close_parens_probabilities=[0.772, 0.206, 0.021, 0.001], silent_gene_probability=0.2</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.random.PushSpawner" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>atom_generators</strong> : list</p>
+<blockquote>
+<div><p>List of atoms, and functions that produce atoms, to choose from when
+generating random code.</p>
+</div></blockquote>
+<p><strong>epigenetic_markers</strong> : list</p>
+<blockquote>
+<div><p>TODO: Remove epigenetic_markers.</p>
+</div></blockquote>
+<p><strong>close_parens_probabilities</strong> : int</p>
+<blockquote>
+<div><p>TODO: Refactor use of close_parens_probabilities.</p>
+</div></blockquote>
+<p><strong>silent_gene_probability</strong> : float</p>
+<blockquote class="last">
+<div><p>TODO: Remove epigenetic_markers.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.push.random.PushSpawner.atom_to_plush_gene">
+<code class="descname">atom_to_plush_gene</code><span class="sig-paren">(</span><em>atom</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.random.PushSpawner.atom_to_plush_gene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an atom into a plush gene.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>atom</strong> : Instruction or literal</p>
+<blockquote>
+<div><p>The atom (instruction or literal) to convert to a gene.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Instance of Gene.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.random.PushSpawner.random_closes">
+<code class="descname">random_closes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.random.PushSpawner.random_closes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random number of closes based on close_parens_probabilities.</p>
+<p>close_parens_probabilities defaults to [0.772, 0.206, 0.021, 0.001].
+This is roughly equivalent to each selection coming from  a binomial
+distribution with n=4 and p=1/16.
+This results in the following probabilities:
+p(0) = 0.772
+p(1) = 0.206
+p(2) = 0.021
+p(3) = 0.001</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Integer between 0 and 3, inclusive. Denoted number of closes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.random.PushSpawner.random_plush_gene">
+<code class="descname">random_plush_gene</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.random.PushSpawner.random_plush_gene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random plush gene given atom_generators and
+epigenetic-markers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A random Plush gene from the <code class="docutils literal"><span class="pre">atom_generators</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.random.PushSpawner.random_plush_genome">
+<code class="descname">random_plush_genome</code><span class="sig-paren">(</span><em>max_genome_size</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.random.PushSpawner.random_plush_genome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random Plush genome with size limited by max_genome_size.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>max_genome_size</strong> : int</p>
+<blockquote>
+<div><p>Max number of genes that could be in the genome.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of Plush genes (tuples). This is considered a genome.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.random.PushSpawner.random_plush_genome_with_size">
+<code class="descname">random_plush_genome_with_size</code><span class="sig-paren">(</span><em>genome_size</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.random.PushSpawner.random_plush_genome_with_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random Plush genome with size <code class="docutils literal"><span class="pre">genome_size</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>genome_size</strong> : int</p>
+<blockquote>
+<div><p>The number of genes to be put in the Plush genome.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of Plush genes. This is considered a genome.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.random.PushSpawner.random_push_code">
+<code class="descname">random_push_code</code><span class="sig-paren">(</span><em>max_points</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.random.PushSpawner.random_push_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random Push expression with size limited by max_points.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>max_points</strong> : int</p>
+<blockquote>
+<div><p>Max number of instructions, literals and parens.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A random Push program.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.stack">
+<span id="stack"></span><h2>Stack<a class="headerlink" href="#module-pyshgp.push.stack" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">stack</span></code> module defines the <code class="docutils literal"><span class="pre">PyshStack</span></code> class which is used to hold
+values of a certain type in a <code class="docutils literal"><span class="pre">PyshState</span></code> object.</p>
+<p>TODO: Consider optimization with Cython.</p>
+<dl class="class">
+<dt id="pyshgp.push.stack.PyshStack">
+<em class="property">class </em><code class="descclassname">pyshgp.push.stack.</code><code class="descname">PyshStack</code><span class="sig-paren">(</span><em>pysh_type_str</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.stack.PyshStack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stack that holds elements of a sinlge push type. Extends Python list.</p>
+<dl class="method">
+<dt id="pyshgp.push.stack.PyshStack.flush">
+<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.stack.PyshStack.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Empties the stack.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PyshStack.insert">
+<code class="descname">insert</code><span class="sig-paren">(</span><em>position</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.stack.PyshStack.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts value at position in stack.’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>position</strong> : int</p>
+<blockquote>
+<div><p>Position in stack to get item.</p>
+</div></blockquote>
+<p><strong>value :</strong></p>
+<blockquote class="last">
+<div><p>Value to insert into stack.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PyshStack.push">
+<code class="descname">push</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.stack.PyshStack.push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pushes a value to the top of the stack. An alias for <cite>append</cite> which
+makes the definition of push instructions more clear.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>value :</strong></p>
+<blockquote class="last">
+<div><p>Value to push onto stack.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.stack.PyshStack.pysh_type">
+<code class="descname">pysh_type</code><em class="property"> = None</em><a class="headerlink" href="#pyshgp.push.stack.PyshStack.pysh_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The push type that the stack holds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PyshStack.ref">
+<code class="descname">ref</code><span class="sig-paren">(</span><em>position</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.stack.PyshStack.ref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the element at a given position.</p>
+<p>If stack is empty, returns NoStackItem. If <code class="docutils literal"><span class="pre">position</span> <span class="pre">&lt;</span> <span class="pre">0</span></code> or
+<code class="docutils literal"><span class="pre">position</span> <span class="pre">&gt;</span> <span class="pre">len(self)</span></code> returns StackOutOfBounds.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>position</strong> : int</p>
+<blockquote>
+<div><p>Position in stack to get item.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Element at <code class="docutils literal"><span class="pre">positon</span></code> in stack.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PyshStack.top_item">
+<code class="descname">top_item</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.stack.PyshStack.top_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the top item on the stack, or a NoStackItem if empty.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns the top element of the stack, or NoStackItem if empty.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.translation">
+<span id="translation"></span><h2>Translation<a class="headerlink" href="#module-pyshgp.push.translation" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">translation</span></code> module provides functions that translate Plush genomes
+into Push programs.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Consider breaking up some of the larger functions in this file.</p>
+</div>
+<dl class="function">
+<dt id="pyshgp.push.translation.genome_to_program">
+<code class="descclassname">pyshgp.push.translation.</code><code class="descname">genome_to_program</code><span class="sig-paren">(</span><em>genome</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.translation.genome_to_program" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a Plush genomes, returns the equivalent Push program.</p>
+<p>Takes as input of a Plush genome and translates it to the correct Push
+program with balanced parens. The linear Plush genome is made up of a list
+of instruction objects. As the linear Plush genome is traversed, each
+instruction that requires parens will push <code class="docutils literal"><span class="pre">&quot;_close&quot;</span></code> and/or
+<code class="docutils literal"><span class="pre">&quot;_close_open&quot;</span></code> onto the paren stack, and will also put an open paren
+after it in the program.  If the end of the program is reached but parens
+are still needed (as indicated by the paren-stack), parens are added until
+the paren stack is empty.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>genome</strong> : list</p>
+<blockquote>
+<div><p>List of Plush genes to be translated.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A Push program.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.translation.get_matcing_close_index">
+<code class="descclassname">pyshgp.push.translation.</code><code class="descname">get_matcing_close_index</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.translation.get_matcing_close_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the the matching <code class="docutils literal"><span class="pre">&quot;_close&quot;</span></code>
+to the first <code class="docutils literal"><span class="pre">&quot;_open&quot;</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sequence</strong> : list</p>
+<blockquote>
+<div><p>List with some <code class="docutils literal"><span class="pre">&quot;_open&quot;</span></code> and <code class="docutils literal"><span class="pre">&quot;_close&quot;</span></code> elements.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Int of index to match <code class="docutils literal"><span class="pre">&quot;_close&quot;</span></code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.translation.open_close_sequence_to_list">
+<code class="descclassname">pyshgp.push.translation.</code><code class="descname">open_close_sequence_to_list</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.push.translation.open_close_sequence_to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts flat list with <code class="docutils literal"><span class="pre">&quot;_open&quot;</span></code> and <code class="docutils literal"><span class="pre">&quot;_close&quot;</span></code> elements to
+nested lists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sequence</strong> : list</p>
+<blockquote class="last">
+<div><p>List with some <code class="docutils literal"><span class="pre">&quot;_open&quot;</span></code> and <code class="docutils literal"><span class="pre">&quot;_close&quot;</span></code> elements.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">open_close_sequence_to_list</span><span class="p">([</span><span class="s2">&quot;_open&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;_close&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
+<span class="go">[[1], 2]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="instructions">
+<h2>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="registered_instructions.html">Registered Instructions</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pyshgp</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pushgp.html">What is Push GP?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Pyshgp Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gp.html">gp</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">push</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">constants.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html">exceptions.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils.py</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions.html">Pysh Instruction Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">API</a><ul>
+      <li>Next: <a href="registered_instructions.html" title="next chapter">Registered Instructions</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Edward Pantridge.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/push.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

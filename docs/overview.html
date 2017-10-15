@@ -1,0 +1,155 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Pyshgp Overview &#8212; pyshgp  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api/index.html" />
+    <link rel="prev" title="Automatic Genome Simplification" href="simplification.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyshgp-overview">
+<h1>Pyshgp Overview<a class="headerlink" href="#pyshgp-overview" title="Permalink to this headline">¶</a></h1>
+<p><code class="xref py py-mod docutils literal"><span class="pre">PyshGP</span></code> is broken down into two sub-packages with a few shared utilities.
+This document will outline design and intended uses cases for each of the
+sub-packages.</p>
+<div class="section" id="push-language">
+<h2>Push Language<a class="headerlink" href="#push-language" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">push</span></code> sub-package contains an implementation of the Push language.
+This includes an instruction set, interpreter, and random Push code generation
+utilities.</p>
+<p>The following paragraph has been taken from the Push language
+<a class="reference external" href="http://faculty.hampshire.edu/lspector/push.html">homepage</a>.</p>
+<blockquote>
+<div>Push is a programming language designed for evolutionary computation, to be
+used as the programming language within which evolving programs are expressed.
+Push features a stack-based execution architecture in which there is a
+separate stack for each data type. In Push, “code” itself is a data type,
+allowing programs to manipulate their own code as they run and thereby to
+implement arbitrary and potentially novel control structures. This
+expressiveness is combined with syntactic minimality: the only syntax rule is
+that parentheses must be balanced. It is therefore trivial to generate and
+transform syntactically valid Push programs.</div></blockquote>
+</div>
+<div class="section" id="genetic-programming-framework">
+<h2>Genetic Programming Framework<a class="headerlink" href="#genetic-programming-framework" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">gp</span></code> sub-package contains a genetic programming framework that produces
+Push programs.</p>
+<p>The genetic program framework is heavily inspired by the
+<a class="reference external" href="http://scikit-learn.org/">Scikit-learn</a> machine learning framework. PyshGP is
+designed to be usable using only the base classes, many of which are sklearn
+estimators. The PyshGP genetic programming framework aims to be easily embedded
+into Data Science/Machine Learning pipelines, over being used as a standalone
+tool.</p>
+<p>Aside from the general goal of Inductive Program Synthesis, the PyshGP
+genetic programming framework does not have a single intended application (ie.
+regression, classification, etc).</p>
+</div>
+<div class="section" id="pushgp-in-pyshgp">
+<h2>PushGP in PyshGP<a class="headerlink" href="#pushgp-in-pyshgp" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to use PyshGP for the purpose of pu</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pyshgp</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pushgp.html">What is Push GP?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pyshgp Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#push-language">Push Language</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#genetic-programming-framework">Genetic Programming Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pushgp-in-pyshgp">PushGP in PyshGP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">Pysh Instruction Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="simplification.html" title="previous chapter">Automatic Genome Simplification</a></li>
+      <li>Next: <a href="api/index.html" title="next chapter">API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Edward Pantridge.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/overview.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

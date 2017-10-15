@@ -96,17 +96,12 @@ hyperparameters. Then we can call the ``fit`` method and pass three things:
 1) The error function 2) the number of input values that will be supplied and
 3) a list of pysh types to output.
 """
-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 import random
 import collections
 
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.registered_instructions import get_instruction
 from pyshgp.gp.evolvers import SimplePushGPEvolver
-from pyshgp.gp.variation import UniformMutation, Alternation
 
 
 def string_difference(s1, s2):
@@ -160,11 +155,6 @@ def string_error_func(program):
     return errors
 
 
-ops = [
-    (UniformMutation(constant_tweak_rate=0.8), 0.5),
-    (Alternation(), 0.5)
-]
-
 atom_generators = [get_instruction("_string_length"),
                    get_instruction("_string_head"),
                    get_instruction("_string_concat"),
@@ -181,6 +171,15 @@ atom_generators = [get_instruction("_string_length"),
                    lambda: random_str()]
 
 if __name__ == "__main__":
-    evo = SimplePushGPEvolver(n_jobs=-1, verbose=1, operators=ops,
-                              atom_generators=atom_generators)
+    # evo = SimplePushGPEvolver(
+    #     verbose=1,
+    #     atom_generators=atom_generators,
+    #     population_size=100,
+    #     max_generations=3,
+    #     simplification_steps=100,
+    #     n_jobs=1)
+    evo = SimplePushGPEvolver(
+        verbose=2,
+        atom_generators=atom_generators,
+        n_jobs=-1)
     evo.fit(string_error_func, 1, ['_string'])

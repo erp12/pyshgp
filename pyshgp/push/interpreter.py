@@ -5,8 +5,8 @@ The :mod:`interpreter` module defines the ``PushInterpreter`` class which is
 capable of running Push programs.
 """
 import time
-from copy import deepcopy  # <- This one is actually needed.
-from collections import OrderedDict
+# from copy import deepcopy  # <- This one is actually needed.
+# from collections import OrderedDict
 import numpy as np
 
 from ..utils import recognize_pysh_type
@@ -140,7 +140,7 @@ class PushInterpreter:
         elif pysh_type == '_list':
             # If the instruction is a list, then decompose it.
             # Copy the list to avoid mutability madness
-            instruction_cpy = deepcopy(instruction)
+            instruction_cpy = instruction[:]
             # Reverse the list.
             instruction_cpy.reverse()
             # Push all contents of the list to the ``exec`` stack.
@@ -211,7 +211,7 @@ class PushInterpreter:
         self.reset()
         # If you don't copy the code, the reference to the program will get
         # reversed and other bad things.
-        code_copy = deepcopy(code)
+        code_copy = code[:]
         self.state['_exec'].push(code_copy)
         self.eval_push(print_steps)
         if print_steps:

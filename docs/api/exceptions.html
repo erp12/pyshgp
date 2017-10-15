@@ -1,0 +1,166 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>exceptions.py &#8212; pyshgp  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="utils.py" href="utils.html" />
+    <link rel="prev" title="constants.py" href="constants.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-pyshgp.exceptions">
+<span id="exceptions-py"></span><h1>exceptions.py<a class="headerlink" href="#module-pyshgp.exceptions" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">exceptions</span></code> module provides utility classes that inherit from
+python Exception class. These errors can be used to provide more useful
+debugging information to the user.</p>
+<dl class="exception">
+<dt id="pyshgp.exceptions.EmptyCharacterException">
+<em class="property">exception </em><code class="descclassname">pyshgp.exceptions.</code><code class="descname">EmptyCharacterException</code><a class="headerlink" href="#pyshgp.exceptions.EmptyCharacterException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception that is raised when a Character object is empty.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyshgp.exceptions.LongCharacterException">
+<em class="property">exception </em><code class="descclassname">pyshgp.exceptions.</code><code class="descname">LongCharacterException</code><a class="headerlink" href="#pyshgp.exceptions.LongCharacterException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception that is raised when a Character object is too long.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyshgp.exceptions.PushVectorTypeException">
+<em class="property">exception </em><code class="descclassname">pyshgp.exceptions.</code><code class="descname">PushVectorTypeException</code><span class="sig-paren">(</span><em>vec_typ</em>, <em>el_typ</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.exceptions.PushVectorTypeException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Excepton that is raised when a element of an incorrect type is added to
+a PushVector.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyshgp.exceptions.UnknownGeneticOperator">
+<em class="property">exception </em><code class="descclassname">pyshgp.exceptions.</code><code class="descname">UnknownGeneticOperator</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.exceptions.UnknownGeneticOperator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception that is raised when an unknown genetic operator is specified.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyshgp.exceptions.UnknownPyshStack">
+<em class="property">exception </em><code class="descclassname">pyshgp.exceptions.</code><code class="descname">UnknownPyshStack</code><span class="sig-paren">(</span><em>stack_name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.exceptions.UnknownPyshStack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception when a pysh state is asked to return an unknown</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyshgp.exceptions.UnknownPyshType">
+<em class="property">exception </em><code class="descclassname">pyshgp.exceptions.</code><code class="descname">UnknownPyshType</code><span class="sig-paren">(</span><em>thing</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.exceptions.UnknownPyshType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception when a pysh type is expected.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyshgp.exceptions.UnkownEpigeneticMarker">
+<em class="property">exception </em><code class="descclassname">pyshgp.exceptions.</code><code class="descname">UnkownEpigeneticMarker</code><span class="sig-paren">(</span><em>marker</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.exceptions.UnkownEpigeneticMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception when a unknown epigenetic marker is found.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pyshgp</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pushgp.html">What is Push GP?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Pyshgp Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gp.html">gp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="push.html">push</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">constants.py</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">exceptions.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils.py</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../instructions.html">Pysh Instruction Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">API</a><ul>
+      <li>Previous: <a href="constants.html" title="previous chapter">constants.py</a></li>
+      <li>Next: <a href="utils.html" title="next chapter">utils.py</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Edward Pantridge.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/exceptions.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

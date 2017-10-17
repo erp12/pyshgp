@@ -63,8 +63,8 @@ testing_set = generate_cases(50)
 def error_function(program, debug=False):
     errors = []
     for io_pair in training_set:
-        interpreter = PushInterpreter([io_pair[0]], ['_integer'])
-        int_result = interpreter.run(program, debug)[0]
+        interpreter = PushInterpreter()
+        int_result = interpreter.run(program, [io_pair[0]], ['_integer'], debug)[0]
         str_result = interpreter.state.stdout
 
         int_error = None

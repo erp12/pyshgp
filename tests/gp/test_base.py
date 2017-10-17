@@ -14,11 +14,11 @@ class TestPyshBase(unittest.TestCase):
         self.assertTrue(isinstance(op, VariationOperator))
 
     def test_make_spawner(self):
-        self.b.make_spawner(3, ['_float'])
+        self.b.make_spawner(3)
         self.assertTrue(hasattr(self.b, 'spawner'))
 
     def test_init_population(self):
-        self.b.make_spawner(3, {})
+        self.b.make_spawner(3)
         self.b.init_population()
         self.assertTrue(hasattr(self.b, 'population'))
         self.assertEqual(len(self.b.population), 10)

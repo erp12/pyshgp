@@ -60,8 +60,8 @@ def error_func(program):
     for x in np.arange(-2.0, 2.0, 0.1):
         inpt = float(x)
         # Create the push interpreter
-        interpreter = PushInterpreter([inpt], ['_float'])
-        y_hat = interpreter.run(program)[0]
+        interpreter = PushInterpreter()
+        y_hat = interpreter.run(program, [inpt], ['_float'])[0]
         # Get output
         if y_hat is None:
             errors.append(1e5)

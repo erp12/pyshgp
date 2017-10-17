@@ -53,9 +53,8 @@ def two_bit_adder(a_1, b_1, a_2, b_2):
 def error_function(program):
     errors = []
     for case in cases:
-        interpreter = PushInterpreter(case,
-                                      ['_boolean', '_boolean', '_boolean'])
-        outputs = interpreter.run(program)
+        interpreter = PushInterpreter()
+        outputs = interpreter.run(program, case, ['_boolean', '_boolean', '_boolean'])
         target = two_bit_adder(case[0], case[1], case[2], case[3])
         e = 0
 

@@ -3,6 +3,7 @@ tractor_pysh_run.sh
 venv/
 venv2/
 *.prof
+.DS_STORE
 
 *.pyc
 *.png

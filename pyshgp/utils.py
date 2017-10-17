@@ -89,30 +89,6 @@ class PushVector(list):
         super(PushVector, self).append(item)
 
 
-class UnevaluatableStackResponse:
-    """Used as the superclass for other bad stack responses.
-    """
-
-    def __repr__(self):
-        return 'UNEVALUATABLE_STACK_RESPONSE'
-
-
-class NoStackItem(UnevaluatableStackResponse):
-    """Used as a response when getting value from empty PushStack.
-    """
-
-    def __repr__(self):
-        return 'NO_STACK_ITEM'
-
-
-class StackOutOfBounds(UnevaluatableStackResponse):
-    """Used as a response when getting value from empty PushStack.
-    """
-
-    def __repr__(self):
-        return 'NO_STACK_ITEM'
-
-
 # Utility Functions #
 
 def flatten_all(lst):

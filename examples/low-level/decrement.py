@@ -26,8 +26,8 @@ cases = [PushVector(gen_random_test_case(), int) for _ in range(20)]
 def error_function(program):
     errors = []
     for case in cases:
-        interpreter = PushInterpreter([case], ['_vector_integer'])
-        output = interpreter.run(program)[0]
+        interpreter = PushInterpreter()
+        output = interpreter.run(program, [case], ['_vector_integer'])[0]
         target = [x - 1 for x in case]
         if output is None:
             errors.append(1e5)

@@ -36,8 +36,8 @@ def full_adder(c, a, b):
 def error_function(program):
     errors = []
     for case in cases:
-        interpreter = PushInterpreter(case, ['_boolean', '_boolean'])
-        output = interpreter.run(program)
+        interpreter = PushInterpreter()
+        output = interpreter.run(program, case, ['_boolean', '_boolean'])
         targets = full_adder(case)
         e = 0
 

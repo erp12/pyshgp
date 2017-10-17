@@ -12,9 +12,6 @@ def dict_matches_state(interpreter, state_dict):
         if k == '_input':
             if not state_dict[k] == interpreter.state.inputs:
                 return False
-        elif k == '_output':
-            if not state_dict[k] == interpreter.state.outputs:
-                return False
         elif k == '_stdout':
             i -= len(state_dict[k])
             if not state_dict[k] == interpreter.state.stdout:
@@ -26,7 +23,7 @@ def dict_matches_state(interpreter, state_dict):
 
 
 def run_test(before, after, instruction, print_test=False):
-    interpreter = interp.PushInterpreter(inputs=[], output_types=[])
+    interpreter = interp.PushInterpreter()
     interpreter.state.from_dict(before)
 
     if not isinstance(instruction, PyshInstruction):

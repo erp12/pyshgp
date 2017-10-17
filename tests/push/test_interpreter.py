@@ -20,6 +20,7 @@ class TestPushStateMethods(unittest.TestCase):
                   '_vector_float': [],
                   '_vector_integer': [],
                   '_vector_string': []}
+        self.i.state.from_dict(self.d)
 
     def test_len(self):
         self.assertEqual(len(self.i.state), 3)

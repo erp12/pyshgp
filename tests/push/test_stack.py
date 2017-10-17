@@ -1,6 +1,5 @@
 import unittest
 
-import pyshgp.utils as u
 import pyshgp.push.stack as stack
 
 
@@ -26,7 +25,7 @@ class TestStackMethods(unittest.TestCase):
 
     def test_top_item_B(self):
         i = self.stck.top_item()
-        self.assertIsInstance(i, u.NoStackItem)
+        self.assertIsNone(i)
 
     def test_ref(self):
         self.stck.push("a")

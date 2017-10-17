@@ -154,7 +154,7 @@ class SimplePushGPEvolver(PyshBase):
             ouput a list of outputs with the corresponding type in each index.
         """
         self.output_types = output_types
-        self.make_spawner(n_inputs, output_types)
+        self.make_spawner(n_inputs)
         self.init_population()
         self._evaluation(error_function)
 
@@ -358,7 +358,7 @@ class PushGPRegressor(PyshBase, PyshEstimatorMixin, BaseEstimator,
         """
         X, y = check_X_y(X, y)
         n_feats = X.shape[1]
-        self.make_spawner(n_feats, self.output_types)
+        self.make_spawner(n_feats)
         return self.evolve(X, y)
 
     def predict(self, X):
@@ -526,8 +526,8 @@ class PushGPClassifier(PyshBase, PyshEstimatorMixin, BaseEstimator,
         X, y = check_X_y(X, y)
         n_feats = X.shape[1]
         n_classes = len(np.unique(y))
-        self.output_types = ['_class'] * n_classes
-        self.make_spawner(n_feats, self.output_types)
+        self.output_types = ['_float'] * n_classes
+        self.make_spawner(n_feats)
         return self.evolve(X, y)
 
     def predict(self, X):

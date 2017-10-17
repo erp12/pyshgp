@@ -22,6 +22,7 @@ class PushState(dict):
 
     def __init__(self):
         self.stdout = ''
+        self.inputs = []
 
         for t in c.pysh_types:
             self[t] = stack.PyshStack(t)
@@ -61,10 +62,10 @@ class PushState(dict):
         for typ in output_types:
             if typ in counts.keys():
                 ndx = counts[typ]
-                outputs.append(self.state[typ].ref(ndx))
+                outputs.append(self[typ].ref(ndx))
                 counts[typ] += 1
             else:
-                outputs.append(self.state[typ].ref(0))
+                outputs.append(self[typ].ref(0))
                 counts[typ] = 1
         return outputs
 
@@ -99,7 +100,8 @@ class PushState(dict):
         """Prints state of all stacks in the PushState.
         """
         for t in c.pysh_types:
-            print(self[t].pysh_type, ":", self[t])
+            if len(self[t]) > 0:
+                print(self[t].pysh_type, ":", self[t])
         print('Inputs :', self.inputs)
         print('Stdout :', self.stdout)
 
@@ -209,7 +211,7 @@ class PushInterpreter:
 
             iteration += 1
 
-    def run(self, code, inputs, print_steps=False):
+    def run(self, code, inputs, output_types, print_steps=False):
         """The top level method of the push interpreter.
 
         Calls eval-push between appropriate code/exec pushing/popping.
@@ -236,4 +238,4 @@ class PushInterpreter:
         if print_steps:
             print("=== Finished Push Execution ===")
 
-        return self.state.observe_outputs()
+        return self.state.observe_outputs(output_types)

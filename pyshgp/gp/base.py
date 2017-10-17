@@ -24,12 +24,7 @@ from ..push.registered_instructions import (
     instruction_set,
     get_instructions_by_pysh_type
 )
-from ..push.instruction import (
-    PyshInputInstruction,
-    PyshSetOutputInstruction,
-    make_numeric_output_instructions,
-    make_classification_instructions
-)
+from ..push.instruction import PyshInputInstruction
 from ..utils import merge_sets
 
 
@@ -181,7 +176,7 @@ class PyshBase:
             [o[1] for o in self.operators]
         )[0]
 
-    def make_spawner(self, num_inputs, output_types):
+    def make_spawner(self, num_inputs):
         """Creates a spawner object used to generate random code.
 
         Parameters
@@ -198,15 +193,6 @@ class PyshBase:
         # Add input instructions.
         input_instrs = [PyshInputInstruction(i) for i in range(num_inputs)]
         all_atom_gens = self.atom_generators + input_instrs
-        for i, typ in enumerate(output_types):
-            if typ == '_class':
-                class_instrs = make_classification_instructions(i)
-                all_atom_gens = all_atom_gens + class_instrs
-            elif typ in ['_integer', '_float']:
-                numeric_instrs = make_numeric_output_instructions(i, typ)
-                all_atom_gens = all_atom_gens + numeric_instrs
-            else:
-                all_atom_gens.append(PyshSetOutputInstruction(i, typ))
         # Create spawner
         self.spawner = r.PushSpawner(all_atom_gens)
         if self.verbose > 1:

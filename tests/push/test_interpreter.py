@@ -6,8 +6,7 @@ from pyshgp.push.interpreter import PushInterpreter
 class TestPushStateMethods(unittest.TestCase):
 
     def setUp(self):
-        self.i = PushInterpreter(inputs=["a", "b", "c"],
-                                 output_types=['_string'])
+        self.i = PushInterpreter()
         self.d = {'_auxiliary': [],
                   '_boolean': [],
                   '_char': [],
@@ -16,7 +15,6 @@ class TestPushStateMethods(unittest.TestCase):
                   '_float': [],
                   '_input': ['a', 'b', 'c'],
                   '_integer': [],
-                  '_output': {},
                   '_string': [],
                   '_vector_boolean': [],
                   '_vector_float': [],
@@ -24,7 +22,7 @@ class TestPushStateMethods(unittest.TestCase):
                   '_vector_string': []}
 
     def test_len(self):
-        self.assertEqual(len(self.i.state), 4)
+        self.assertEqual(len(self.i.state), 3)
 
     def test_from_dict(self):
         self.d['_integer'].append(5)
@@ -40,8 +38,7 @@ class TestPushStateMethods(unittest.TestCase):
 class TestPushInterpreterMethods(unittest.TestCase):
 
     def setUp(self):
-        self.i = PushInterpreter(inputs=["a", "b", "c"],
-                                 output_types=['_string'])
+        self.i = PushInterpreter()
 
     def test_reset(self):
         self.i.reset()
@@ -61,5 +58,7 @@ class TestPushInterpreterMethods(unittest.TestCase):
         self.assertEqual(len(self.i.state['_exec']), 0)
 
     def test_run(self):
-        outputs = self.i.run([7, 'hello'])
-        self.assertEqual(outputs, [None])
+        outputs = self.i.run([7, 'hello'],
+                             inputs=["a", "b", "c"],
+                             output_types=['_string'])
+        self.assertEqual(outputs, ['hello'])

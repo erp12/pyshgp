@@ -26,9 +26,8 @@ X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target,
 def iris_error_func(program):
     error_vec = []
     for i in range(X_train.shape[0]):
-        interpreter = PushInterpreter(X_train[i],
-                                      ['_class', '_class', '_class'])
-        outputs = interpreter.run(program)
+        interpreter = PushInterpreter()
+        outputs = interpreter.run(program, X_train[i], ['_float', '_float', '_float'])
         not_none = [x for x in outputs if x is not None]
         if len(not_none) == 0:
             error_vec.append(1000000)

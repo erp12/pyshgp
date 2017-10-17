@@ -143,8 +143,8 @@ def string_error_func(program):
 
     for inpt in inputs:
         # Create the push interpreter
-        interpreter = PushInterpreter([inpt], ['_string'])
-        y_hat = interpreter.run(program)[0]
+        interpreter = PushInterpreter()
+        y_hat = interpreter.run(program, [inpt], ['_string'])[0]
         if y_hat is None:
             errors.append(1e5)
         else:

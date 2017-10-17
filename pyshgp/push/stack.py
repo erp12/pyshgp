@@ -2,10 +2,7 @@
 """
 The :mod:`stack` module defines the ``PyshStack`` class which is used to hold
 values of a certain type in a ``PyshState`` object.
-
-TODO: Consider optimization with Cython.
 """
-from .. import utils as u
 
 
 class PyshStack(list):
@@ -39,7 +36,7 @@ class PyshStack(list):
         if len(self) > 0:
             return self[-1]
         else:
-            return u.NoStackItem()
+            return None
 
     def ref(self, position):
         """Returns the element at a given position.
@@ -57,9 +54,9 @@ class PyshStack(list):
         Element at ``positon`` in stack.
         """
         if len(self) <= position:
-            return u.StackOutOfBounds()
+            return None
         elif len(self) == 0:
-            return u.NoStackItem()
+            return None
         else:
             return self[(len(self) - 1) - position]
 

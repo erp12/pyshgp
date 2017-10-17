@@ -26,9 +26,8 @@ def two_bit_control_shift(a, b, c):
 def error_function(program):
     errors = []
     for case in cases:
-        interpreter = PushInterpreter(case,
-                                      ['_boolean', '_boolean', '_boolean'])
-        outputs = interpreter.run(program)
+        interpreter = PushInterpreter()
+        outputs = interpreter.run(program, case, ['_boolean', '_boolean', '_boolean'])
         targets = two_bit_control_shift(case)
         e = 0
 

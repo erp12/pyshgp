@@ -21,8 +21,8 @@ training_set = [generate_case() for i in range(30)]
 def error_function(program):
     errors = []
     for case in training_set:
-        interp = PushInterpreter([case[0], case[1]], ['_integer'])
-        output = interp.run(program)[0]
+        interp = PushInterpreter()
+        output = interp.run(program, [case[0], case[1]], ['_integer'])[0]
         if output is None:
             errors.append(1e5)
         elif output == case[2]:

@@ -60,8 +60,8 @@ def binary_decrement(bitstr):
 def error_function(program):
     errors = []
     for case in cases:
-        interpreter = PushInterpreter([case], ['_vector_boolean'])
-        output = interpreter.run(program)[0]
+        interpreter = PushInterpreter()
+        output = interpreter.run(program, [case], ['_vector_boolean'])[0]
         if output is None:
             errors.append(1e5)
         else:

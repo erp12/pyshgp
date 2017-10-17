@@ -59,8 +59,8 @@ def invert_bitstring(bitstr):
 def error_function(program, debug=False):
     errors = []
     for case in cases:
-        interpreter = PushInterpreter([case], ['_vector_boolean'])
-        output = interpreter.run(program, debug)[0]
+        interpreter = PushInterpreter()
+        output = interpreter.run(program, [case], ['_vector_boolean'], debug)[0]
         target = invert_bitstring(case)
         if output is None:
             errors.append(1e5)

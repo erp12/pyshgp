@@ -38,8 +38,8 @@ testing_set = generate_cases(50)
 def error_function(program, debug=False):
     errors = []
     for case in training_set:
-        interpreter = PushInterpreter([case[0]], [])
-        interpreter.run(program, debug)
+        interpreter = PushInterpreter()
+        interpreter.run(program, [case[0]], [], debug)
         result = interpreter.state.stdout
         if result is None:
             errors.append(1e5)

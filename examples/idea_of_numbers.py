@@ -19,15 +19,17 @@ from pyshgp.gp.variation import (UniformMutation, Alternation,
                                  VariationOperatorPipeline)
 from pyshgp.gp.evolvers import SimplePushGPEvolver
 
+
 def target_function(x):
     return 9 * x**2 - 11 * x + 1964
+
 
 def error_func(program):
     errors = []
     for x in range(10):
         # Create the push interpreter and run program
-        interpreter = PushInterpreter(inputs=[x], output_types=['_integer'])
-        y_hat = interpreter.run(program)[0]
+        interpreter = PushInterpreter()
+        y_hat = interpreter.run(program, inputs=[x], output_types=['_integer'])[0]
         # Get output
         if y_hat is not None:
             # compare to target output

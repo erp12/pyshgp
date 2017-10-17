@@ -55,9 +55,9 @@ def odd_error_func(program, debug=False):
     errors = []
     for i in range(20):
         # Create the push interpreter
-        interpreter = PushInterpreter([i], ['_boolean'])
+        interpreter = PushInterpreter()
         # Run program
-        y_hat = interpreter.run(program)[0]
+        y_hat = interpreter.run(program, [i], ['_boolean'])[0]
         # Get output
         if y_hat is None:
             errors.append(1e5)

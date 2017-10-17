@@ -101,8 +101,8 @@ class Individual(object):
         --------
         The final state of the push Interpreter after executing the program.
         """
-        i = interp.PushInterpreter(inputs, output_types)
-        return i.run(self.program, print_trace)
+        i = interp.PushInterpreter()
+        return i.run(self.program, inputs, output_types, print_trace)
 
 
 class Population(list):

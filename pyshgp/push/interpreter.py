@@ -16,20 +16,11 @@ from . import stack
 
 
 class PushState(dict):
-    """Dictionary that holds PyshStacks.
-
-    Parameters
-    ----------
-    inputs : list
-        A list of all values that should be accessible as inputs.
+    """Custom dictionary that holds stacks of Pysh types. Includes methods to
+    help with for push program execution.
     """
 
-    def __init__(self, inputs, output_types):
-        if not isinstance(inputs, (list, np.ndarray)):
-            msg = "Push inputs must be a list, got {}"
-            raise ValueError(msg.format(type(inputs)))
-        self.inputs = inputs[::-1]
-        self.outputs = [None for o in output_types]
+    def __init__(self):
         self.stdout = ''
 
         for t in c.pysh_types:
@@ -38,9 +29,44 @@ class PushState(dict):
     def __len__(self):
         """Returns the size of the PushState.
         """
-        return (sum([len(s) for s in self.values()]) +
-                len(self.inputs) +
-                len(self.outputs))
+        return (sum([len(s) for s in self.values()]) + len(self.inputs))
+
+    def load_inputs(self, inputs):
+        """Loads a list of input values onto the PushState intputs.
+
+        Parameters
+        ----------
+        inputs : list
+            List of input values.
+        """
+        if not isinstance(inputs, (list, np.ndarray)):
+            raise ValueError(
+                "Push inputs must be a list, got {t}".format(t=type(inputs)))
+        self.inputs = inputs[::-1]
+
+    def observe_outputs(self, output_types):
+        """Returns a list of output values based on the types indicated in
+        ``output_types``. Items are take from the tops of each stack. If
+        multiple occurences of the same type are in ``output_types``, the
+        returned values are taken from progressively deeper in that stack. Does
+        not pop the values off the stacks.
+
+        Parameters
+        ----------
+        output_types : list
+            List of strings denoting the pysh types of the returned values.
+        """
+        outputs = []
+        counts = {}
+        for typ in output_types:
+            if typ in counts.keys():
+                ndx = counts[typ]
+                outputs.append(self.state[typ].ref(ndx))
+                counts[typ] += 1
+            else:
+                outputs.append(self.state[typ].ref(0))
+                counts[typ] = 1
+        return outputs
 
     def from_dict(self, d):
         """Sets the state to match the given dictionary.
@@ -62,8 +88,6 @@ class PushState(dict):
         for k in d.keys():
             if k == '_input':
                 self.inputs = d[k]
-            elif k == '_output':
-                self.outputs = d[k]
             elif k == '_stdout':
                 self.stdout += d[k]
             else:
@@ -77,7 +101,6 @@ class PushState(dict):
         for t in c.pysh_types:
             print(self[t].pysh_type, ":", self[t])
         print('Inputs :', self.inputs)
-        print('Outputs :', self.outputs)
         print('Stdout :', self.stdout)
 
 
@@ -100,17 +123,14 @@ class PushInterpreter:
         error indicator.
     """
 
-    def __init__(self, inputs, output_types):
-        self.inputs = inputs
-        self.output_types = output_types
-        self.state = PushState(inputs, output_types)
-        self.status = '_normal'
+    def __init__(self):
+        self.reset()
 
     def reset(self):
         """Resets the PushInterpreter. Should be called between push program
         executions.
         """
-        self.state = PushState(self.inputs, self.output_types)
+        self.state = PushState()
         self.status = '_normal'
 
     def eval_atom(self, instruction):
@@ -138,13 +158,10 @@ class PushInterpreter:
             # function on the current push state.
             instruction.execute(self.state)
         elif pysh_type == '_list':
-            # If the instruction is a list, then decompose it.
-            # Copy the list to avoid mutability madness
-            instruction_cpy = instruction[:]
-            # Reverse the list.
-            instruction_cpy.reverse()
-            # Push all contents of the list to the ``exec`` stack.
-            for i in instruction_cpy:
+            # If the instruction is a list, then decompose it. Copy the list to
+            # avoid mutability madness and then reverse the list and  push all
+            # contents of the list to the ``exec`` stack.
+            for i in instruction[::-1]:
                 self.state['_exec'].push(i)
         elif not pysh_type:
             # If pysh type was not found, raise exception.
@@ -192,7 +209,7 @@ class PushInterpreter:
 
             iteration += 1
 
-    def run(self, code, print_steps=False):
+    def run(self, code, inputs, print_steps=False):
         """The top level method of the push interpreter.
 
         Calls eval-push between appropriate code/exec pushing/popping.
@@ -213,7 +230,10 @@ class PushInterpreter:
         # reversed and other bad things.
         code_copy = code[:]
         self.state['_exec'].push(code_copy)
+        self.state.load_inputs(inputs)
         self.eval_push(print_steps)
+
         if print_steps:
             print("=== Finished Push Execution ===")
-        return self.state.outputs
+
+        return self.state.observe_outputs()

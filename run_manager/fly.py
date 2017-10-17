@@ -39,12 +39,11 @@ def start_fly_run(job_name: str, problem_file: str):
             run_line=run_line)
     with open('pysh_job.alf', 'w') as f:
         f.write(job_cmd)
-    os.system(' '.join([
-        '/opt/pixar/tractor-blade-1.7.2/python/bin/python2.6',
-        '/opt/pixar/tractor-blade-1.7.2/tractor-spool.py',
-        '--engine=fly:8000',
-        'pysh_job.alf'
-    ]))
+    os.system(' '.join(
+        ['/opt/pixar/tractor-blade-1.7.2/python/bin/python2.6',
+         '/opt/pixar/tractor-blade-1.7.2/tractor-spool.py',
+         '--engine=fly:8000',
+         'pysh_job.alf']))
 
 
 def start_n_fly_runs(problem_file, n_runs):

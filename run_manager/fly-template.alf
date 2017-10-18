@@ -6,11 +6,11 @@ Job
       -cmds {{
         RemoteCmd {{
           /bin/sh -c {{
-            echo "Starting Pysh Run"
-            cd {pyshgp_path}
-            {run_line}
+            echo "Starting Pysh Run";
+            cd {pyshgp_path};
+            {run_line};
           }}
         }}
-        -service linux
+        -service {{linux}}
     }}
 }}

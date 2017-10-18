@@ -14,22 +14,3 @@ Job
         -service {{linux}}
     }}
 }}
-
-
-
-Job
-  -title pyshgp_string_demo.py_1_7352dce3
-  -subtasks {
-    Task
-      -title pyshgp_string_demo.py_1_7352dce3
-      -cmds {
-        RemoteCmd {
-          /bin/sh -c {
-            echo "Starting Pysh Run"
-            cd /home/erp12/pyshgp
-            /home/erp12/anaconda3/bin/python /home/erp12/pyshgp/examples/tutorials/string_demo.py
-          }
-        }
-        -service {linux}
-    }
-}

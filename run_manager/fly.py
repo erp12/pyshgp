@@ -24,8 +24,9 @@ def get_log_file(problem_file: str) -> str:
 
 def get_python_call(problem_file: str) -> str:
     # log = get_log_file(problem_file)
-    python_call = '{py} {file}'
-    return python_call.format(py=FLY_PYTHON_HOME, file=problem_file)
+    python_call = '{py} {pyshgp}/{file}'
+    return python_call.format(
+        py=FLY_PYTHON_HOME, pyshgp=FLY_PYSHGP_PATH, file=problem_file)
 
 
 def start_fly_run(job_name: str, problem_file: str):
@@ -37,18 +38,18 @@ def start_fly_run(job_name: str, problem_file: str):
             task_name=job_name,
             pyshgp_path=FLY_PYSHGP_PATH,
             run_line=run_line)
-    with open('pysh_job.alf', 'w') as f:
+    with open('run_manager/pysh_job.alf', 'w') as f:
         f.write(job_cmd)
-    os.system(' '.join([
-        '/opt/pixar/tractor-blade-1.7.2/python/bin/python2.6',
-        '/opt/pixar/tractor-blade-1.7.2/tractor-spool.py',
-        '--engine=fly:8000',
-        'pysh_job.alf'
-    ]))
+    os.system(' '.join(
+        ['/opt/pixar/tractor-blade-1.7.2/python/bin/python2.6',
+         '/opt/pixar/tractor-blade-1.7.2/tractor-spool.py',
+         '--engine=fly:8000',
+         FLY_PYSHGP_PATH + '/run_manager/pysh_job.alf']))
 
 
 def start_n_fly_runs(problem_file, n_runs):
-    problem_name = problem_file.split('/')[-1]
+    problem_filename = problem_file.split('/')[-1]
+    problem_name = problem_filename.split('.')[0]
     batch_hash = str(uuid.uuid4())[:8]
     for i in range(n_runs):
         job_name = 'pyshgp_{prob}_{n}_{hash}'.format(

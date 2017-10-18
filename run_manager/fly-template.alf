@@ -1,9 +1,9 @@
 Job -title {job_name} -subtasks {{
     Task -title {task_name} -cmds {{
         RemoteCmd {{/bin/sh -c {{
-            echo "Starting Pysh Run"
-            cd {pyshgp_path};
-            {run_line}
-        }}}} -service {{linux}}
+                  echo "Starting Pysh Run";
+                  cd {pyshgp_path};
+                  {run_line};
+                  }}}} -service {{linux}}
     }}
 }}

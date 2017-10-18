@@ -45,13 +45,13 @@ def start_fly_run(job_name: str, problem_file: str):
             ['/opt/pixar/tractor-blade-1.7.2/python/bin/python2.6',
              '/opt/pixar/tractor-blade-1.7.2/tractor-spool.py',
              '--engine=fly:8000',
-             '{}/run_manager/pysh_job.alf'.format(FLY_PYSHGP_PATH)])
+             FLY_PYSHGP_PATH + '/run_manager/pysh_job.alf'])
     )
     os.system(' '.join(
         ['/opt/pixar/tractor-blade-1.7.2/python/bin/python2.6',
          '/opt/pixar/tractor-blade-1.7.2/tractor-spool.py',
          '--engine=fly:8000',
-         '{}/run_manager/pysh_job.alf'.format(FLY_PYSHGP_PATH)]))
+         FLY_PYSHGP_PATH + '/run_manager/pysh_job.alf']))
 
 
 def start_n_fly_runs(problem_file, n_runs):

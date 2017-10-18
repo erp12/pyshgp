@@ -11,6 +11,6 @@ Job
             {run_line}
           }}
         }}
-        -service {{linux}}
+        -service linux
     }}
 }}

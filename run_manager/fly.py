@@ -48,7 +48,8 @@ def start_fly_run(job_name: str, problem_file: str):
 
 
 def start_n_fly_runs(problem_file, n_runs):
-    problem_name = problem_file.split('/')[-1]
+    problem_filename = problem_file.split('/')[-1]
+    problem_name = problem_filename.split('.')[0]
     batch_hash = str(uuid.uuid4())[:8]
     for i in range(n_runs):
         job_name = 'pyshgp_{prob}_{n}_{hash}'.format(

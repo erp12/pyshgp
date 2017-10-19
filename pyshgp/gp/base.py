@@ -39,9 +39,9 @@ _default_mutation = VariationOperatorPipeline((
     RandomReplaceMutation(),
 ))
 DEFAULT_GENETICS = [
-    (Alternation(), 0.7),
-    (_default_mutation, 0.1),
-    (VariationOperatorPipeline((Alternation(), _default_mutation)), 0.2)
+    (Alternation(), 0.2),
+    (_default_mutation, 0.3),
+    (VariationOperatorPipeline((Alternation(), _default_mutation)), 0.5)
 ]
 DEFAULT_ATOM_GENERATORS = list(merge_sets(
     instruction_set.values(),

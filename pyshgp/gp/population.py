@@ -255,7 +255,7 @@ class Population(list):
             else:
                 max_error = best_val_for_case + epsilon
 
-            def test(i): return i.error_vector[case] <= (max_error + 1)
+            def test(i): return i.error_vector[case] <= max_error
             candidates = [i for i in candidates if test(i)]
             cases.pop(0)
         return random.choice(candidates)

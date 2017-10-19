@@ -38,8 +38,8 @@ def generate_cases(n_cases: int) -> list:
     return cases
 
 
-training_set = generate_cases(50)
-testing_set = generate_cases(50)
+training_set = generate_cases(200)
+testing_set = generate_cases(100)
 
 
 def error_function(program, debug=False):
@@ -65,5 +65,6 @@ atom_generators = list(merge_sets(
 if __name__ == "__main__":
     evo = SimplePushGPEvolver(n_jobs=-1, verbose=1,
                               atom_generators=atom_generators,
-                              initial_max_genome_size=400)
+                              initial_max_genome_size=150,
+                              max_generations=300)
     evo.fit(error_function, 1, ['_integer'])

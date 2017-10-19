@@ -82,12 +82,20 @@ class SimplePushGPEvolver(PyshBase):
 
     """
 
-    def __init__(self, atom_generators='default', operators='default',
-                 error_threshold=0, max_generations=1000,
-                 population_size=300, selection_method='epsilon_lexicase',
-                 n_jobs=1, initial_max_genome_size=50,
-                 program_growth_cap=100, verbose=0,
-                 epsilon='auto', tournament_size=7, simplification_steps=2000):
+    def __init__(self,
+                 atom_generators='default',
+                 operators='default',
+                 error_threshold=0,
+                 max_generations=1000,
+                 population_size=300,
+                 selection_method='lexicase',
+                 n_jobs=1,
+                 initial_max_genome_size=50,
+                 program_growth_cap=100,
+                 epsilon='auto',
+                 tournament_size=7,
+                 simplification_steps=2000,
+                 verbose=0):
 
         if atom_generators == 'default':
             atom_generators = DEFAULT_ATOM_GENERATORS
@@ -455,7 +463,7 @@ class PushGPClassifier(PyshBase, PyshEstimatorMixin, BaseEstimator,
     def __init__(self, atom_generators='default',
                  operators='default', error_threshold=1e-5,
                  max_generations=1000, population_size=500,
-                 selection_method='epsilon_lexicase', n_jobs=1,
+                 selection_method='lexicase', n_jobs=1,
                  initial_max_genome_size=50, program_growth_cap=100,
                  verbose=0, epsilon='auto', tournament_size=7,
                  simplification_steps=500):

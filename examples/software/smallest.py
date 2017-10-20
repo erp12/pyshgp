@@ -7,6 +7,11 @@ from pyshgp.utils import merge_sets
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.registered_instructions import get_instructions_by_pysh_type
 from pyshgp.gp.evolvers import SimplePushGPEvolver
+from pyshgp.gp.variation import (
+    PerturbCloseMutation,
+    UniformMutation,
+    Alternation,
+    VariationOperatorPipeline)
 
 
 def generate_cases(n_cases: int) -> list:
@@ -44,8 +49,21 @@ atom_generators = list(merge_sets(
 ))
 
 
+alternation = Alternation(rate=0.01, alignment_deviation=5)
+mutation = UniformMutation(rate=0.01)
+genetic_operators = [
+    (alternation, 0.2),
+    (mutation, 0.2),
+    (PerturbCloseMutation(rate=0.1), 0.1),
+    (VariationOperatorPipeline((alternation, mutation)), 0.5)
+]
+
+
 if __name__ == "__main__":
     evo = SimplePushGPEvolver(n_jobs=-1, verbose=2,
                               atom_generators=atom_generators,
-                              initial_max_genome_size=400)
+                              initial_max_genome_size=400,
+                              operators=genetic_operators,
+                              population_size=1000,
+                              max_generations=200)
     evo.fit(error_function, 4, [])

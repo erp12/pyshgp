@@ -9,14 +9,8 @@ from pathos.multiprocessing import ProcessingPool as Pool
 from .population import Population, Individual
 from .variation import (
     VariationOperatorPipeline,
+    UniformMutation,
     PerturbCloseMutation,
-    PerturbIntegerMutation,
-    PerturbFloatMutation,
-    TweakStringMutation,
-    FlipBooleanMutation,
-    RandomDeletionMutation,
-    RandomAdditionMutation,
-    RandomReplaceMutation,
     Alternation
 )
 from ..push import random as r
@@ -28,20 +22,13 @@ from ..push.instruction import PyshInputInstruction
 from ..utils import merge_sets
 
 
-_default_mutation = VariationOperatorPipeline((
-    PerturbCloseMutation(),
-    PerturbIntegerMutation(),
-    PerturbFloatMutation(),
-    TweakStringMutation(),
-    FlipBooleanMutation(),
-    RandomDeletionMutation(),
-    RandomAdditionMutation(),
-    RandomReplaceMutation(),
-))
+_alternation = Alternation()
+_mutation = UniformMutation()
 DEFAULT_GENETICS = [
-    (Alternation(), 0.2),
-    (_default_mutation, 0.3),
-    (VariationOperatorPipeline((Alternation(), _default_mutation)), 0.5)
+    (_alternation, 0.2),
+    (_mutation, 0.2),
+    (PerturbCloseMutation(rate=0.1), 0.1),
+    (VariationOperatorPipeline((_alternation, _mutation)), 0.5)
 ]
 DEFAULT_ATOM_GENERATORS = list(merge_sets(
     instruction_set.values(),

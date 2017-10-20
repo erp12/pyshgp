@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.metrics import mean_squared_error, accuracy_score
 
 
-def evaluate_with_function(individual, error_function):
+def evaluate_with_function(individual, error_function, max_error=1e10):
     """Evaluates the individual by passing it's program to the error
     function. Sets the ``error_vec`` and ``total_error`` attributes.
 
@@ -17,8 +17,12 @@ def evaluate_with_function(individual, error_function):
     """
     errs = error_function(individual.program)
     individual.error_vector = errs
-    individual.total_error = sum(individual.error_vector)
+    try:
+        individual.total_error = sum(individual.error_vector)
+    except OverflowError as e:
+        individual.total_error = max_error
     return individual
+
 
 def evaluate_for_regression(individual, X, y, penalty=1e5):
     """Evaluates the given individual on the given dataset.

@@ -334,6 +334,40 @@ class RandomReplaceMutation(VariationOperator):
         return Individual(new_genome)
 
 
+class UniformMutation(VariationOperator):
+    """A simple mutation operator that mutates all genes.
+    """
+
+    def __init__(self,
+                 rate=0.01,
+                 constant_tweak_rate=0.5,
+                 float_tweak_standard_deviation=1.0,
+                 int_tweak_standard_deviation=1.0,
+                 string_char_tweak_rate=0.1):
+        super().__init__(1)
+        self.constant_tweak_rate = constant_tweak_rate
+        self.pipeline = VariationOperatorPipeline([
+            PerturbIntegerMutation(rate=rate, standard_deviation=int_tweak_standard_deviation),
+            PerturbFloatMutation(rate=rate, standard_deviation=float_tweak_standard_deviation),
+            TweakStringMutation(rate=rate, char_tweak_rate=string_char_tweak_rate),
+            FlipBooleanMutation(rate=rate),
+            RandomReplaceMutation(rate=rate)])
+
+    def produce(self, parents, spawner):
+        """Produces a child by perturbing some floats in the parent.
+
+        Parameters
+        ----------
+        parents : list of Individuals
+            A list of parents to use when producing the child.
+
+        spawner : pyshgp.push.random.PushSpawner
+            A spawner that can be used to create random Push code.
+        """
+        self.check_num_parents(parents)
+        return self.pipeline.produce(parents, spawner)
+
+
 # #               # #
 #   Recombination   #
 # #               # #

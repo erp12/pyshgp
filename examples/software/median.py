@@ -48,5 +48,6 @@ atom_generators = list(merge_sets(
 if __name__ == "__main__":
     evo = SimplePushGPEvolver(n_jobs=-1, verbose=2,
                               atom_generators=atom_generators,
-                              initial_max_genome_size=400)
+                              initial_max_genome_size=400,
+                              selection_method='lexicase')
     evo.fit(error_function, 3, [])

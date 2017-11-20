@@ -169,7 +169,11 @@ class Population(list):
             for i in self:
                 f(i)
 
-    def select(self, method='lexicase', epsilon='auto', tournament_size=7):
+    def select(self,
+               method='lexicase',
+               epsilon='auto',
+               tournament_size=7,
+               cap=2):
         """Selects a individual from the population with the given selection
         method.
 
@@ -187,10 +191,12 @@ class Population(list):
         tournament_size : int, optional (default=7)
             The size of each tournament when using 'tournament' selection.
         """
-        if method == 'epsilon_lexicase':
-            return self.epsilon_lexicase_selection(epsilon)
-        elif method == 'lexicase':
+        if method == 'lexicase':
             return self.lexicase_selection()
+        elif method == 'capped_lexicase':
+            return self.capped_lexicase_selection(cap)
+        elif method == 'epsilon_lexicase':
+            return self.epsilon_lexicase_selection(epsilon)
         elif method == 'tournament':
             return self.tournament_selection(tournament_size)
         else:
@@ -217,6 +223,23 @@ class Population(list):
             def test(i): return i.error_vector[cases[0]] == best_val_for_case
             candidates = [ind for ind in candidates if test(ind)]
             cases.pop(0)
+        return random.choice(candidates)
+
+    def capped_lexicase_selection(self, cap=2):
+        candidates = self[:]
+        cases = list(range(len(self[0].error_vector)))
+        random.shuffle(cases)
+        case_count = 0
+        while len(cases) > 0 and len(candidates) > 1:
+            if case_count == cap:
+                break
+            best_val_for_case = min([i.error_vector[cases[0]]
+                                     for i in candidates])
+
+            def test(i): return i.error_vector[cases[0]] == best_val_for_case
+            candidates = [ind for ind in candidates if test(ind)]
+            cases.pop(0)
+            case_count += 1
         return random.choice(candidates)
 
     def epsilon_lexicase_selection(self, epsilon='auto'):

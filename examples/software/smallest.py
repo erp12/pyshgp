@@ -65,5 +65,6 @@ if __name__ == "__main__":
                               initial_max_genome_size=400,
                               operators=genetic_operators,
                               population_size=1000,
-                              max_generations=200)
+                              max_generations=200,
+                              selection_method='lexicase')
     evo.fit(error_function, 4, [])

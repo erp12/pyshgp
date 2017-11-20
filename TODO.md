@@ -24,22 +24,6 @@ Traceback (most recent call last):
     func = lambda args: f(*args)
   File "/home/erp12/anaconda3/lib/python3.5/site-packages/pyshgp/gp/population.py", line 163, in f
     return evaluate_with_function(i, error_function)
-  File "/home/erp12/anaconda3/lib/python3.5/site-packages/pyshgp/gp/evaluate.py", line 20, in evaluate_with_function
-    individual.total_error = sum(individual.error_vector)
-OverflowError: int too large to convert to float
-```
-
-
-```
-Traceback (most recent call last):
-  File "/home/erp12/anaconda3/lib/python3.5/site-packages/multiprocess/pool.py", line 119, in worker
-    result = (True, func(*args, **kwds))
-  File "/home/erp12/anaconda3/lib/python3.5/site-packages/multiprocess/pool.py", line 44, in mapstar
-    return list(map(*args))
-  File "/home/erp12/anaconda3/lib/python3.5/site-packages/pathos/helpers/mp_helper.py", line 15, in <lambda>
-    func = lambda args: f(*args)
-  File "/home/erp12/anaconda3/lib/python3.5/site-packages/pyshgp/gp/population.py", line 163, in f
-    return evaluate_with_function(i, error_function)
   File "/home/erp12/anaconda3/lib/python3.5/site-packages/pyshgp/gp/evaluate.py", line 18, in evaluate_with_function
     errs = error_function(individual.program)
   File "/home/erp12/pyshgp/examples/software/double_letters.py", line 42, in error_function

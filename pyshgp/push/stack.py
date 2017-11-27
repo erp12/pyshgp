@@ -27,11 +27,11 @@ class PyshStack(list):
         self.append(value)
 
     def top_item(self):
-        """Returns the top item on the stack, or a NoStackItem if empty.
+        """Returns the top item on the stack, or a None if empty.
 
         Returns
         --------
-        Returns the top element of the stack, or NoStackItem if empty.
+        Returns the top element of the stack, or None if empty.
         """
         if len(self) > 0:
             return self[-1]
@@ -41,8 +41,8 @@ class PyshStack(list):
     def ref(self, position):
         """Returns the element at a given position.
 
-        If stack is empty, returns NoStackItem. If ``position < 0`` or
-        ``position > len(self)`` returns StackOutOfBounds.
+        If stack is empty, returns None. If ``position < 0`` or
+        ``position > len(self)`` returns None.
 
         Parameters
         ----------

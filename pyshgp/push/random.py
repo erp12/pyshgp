@@ -9,9 +9,8 @@ spawner class and what is a global function.
 import random
 import numpy.random as rand
 
-from .. import utils as u
-from .. import exceptions as e
-from . import translation as t
+from ..utils import reductions
+from .translation import genome_to_program
 from .plush import Gene
 from .instruction import Instruction
 
@@ -56,7 +55,7 @@ class Spawner:
          Integer between 0 and 3, inclusive. Denoted number of closes.
         """
         prob = random.random()
-        close_probabilities = u.reductions(
+        close_probabilities = reductions(
             lambda i, j: i + j,
             self.close_parens_probabilities
         ) + [1.0]
@@ -152,4 +151,4 @@ class Spawner:
         """
         max_genome_size = max(int(max_points / 2), 1)
         genome = self.random_plush_genome(max_genome_size)
-        return t.genome_to_program(genome)
+        return genome_to_program(genome)

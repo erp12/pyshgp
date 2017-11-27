@@ -9,7 +9,7 @@ from numpy.random import randint, choice
 from copy import copy, deepcopy
 
 from ..utils import count_points
-from ..push.instructions.code import exec_noop_instruction
+from ..push.instructions.code import I_exec_noop
 from .evaluate import (evaluate_with_function, evaluate_for_regression,
                        evaluate_for_classification)
 
@@ -45,7 +45,7 @@ def noop_n_random_genes(genome, n):
     """
     genes_to_silence = randint(0, len(genome), n)
     for i in genes_to_silence:
-        genome[i].atom = copy(exec_noop_instruction)
+        genome[i].atom = copy(I_exec_noop)
 
 
 def simplify_once(genome):

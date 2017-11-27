@@ -9,7 +9,7 @@ import numpy as np
 
 from . import exceptions as e
 from . import constants as c
-from .push import instruction as instr
+from .push.instruction import Instruction
 
 
 # Utility Types #
@@ -241,7 +241,7 @@ def recognize_pysh_type(thing):
     >>> recognize_pysh_type(abs)
     False
     """
-    if isinstance(thing, instr.PyshInstruction):
+    if isinstance(thing, Instruction):
         return '_instruction'
     elif isinstance(thing, (bool, np.bool_)):
         return '_boolean'

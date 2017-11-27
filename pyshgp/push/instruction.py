@@ -5,7 +5,7 @@ instructions that can be handled by the ``pyshgp`` Push interpreter.
 """
 
 
-class PyshInstruction(object):
+class Instruction(object):
     """A instruction for the push language.
 
     Parameters
@@ -28,7 +28,7 @@ class PyshInstruction(object):
         self.parentheses = parentheses
 
     def __eq__(self, other):
-        if isinstance(other, PyshInstruction):
+        if isinstance(other, Instruction):
             return self.name == other.name
         else:
             return False
@@ -50,7 +50,7 @@ class PyshInstruction(object):
         self.func(state)
 
 
-class PyshInputInstruction(PyshInstruction):
+class InputInstruction(Instruction):
     """A push instruction that will handle input values. Input instructions
     which are generated based on initial state of the _input stack.
 
@@ -62,7 +62,7 @@ class PyshInputInstruction(PyshInstruction):
 
     def __init__(self, input_index):
         name = "_input" + str(input_index)
-        PyshInstruction.__init__(self, name, None, ['_input'])
+        Instruction.__init__(self, name, None, ['_input'])
         self.input_index = input_index
 
     def __repr__(self):

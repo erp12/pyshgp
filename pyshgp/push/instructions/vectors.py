@@ -7,16 +7,12 @@ Created on December 5, 2016
 from ... import utils as u
 from ... import constants as c
 
-from ..instruction import PyshInstruction
+from ..instruction import Instruction
 from .jit import JustInTimeInstruction
 
 from . import common
 
 vector_types = ['_integer', '_float', '_boolean', '_string']
-
-##                         ##
-#  Instructions for Vectors #
-##                         ##
 
 
 def newer(vec_type):
@@ -37,7 +33,7 @@ def newer(vec_type):
     def new(state):
         if len(state[vec_type]) > 1:
             state[vec_type].push(u.PushVector([], t))
-    instruction = PyshInstruction(vec_type + '_new',
+    instruction = Instruction(vec_type + '_new',
                                   new,
                                   stack_types=[vec_type])
     return instruction
@@ -75,7 +71,7 @@ def concater(vec_type):
             state[vec_type].pop()
             state[vec_type].push(u.PushVector(
                 second_vec + first_vec, second_vec.typ))
-    instruction = PyshInstruction(vec_type + '_concat',
+    instruction = Instruction(vec_type + '_concat',
                                   concat,
                                   stack_types=[vec_type])
     return instruction
@@ -112,7 +108,7 @@ def appender(vec_type, lit_type):
             state[vec_type].pop()
             state[lit_type].pop()
             state[vec_type].push(u.PushVector(result, v.typ))
-    instruction = PyshInstruction(vec_type + '_append',
+    instruction = Instruction(vec_type + '_append',
                                   append,
                                   stack_types=[vec_type, lit_type])
     return instruction
@@ -147,7 +143,7 @@ def taker(vec_type):
             state[vec_type].pop()
             state['_integer'].pop()
             state[vec_type].push(u.PushVector(result, v.typ))
-    instruction = PyshInstruction(vec_type + '_take',
+    instruction = Instruction(vec_type + '_take',
                                   take,
                                   stack_types=[vec_type, '_integer'])
     return instruction
@@ -186,7 +182,7 @@ def subvecer(vec_type):
             state['_integer'].pop()
             state['_integer'].pop()
             state[vec_type].push(u.PushVector(result, t))
-    instruction = PyshInstruction(vec_type + '_subvec',
+    instruction = Instruction(vec_type + '_subvec',
                                   subvec,
                                   stack_types=[vec_type, '_integer'])
     return instruction
@@ -219,7 +215,7 @@ def firster(vec_type, lit_type):
             result = state[vec_type].ref(0)[0]
             state[vec_type].pop()
             state[lit_type].push(result)
-    instruction = PyshInstruction(vec_type + '_first',
+    instruction = Instruction(vec_type + '_first',
                                   first,
                                   stack_types=[vec_type, lit_type])
     return instruction
@@ -252,7 +248,7 @@ def laster(vec_type, lit_type):
             result = state[vec_type].ref(0)[-1]
             state[vec_type].pop()
             state[lit_type].push(result)
-    instruction = PyshInstruction(vec_type + '_last',
+    instruction = Instruction(vec_type + '_last',
                                   last,
                                   stack_types=[vec_type, lit_type])
     return instruction
@@ -287,7 +283,7 @@ def nther(vec_type, lit_type):
             state[vec_type].pop()
             state['_integer'].pop()
             state[lit_type].push(result)
-    instruction = PyshInstruction(vec_type + '_nth',
+    instruction = Instruction(vec_type + '_nth',
                                   nth,
                                   stack_types=[vec_type, lit_type, '_integer'])
     return instruction
@@ -322,7 +318,7 @@ def rester(vec_type):
             result = v[1:]
             state[vec_type].pop()
             state[vec_type].push(u.PushVector(result, t))
-    instruction = PyshInstruction(vec_type + '_rest',
+    instruction = Instruction(vec_type + '_rest',
                                   rest,
                                   stack_types=[vec_type])
     return instruction
@@ -357,7 +353,7 @@ def butlaster(vec_type):
             result = v[:-1]
             state[vec_type].pop()
             state[vec_type].push(u.PushVector(result, t))
-    instruction = PyshInstruction(vec_type + '_butlast',
+    instruction = Instruction(vec_type + '_butlast',
                                   butlast,
                                   stack_types=[vec_type])
     return instruction
@@ -390,7 +386,7 @@ def lengther(vec_type):
             result = len(state[vec_type].ref(0))
             state[vec_type].pop()
             state['_integer'].push(result)
-    instruction = PyshInstruction(vec_type + '_length',
+    instruction = Instruction(vec_type + '_length',
                                   length,
                                   stack_types=[vec_type, '_integer'])
     return instruction
@@ -425,7 +421,7 @@ def reverser(vec_type):
             result = v[::-1]
             state[vec_type].pop()
             state[vec_type].push(u.PushVector(result, t))
-    instruction = PyshInstruction(vec_type + '_reverse',
+    instruction = Instruction(vec_type + '_reverse',
                                   rev,
                                   stack_types=[vec_type])
     return instruction
@@ -459,7 +455,7 @@ def pushaller(vec_type, lit_type):
             state[vec_type].pop()
             for el in l[::-1]:
                 state[lit_type].push(el)
-    instruction = PyshInstruction(vec_type + '_pushall',
+    instruction = Instruction(vec_type + '_pushall',
                                   pushall,
                                   stack_types=[vec_type, lit_type])
     return instruction
@@ -495,7 +491,7 @@ def emptyvectorer(vec_type):
                 state['_boolean'].push(True)
             else:
                 state['_boolean'].push(False)
-    instruction = PyshInstruction(vec_type + '_emptyvector',
+    instruction = Instruction(vec_type + '_emptyvector',
                                   emptyvector,
                                   stack_types=[vec_type, '_boolean'])
     return instruction
@@ -529,7 +525,7 @@ def containser(vec_type, lit_type):
             state[vec_type].pop()
             state[lit_type].pop()
             state['_boolean'].push(b)
-    instruction = PyshInstruction(vec_type + '_contains',
+    instruction = Instruction(vec_type + '_contains',
                                   contains,
                                   stack_types=[vec_type, lit_type, '_boolean'])
     return instruction
@@ -568,7 +564,7 @@ def indexofer(vec_type, lit_type):
             state[vec_type].pop()
             state[lit_type].pop()
             state['_integer'].push(i)
-    instruction = PyshInstruction(vec_type + '_indexof',
+    instruction = Instruction(vec_type + '_indexof',
                                   indexof,
                                   stack_types=[vec_type, lit_type, '_integer'])
     return instruction
@@ -603,7 +599,7 @@ def occurrencesofer(vec_type, lit_type):
             state[vec_type].pop()
             state[lit_type].pop()
             state['_integer'].push(len(l))
-    instruction = PyshInstruction(vec_type + '_occurrencesof',
+    instruction = Instruction(vec_type + '_occurrencesof',
                                   occurrencesof,
                                   stack_types=[vec_type, lit_type, '_integer'])
     return instruction
@@ -653,7 +649,7 @@ def seter(vec_type, lit_type):
             state[lit_type].pop()
             state['_integer'].pop()
             state[vec_type].push(u.PushVector(result, t))
-    instruction = PyshInstruction(vec_type + '_set',
+    instruction = Instruction(vec_type + '_set',
                                   _set,
                                   stack_types=[vec_type, lit_type])
     if not lit_type == '_integer':
@@ -696,7 +692,7 @@ def replaceer(vec_type, lit_type):
             state[lit_type].pop()
             state[vec_type].push(u.PushVector(result, t))
 
-    instruction = PyshInstruction(vec_type + '_replace',
+    instruction = Instruction(vec_type + '_replace',
                                   _replace,
                                   stack_types=[vec_type, lit_type])
     return instruction
@@ -744,7 +740,7 @@ def replacefirster(vec_type, lit_type):
             state[lit_type].pop()
             state[vec_type].push(u.PushVector(result, t))
 
-    instruction = PyshInstruction(vec_type + '_replacefirst',
+    instruction = Instruction(vec_type + '_replacefirst',
                                   replacefirst,
                                   stack_types=[vec_type, lit_type])
     return instruction
@@ -782,7 +778,7 @@ def removeer(vec_type, lit_type):
             state[lit_type].pop()
             state[vec_type].push(u.PushVector(result, t))
 
-    instruction = PyshInstruction(vec_type + '_remove',
+    instruction = Instruction(vec_type + '_remove',
                                   _remove,
                                   stack_types=[vec_type, lit_type])
     return instruction
@@ -829,7 +825,7 @@ def iterateer(vec_type, lit_type):
                 state['_exec'].push(e)
                 state[lit_type].push(v[0])
 
-    instruction = PyshInstruction(instr_name,
+    instruction = Instruction(instr_name,
                                   _iter,
                                   stack_types=[vec_type, lit_type])
     return instruction
@@ -850,150 +846,148 @@ def iterateer(vec_type, lit_type):
 # <instr_close>
 
 
-##                                ##
 # Register All Vector Instructions #
-##                                ##
 
 # Common instructions
 
-pop_integer_vector_instr = common.popper('_vector_integer')
-dup_integer_vector_instr = common.duper('_vector_integer')
-swap_integer_vector_instr = common.swapper('_vector_integer')
-rot_integer_vector_instr = common.rotter('_vector_integer')
-flush_integer_vector_instr = common.flusher('_vector_integer')
-eq_integer_vector_instr = common.eqer('_vector_integer')
-stack_depth_integer_vector_instr = common.stackdepther('_vector_integer')
-yank_integer_vector_instr = common.yanker('_vector_integer')
-yank_dup_integer_vector_instr = common.yankduper('_vector_integer')
-shove_integer_vector_instr = common.shover('_vector_integer')
-empty_integer_vector_instr = common.emptyer('_vector_integer')
+I_pop_integer_vector = common.popper('_vector_integer')
+I_dup_integer_vector = common.duper('_vector_integer')
+I_swap_integer_vector = common.swapper('_vector_integer')
+I_rot_integer_vector = common.rotter('_vector_integer')
+I_flush_integer_vector = common.flusher('_vector_integer')
+I_eq_integer_vector = common.eqer('_vector_integer')
+I_stack_depth_integer_vector = common.stackdepther('_vector_integer')
+I_yank_integer_vector = common.yanker('_vector_integer')
+I_yank_dup_integer_vector = common.yankduper('_vector_integer')
+I_shove_integer_vector = common.shover('_vector_integer')
+I_empty_integer_vector = common.emptyer('_vector_integer')
 
-pop_float_vector_instr = common.popper('_vector_float')
-dup_float_vector_instr = common.duper('_vector_float')
-swap_float_vector_instr = common.swapper('_vector_float')
-rot_float_vector_instr = common.rotter('_vector_float')
-flush_float_vector_instr = common.flusher('_vector_float')
-eq_float_vector_instr = common.eqer('_vector_float')
-stack_depth_float_vector_instr = common.stackdepther('_vector_float')
-yank_float_vector_instr = common.yanker('_vector_float')
-yank_dup_float_vector_instr = common.yankduper('_vector_float')
-shove_float_vector_instr = common.shover('_vector_float')
-empty_float_vector_instr = common.emptyer('_vector_float')
+I_pop_float_vector = common.popper('_vector_float')
+I_dup_float_vector = common.duper('_vector_float')
+I_swap_float_vector = common.swapper('_vector_float')
+I_rot_float_vector = common.rotter('_vector_float')
+I_flush_float_vector = common.flusher('_vector_float')
+I_eq_float_vector = common.eqer('_vector_float')
+I_stack_depth_float_vector = common.stackdepther('_vector_float')
+I_yank_float_vector = common.yanker('_vector_float')
+I_yank_dup_float_vector = common.yankduper('_vector_float')
+I_shove_float_vector = common.shover('_vector_float')
+I_empty_float_vector = common.emptyer('_vector_float')
 
-pop_boolean_vector_instr = common.popper('_vector_boolean')
-dup_boolean_vector_instr = common.duper('_vector_boolean')
-swap_boolean_vector_instr = common.swapper('_vector_boolean')
-rot_boolean_vector_instr = common.rotter('_vector_boolean')
-flush_boolean_vector_instr = common.flusher('_vector_boolean')
-eq_boolean_vector_instr = common.eqer('_vector_boolean')
-stack_depth_boolean_vector_instr = common.stackdepther('_vector_boolean')
-yank_boolean_vector_instr = common.yanker('_vector_boolean')
-yank_dup_boolean_vector_instr = common.yankduper('_vector_boolean')
-shove_boolean_vector_instr = common.shover('_vector_boolean')
-empty_boolean_vector_instr = common.emptyer('_vector_boolean')
+I_pop_boolean_vector = common.popper('_vector_boolean')
+I_dup_boolean_vector = common.duper('_vector_boolean')
+I_swap_boolean_vector = common.swapper('_vector_boolean')
+I_rot_boolean_vector = common.rotter('_vector_boolean')
+I_flush_boolean_vector = common.flusher('_vector_boolean')
+I_eq_boolean_vector = common.eqer('_vector_boolean')
+I_stack_depth_boolean_vector = common.stackdepther('_vector_boolean')
+I_yank_boolean_vector = common.yanker('_vector_boolean')
+I_yank_dup_boolean_vector = common.yankduper('_vector_boolean')
+I_shove_boolean_vector = common.shover('_vector_boolean')
+I_empty_boolean_vector = common.emptyer('_vector_boolean')
 
-pop_string_vector_instr = common.popper('_vector_string')
-dup_string_vector_instr = common.duper('_vector_string')
-swap_string_vector_instr = common.swapper('_vector_string')
-rot_string_vector_instr = common.rotter('_vector_string')
-flush_string_vector_instr = common.flusher('_vector_string')
-eq_string_vector_instr = common.eqer('_vector_string')
-stack_depth_string_vector_instr = common.stackdepther('_vector_string')
-yank_string_vector_instr = common.yanker('_vector_string')
-yank_dup_string_vector_instr = common.yankduper('_vector_string')
-shove_string_vector_instr = common.shover('_vector_string')
-empty_string_vector_instr = common.emptyer('_vector_string')
+I_pop_string_vector = common.popper('_vector_string')
+I_dup_string_vector = common.duper('_vector_string')
+I_swap_string_vector = common.swapper('_vector_string')
+I_rot_string_vector = common.rotter('_vector_string')
+I_flush_string_vector = common.flusher('_vector_string')
+I_eq_string_vector = common.eqer('_vector_string')
+I_stack_depth_string_vector = common.stackdepther('_vector_string')
+I_yank_string_vector = common.yanker('_vector_string')
+I_yank_dup_string_vector = common.yankduper('_vector_string')
+I_shove_string_vector = common.shover('_vector_string')
+I_empty_string_vector = common.emptyer('_vector_string')
 
 # Vector instructions
 
 t = '_integer'
-concat_integer_vector_instr = concater('_vector' + t)
-append_integer_vector_instr = appender('_vector' + t, t)
-take_integer_vector_instr = taker('_vector' + t)
-subvec_integer_vector_instr = subvecer('_vector' + t)
-first_integer_vector_instr = firster('_vector' + t, t)
-last_integer_vector_instr = laster('_vector' + t, t)
-nth_integer_vector_instr = nther('_vector' + t, t)
-rest_integer_vector_instr = rester('_vector' + t)
-butlast_integer_vector_instr = butlaster('_vector' + t)
-length_integer_vector_instr = lengther('_vector' + t)
-reverse_integer_vector_instr = reverser('_vector' + t)
-push_all_integer_vector_instr = pushaller('_vector' + t, t)
-empty_vec_integer_vector_instr = emptyvectorer('_vector' + t)
-contains_integer_vector_instr = containser('_vector' + t, t)
-index_of_integer_vector_instr = indexofer('_vector' + t, t)
-occurrences_of_integer_vector_instr = occurrencesofer('_vector' + t, t)
-set_integer_vector_instr = seter('_vector' + t, t)
-replace_integer_vector_instr = replaceer('_vector' + t, t)
-replace_first_integer_vector_instr = replacefirster('_vector' + t, t)
-remove_integer_vector_instr = removeer('_vector' + t, t)
-iterate_integer_vector_instr = iterateer('_vector' + t, t)
+I_concat_integer_vector = concater('_vector' + t)
+I_append_integer_vector = appender('_vector' + t, t)
+I_take_integer_vector = taker('_vector' + t)
+I_subvec_integer_vector = subvecer('_vector' + t)
+I_first_integer_vector = firster('_vector' + t, t)
+I_last_integer_vector = laster('_vector' + t, t)
+I_nth_integer_vector = nther('_vector' + t, t)
+I_rest_integer_vector = rester('_vector' + t)
+I_butlast_integer_vector = butlaster('_vector' + t)
+I_length_integer_vector = lengther('_vector' + t)
+I_reverse_integer_vector = reverser('_vector' + t)
+I_push_all_integer_vector = pushaller('_vector' + t, t)
+I_empty_vec_integer_vector = emptyvectorer('_vector' + t)
+I_contains_integer_vector = containser('_vector' + t, t)
+I_index_of_integer_vector = indexofer('_vector' + t, t)
+I_occurrences_of_integer_vector = occurrencesofer('_vector' + t, t)
+I_set_integer_vector = seter('_vector' + t, t)
+I_replace_integer_vector = replaceer('_vector' + t, t)
+I_replace_first_integer_vector = replacefirster('_vector' + t, t)
+I_remove_integer_vector = removeer('_vector' + t, t)
+I_iterate_integer_vector = iterateer('_vector' + t, t)
 
 t = '_float'
-concat_float_vector_instr = concater('_vector' + t)
-append_float_vector_instr = appender('_vector' + t, t)
-take_float_vector_instr = taker('_vector' + t)
-subvec_float_vector_instr = subvecer('_vector' + t)
-first_float_vector_instr = firster('_vector' + t, t)
-last_float_vector_instr = laster('_vector' + t, t)
-nth_float_vector_instr = nther('_vector' + t, t)
-rest_float_vector_instr = rester('_vector' + t)
-butlast_float_vector_instr = butlaster('_vector' + t)
-length_float_vector_instr = lengther('_vector' + t)
-reverse_float_vector_instr = reverser('_vector' + t)
-push_all_float_vector_instr = pushaller('_vector' + t, t)
-empty_vec_float_vector_instr = emptyvectorer('_vector' + t)
-contains_float_vector_instr = containser('_vector' + t, t)
-index_of_float_vector_instr = indexofer('_vector' + t, t)
-occurrences_of_float_vector_instr = occurrencesofer('_vector' + t, t)
-set_float_vector_instr = seter('_vector' + t, t)
-replace_float_vector_instr = replaceer('_vector' + t, t)
-replace_first_float_vector_instr = replacefirster('_vector' + t, t)
-remove_float_vector_instr = removeer('_vector' + t, t)
-iterate_float_vector_instr = iterateer('_vector' + t, t)
+I_concat_float_vector = concater('_vector' + t)
+I_append_float_vector = appender('_vector' + t, t)
+I_take_float_vector = taker('_vector' + t)
+I_subvec_float_vector = subvecer('_vector' + t)
+I_first_float_vector = firster('_vector' + t, t)
+I_last_float_vector = laster('_vector' + t, t)
+I_nth_float_vector = nther('_vector' + t, t)
+I_rest_float_vector = rester('_vector' + t)
+I_butlast_float_vector = butlaster('_vector' + t)
+I_length_float_vector = lengther('_vector' + t)
+I_reverse_float_vector = reverser('_vector' + t)
+I_push_all_float_vector = pushaller('_vector' + t, t)
+I_empty_vec_float_vector = emptyvectorer('_vector' + t)
+I_contains_float_vector = containser('_vector' + t, t)
+I_index_of_float_vector = indexofer('_vector' + t, t)
+I_occurrences_of_float_vector = occurrencesofer('_vector' + t, t)
+I_set_float_vector = seter('_vector' + t, t)
+I_replace_float_vector = replaceer('_vector' + t, t)
+I_replace_first_float_vector = replacefirster('_vector' + t, t)
+I_remove_float_vector = removeer('_vector' + t, t)
+I_iterate_float_vector = iterateer('_vector' + t, t)
 
 t = '_boolean'
-concat_boolean_vector_instr = concater('_vector' + t)
-append_boolean_vector_instr = appender('_vector' + t, t)
-take_boolean_vector_instr = taker('_vector' + t)
-subvec_boolean_vector_instr = subvecer('_vector' + t)
-first_boolean_vector_instr = firster('_vector' + t, t)
-last_boolean_vector_instr = laster('_vector' + t, t)
-nth_boolean_vector_instr = nther('_vector' + t, t)
-rest_boolean_vector_instr = rester('_vector' + t)
-butlast_boolean_vector_instr = butlaster('_vector' + t)
-length_boolean_vector_instr = lengther('_vector' + t)
-reverse_boolean_vector_instr = reverser('_vector' + t)
-push_all_boolean_vector_instr = pushaller('_vector' + t, t)
-empty_vec_boolean_vector_instr = emptyvectorer('_vector' + t)
-contains_boolean_vector_instr = containser('_vector' + t, t)
-index_of_boolean_vector_instr = indexofer('_vector' + t, t)
-occurrences_of_boolean_vector_instr = occurrencesofer('_vector' + t, t)
-set_boolean_vector_instr = seter('_vector' + t, t)
-replace_boolean_vector_instr = replaceer('_vector' + t, t)
-replace_first_boolean_vector_instr = replacefirster('_vector' + t, t)
-remove_boolean_vector_instr = removeer('_vector' + t, t)
-iterate_boolean_vector_instr = iterateer('_vector' + t, t)
+I_concat_boolean_vector = concater('_vector' + t)
+I_append_boolean_vector = appender('_vector' + t, t)
+I_take_boolean_vector = taker('_vector' + t)
+I_subvec_boolean_vector = subvecer('_vector' + t)
+I_first_boolean_vector = firster('_vector' + t, t)
+I_last_boolean_vector = laster('_vector' + t, t)
+I_nth_boolean_vector = nther('_vector' + t, t)
+I_rest_boolean_vector = rester('_vector' + t)
+I_butlast_boolean_vector = butlaster('_vector' + t)
+I_length_boolean_vector = lengther('_vector' + t)
+I_reverse_boolean_vector = reverser('_vector' + t)
+I_push_all_boolean_vector = pushaller('_vector' + t, t)
+I_empty_vec_boolean_vector = emptyvectorer('_vector' + t)
+I_contains_boolean_vector = containser('_vector' + t, t)
+I_index_of_boolean_vector = indexofer('_vector' + t, t)
+I_occurrences_of_boolean_vector = occurrencesofer('_vector' + t, t)
+I_set_boolean_vector = seter('_vector' + t, t)
+I_replace_boolean_vector = replaceer('_vector' + t, t)
+I_replace_first_boolean_vector = replacefirster('_vector' + t, t)
+I_remove_boolean_vector = removeer('_vector' + t, t)
+I_iterate_boolean_vector = iterateer('_vector' + t, t)
 
 t = '_string'
-concat_string_vector_instr = concater('_vector' + t)
-append_string_vector_instr = appender('_vector' + t, t)
-take_string_vector_instr = taker('_vector' + t)
-subvec_string_vector_instr = subvecer('_vector' + t)
-first_string_vector_instr = firster('_vector' + t, t)
-last_string_vector_instr = laster('_vector' + t, t)
-nth_string_vector_instr = nther('_vector' + t, t)
-rest_string_vector_instr = rester('_vector' + t)
-butlast_string_vector_instr = butlaster('_vector' + t)
-length_string_vector_instr = lengther('_vector' + t)
-reverse_string_vector_instr = reverser('_vector' + t)
-push_all_string_vector_instr = pushaller('_vector' + t, t)
-empty_vec_string_vector_instr = emptyvectorer('_vector' + t)
-contains_string_vector_instr = containser('_vector' + t, t)
-index_of_string_vector_instr = indexofer('_vector' + t, t)
-occurrences_of_string_vector_instr = occurrencesofer('_vector' + t, t)
-set_string_vector_instr = seter('_vector' + t, t)
-replace_string_vector_instr = replaceer('_vector' + t, t)
-replace_first_string_vector_instr = replacefirster('_vector' + t, t)
-remove_string_vector_instr = removeer('_vector' + t, t)
-iterate_string_vector_instr = iterateer('_vector' + t, t)
+I_concat_string_vector = concater('_vector' + t)
+I_append_string_vector = appender('_vector' + t, t)
+I_take_string_vector = taker('_vector' + t)
+I_subvec_string_vector = subvecer('_vector' + t)
+I_first_string_vector = firster('_vector' + t, t)
+I_last_string_vector = laster('_vector' + t, t)
+I_nth_string_vector = nther('_vector' + t, t)
+I_rest_string_vector = rester('_vector' + t)
+I_butlast_string_vector = butlaster('_vector' + t)
+I_length_string_vector = lengther('_vector' + t)
+I_reverse_string_vector = reverser('_vector' + t)
+I_push_all_string_vector = pushaller('_vector' + t, t)
+I_empty_vec_string_vector = emptyvectorer('_vector' + t)
+I_contains_string_vector = containser('_vector' + t, t)
+I_index_of_string_vector = indexofer('_vector' + t, t)
+I_occurrences_of_string_vector = occurrencesofer('_vector' + t, t)
+I_set_string_vector = seter('_vector' + t, t)
+I_replace_string_vector = replaceer('_vector' + t, t)
+I_replace_first_string_vector = replacefirster('_vector' + t, t)
+I_remove_string_vector = removeer('_vector' + t, t)
+I_iterate_string_vector = iterateer('_vector' + t, t)

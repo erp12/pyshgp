@@ -2,7 +2,7 @@ import numpy as np
 import unittest
 import testing_utilities as tu
 import pyshgp.utils as u
-import pyshgp.push.instruction as instr
+from pyshgp.push.instruction import InputInstruction
 
 
 class TestUtilsMethods(unittest.TestCase):
@@ -19,8 +19,8 @@ class TestUtilsMethods(unittest.TestCase):
     # is_int_type
 
     # Detect Input Instruction
-    def test_recognize_pysh_type_PyshInputInstruction(self):
-        i = instr.PyshInputInstruction(0)
+    def test_recognize_pysh_type_InputInstruction(self):
+        i = InputInstruction(0)
         self.assertEqual(u.recognize_pysh_type(i), '_instruction')
 
     # Detect int

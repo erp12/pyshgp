@@ -9,7 +9,7 @@ into Push programs.
 from copy import copy
 
 from ..utils import is_str_type
-from . import instruction
+from .instruction import Instruction
 
 
 def get_matcing_close_index(sequence):
@@ -136,7 +136,7 @@ def genome_to_program(genome):
         else:
             atom = gn[0].atom
             number_paren_groups = 0
-            if isinstance(atom, instruction.PyshInstruction):
+            if isinstance(atom, Instruction):
                 number_paren_groups = atom.parentheses
 
             new_paren_stack = paren_stack

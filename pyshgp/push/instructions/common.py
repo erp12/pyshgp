@@ -4,7 +4,7 @@ Created on July 23, 2016
 
 @author: Eddie
 """
-from .. import instruction as instr
+from .. instruction import Instruction
 
 
 def popper(pysh_type):
@@ -15,21 +15,21 @@ def popper(pysh_type):
     def pop(state):
         if len(state[pysh_type]) > 0:
             state[pysh_type].pop()
-    instruction = instr.PyshInstruction(pysh_type + '_pop',
-                                        pop,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_pop',
+                              pop,
+                              stack_types=[pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 1
     return instruction
 
 
-pop_exec_instr = popper('_exec')
-pop_integer_instr = popper('_integer')
-pop_float_instr = popper('_float')
-pop_code_instr = popper('_code')
-pop_boolean_instr = popper('_boolean')
-pop_string_instr = popper('_string')
-pop_char_instr = popper('_char')
+I_pop_exec = popper('_exec')
+I_pop_integer = popper('_integer')
+I_pop_float = popper('_float')
+I_pop_code = popper('_code')
+I_pop_boolean = popper('_boolean')
+I_pop_string = popper('_string')
+I_pop_char = popper('_char')
 # <instr_open>
 # <instr_name>exec_pop
 # <instr_desc>Pops the top item off the 'exec' stack.
@@ -68,21 +68,21 @@ def duper(pysh_type):
     def dup(state):
         if len(state[pysh_type]) > 0:
             state[pysh_type].push(state[pysh_type].top_item())
-    instruction = instr.PyshInstruction(pysh_type + '_dup',
-                                        dup,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_dup',
+                              dup,
+                              stack_types=[pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 1
     return instruction
 
 
-dup_exec_instr = duper('_exec')
-dup_integer_instr = duper('_integer')
-dup_float_instr = duper('_float')
-dup_code_instr = duper('_code')
-dup_boolean_instr = duper('_boolean')
-dup_string_instr = duper('_string')
-dup_char_instr = duper('_char')
+I_dup_exec = duper('_exec')
+I_dup_integer = duper('_integer')
+I_dup_float = duper('_float')
+I_dup_code = duper('_code')
+I_dup_boolean = duper('_boolean')
+I_dup_string = duper('_string')
+I_dup_char = duper('_char')
 # <instr_open>
 # <instr_name>exec_dup
 # <instr_desc>Duplicates the top item of the `exec` stack.
@@ -126,21 +126,21 @@ def swapper(pysh_type):
             state[pysh_type].pop()
             state[pysh_type].push(first_item)
             state[pysh_type].push(second_item)
-    instruction = instr.PyshInstruction(pysh_type + '_swap',
-                                        swap,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_swap',
+                              swap,
+                              stack_types=[pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 2
     return instruction
 
 
-swap_exec_instr = swapper('_exec')
-swap_integer_instr = swapper('_integer')
-swap_float_instr = swapper('_float')
-swap_code_instr = swapper('_code')
-swap_boolean_instr = swapper('_boolean')
-swap_string_instr = swapper('_string')
-swap_char_instr = swapper('_char')
+I_swap_exec = swapper('_exec')
+I_swap_integer = swapper('_integer')
+I_swap_float = swapper('_float')
+I_swap_code = swapper('_code')
+I_swap_boolean = swapper('_boolean')
+I_swap_string = swapper('_string')
+I_swap_char = swapper('_char')
 # <instr_open>
 # <instr_name>exec_swap
 # <instr_desc>Swaps the top 2 items of the `exec` stack.
@@ -187,21 +187,21 @@ def rotter(pysh_type):
             state[pysh_type].push(second_item)
             state[pysh_type].push(first_item)
             state[pysh_type].push(third_item)
-    instruction = instr.PyshInstruction(pysh_type + '_rot',
-                                        rot,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_rot',
+                              rot,
+                              stack_types=[pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 3
     return instruction
 
 
-rot_exec_instr = rotter('_exec')
-rot_integer_instr = rotter('_integer')
-rot_float_instr = rotter('_float')
-rot_code_instr = rotter('_code')
-rot_boolean_instr = rotter('_boolean')
-rot_string_instr = rotter('_string')
-rot_char_instr = rotter('_char')
+I_rot_exec = rotter('_exec')
+I_rot_integer = rotter('_integer')
+I_rot_float = rotter('_float')
+I_rot_code = rotter('_code')
+I_rot_boolean = rotter('_boolean')
+I_rot_string = rotter('_string')
+I_rot_char = rotter('_char')
 # <instr_open>
 # <instr_name>exec_rot
 # <instr_desc>Rotates the top 3 items of the `exec` stack.
@@ -238,19 +238,19 @@ def flusher(pysh_type):
     '''
     def flush(state):
         state[pysh_type].flush()
-    instruction = instr.PyshInstruction(pysh_type + '_flush',
-                                        flush,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_flush',
+                              flush,
+                              stack_types=[pysh_type])
     return instruction
 
 
-flush_exec_instr = flusher('_exec')
-flush_integer_instr = flusher('_integer')
-flush_float_instr = flusher('_float')
-flush_code_instr = flusher('_code')
-flush_boolean_instr = flusher('_boolean')
-flush_string_instr = flusher('_string')
-flush_char_instr = flusher('_char')
+I_flush_exec = flusher('_exec')
+I_flush_integer = flusher('_integer')
+I_flush_float = flusher('_float')
+I_flush_code = flusher('_code')
+I_flush_boolean = flusher('_boolean')
+I_flush_string = flusher('_string')
+I_flush_char = flusher('_char')
 # <instr_open>
 # <instr_name>exec_flush
 # <instr_desc>Empties the 'exec' stack.
@@ -293,9 +293,9 @@ def eqer(pysh_type):
             state[pysh_type].pop()
             state[pysh_type].pop()
             state['_boolean'].push(first_item == second_item)
-    instruction = instr.PyshInstruction(pysh_type + '_eq',
-                                        eq,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_eq',
+                              eq,
+                              stack_types=[pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 0
     if not pysh_type == '_boolean':
@@ -303,13 +303,13 @@ def eqer(pysh_type):
     return instruction
 
 
-eq_exec_instr = eqer('_exec')
-eq_integer_instr = eqer('_integer')
-eq_float_instr = eqer('_float')
-eq_code_instr = eqer('_code')
-eq_boolean_instr = eqer('_boolean')
-eq_string_instr = eqer('_string')
-eq_char_instr = eqer('_char')
+I_eq_exec = eqer('_exec')
+I_eq_integer = eqer('_integer')
+I_eq_float = eqer('_float')
+I_eq_code = eqer('_code')
+I_eq_boolean = eqer('_boolean')
+I_eq_string = eqer('_string')
+I_eq_char = eqer('_char')
 # <instr_open>
 # <instr_name>exec_eq
 # <instr_desc>Pushes True if top two items on the `exec` stack are equal. Pushes False otherwise.
@@ -347,21 +347,21 @@ def stackdepther(pysh_type):
     def stackdepth(state):
         depth = len(state[pysh_type])
         state['_integer'].push(depth)
-    instruction = instr.PyshInstruction(pysh_type + '_stack_depth',
-                                        stackdepth,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_stack_depth',
+                              stackdepth,
+                              stack_types=[pysh_type])
     if not pysh_type == '_integer':
         instruction.stack_types.append('_integer')
     return instruction
 
 
-stack_depth_exec_instr = stackdepther('_exec')
-stack_depth_integer_instr = stackdepther('_integer')
-stack_depth_float_instr = stackdepther('_float')
-stack_depth_code_instr = stackdepther('_code')
-stack_depth_boolean_instr = stackdepther('_boolean')
-stack_depth_string_instr = stackdepther('_string')
-stack_depth_char_instr = stackdepther('_char')
+I_stack_depth_exec = stackdepther('_exec')
+I_stack_depth_integer = stackdepther('_integer')
+I_stack_depth_float = stackdepther('_float')
+I_stack_depth_code = stackdepther('_code')
+I_stack_depth_boolean = stackdepther('_boolean')
+I_stack_depth_string = stackdepther('_string')
+I_stack_depth_char = stackdepther('_char')
 # <instr_open>
 # <instr_name>exec_stack_depth
 # <instr_desc>Pushes the depth of the `exec` stack to the `integer` stack.
@@ -409,9 +409,9 @@ def yanker(pysh_type):
             item = state[pysh_type].ref(actual_index)
             del state[pysh_type][-actual_index - 1]
             state[pysh_type].push(item)
-    instruction = instr.PyshInstruction(pysh_type + '_yank',
-                                        yank,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_yank',
+                              yank,
+                              stack_types=[pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 0
     if not pysh_type == '_integer':
@@ -419,13 +419,13 @@ def yanker(pysh_type):
     return instruction
 
 
-yank_exec_instr = yanker('_exec')
-yank_integer_instr = yanker('_integer')
-yank_float_instr = yanker('_float')
-yank_code_instr = yanker('_code')
-yank_boolean_instr = yanker('_boolean')
-yank_string_instr = yanker('_string')
-yank_char_instr = yanker('_char')
+I_yank_exec = yanker('_exec')
+I_yank_integer = yanker('_integer')
+I_yank_float = yanker('_float')
+I_yank_code = yanker('_code')
+I_yank_boolean = yanker('_boolean')
+I_yank_string = yanker('_string')
+I_yank_char = yanker('_char')
 # <instr_open>
 # <instr_name>exec_yank
 # <instr_desc>Yanks an item from deep in the `exec` stack, using the top `integer` to indicate how deep.
@@ -472,9 +472,9 @@ def yankduper(pysh_type):
                 max(0, min(raw_index, len(state[pysh_type]) - 1)))
             item = state[pysh_type].ref(actual_index)
             state[pysh_type].push(item)
-    instruction = instr.PyshInstruction(pysh_type + '_yankdup',
-                                        yankdup,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_yankdup',
+                              yankdup,
+                              stack_types=[pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 0
     if not pysh_type == '_integer':
@@ -482,13 +482,13 @@ def yankduper(pysh_type):
     return instruction
 
 
-yank_dup_exec_instr = yankduper('_exec')
-yank_dup_integer_instr = yankduper('_integer')
-yank_dup_float_instr = yankduper('_float')
-yank_dup_code_instr = yankduper('_code')
-yank_dup_boolean_instr = yankduper('_boolean')
-yank_dup_string_instr = yankduper('_string')
-yank_dup_char_instr = yankduper('_char')
+I_yank_dup_exec = yankduper('_exec')
+I_yank_dup_integer = yankduper('_integer')
+I_yank_dup_float = yankduper('_float')
+I_yank_dup_code = yankduper('_code')
+I_yank_dup_boolean = yankduper('_boolean')
+I_yank_dup_string = yankduper('_string')
+I_yank_dup_char = yankduper('_char')
 # <instr_open>
 # <instr_name>exec_yankdup
 # <instr_desc>Yanks a copy of an item from deep in the `exec` stack, using the top `integer` to indicate how deep.
@@ -535,9 +535,9 @@ def shover(pysh_type):
             state[pysh_type].pop()
             actual_index = int(max(0, min(raw_index, len(state[pysh_type]))))
             state[pysh_type].insert(actual_index, item)
-    instruction = instr.PyshInstruction(pysh_type + '_shove',
-                                        shove,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_shove',
+                              shove,
+                              stack_types=[pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 1
     if not pysh_type == '_integer':
@@ -545,13 +545,13 @@ def shover(pysh_type):
     return instruction
 
 
-shove_exec_instr = shover('_exec')
-shove_integer_instr = shover('_integer')
-shove_float_instr = shover('_float')
-shove_code_instr = shover('_code')
-shove_boolean_instr = shover('_boolean')
-shove_string_instr = shover('_string')
-shove_char_instr = shover('_char')
+I_shove_exec = shover('_exec')
+I_shove_integer = shover('_integer')
+I_shove_float = shover('_float')
+I_shove_code = shover('_code')
+I_shove_boolean = shover('_boolean')
+I_shove_string = shover('_string')
+I_shove_char = shover('_char')
 # <instr_open>
 # <instr_name>exec_shove
 # <instr_desc>Shoves an item deep in the `exec` stack, using the top `integer` to indicate how deep.
@@ -588,21 +588,21 @@ def emptyer(pysh_type):
     '''
     def empty(state):
         state['_boolean'].push(len(state[pysh_type]) == 0)
-    instruction = instr.PyshInstruction(pysh_type + '_empty',
-                                        empty,
-                                        stack_types=[pysh_type])
+    instruction = Instruction(pysh_type + '_empty',
+                              empty,
+                              stack_types=[pysh_type])
     if not pysh_type == '_boolean':
         instruction.stack_types.append('_boolean')
     return instruction
 
 
-empty_exec_instr = emptyer('_exec')
-empty_integer_instr = emptyer('_integer')
-empty_float_instr = emptyer('_float')
-empty_code_instr = emptyer('_code')
-empty_boolean_instr = emptyer('_boolean')
-empty_string_instr = emptyer('_string')
-empty_char_instr = emptyer('_char')
+I_empty_exec = emptyer('_exec')
+I_empty_integer = emptyer('_integer')
+I_empty_float = emptyer('_float')
+I_empty_code = emptyer('_code')
+I_empty_boolean = emptyer('_boolean')
+I_empty_string = emptyer('_string')
+I_empty_char = emptyer('_char')
 # <instr_open>
 # <instr_name>exec_empty
 # <instr_desc>Pushes True if the `exec` stack is empty. Pushes False otherwise.

@@ -18,7 +18,7 @@ from ..push.registered_instructions import (
     instruction_set,
     get_instructions_by_pysh_type
 )
-from ..push.instruction import PyshInputInstruction
+from ..push.instruction import InputInstruction
 from ..utils import merge_sets
 
 
@@ -178,7 +178,7 @@ class PyshBase:
             ouput a list of outputs with the corresponding type in each index.
         """
         # Add input instructions.
-        input_instrs = [PyshInputInstruction(i) for i in range(num_inputs)]
+        input_instrs = [InputInstruction(i) for i in range(num_inputs)]
         all_atom_gens = self.atom_generators + input_instrs
         # Create spawner
         self.spawner = r.PushSpawner(all_atom_gens)

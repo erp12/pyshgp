@@ -6,7 +6,7 @@ Created on 9/29/2016
 """
 from ... import utils as u
 
-from .. import instruction as instr
+from .. instruction import Instruction
 
 
 def char_all_from_string(state):
@@ -16,9 +16,11 @@ def char_all_from_string(state):
         for c in char_list:
             new_char = u.Character(c)
             state['_char'].push(new_char)
-char_all_from_string_instruction = instr.PyshInstruction('_char_all_from_string',
-                                                          char_all_from_string,
-                                                          stack_types = ['_string', '_char'])
+
+
+I_char_all_from_string = Instruction('_char_all_from_string',
+                                     char_all_from_string,
+                                     stack_types=['_string', '_char'])
 # <instr_open>
 # <instr_name>char_all_from_string
 # <instr_desc>Pushes every charecter of the top `string` to the `char` stack.
@@ -31,9 +33,11 @@ def char_from_integer(state):
         new_char = u.Character(new_char)
         state['_integer'].pop()
         state['_char'].push(new_char)
-char_from_integer_instruction = instr.PyshInstruction('_char_from_integer',
-                                                       char_from_integer,
-                                                       stack_types = ['_integer', '_char'])
+
+
+I_char_from_integer = Instruction('_char_from_integer',
+                                  char_from_integer,
+                                  stack_types=['_integer', '_char'])
 # <instr_open>
 # <instr_name>char_from_integer
 # <instr_desc>Push the top `integer` converted to a `char`.
@@ -46,9 +50,11 @@ def char_from_float(state):
         new_char = u.Character(new_char)
         state['_float'].pop()
         state['_char'].push(new_char)
-char_from_float_instruction = instr.PyshInstruction('_char_from_float',
-                                                     char_from_float,
-                                                     stack_types = ['_float', '_char'])
+
+
+I_char_from_float = Instruction('_char_from_float',
+                                char_from_float,
+                                stack_types=['_float', '_char'])
 # <instr_open>
 # <instr_name>char_from_float
 # <instr_desc>Push the top `float` converted to a `char`.
@@ -61,9 +67,11 @@ def char_is_letter(state):
         new_bool = top_char.isalpha()
         state['_char'].pop()
         state['_boolean'].push(new_bool)
-char_is_letter_instruction = instr.PyshInstruction('_char_is_letter',
-                                                     char_is_letter,
-                                                     stack_types = ['_boolean', '_char'])
+
+
+I_char_is_letter = Instruction('_char_is_letter',
+                               char_is_letter,
+                               stack_types=['_boolean', '_char'])
 # <instr_open>
 # <instr_name>char_is_letter
 # <instr_desc>Pushes True if top `char` is a letter. Pushes False otherwise.
@@ -76,9 +84,11 @@ def char_is_digit(state):
         new_bool = top_char.isdigit()
         state['_char'].pop()
         state['_boolean'].push(new_bool)
-char_is_digit_instruction = instr.PyshInstruction('_char_is_digit',
-                                                  char_is_digit,
-                                                  stack_types = ['_boolean', '_char'])
+
+
+I_char_is_digit = Instruction('_char_is_digit',
+                              char_is_digit,
+                              stack_types=['_boolean', '_char'])
 # <instr_open>
 # <instr_name>char_is_digit
 # <instr_desc>Pushes True if top `char` is a digit. Pushes False otherwise.
@@ -91,9 +101,11 @@ def char_is_white_space(state):
         new_bool = top_char.isspace()
         state['_char'].pop()
         state['_boolean'].push(new_bool)
-char_is_white_space_instruction = instr.PyshInstruction('_char_is_white_space',
-                                                        char_is_white_space,
-                                                        stack_types = ['_boolean', '_char'])
+
+
+I_char_is_white_space = Instruction('_char_is_white_space',
+                                    char_is_white_space,
+                                    stack_types=['_boolean', '_char'])
 # <instr_open>
 # <instr_name>char_is_white_space
 # <instr_desc>Pushes True if top `char` is a whitespace character. Pushes False otherwise.

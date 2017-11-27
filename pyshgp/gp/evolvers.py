@@ -3,7 +3,6 @@ The evolvers module contains classes which can be used to start PushGP runs
 using the pyshgp framework.
 """
 import numpy as np
-import time
 
 from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 from sklearn.utils import validation, check_X_y
@@ -181,14 +180,9 @@ class SimplePushGPEvolver(PyshBase):
 
             # Create next generation
             next_gen = Population()
-
-            # Log
-            f = open("selection_timings.csv", "a+")
-
             for i in range(self.population_size):
                 op = self.choose_genetic_operator()
 
-                start = time.time()
                 parents = [
                     self.population.select(self.selection_method,
                                            self.epsilon,
@@ -196,15 +190,9 @@ class SimplePushGPEvolver(PyshBase):
 
                     for p in range(op._num_parents)
                 ]
-                end = time.time()
-
-                total = (end - start) / float(op._num_parents)
-                f.write("{g},{t},\r\n".format(g=g, t=total))
 
                 next_gen.append(op.produce(parents, self.spawner))
             self.population = next_gen
-
-            f.close()
 
             # Evaluate the population
             self._evaluation(error_function)

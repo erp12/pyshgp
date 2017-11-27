@@ -6,7 +6,7 @@ Created on July 24, 2016
 """
 
 from ... import constants as c
-from .. import instruction as instr
+from .. instruction import Instruction
 
 
 def print_newline(state):
@@ -17,9 +17,9 @@ def print_newline(state):
     state.stdout += '\n'
 
 
-print_newline_instr = instr.PyshInstruction('_print_newline',
-                                            print_newline,
-                                            stack_types=['_print'])
+I_print_newline = Instruction('_print_newline',
+                              print_newline,
+                              stack_types=['_print'])
 
 
 def printer(pysh_type):
@@ -35,18 +35,18 @@ def printer(pysh_type):
             return
         state[pysh_type].pop()
         state.stdout += top_thing_str
-    instruction = instr.PyshInstruction('_print' + pysh_type, prnt,
-                                        stack_types=['_print', pysh_type])
+    instruction = Instruction('_print' + pysh_type, prnt,
+                              stack_types=['_print', pysh_type])
     if pysh_type == '_exec':
         instruction.parentheses = 1
     return instruction
 
 
-print_exec_instr = printer('_exec')
-print_integer_instr = printer('_integer')
-print_float_instr = printer('_float')
-print_code_instr = printer('_code')
-print_boolean_instr = printer('_boolean')
+I_print_exec = printer('_exec')
+I_print_integer = printer('_integer')
+I_print_float = printer('_float')
+I_print_code = printer('_code')
+I_print_boolean = printer('_boolean')
 # <instr_open>
 # <instr_name>print_exec
 # <instr_desc>Prints the top item of the exec stack to the string on the output stack.

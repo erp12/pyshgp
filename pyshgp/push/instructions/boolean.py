@@ -1,5 +1,5 @@
 
-from ..instruction import PyshInstruction
+from ..instruction import Instruction
 
 
 def boolean_and(state):
@@ -10,9 +10,9 @@ def boolean_and(state):
         state['_boolean'].push(result)
 
 
-boolean_and_intruction = PyshInstruction('_boolean_and',
-                                         boolean_and,
-                                         stack_types=['_boolean'])
+I_boolean_and = Instruction('_boolean_and',
+                            boolean_and,
+                            stack_types=['_boolean'])
 # <instr_open>
 # <instr_name>boolean_and
 # <instr_desc>Pushes the logical AND of the top two booleans.
@@ -27,9 +27,9 @@ def boolean_or(state):
         state['_boolean'].push(result)
 
 
-boolean_or_intruction = PyshInstruction('_boolean_or',
-                                        boolean_or,
-                                        stack_types=['_boolean'])
+I_boolean_or = Instruction('_boolean_or',
+                           boolean_or,
+                           stack_types=['_boolean'])
 # <instr_open>
 # <instr_name>boolean_or
 # <instr_desc>Pushes the logical OR of the top two booleans.
@@ -43,9 +43,9 @@ def boolean_not(state):
         state['_boolean'].push(result)
 
 
-boolean_not_intruction = PyshInstruction('_boolean_not',
-                                         boolean_not,
-                                         stack_types=['_boolean'])
+I_boolean_not = Instruction('_boolean_not',
+                            boolean_not,
+                            stack_types=['_boolean'])
 # <instr_open>
 # <instr_name>boolean_not
 # <instr_desc>Pushes the logical NOT of the top boolean.
@@ -60,9 +60,9 @@ def boolean_xor(state):
         state['_boolean'].push(result)
 
 
-boolean_xor_intruction = PyshInstruction('_boolean_xor',
-                                         boolean_xor,
-                                         stack_types=['_boolean'])
+I_boolean_xor = Instruction('_boolean_xor',
+                            boolean_xor,
+                            stack_types=['_boolean'])
 # <instr_open>
 # <instr_name>boolean_xor
 # <instr_desc>Pushes the logical XOR of the top two booleans.
@@ -77,9 +77,9 @@ def boolean_invert_first_then_and(state):
         state['_boolean'].push(result)
 
 
-boolean_invert_first_then_and_intruction = PyshInstruction('_boolean_invert_first_then_and',
-                                                           boolean_invert_first_then_and,
-                                                           stack_types=['_boolean'])
+I_boolean_invert_first_then_and = Instruction('_boolean_invert_first_then_and',
+                                              boolean_invert_first_then_and,
+                                              stack_types=['_boolean'])
 # <instr_open>
 # <instr_name>boolean_invert_first_then_and
 # <instr_desc>Pushes the logical AND of the top two booleans, with the fist argument inverted.
@@ -94,9 +94,9 @@ def boolean_invert_second_then_and(state):
         state['_boolean'].push(result)
 
 
-boolean_invert_second_then_and_intruction = PyshInstruction('_boolean_invert_second_then_and',
-                                                            boolean_invert_second_then_and,
-                                                            stack_types=['_boolean'])
+I_boolean_invert_second_then_and = Instruction('_boolean_invert_second_then_and',
+                                               boolean_invert_second_then_and,
+                                               stack_types=['_boolean'])
 # <instr_open>
 # <instr_name>boolean_invert_second_then_and
 # <instr_desc>Pushes the logical AND of the top two booleans, with the second argument inverted.
@@ -110,9 +110,9 @@ def boolean_from_integer(state):
         state['_boolean'].push(new_bool)
 
 
-boolean_from_integer_instruction = PyshInstruction('_boolean_from_integer',
-                                                   boolean_from_integer,
-                                                   stack_types=['_boolean', '_integer'])
+I_boolean_from_integer = Instruction('_boolean_from_integer',
+                                     boolean_from_integer,
+                                     stack_types=['_boolean', '_integer'])
 # <instr_open>
 # <instr_name>boolean_from_integer
 # <instr_desc>Pushes the top integer casted to a boolean. If integer is 0, boolean is false. True otherwise.
@@ -126,9 +126,9 @@ def boolean_from_float(state):
         state['_boolean'].push(new_bool)
 
 
-boolean_from_float_instruction = PyshInstruction('_boolean_from_float',
-                                                 boolean_from_float,
-                                                 stack_types=['_boolean', '_float'])
+I_boolean_from_float = Instruction('_boolean_from_float',
+                                   boolean_from_float,
+                                   stack_types=['_boolean', '_float'])
 # <instr_open>
 # <instr_name>boolean_from_float
 # <instr_desc>Pushes the top float casted to a boolean. If float is 0.0, boolean is false. True otherwise.

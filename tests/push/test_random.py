@@ -3,14 +3,14 @@ import unittest
 
 import pyshgp.push.random as r
 import pyshgp.push.plush as pl
-import pyshgp.push.instruction as instr
+from pyshgp.push.instruction import Instruction
 
 
 class TestRandomMethods(unittest.TestCase):
 
     def setUp(self):
         self.atom_gens = [
-            instr.PyshInstruction("noop", lambda s: s, [], 0),
+            Instruction("noop", lambda s: s, [], 0),
             lambda: np.random.random()
         ]
         self.R = r.PushSpawner(self.atom_gens)

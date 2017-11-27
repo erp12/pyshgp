@@ -2,7 +2,7 @@ import random
 import numpy as np
 import pyshgp.utils as u
 import pyshgp.push.interpreter as interp
-from pyshgp.push.instruction import PyshInstruction
+from pyshgp.push.instruction import Instruction
 from pyshgp.push.registered_instructions import get_instruction
 
 
@@ -26,7 +26,7 @@ def run_test(before, after, instruction, print_test=False):
     interpreter = interp.PushInterpreter()
     interpreter.state.from_dict(before)
 
-    if not isinstance(instruction, PyshInstruction):
+    if not isinstance(instruction, Instruction):
         instruction = get_instruction(instruction)
 
     if print_test:

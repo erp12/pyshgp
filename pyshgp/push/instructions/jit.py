@@ -4,10 +4,10 @@ instructions" which can be used in instruction definitions to retrieve other
 instructions.
 """
 
-from ..instruction import PyshInstruction
+from ..instruction import Instruction
 
 
-class JustInTimeInstruction(PyshInstruction):
+class JustInTimeInstruction(Instruction):
     """A callable object that, when processed in by the push interpreter,
     returns a specific registered instruction.
 

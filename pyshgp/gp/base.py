@@ -13,7 +13,7 @@ from .variation import (
     PerturbCloseMutation,
     Alternation
 )
-from ..push import random as r
+from ..push.random import Spawner
 from ..push.registered_instructions import (
     instruction_set,
     get_instructions_by_pysh_type
@@ -181,7 +181,7 @@ class PyshBase:
         input_instrs = [InputInstruction(i) for i in range(num_inputs)]
         all_atom_gens = self.atom_generators + input_instrs
         # Create spawner
-        self.spawner = r.PushSpawner(all_atom_gens)
+        self.spawner = Spawner(all_atom_gens)
         if self.verbose > 1:
             print('Creating Spawner with following atom generators:')
             print(self.spawner.atom_generators)

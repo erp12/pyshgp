@@ -1,7 +1,7 @@
 import numpy as np
 import unittest
 
-import pyshgp.push.random as r
+from pyshgp.push.random import Spawner
 import pyshgp.push.plush as pl
 from pyshgp.push.instruction import Instruction
 
@@ -13,7 +13,7 @@ class TestRandomMethods(unittest.TestCase):
             Instruction("noop", lambda s: s, [], 0),
             lambda: np.random.random()
         ]
-        self.R = r.PushSpawner(self.atom_gens)
+        self.R = Spawner(self.atom_gens)
 
     def test_random_closes(self):
         c = self.R.random_closes()

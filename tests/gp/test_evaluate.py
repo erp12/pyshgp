@@ -5,7 +5,7 @@ from pyshgp.gp.evaluate import (evaluate_with_function,
                                 evaluate_for_regression,
                                 evaluate_for_classification)
 from pyshgp.gp.population import Individual
-from pyshgp.push.random import PushSpawner
+from pyshgp.push.random import Spawner
 
 
 class TestEvaluateFunctions(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestEvaluateFunctions(unittest.TestCase):
         self.atom_gens = [
             lambda: np.random.random(),
         ]
-        self.R = PushSpawner(self.atom_gens)
+        self.R = Spawner(self.atom_gens)
         self.gn = self.R.random_plush_genome(1)
         self.individual = Individual(self.gn)
 

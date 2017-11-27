@@ -5,7 +5,7 @@ from pyshgp.gp.simplification import (silent_n_random_genes, simplify_once,
                                       noop_n_random_genes, simplify_by_dataset,
                                       simplify_by_function)
 from pyshgp.gp.population import Individual
-from pyshgp.push.random import PushSpawner
+from pyshgp.push.random import Spawner
 
 
 class TestSimplificationFunctions(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestSimplificationFunctions(unittest.TestCase):
         self.atom_gens = [
             lambda: np.random.random(),
         ]
-        self.R = PushSpawner(self.atom_gens)
+        self.R = Spawner(self.atom_gens)
         self.gn = self.R.random_plush_genome(1)
         self.individual = Individual(self.gn)
 

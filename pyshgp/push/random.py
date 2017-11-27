@@ -11,36 +11,33 @@ import numpy.random as rand
 
 from .. import utils as u
 from .. import exceptions as e
-
 from . import translation as t
-from . import plush as pl
+from .plush import Gene
+from .instruction import Instruction
 
 
-class PushSpawner:
-    """
+_DEFAULT_CLOSE_PROBABILITIES = [0.772, 0.206, 0.021, 0.001]
+
+
+class Spawner:
+    """Spawns new push programs and plush genomes.
+
     Parameters
     ----------
     atom_generators : list
         List of atoms, and functions that produce atoms, to choose from when
         generating random code.
-    epigenetic_markers : list
-        TODO: Remove epigenetic_markers.
-    close_parens_probabilities : int
-        TODO: Refactor use of close_parens_probabilities.
-    silent_gene_probability : float
-        TODO: Remove epigenetic_markers.
+    close_parens_probabilities : list (optional)
+        List of probabilities that sum to one. Recomended you leave this as
+        the default.
     """
 
-    def __init__(self, atom_generators,
-                 epigenetic_markers=['_instruction', '_close'],
-                 close_parens_probabilities=[0.772, 0.206, 0.021, 0.001],
-                 silent_gene_probability=0.2):
+    def __init__(self, atom_generators, close_parens_probabilities='default'):
         self.atom_generators = atom_generators
-        self.close_parens_probabilities = close_parens_probabilities
-        self.silent_gene_probability = silent_gene_probability
-        self.epigenetic_markers = epigenetic_markers
-        if '_instruction' not in self.epigenetic_markers:
-            self.epigenetic_markers.appen('_instrucion')
+        if close_parens_probabilities == 'default':
+            self.close_parens_probabilities = _DEFAULT_CLOSE_PROBABILITIES[:]
+        else:
+            self.close_parens_probabilities = close_parens_probabilities
 
     def random_closes(self):
         """Returns a random number of closes based on close_parens_probabilities.
@@ -82,42 +79,23 @@ class PushSpawner:
         --------
             Instance of Gene.
         """
-        instruction = None
         is_literal = False
-        closes = None
-        silent = False
-
-        # For each marker that is present
-        for m in self.epigenetic_markers:
-            if m == '_instruction':
-                # The instruction marker.
-                if callable(atom):
-                    # If it is callable, then it is likely a function that will
-                    # produce a literal.
-                    fn_element = atom()
-                    if callable(fn_element):  # It's another function!
-                        instruction = fn_element()
-                    else:
-                        instruction = fn_element
-                    is_literal = True
-                else:
-                    # If atom is not callable, then it is the
-                    # instruction/literal.
-                    # TODO: This *SHOULD* set is_literal to true if the atom is
-                    # something like the number 7.
-                    instruction = atom
-            elif m == '_close':
-                # Returns a random number of close parens to follow the
-                # instruction in a program.
-                closes = self.random_closes()
-            elif m == '_silent':
-                # Determines if the gene should be marked as silent (will not
-                # appear in program)
-                silent = random.random() > self.silent_gene_probability
+        proc_atom = None
+        if callable(atom):
+            # If it is callable, then it is likely a function that will
+            # produce a literal.
+            fn_element = atom()
+            if callable(fn_element):  # It's another function!
+                proc_atom = fn_element()
             else:
-                raise e.UnkownEpigeneticMarker(m)
-        # Create and return the gene tuple.
-        return pl.Gene(instruction, is_literal, closes, silent)
+                proc_atom = fn_element
+            is_literal = True
+        else:
+            # If atom is not callable, then it is the instruction/literal.
+            proc_atom = atom
+            is_literal = not isinstance(proc_atom, Instruction)
+
+        return Gene(proc_atom, is_literal, self.random_closes())
 
     def random_plush_gene(self):
         """Returns a random plush gene given atom_generators and

@@ -4,7 +4,7 @@ import unittest
 
 import pyshgp.gp.variation as v
 import pyshgp.gp.population as p
-from pyshgp.push.random import Spawner
+from pyshgp.push.spawn import Spawner
 from pyshgp.push.registered_instructions import get_instruction
 
 

@@ -5,7 +5,7 @@ from pyshgp.gp.evaluate import (evaluate_with_function,
                                 evaluate_for_regression,
                                 evaluate_for_classification)
 from pyshgp.gp.population import Individual
-from pyshgp.push.random import Spawner
+from pyshgp.push.spawn import Spawner
 
 
 class TestEvaluateFunctions(unittest.TestCase):

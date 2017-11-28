@@ -2,7 +2,7 @@ import numpy as np
 import unittest
 
 import pyshgp.gp.population as p
-from pyshgp.push.random import Spawner
+from pyshgp.push.spawn import Spawner
 
 
 class TestIndividualMethods(unittest.TestCase):

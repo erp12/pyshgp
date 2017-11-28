@@ -5,7 +5,7 @@ from pyshgp.gp.simplification import (silent_n_random_genes, simplify_once,
                                       noop_n_random_genes, simplify_by_dataset,
                                       simplify_by_function)
 from pyshgp.gp.population import Individual
-from pyshgp.push.random import Spawner
+from pyshgp.push.spawn import Spawner
 
 
 class TestSimplificationFunctions(unittest.TestCase):

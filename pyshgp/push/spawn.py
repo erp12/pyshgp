@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-The :mod:`random` module defines classes that produce random Plush
+The :mod:`spawn` module defines classes that produce random Plush
 genomes and random Push programs.
-
-TODO: There should be better structure here in terms of what goes in the
-spawner class and what is a global function.
 """
 import random
+import warnings
 import numpy.random as rand
 
 from ..utils import reductions
@@ -38,7 +36,7 @@ class Spawner:
         else:
             self.close_parens_probabilities = close_parens_probabilities
 
-    def random_closes(self):
+    def generate_close_count(self):
         """Returns a random number of closes based on close_parens_probabilities.
 
         close_parens_probabilities defaults to [0.772, 0.206, 0.021, 0.001].
@@ -94,7 +92,7 @@ class Spawner:
             proc_atom = atom
             is_literal = not isinstance(proc_atom, Instruction)
 
-        return Gene(proc_atom, is_literal, self.random_closes())
+        return Gene(proc_atom, is_literal, self.generate_close_count())
 
     def random_plush_gene(self):
         """Returns a random plush gene given atom_generators and
@@ -147,8 +145,38 @@ class Spawner:
 
         Returns
         --------
-             A random Push program.
+            A random Push program.
         """
         max_genome_size = max(int(max_points / 2), 1)
         genome = self.random_plush_genome(max_genome_size)
         return genome_to_program(genome)
+
+
+class LinearSpawner(Spawner):
+    """Spawns new linear push programs and plush genomes that represent linear
+    programs.
+
+    Parameters
+    ----------
+    atom_generators : list
+        List of atoms, and functions that produce atoms, to choose from when
+        generating random code.
+    """
+
+    def __init__(self, atom_generators):
+        proc_atom_gens = []
+        for a in atom_generators:
+            if isinstance(a, Instruction) and a.parentheses > 0:
+                warnings.warn("Ignoring {name}. Cannot be used in LinearSpawner.".format(name=a.name))
+            else:
+                proc_atom_gens.append(a)
+        super().__init__(proc_atom_gens, [0])
+
+    def generate_close_count(self):
+        """Returns 0 to keep the genomes/programs linear
+
+        Returns
+        --------
+            0
+        """
+        return 0

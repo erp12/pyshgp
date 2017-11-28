@@ -13,7 +13,7 @@ from .variation import (
     PerturbCloseMutation,
     Alternation
 )
-from ..push.random import Spawner
+from ..push.spawn import Spawner
 from ..push.registered_instructions import (
     instruction_set,
     get_instructions_by_pysh_type

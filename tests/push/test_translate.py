@@ -1,6 +1,6 @@
 import unittest
 
-from pyshgp.push.random import Spawner
+from pyshgp.push.spawn import Spawner
 import pyshgp.push.translation as t
 
 

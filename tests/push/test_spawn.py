@@ -1,12 +1,12 @@
 import numpy as np
 import unittest
 
-from pyshgp.push.random import Spawner
+from pyshgp.push.spawn import Spawner
 import pyshgp.push.plush as pl
 from pyshgp.push.instruction import Instruction
 
 
-class TestRandomMethods(unittest.TestCase):
+class TestSpawnMethods(unittest.TestCase):
 
     def setUp(self):
         self.atom_gens = [
@@ -15,8 +15,8 @@ class TestRandomMethods(unittest.TestCase):
         ]
         self.R = Spawner(self.atom_gens)
 
-    def test_random_closes(self):
-        c = self.R.random_closes()
+    def test_generate_close_count(self):
+        c = self.R.generate_close_count()
         self.assertIsInstance(c, int)
         self.assertTrue(c <= 3)
         self.assertTrue(c >= 0)

@@ -170,7 +170,7 @@ class LinearSpawner(Spawner):
                 warnings.warn("Ignoring {name}. Cannot be used in LinearSpawner.".format(name=a.name))
             else:
                 proc_atom_gens.append(a)
-        super().__init__(proc_atom_gens, [0])
+        super().__init__(proc_atom_gens)
 
     def generate_close_count(self):
         """Returns 0 to keep the genomes/programs linear

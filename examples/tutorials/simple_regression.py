@@ -52,7 +52,7 @@ from pyshgp.gp.evolvers import SimplePushGPEvolver
 
 
 def target_function(x):
-    return x**6 + -2 * (x**4) + x**2
+    return x ** 6 + -2 * (x ** 4) + x ** 2
 
 
 def error_func(program):
@@ -74,8 +74,9 @@ def error_func(program):
 
 
 if __name__ == "__main__":
-    evo = SimplePushGPEvolver(n_jobs=-1, verbose=1,
+    evo = SimplePushGPEvolver(n_jobs=-1, verbose=2,
                               selection_method='epsilon_lexicase',
                               atom_generators=REGRESSION_ATOM_GENERATORS,
-                              max_generations=50)
+                              max_generations=50,
+                              keep_linear=True)
     evo.fit(error_func, 1, ['_float'])

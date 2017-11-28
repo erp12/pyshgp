@@ -86,16 +86,17 @@ class SimplePushGPEvolver(PyshBase):
                  atom_generators='default',
                  operators='default',
                  error_threshold=0,
-                 max_generations=1000,
-                 population_size=300,
-                 selection_method='lexicase',
-                 n_jobs=1,
-                 initial_max_genome_size=50,
-                 program_growth_cap=100,
+                 max_generations: int=1000,
+                 population_size: int=300,
+                 selection_method: str='lexicase',
+                 n_jobs: int=1,
+                 initial_max_genome_size: int=50,
+                 program_growth_cap: int=100,
                  epsilon='auto',
-                 tournament_size=7,
-                 simplification_steps=2000,
-                 verbose=0):
+                 tournament_size: int=7,
+                 simplification_steps: int=2000,
+                 keep_linear: bool=False,
+                 verbose: int=0):
 
         if atom_generators == 'default':
             atom_generators = DEFAULT_ATOM_GENERATORS
@@ -112,7 +113,8 @@ class SimplePushGPEvolver(PyshBase):
                           initial_max_genome_size=initial_max_genome_size,
                           verbose=verbose,
                           simplification_steps=simplification_steps,
-                          epsilon=epsilon, tournament_size=tournament_size)
+                          epsilon=epsilon, tournament_size=tournament_size,
+                          keep_linear=keep_linear)
 
     def _evaluation(self, error_function):
         """Evaluates the population using an error function. If a process pool
@@ -295,13 +297,21 @@ class PushGPRegressor(PyshBase, PyshEstimatorMixin, BaseEstimator,
         overall training error of the SymbolicRegressor.
     """
 
-    def __init__(self, atom_generators='default',
-                 operators='default', error_threshold=1e-5,
-                 max_generations=1000, population_size=500,
-                 selection_method='epsilon_lexicase', n_jobs=1,
-                 initial_max_genome_size=50, program_growth_cap=100,
-                 verbose=0, epsilon='auto', tournament_size=7,
-                 simplification_steps=500):
+    def __init__(self,
+                 atom_generators='default',
+                 operators='default',
+                 error_threshold: float=1e-5,
+                 max_generations: int=1000,
+                 population_size: int=500,
+                 selection_method: str='epsilon_lexicase',
+                 n_jobs: int=1,
+                 initial_max_genome_size: int=50,
+                 program_growth_cap: int=100,
+                 verbose: int=0,
+                 epsilon='auto',
+                 tournament_size: int=7,
+                 simplification_steps: int=500,
+                 keep_linear: bool=False):
 
         if atom_generators == 'default':
             atom_generators = REGRESSION_ATOM_GENERATORS
@@ -319,7 +329,8 @@ class PushGPRegressor(PyshBase, PyshEstimatorMixin, BaseEstimator,
                           initial_max_genome_size=initial_max_genome_size,
                           verbose=verbose, epsilon=epsilon,
                           simplification_steps=simplification_steps,
-                          tournament_size=tournament_size)
+                          tournament_size=tournament_size,
+                          keep_linear=keep_linear)
         self.output_types = ['_float']
 
     def _evaluation(self, X, y):
@@ -462,13 +473,21 @@ class PushGPClassifier(PyshBase, PyshEstimatorMixin, BaseEstimator,
         overall training error of the SymbolicRegressor.
     """
 
-    def __init__(self, atom_generators='default',
-                 operators='default', error_threshold=1e-5,
-                 max_generations=1000, population_size=500,
-                 selection_method='lexicase', n_jobs=1,
-                 initial_max_genome_size=50, program_growth_cap=100,
-                 verbose=0, epsilon='auto', tournament_size=7,
-                 simplification_steps=500):
+    def __init__(self,
+                 atom_generators='default',
+                 operators='default',
+                 error_threshold: float=1e-5,
+                 max_generations: int=1000,
+                 population_size: int=500,
+                 selection_method: str='lexicase',
+                 n_jobs: int=1,
+                 initial_max_genome_size: int=50,
+                 program_growth_cap: int=100,
+                 verbose: int=0,
+                 epsilon='auto',
+                 tournament_size: int=7,
+                 simplification_steps: int=500,
+                 keep_linear: bool=False):
 
         if atom_generators == 'default':
             atom_generators = CLASSIFICATION_ATOM_GENERATORS
@@ -486,7 +505,8 @@ class PushGPClassifier(PyshBase, PyshEstimatorMixin, BaseEstimator,
                           initial_max_genome_size=initial_max_genome_size,
                           verbose=verbose, epsilon=epsilon,
                           simplification_steps=simplification_steps,
-                          tournament_size=tournament_size)
+                          tournament_size=tournament_size,
+                          keep_linear=keep_linear)
 
     def _evaluation(self, X, y):
         """Evaluates the population.

@@ -2,9 +2,6 @@
 """
 The :mod:`translation` module provides functions that translate Plush genomes
 into Push programs.
-
-.. todo::
-    Consider breaking up some of the larger functions in this file.
 """
 from copy import copy
 

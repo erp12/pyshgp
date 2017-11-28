@@ -4,7 +4,7 @@ import unittest
 
 import pyshgp.gp.variation as v
 import pyshgp.gp.population as p
-import pyshgp.push.random as r
+from pyshgp.push.spawn import Spawner
 from pyshgp.push.registered_instructions import get_instruction
 
 
@@ -23,7 +23,7 @@ atom_gens = [
 class TestPerturbCloseMutationMethods(unittest.TestCase):
 
     def setUp(self):
-        self.R = r.PushSpawner(atom_gens)
+        self.R = Spawner(atom_gens)
         self.i1 = p.Individual(self.R.random_plush_genome(15))
 
     def test_produce(self):
@@ -36,7 +36,7 @@ class TestPerturbCloseMutationMethods(unittest.TestCase):
 class TestPerturbIntegerMutationMethods(unittest.TestCase):
 
     def setUp(self):
-        self.R = r.PushSpawner(atom_gens)
+        self.R = Spawner(atom_gens)
         self.i1 = p.Individual(self.R.random_plush_genome(15))
 
     def test_produce(self):
@@ -49,7 +49,7 @@ class TestPerturbIntegerMutationMethods(unittest.TestCase):
 class TestAlternationMethods(unittest.TestCase):
 
     def setUp(self):
-        self.R = r.PushSpawner(atom_gens)
+        self.R = Spawner(atom_gens)
         self.i1 = p.Individual(self.R.random_plush_genome(5))
         self.i2 = p.Individual(self.R.random_plush_genome(5))
 
@@ -62,7 +62,7 @@ class TestAlternationMethods(unittest.TestCase):
 class TestVariationOperatorPipelineMethods(unittest.TestCase):
 
     def setUp(self):
-        self.R = r.PushSpawner(atom_gens)
+        self.R = Spawner(atom_gens)
         self.i1 = p.Individual(self.R.random_plush_genome(5))
         self.i2 = p.Individual(self.R.random_plush_genome(5))
 

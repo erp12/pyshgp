@@ -23,7 +23,7 @@ class Gene(object):
         If true, do not include instruction in translated program.
     """
 
-    def __init__(self, atom, is_literal, closes, is_silent=False):
+    def __init__(self, atom, is_literal, closes=0, is_silent=False):
         self.atom = atom
         self.is_literal = is_literal
         self.closes = closes

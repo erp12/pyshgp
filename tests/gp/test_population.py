@@ -2,7 +2,7 @@ import numpy as np
 import unittest
 
 import pyshgp.gp.population as p
-import pyshgp.push.random as r
+from pyshgp.push.spawn import Spawner
 
 
 class TestIndividualMethods(unittest.TestCase):
@@ -11,7 +11,7 @@ class TestIndividualMethods(unittest.TestCase):
         self.atom_gens = [
             lambda: np.random.random(),
         ]
-        self.R = r.PushSpawner(self.atom_gens)
+        self.R = Spawner(self.atom_gens)
         self.i = p.Individual(self.R.random_plush_genome_with_size(4))
 
     def test_run_program(self):
@@ -25,7 +25,7 @@ class TestPopulationMethods(unittest.TestCase):
 
     def setUp(self):
         self.atom_gens = [lambda: np.random.random()]
-        self.R = r.PushSpawner(self.atom_gens)
+        self.R = Spawner(self.atom_gens)
         self.pop = p.Population()
         self.pop.append(p.Individual(self.R.random_plush_genome(5)))
         self.pop.append(p.Individual(self.R.random_plush_genome(5)))

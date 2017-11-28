@@ -53,7 +53,7 @@ from pyshgp.utils import merge_sets
 
 def odd_error_func(program, debug=False):
     errors = []
-    for i in range(20):
+    for i in range(10):
         # Create the push interpreter
         interpreter = PushInterpreter()
         # Run program

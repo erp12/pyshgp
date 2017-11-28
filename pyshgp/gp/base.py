@@ -13,7 +13,7 @@ from .variation import (
     PerturbCloseMutation,
     Alternation
 )
-from ..push import random as r
+from ..push.spawn import Spawner, LinearSpawner
 from ..push.registered_instructions import (
     instruction_set,
     get_instructions_by_pysh_type
@@ -111,7 +111,7 @@ class PyshBase:
                  selection_method='lexicase', n_jobs=1,
                  initial_max_genome_size=50, program_growth_cap=100,
                  verbose=0, epsilon='auto', tournament_size=7,
-                 simplification_steps=2000):
+                 simplification_steps=2000, keep_linear=False):
         self.error_threshold = error_threshold
         self.max_generations = max_generations
         self.population_size = population_size
@@ -125,6 +125,7 @@ class PyshBase:
         self.epsilon = epsilon
         self.tournament_size = tournament_size,
         self.simplification_steps = simplification_steps
+        self.keep_linear = keep_linear
 
         if not self.n_jobs == 1:
             self.init_executor()
@@ -181,7 +182,10 @@ class PyshBase:
         input_instrs = [InputInstruction(i) for i in range(num_inputs)]
         all_atom_gens = self.atom_generators + input_instrs
         # Create spawner
-        self.spawner = r.PushSpawner(all_atom_gens)
+        if self.keep_linear:
+            self.spawner = LinearSpawner(all_atom_gens)
+        else:
+            self.spawner = Spawner(all_atom_gens)
         if self.verbose > 1:
             print('Creating Spawner with following atom generators:')
             print(self.spawner.atom_generators)

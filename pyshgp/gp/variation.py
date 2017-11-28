@@ -64,7 +64,7 @@ class VariationOperatorPipeline(VariationOperator):
         parents : list of Individuals
             A list of parents to use when producing the child.
 
-        spawner : pyshgp.push.random.PushSpawner
+        spawner : pyshgp.push.spawn.Spawner
             A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
@@ -91,7 +91,7 @@ class LiteralMutation(VariationOperator, metaclass=ABCMeta):
         parents : list of Individuals
             A list of parents to use when producing the child.
 
-        spawner : pyshgp.push.random.PushSpawner
+        spawner : pyshgp.push.spawn.Spawner
             A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
@@ -228,7 +228,7 @@ class PerturbCloseMutation(VariationOperator):
         parents : list of Individuals
             A list of parents to use when producing the child.
 
-        spawner : pyshgp.push.random.PushSpawner
+        spawner : pyshgp.push.spawn.Spawner
             A spawner that can be used to create random Push code.
 
         Returns
@@ -265,7 +265,7 @@ class RandomDeletionMutation(VariationOperator):
         parents : list of Individuals
             A list of parents to use when producing the child.
 
-        spawner : pyshgp.push.random.PushSpawner
+        spawner : pyshgp.push.spawn.Spawner
             A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
@@ -293,7 +293,7 @@ class RandomAdditionMutation(VariationOperator):
         parents : list of Individuals
             A list of parents to use when producing the child.
 
-        spawner : pyshgp.push.random.PushSpawner
+        spawner : pyshgp.push.spawn.Spawner
             A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
@@ -321,7 +321,7 @@ class RandomReplaceMutation(VariationOperator):
         parents : list of Individuals
             A list of parents to use when producing the child.
 
-        spawner : pyshgp.push.random.PushSpawner
+        spawner : pyshgp.push.spawn.Spawner
             A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
@@ -361,7 +361,7 @@ class UniformMutation(VariationOperator):
         parents : list of Individuals
             A list of parents to use when producing the child.
 
-        spawner : pyshgp.push.random.PushSpawner
+        spawner : pyshgp.push.spawn.Spawner
             A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
@@ -405,7 +405,7 @@ class Alternation(VariationOperator):
         parents : list of Individuals
             A list of parents to use when producing the child.
 
-        spawner : pyshgp.push.random.PushSpawner, optional
+        spawner : pyshgp.push.spawn.Spawner, optional
             A spawner that can be used to create random Push code. Not used by
             this operator.
         """

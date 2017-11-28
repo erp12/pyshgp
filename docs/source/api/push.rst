@@ -23,10 +23,10 @@ Plush
 .. automodule:: pyshgp.push.plush
 	:members:
 
-Random
+Spawn
 ===========
 
-.. automodule:: pyshgp.push.random
+.. automodule:: pyshgp.push.spawn
 	:members:
 
 Stack

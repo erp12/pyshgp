@@ -87,14 +87,14 @@ class SimplePushGPEvolver(PyshBase):
                  operators='default',
                  error_threshold=0,
                  max_generations: int=1000,
-                 population_size: int=300,
+                 population_size: int=1000,
                  selection_method: str='lexicase',
                  n_jobs: int=1,
                  initial_max_genome_size: int=50,
                  program_growth_cap: int=100,
                  epsilon='auto',
                  tournament_size: int=7,
-                 simplification_steps: int=2000,
+                 simplification_steps: int=5000,
                  keep_linear: bool=False,
                  verbose: int=0):
 

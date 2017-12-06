@@ -109,10 +109,10 @@ class LiteralMutation(VariationOperator, metaclass=ABCMeta):
         """Mutates the literal.
         """
 
+
 ##
 #   Mutation
 ##
-
 
 class PerturbIntegerMutation(LiteralMutation):
     """Randomly perturbs the genes containing integer literals.
@@ -160,6 +160,16 @@ class PerturbFloatMutation(LiteralMutation):
         return perturb_with_gaussian_noise(self.standard_deviation, literal)
 
 
+def _tweak_string(literal, char_tweak_rate):
+    new_s = ""
+    for c in literal:
+        if random.random() < char_tweak_rate:
+            new_s += random.choice(['\t', '\n'] + list(map(chr, range(32, 127))))
+        else:
+            new_s += c
+    return new_s
+
+
 class TweakStringMutation(LiteralMutation):
     """Randomly tweaks the string values in string literal genes.
     """
@@ -180,13 +190,7 @@ class TweakStringMutation(LiteralMutation):
         --------
         A tweaked string.
         """
-        new_s = ""
-        for c in literal:
-            if random.random() < self.char_tweak_rate:
-                new_s += random.choice(['\t', '\n'] + list(map(chr, range(32, 127))))
-            else:
-                new_s += c
-        return new_s
+        return _tweak_string(literal, self.char_tweak_rate)
 
 
 class FlipBooleanMutation(LiteralMutation):
@@ -340,18 +344,32 @@ class UniformMutation(VariationOperator):
 
     def __init__(self,
                  rate=0.01,
-                 constant_tweak_rate=0.5,
-                 float_tweak_standard_deviation=1.0,
-                 int_tweak_standard_deviation=1.0,
+                 literal_tweak_rate=0.5,
+                 float_standard_deviation=1.0,
+                 int_standard_deviation=1.0,
                  string_char_tweak_rate=0.1):
         super().__init__(1)
-        self.constant_tweak_rate = constant_tweak_rate
-        self.pipeline = VariationOperatorPipeline([
-            PerturbIntegerMutation(rate=rate, standard_deviation=int_tweak_standard_deviation),
-            PerturbFloatMutation(rate=rate, standard_deviation=float_tweak_standard_deviation),
-            TweakStringMutation(rate=rate, char_tweak_rate=string_char_tweak_rate),
-            FlipBooleanMutation(rate=rate),
-            RandomReplaceMutation(rate=rate)])
+        self.rate = rate
+        self.literal_tweak_rate = literal_tweak_rate
+        self.float_standard_deviation = float_standard_deviation
+        self.int_standard_deviation = int_standard_deviation
+        self.string_char_tweak_rate = string_char_tweak_rate
+
+    def _literal_mutator(self, gene, spawner):
+        pysh_type = recognize_pysh_type(gene.atom)
+        if pysh_type == "_float":
+            gene.atom = perturb_with_gaussian_noise(self.float_standard_deviation,
+                                                    gene.atom)
+        elif pysh_type == "_integer":
+            gene.atom = int(perturb_with_gaussian_noise(self.float_standard_deviation,
+                                                        gene.atom))
+        elif pysh_type == "_string":
+            gene.atom = _tweak_string(gene.atom,
+                                      self.string_char_tweak_rate)
+        elif pysh_type == "_boolean":
+            gene.atom = not gene.atom
+        else:
+            spawner.random_plush_gene()
 
     def produce(self, parents, spawner):
         """Produces a child by perturbing some floats in the parent.
@@ -365,7 +383,16 @@ class UniformMutation(VariationOperator):
             A spawner that can be used to create random Push code.
         """
         self.check_num_parents(parents)
-        return self.pipeline.produce(parents, spawner)
+        new_genome = []
+        for gene in parents[0].genome:
+            if random.random() < self.rate:
+                if random.random() < self.literal_tweak_rate:
+                    new_genome.append(spawner.random_plush_gene())
+                else:
+                    self._literal_mutator(gene, spawner)
+            else:
+                new_genome.append(gene)
+        return Individual(new_genome)
 
 
 # #               # #

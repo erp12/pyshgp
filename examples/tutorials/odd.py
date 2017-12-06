@@ -56,6 +56,7 @@ def odd_error_func(program, debug=False):
     for i in range(10):
         # Create the push interpreter
         interpreter = PushInterpreter()
+        interpreter.state['_integer'].push(i)
         # Run program
         y_hat = interpreter.run(program, [i], ['_boolean'])[0]
         # Get output
@@ -75,10 +76,10 @@ atom_generators = list(merge_sets(get_instructions_by_pysh_type("_integer"),
                                   get_instructions_by_pysh_type("_boolean"),
                                   get_instructions_by_pysh_type("_code"),
                                   get_instructions_by_pysh_type("_exec"),
-                                  [lambda: random.randint(0, 10)]))
+                                  [lambda: random.randint(0, 100)]))
 
 
 if __name__ == "__main__":
-    evo = SimplePushGPEvolver(n_jobs=-1, verbose=2,
+    evo = SimplePushGPEvolver(n_jobs=1, verbose=2,
                               atom_generators=atom_generators)
     evo.fit(odd_error_func, 1, ['_boolean'])

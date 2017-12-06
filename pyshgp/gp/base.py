@@ -36,6 +36,7 @@ DEFAULT_ATOM_GENERATORS = list(merge_sets(
 )
 REGRESSION_ATOM_GENERATORS = list(merge_sets(
     get_instructions_by_pysh_type('_exec'),
+    get_instructions_by_pysh_type('_integer'),
     get_instructions_by_pysh_type('_float'),
     [lambda: randint(0, 100), lambda: random()])
 )

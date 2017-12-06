@@ -39,44 +39,51 @@ operations
 Finally, we instanciate the ``SimplePushGPEvolver``. Then we can call the
 ``fit`` method and pass three things: 1) The error function, 2) the number of
 input values that will be supplied and 3) a list of pysh types to output.
-
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 
 import numpy as np
+import random
 
 from pyshgp.push.interpreter import PushInterpreter
-from pyshgp.gp.base import REGRESSION_ATOM_GENERATORS
+from pyshgp.push.instructions.numbers import (
+    I_add_integer, I_sub_integer, I_mult_integer, I_div_integer)
 from pyshgp.gp.evolvers import SimplePushGPEvolver
 
 
 def target_function(x):
-    return x ** 6 + -2 * (x ** 4) + x ** 2
+    return (x ** 3) - (x * (2 * x ** 2))
 
 
 def error_func(program):
     errors = []
-    for x in np.arange(-2.0, 2.0, 0.1):
-        inpt = float(x)
+    for x in range(10):
         # Create the push interpreter
         interpreter = PushInterpreter()
-        y_hat = interpreter.run(program, [inpt], ['_float'])[0]
+        y_hat = interpreter.run(program, [x], ['_integer'])[0]
         # Get output
         if y_hat is None:
             errors.append(1e5)
         else:
             # compare to target output
-            target_float = target_function(inpt)
+            y_target = target_function(x)
             # calculate error
-            errors.append((y_hat - target_float)**2)
+            errors.append(abs(y_hat - y_target))
     return errors
+
+
+atom_generators = [
+    [lambda: random.randint(0, 10)],
+    I_add_integer,
+    I_sub_integer,
+    I_mult_integer,
+    I_div_integer
+]
 
 
 if __name__ == "__main__":
     evo = SimplePushGPEvolver(n_jobs=-1, verbose=2,
                               selection_method='epsilon_lexicase',
-                              atom_generators=REGRESSION_ATOM_GENERATORS,
+                              atom_generators=atom_generators,
                               max_generations=50,
                               keep_linear=True)
-    evo.fit(error_func, 1, ['_float'])
+    evo.fit(error_func, 1, ['_integer'])

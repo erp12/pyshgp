@@ -40,8 +40,6 @@ Finally, we instanciate the ``SimplePushGPEvolver``. Then we can call the
 ``fit`` method and pass three things: 1) The error function, 2) the number of
 input values that will be supplied and 3) a list of pysh types to output.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 
 import random
 

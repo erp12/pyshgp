@@ -71,7 +71,7 @@ def error_func(program):
 
 
 atom_generators = [
-    lambda: random.randint(0, 10),
+    # lambda: random.randint(0, 10),
     I_add_integer,
     I_sub_integer,
     I_mult_integer,

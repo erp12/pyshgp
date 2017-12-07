@@ -40,8 +40,6 @@ Finally, we instanciate the ``SimplePushGPEvolver``. Then we can call the
 ``fit`` method and pass three things: 1) The error function, 2) the number of
 input values that will be supplied and 3) a list of pysh types to output.
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 
 import random
 
@@ -58,7 +56,7 @@ def odd_error_func(program, debug=False):
         interpreter = PushInterpreter()
         interpreter.state['_integer'].push(i)
         # Run program
-        y_hat = interpreter.run(program, [i], ['_boolean'])[0]
+        y_hat = interpreter.run(program, [i], ['_boolean'], debug)[0]
         # Get output
         if y_hat is None:
             errors.append(1e5)

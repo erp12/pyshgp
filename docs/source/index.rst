@@ -2,7 +2,8 @@
 pyshgp
 ******
 
-PushGP Genetic Programming in Python
+PushGP Genetic Programming in Python. Project source code available on
+`the pyshgp Github page <https://github.com/erp12/pyshgp>`_.
 
 
 Push Genetic Programming
@@ -41,7 +42,7 @@ Coming soon!
 Build Frome source
 """"""""""""""""""
 
-1. Clone the repo
+1. Clone the `Github repo <https://github.com/erp12/pyshgp>`_.
 2. :code:`cd` into the ``pyshgp`` repo directory
 3. run :code:`pip install -r requirements.txt`
 4. run :code:`pip install . --upgrade`

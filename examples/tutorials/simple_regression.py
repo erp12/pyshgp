@@ -41,7 +41,10 @@ Finally, we instanciate the ``SimplePushGPEvolver``. Then we can call the
 input values that will be supplied and 3) a list of pysh types to output.
 """
 
+<<<<<<< HEAD
+=======
 import numpy as np
+>>>>>>> master
 import random
 
 from pyshgp.push.interpreter import PushInterpreter
@@ -51,7 +54,7 @@ from pyshgp.gp.evolvers import SimplePushGPEvolver
 
 
 def target_function(x):
-    return (x ** 3) - (x * (2 * x ** 2))
+    return (x ** 3) - (2 * x ** 2) - x
 
 
 def error_func(program):
@@ -72,7 +75,7 @@ def error_func(program):
 
 
 atom_generators = [
-    [lambda: random.randint(0, 10)],
+    # lambda: random.randint(0, 10),
     I_add_integer,
     I_sub_integer,
     I_mult_integer,

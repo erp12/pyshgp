@@ -41,6 +41,10 @@ Finally, we instanciate the ``SimplePushGPEvolver``. Then we can call the
 input values that will be supplied and 3) a list of pysh types to output.
 """
 
+<<<<<<< HEAD
+=======
+import numpy as np
+>>>>>>> master
 import random
 
 from pyshgp.push.interpreter import PushInterpreter

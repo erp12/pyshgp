@@ -1,84 +1,328 @@
-# -*- coding: utf-8 -*-
-"""
-The :mod:`instruction` module provides classes for various kinds of Push
-instructions that can be handled by the ``pyshgp`` Push interpreter.
-"""
+"""Concrete implementations of the Instruction Atom type."""
+from typing import Callable, Set, Sequence
+
+from pyshgp.push.state import PushState
+from pyshgp.push.atoms import Instruction
+from pyshgp.utils import Token
 
 
-class Instruction(object):
-    """A instruction for the push language.
+class SimpleInstruction(Instruction):
+    """A simple instruction implementation.
+
+    A SimpleInstruction uses a standardized way of manipulating PushStates. In
+    other words, it handles popping its own function arguments and pushing the
+    function return values.
+
+    The first step of evaluating a SimpleInstruction is to pop the arguments
+    from the stacks corresponding the instrution's ``input_types`` list.
+    If multiple occurences of the same type are in ``input_types``, items are
+    taken from progressively deeper in that stack. If the stacks of the
+    PushState do not contain a sufficent number of items, the instruction does
+    not modify the PushState.
+
+    The popped arguments are then passed to the instruction's function to produce
+    a tuple of outputs. It is crucial that the instruction's function produce a
+    tuple of outputs, even if it only conains a single element. The elements of
+    the tuple are then routed to the corresponding stacks specified in the
+    instruction's ``output_types``.
 
     Parameters
     ----------
-    nane : str
-         A string name for the instruction.
-    func : function
-        The python function that manipulates a Push state in the desired way.
-    stack_types : list of str
-        List of related pyshgp types.
-    parentheses : int
-        Specifies number of paren groups. (0, 1, 2, ... etc)
+    name : str,
+        A unique name for the instruction.
+    f : Callable
+        A function whose signature matches input_types and output_types.
+    input_types : Sequence[str]
+        A list of PushType names to use when popping arguments from the PushState.
+    output_types : Sequence[str]
+        A list of PushType names to use when pushing function results to the PushState.
+    code_blocks : int
+        The number of CodeBlocks to open following the instruction in a Genome.
+    docstring : str, optional
+        A string describing in the behavior of the Instruction.
+
     """
 
-    def __init__(self, name, func, stack_types, parentheses=0):
-        self.name = name
-        self.func = func
-        self.stack_types = stack_types
-        # Specifies parens group. (0, 1, 2, etc)
-        self.parentheses = parentheses
+    __slots__ = ["name", "f", "input_types", "output_types", "code_blocks", "docstring"]
 
-    def __eq__(self, other):
-        if isinstance(other, Instruction):
-            return self.name == other.name
+    def __init__(self,
+                 name: str,
+                 f: Callable,
+                 input_types: Sequence[str],
+                 output_types: Sequence[str],
+                 code_blocks: int,
+                 docstring="Write me!"):
+        super().__init__(name, code_blocks, docstring)
+        self.f = f
+        self.input_types = input_types
+        self.output_types = output_types
+
+    def evaluate(self, push_state: PushState, interpreter_config):
+        """Evaluate the instruction on the given PushState. Return mutated State.
+
+        A SimpleInstruction infers which values to pop and push from the stack
+        based on its `input_types` and `output_types`.
+
+        Parameters
+        ----------
+        state : PushState
+            Push state to modify with the Instruction.
+        config : PushInterpreterConfig
+            Configuration of the interpreter. Used to get various limits.
+
+        Returns
+        -------
+        PushState
+            Return the given state, possibly modified by the Instruction.
+
+        """
+        # Pull args, if present.
+        args = push_state.observe_stacks(self.input_types)
+        if Token.no_stack_item in args:
+            return push_state
+
+        # Compute result, return if revert or response too big.
+        result = self.f(*args)
+        if result is Token.revert:
+            return push_state
+        if not isinstance(result, (list, tuple)):
+            raise ValueError("Instruction result must be a collection. {i} gave {t}.".format(
+                i=self,
+                t=type(result)
+            ))
+
+        # Remove arguments, push results.
+        push_state.pop_from_stacks(self.input_types)
+        push_state.push_to_stacks(result, self.output_types)
+        return push_state
+
+    def relevant_types(self) -> Set[str]:
+        """Return a list of PushType names relevant to the instruction.
+
+        Based on the the instructions input and output types.
+        """
+        return set(self.input_types + self.output_types)
+
+
+class StateToStateInstruction(Instruction):
+    """Instruction that takes entire PushState and returns entire PushState."""
+
+    __slots__ = ["name", "f", "types_used", "code_blocks", "docstring"]
+
+    def __init__(self,
+                 name: str,
+                 f: Callable,
+                 types_used: Sequence[str],
+                 code_blocks: int,
+                 docstring="Write me!"):
+        super().__init__(name, code_blocks, docstring)
+        self.f = f
+        self.types_used = set(types_used)
+
+    def evaluate(self, push_state: PushState, interpreter_config):
+        """Evaluate the instruction on the given PushState. Return mutated State.
+
+        A SimpleInstruction infers which values to pop and push from the stack
+        based on its `input_types` and `output_types`.
+
+        Parameters
+        ----------
+        state : PushState
+            Push state to modify with the Instruction.
+        config : PushInterpreterConfig
+            Configuration of the interpreter. Used to get various limits.
+
+        Returns
+        -------
+        PushState
+            Return the given state, possibly modified by the Instruction.
+
+        """
+        result = self.f(push_state)
+        if result == Token.revert:
+            return push_state
         else:
-            return False
+            return result
 
-    def __hash__(self):
-        return self.name.__hash__()
-
-    def __repr__(self):
-        return str(self.name)
-
-    def execute(self, state):
-        """Executes the input instruction on the given PushState.
-
-        Parameters
-        ----------
-        state : PushState
-            The PushState to execute the input instruction on.
-        """
-        self.func(state)
+    def relevant_types(self) -> Set[str]:
+        """Return a list of PushType names relevant to the instruction."""
+        return self.types_used
 
 
-class InputInstruction(Instruction):
-    """A push instruction that will handle input values. Input instructions
-    which are generated based on initial state of the _input stack.
+class TakesStateInstruction(Instruction):
+    """Instruction that takes entire PushState and returns particular values.
+
+    The function of a TakesStateInstruction accepts an entire PushState as input
+    and produces either a ``Token.revert`` or a tuple of outputs values. It is
+    crucial that the instruction's function produce a tuple of outputs, even if
+    it only conains a single element.
+
+    The elements of the tuple are then routed to the corresponding stacks
+    specified in the instruction's ``output_types``.
+
+    Additional PushTypes utilized by the instruction are denoted in ``other_types``.
 
     Parameters
     ----------
-    input_index : int
-         The index in the input stack to get value from.
+    name : str,
+        A unique name for the instruction.
+    f : Callable
+        A function that takes a PushState as input and produces values corresponding to ``output_types.``
+    output_types : Sequence[str]
+        A list of PushType names to use when pushing function results to the PushState.
+    other_types : Sequence[str]
+        A list of additional PushType names used by the Insturction's function.
+    code_blocks : int
+        The number of CodeBlocks to open following the instruction in a Genome.
+    docstring : str, optional
+        A string describing in the behavior of the Instruction.
+
     """
 
-    def __init__(self, input_index):
-        name = "_input" + str(input_index)
-        Instruction.__init__(self, name, None, ['_input'])
-        self.input_index = input_index
+    __slots__ = ["name", "f", "output_types", "other_types", "code_blocks", "docstring"]
 
-    def __repr__(self):
-        return str(self.name)
+    def __init__(self,
+                 name: str,
+                 f: Callable,
+                 output_types: Sequence[str],
+                 other_types: Sequence[str],
+                 code_blocks: int,
+                 docstring="Write me!"):
+        super().__init__(name, code_blocks, docstring)
+        self.f = f
+        self.output_types = output_types
+        self.other_types = other_types
 
-    def execute(self, state):
-        """Executes the input instruction on the given PushState.
+    def evaluate(self, push_state: PushState, interpreter_config):
+        """Evaluate the instruction on the given PushState. Return mutated State.
+
+        A SimpleInstruction infers which values to pop and push from the stack
+        based on its `input_types` and `output_types`.
 
         Parameters
         ----------
         state : PushState
-            The PushState to execute the input instruction on.
+            Push state to modify with the Instruction.
+        config : PushInterpreterConfig
+            Configuration of the interpreter. Used to get various limits.
+
+        Returns
+        -------
+        PushState
+            Return the given state, possibly modified by the Instruction.
+
         """
-        input_depth = int(self.input_index)
-        if input_depth >= len(state.inputs) or input_depth < 0:
-            msg = "Pysh state does not contain an input at index {}."
-            raise ValueError(msg.format(input_depth))
-        input_value = state.inputs[input_depth]
-        state['_exec'].push(input_value)
+        # Compute result. State should be modified in place during function.
+        result = self.f(push_state)
+
+        # Return if revert.
+        if result is Token.revert:
+            return push_state
+        if not isinstance(result, list):
+            raise ValueError("Instruction result must be a list. {i} gave {t}.".format(
+                i=self,
+                t=type(result)
+            ))
+
+        # Push results.
+        push_state.push_to_stacks(result, self.output_types)
+        return push_state
+
+    def relevant_types(self) -> Set[str]:
+        """Return a list of PushType names relevant to the instruction."""
+        return set(self.other_types + self.output_types)
+
+
+class ProducesManyOfTypeInstruction(Instruction):
+    """Instruction that produces arbitarily many values of a given PushType.
+
+    ProducesManyOfTypeInstructions pop their arguments in the same was as
+    SimpleInstructions. Items are popped from the stacks corresponding the
+    types denoted in the ``input_types`` list. If multiple occurences of the
+    same type are in ``input_types``, items are taken from progressively deeper
+    in that stack. If the stacks of the PushState do not contain a sufficent
+    number of items, the instruction does not modify the PushState.
+
+    The popped arguments are then passed to the instruction's function to produce
+    a tuple of outputs. It is crucial that the instruction's function produce a
+    tuple of outputs, even if it only conains a single element. All elements of
+    the tuple are pushed individually to the stack denoted in ``output_type``.
+
+    Parameters
+    ----------
+    name : str,
+        A unique name for the instruction.
+    f : Callable
+        A function whose signature matches input_types and output_types.
+    input_types : Sequence[str]
+        A list of PushType names to use when popping arguments from the PushState.
+    output_type : str
+        The name of a PushType to use when pushing function results to the PushState.
+        All values returned by the function go to the stack for this type.
+    code_blocks : int
+        The number of CodeBlocks to open following the instruction in a Genome.
+    docstring : str, optional
+        A string describing in the behavior of the Instruction.
+
+    """
+
+    __slots__ = ["name", "f", "input_types", "output_type", "code_blocks", "docstring"]
+
+    def __init__(self,
+                 name: str,
+                 f: Callable,
+                 input_types: Sequence[str],
+                 output_type: str,
+                 code_blocks: int,
+                 docstring="Write me!"):
+        super().__init__(name, code_blocks, docstring)
+        self.f = f
+        self.input_types = input_types
+        self.output_type = output_type
+
+    def evaluate(self, push_state: PushState, interpreter_config):
+        """Evaluate the instruction on the given PushState. Return mutated State.
+
+        A ProducesManyOfTypeInstruction infers which values to pop from the stack
+        based on `input_types` and pushes each output to the same stack
+        based on `output_type`.
+
+        Parameters
+        ----------
+        state : PushState
+            Push state to modify with the Instruction.
+        config : PushInterpreterConfig
+            Configuration of the interpreter. Used to get various limits.
+
+        Returns
+        -------
+        PushState
+            Return the given state, possibly modified by the Instruction.
+
+        """
+        # Pull args, if present.
+        args = push_state.observe_stacks(self.input_types)
+        if Token.no_stack_item in args:
+            return push_state
+
+        # Compute result, return if revert or response too big.
+        result = self.f(*args)
+        if result is Token.revert:
+            return push_state
+        if not isinstance(result, (list, tuple)):
+            raise ValueError("Instruction result must be a collection. {i} gave {t}.".format(
+                i=self,
+                t=type(result)
+            ))
+
+        # Remove arguments, push results.
+        push_state.pop_from_stacks(self.input_types)
+        push_state.push_to_stacks(result, [self.output_type] * len(result))
+        return push_state
+
+    def relevant_types(self) -> Set[str]:
+        """Return a list of PushType names relevant to the instruction.
+
+        Based on the the instructions input types and output type.
+        """
+        return set(self.input_types + [self.output_type])

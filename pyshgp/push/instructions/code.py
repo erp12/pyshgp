@@ -1,573 +1,704 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jun  17, 2016
+"""Definitions for all core code instructions."""
+from typing import Tuple, Any, Union
 
-@author: Eddie
-"""
-
-from ... import utils as u
-from ... import constants as c
-
-from ..instruction import Instruction
-from .jit import JustInTimeInstruction
+from pyshgp.push.instruction import (
+    SimpleInstruction,
+    StateToStateInstruction
+)
+from pyshgp.push.atoms import Atom, JitInstructionRef, CodeBlock, Literal
+from pyshgp.push.state import PushState
+from pyshgp.utils import Token
 
 
-I_exec_noop = Instruction('_exec_noop',
-                          lambda state: state,
-                          stack_types=['_exec'])
-# <instr_open>
-# <instr_name>exec_noop
-# <instr_desc>An instruction that does nothing. (although can still be useful!)
-# <instr_close>
-
-I_code_noop = Instruction('_code_noop',
-                          lambda state: state,
-                          stack_types=['_code'])
-# <instr_open>
-# <instr_name>code_noop
-# <instr_desc>An instruction that does nothing. (although can still be useful!)
-# <instr_close>
+def _make_code(x: Any) -> Tuple[Atom]:
+    if isinstance(x, Atom):
+        return x,
+    else:
+        return Literal(x),
 
 
-def code_maker(pysh_type):
-    def f(state):
-        if len(state[pysh_type]) > 0:
-            new_code = state[pysh_type].ref(0)
-            state[pysh_type].pop()
-            state['_code'].push(new_code)
+def _revert():
+    return Token.revert
+
+
+def _is_code_block(x) -> Tuple[bool]:
+    return isinstance(x, CodeBlock),
+
+
+def _is_singular(x) -> Tuple[bool]:
+    return not isinstance(x, CodeBlock),
+
+
+def _code_length(x) -> Tuple[int]:
+    if isinstance(x, CodeBlock):
+        return len(x),
+    return 1,
+
+
+def _code_first(x) -> Tuple[Atom]:
+    if isinstance(x, CodeBlock) and len(x) > 1:
+        return x[0],
+    return Token.revert
+
+
+def _code_last(x) -> Tuple[Atom]:
+    if isinstance(x, CodeBlock) and len(x) > 1:
+        return x[-1],
+    return Token.revert
+
+
+def _code_rest(x) -> Tuple[Atom]:
+    if isinstance(x, CodeBlock) and len(x) > 1:
+        return CodeBlock.from_list(x[1:]),
+    return Token.revert
+
+
+def _code_but_last(x) -> Tuple[Atom]:
+    if isinstance(x, CodeBlock) and len(x) > 1:
+        return CodeBlock.from_list(x[:-1]),
+    return Token.revert
+
+
+def _code_combine(a: Atom, b: Atom) -> Tuple[CodeBlock]:
+    if isinstance(a, CodeBlock) and isinstance(b, CodeBlock):
+        return CodeBlock.from_list(list(b) + list(a)),
+    elif isinstance(b, CodeBlock):
+        result = b.copy()
+        result.append(a)
+        return result,
+    elif isinstance(a, CodeBlock):
+        result = a.copy()
+        result.append(b)
+        return result,
+    else:
+        return CodeBlock(a, b),
+
+
+def _code_do_then_pop(state: PushState) -> Union[Token, PushState]:
+    if state["code"].is_empty():
+        return Token.revert
+    c = state["code"].top()
+    state["exec"].push(JitInstructionRef("code_pop"))
+    state["exec"].push(c)
+    return state
+
+
+def _code_do_range(state: PushState) -> Union[Token, PushState]:
+    if state["code"].is_empty() or len(state["int"]) < 2:
+        return Token.revert
+    to_do = state["code"].pop()
+    destintaiton_ndx = state["int"].pop()
+    current_ndx = state["int"].pop()
+
+    increment = 0
+    if current_ndx < destintaiton_ndx:
+        increment = 1
+    elif current_ndx > destintaiton_ndx:
+        increment = -1
+
+    if not increment == 0:
+        state["exec"].push(CodeBlock(
+            current_ndx + increment,
+            destintaiton_ndx,
+            JitInstructionRef("code_from_exec"),
+            to_do,
+            JitInstructionRef("code_do_range")
+        ))
+    state["int"].push(current_ndx)
+    state["exec"].push(to_do)
+    return state
+
+
+def _exec_do_range(state: PushState) -> Union[Token, PushState]:
+    if state["exec"].is_empty() or len(state["int"]) < 2:
+        return Token.revert
+    to_do = state["exec"].pop()
+    destination_ndx = state["int"].pop()
+    current_ndx = state["int"].pop()
+
+    increment = 0
+    if current_ndx < destination_ndx:
+        increment = 1
+    elif current_ndx > destination_ndx:
+        increment = -1
+
+    if not increment == 0:
+        state["exec"].push(CodeBlock(
+            current_ndx + increment,
+            destination_ndx,
+            JitInstructionRef("exec_do_range"),
+            to_do
+        ))
+    state["int"].push(current_ndx)
+    state["exec"].push(to_do)
+    return state
+
+
+def _code_do_count(state: PushState) -> Union[Token, PushState]:
+    if state["code"].is_empty() or state["int"].is_empty():
+        return Token.revert
+    if state["int"].top() < 1:
+        return Token.revert
+    code = state["code"].pop()
+    count = state["int"].pop()
+    state["exec"].push(CodeBlock(
+        0,
+        count - 1,
+        JitInstructionRef("code_from_exec"),
+        code,
+        JitInstructionRef("code_do_range")
+    ))
+    return state
+
+
+def _exec_do_count(state: PushState) -> Union[Token, PushState]:
+    if state["exec"].is_empty() or state["int"].is_empty():
+        return Token.revert
+    if state["int"].top() < 1:
+        return Token.revert
+    code = state["exec"].pop()
+    count = state["int"].pop()
+    state["exec"].push(CodeBlock(
+        0,
+        count - 1,
+        JitInstructionRef("exec_do_range"),
+        code
+    ))
+    return state
+
+
+def _code_do_times(state: PushState) -> PushState:
+    if state["code"].is_empty() or state["int"].is_empty():
+        return Token.revert
+    if state["int"].top() < 1:
+        return Token.revert
+    code = state["code"].pop()
+    times = state["int"].pop()
+    state["exec"].push(CodeBlock(
+        0,
+        times - 1,
+        JitInstructionRef("code_from_exec"),
+        CodeBlock(
+            JitInstructionRef("int_pop"),
+            code,
+        ),
+        JitInstructionRef("code_do_range")
+    ))
+    return state
+
+
+def _exec_do_times(state: PushState) -> PushState:
+    if state["exec"].is_empty() or state["int"].is_empty():
+        return Token.revert
+    if state["int"].top() < 1:
+        return Token.revert
+    code = state["exec"].pop()
+    times = state["int"].pop()
+    state["exec"].push(CodeBlock(
+        0,
+        times - 1,
+        JitInstructionRef("exec_do_range"),
+        CodeBlock(
+            JitInstructionRef("int_pop"),
+            code,
+        )
+    ))
+    return state
+
+
+def _exec_while(state: PushState) -> PushState:
+    if state["exec"].is_empty():
+        return Token.revert
+    if state["bool"].is_empty():
+        state["exec"].pop()
         return state
-    instruction = Instruction('_code_from' + pysh_type,
-                              f,
-                              stack_types=['_code', pysh_type])
-    if pysh_type == '_exec':
-        instruction.parentheses = 1
-    return instruction
-
-
-I_code_from_boolean = code_maker('_boolean')
-# <instr_open>
-# <instr_name>code_from_boolean
-# <instr_desc>Takes the top boolean and stores it on the code stack.
-# <instr_close>
-I_code_from_float = code_maker('_float')
-# <instr_open>
-# <instr_name>code_from_float
-# <instr_desc>Takes the top float and stores it on the code stack.
-# <instr_close>
-I_code_from_integer = code_maker('_integer')
-# <instr_open>
-# <instr_name>code_from_integer
-# <instr_desc>Takes the top integer and stores it on the code stack.
-# <instr_close>
-I_code_from_exec = code_maker('_exec')
-# <instr_open>
-# <instr_name>code_from_exec
-# <instr_desc>Takes the top item from the exec stack (after the `code_from_exec` instruction) and stores it on the code stack.
-# <instr_close>
-
-
-def code_append(state):
-    if len(state['_code']) > 1:
-        new_item = u.ensure_list(state['_code'].ref(
-            0)) + u.ensure_list(state['_code'].ref(1))
-        state['_code'].pop()
-        state['_code'].pop()
-        state['_code'].push(new_item)
+    code = state["exec"].pop()
+    if state["bool"].pop():
+        state["exec"].push(JitInstructionRef("exec_while"))
+        state["exec"].push(code)
     return state
 
 
-I_code_append = Instruction('_code_append',
-                            code_append,
-                            stack_types=['_code'])
-# <instr_open>
-# <instr_name>code_append
-# <instr_desc>Takes the top two items from the code stack, appends them into 1 list, and pushes the result onto the code stack.
-# <instr_close>
-
-
-def code_atom(state):
-    if len(state['_code']) > 0:
-        top_code = state['_code'].ref(0)
-        state['_code'].pop()
-        state['_boolean'].push(not isinstance(top_code, list))
+def _exec_do_while(state: PushState) -> PushState:
+    if state["exec"].is_empty():
+        return Token.revert
+    code = state["exec"].pop()
+    state["exec"].push(JitInstructionRef("exec_while"))
+    state["exec"].push(code)
     return state
 
 
-I_code_atom = Instruction('_code_atom',
-                          code_atom,
-                          stack_types=['_code', '_boolean'])
-# <instr_open>
-# <instr_name>code_atom
-# <instr_desc>Pushes True if the top item on the code stack is not a list. False otherwise.
-# <instr_close>
-
-
-def code_car(state):
-    if len(state['_code']) > 0 and len(u.ensure_list(state['_code'].ref(0))) > 0:
-        top_code = u.ensure_list(state['_code'].ref(0))[0]
-        state['_code'].pop()
-        state['_code'].push(top_code)
+def _code_map(state: PushState) -> PushState:
+    if state["exec"].is_empty() or state["code"].is_empty():
+        return Token.revert
+    e = state["exec"].pop()
+    c = state["code"].pop()
+    if not isinstance(c, CodeBlock):
+        c = CodeBlock(c)
+    l1 = [CodeBlock(JitInstructionRef("code_from_exec"), item, e) for item in c]
+    l2 = [JitInstructionRef("code_combine") for _ in c[1:]]
+    state["exec"].push(CodeBlock.from_list(l1 + [JitInstructionRef("code_wrap")] + l2))
     return state
 
 
-I_code_car = Instruction('_code_car',
-                         code_car,
-                         stack_types=['_code'])
-# <instr_open>
-# <instr_name>code_car
-# <instr_desc>Pushes the first item of the list on top of the `code` stack. For example, if the top piece of code is "( A B )" then this pushes "A" (after popping the argument). If the code on top of the stack is not a list then this has no effect.
-# <instr_close>
+def _if(b, _then, _else):
+    return _then if b else _else,
 
 
-def code_cdr(state):
-    if len(state['_code']) > 0:
-        top_code = u.ensure_list(state['_code'].ref(0))[1:]
-        state['_code'].pop()
-        state['_code'].push(top_code)
+def _code_when(state: PushState) -> PushState:
+    if state["code"].is_empty() or state["bool"].is_empty():
+        return Token.revert
+    code = state["code"].pop()
+    if state["bool"].pop():
+        state["exec"].push(code)
     return state
 
 
-I_code_cdr = Instruction('_code_cdr',
-                         code_cdr,
-                         stack_types=['_code'])
-# <instr_open>
-# <instr_name>code_cdr
-# <instr_desc>Pushes a version of the list from the top of the `code` stack without its first element. For example, if the top piece of code is "( A B )" then this pushes "( B )" (after popping the argument). If the code on top of the stack is not a list then this pushes the empty list ("( )").
-# <instr_close>
-
-
-def code_cons(state):
-    if len(state['_code']) > 1:
-        new_item = [state['_code'].ref(1)] + \
-            u.ensure_list(state['_code'].ref(0))
-        state['_code'].pop()
-        state['_code'].pop()
-        state['_code'].push(new_item)
+def _exec_when(state: PushState) -> PushState:
+    if state["exec"].is_empty() or state["bool"].is_empty():
+        return Token.revert
+    if not state["bool"].pop():
+        state["exec"].pop()
     return state
 
 
-I_code_cons = Instruction('_code_cons',
-                          code_cons,
-                          stack_types=['_code'])
-# <instr_open>
-# <instr_name>code_cons
-# <instr_desc>Pushes the result of "consing" (in the Lisp sense) the second stack item onto the first stack item (which is coerced to a list if necessary). For example, if the top piece of code is "( A B )" and the second piece of code is "X" then this pushes "( X A B )" (after popping the argument).
-# <instr_close>
-
-
-def code_do(state):
-    if len(state['_code']) > 0:
-        top_code = state['_code'].ref(0)
-        state['_exec'].push(JustInTimeInstruction('_code_pop'))
-        state['_exec'].push(top_code)
-    return state
-
-
-I_code_do = Instruction('_code_do',
-                        code_do,
-                        stack_types=['_code', '_exec'])
-# <instr_open>
-# <instr_name>code_do
-# <instr_desc> Recursively invokes the interpreter on the program on top of the `code` stack. After evaluation the `code` stack is popped; normally this pops the program that was just executed, but if the expression itself manipulates the stack then this final pop may end up popping something else.
-# <instr_close>
-
-
-def code_do_star(state):
-    if len(state['_code']) > 0:
-        top_code = state['_code'].ref(0)
-        state['_code'].pop()
-        state['_exec'].push(top_code)
-    return state
-
-
-I_code_do_star = Instruction('_code_do*',
-                             code_do_star,
-                             stack_types=['_code', '_exec'])
-# <instr_open>
-# <instr_name>code_do*
-# <instr_desc>Like `code_do` but pops the stack before, rather than after, the recursive execution.
-# <instr_close>
-
-
-def code_do_range(state):
-    if len(state['_code']) > 0 and len(state['_integer']) > 1:
-        to_do = state['_code'].ref(0)
-        current_index = state['_integer'].ref(1)
-        destination_index = state['_integer'].ref(0)
-        state['_integer'].pop()
-        state['_integer'].pop()
-        state['_code'].pop()
-
-        increment = 0
-        if current_index < destination_index:
-            increment = 1
-        elif current_index > destination_index:
-            increment = -1
-
-        if not increment == 0:
-            state['_exec'].push([(current_index + increment),
-                                 destination_index,
-                                 JustInTimeInstruction('_code_from_exec'),
-                                 to_do,
-                                 JustInTimeInstruction('_code_do*range')])
-        state['_integer'].push(current_index)
-        state['_exec'].push(to_do)
-    return state
-
-
-I_code_do_range = Instruction('_code_do*range',
-                              code_do_range,
-                              stack_types=['_exec', '_integer', '_code'])
-# <instr_open>
-# <instr_name>code_do*range
-# <instr_desc>An iteration instruction that executes the top item on the `code` stack a number of times that depends on the top two integers, while also pushing the loop counter onto the `integer` stack for possible access during the execution of the body of the loop. The top integer is the "destination index" and the second integer is the "current index." First the code and the integer arguments are saved locally and popped. Then the integers are compared. If the integers are equal then the current index is pushed onto the `integer` stack and the code (which is the "body" of the loop) is pushed onto the `exec` stack for subsequent execution. If the integers are not equal then the current index will still be pushed onto the `integer` stack but two items will be pushed onto the `exec` stack -- first a recursive call to `code_do*range` (with the same code and destination index, but with a current index that has been either incremented or decremented by 1 to be closer to the destination index) and then the body code.
-# <instr_close>
-
-
-def exec_do_range(state):
-    '''
-    Differs from code.do*range only in the source of the code and the recursive call.
-    '''
-    if len(state['_exec']) > 0 and len(state['_integer']) > 1:
-        to_do = state['_exec'].ref(0)
-        current_index = state['_integer'].ref(1)
-        destination_index = state['_integer'].ref(0)
-        state['_integer'].pop()
-        state['_integer'].pop()
-        state['_exec'].pop()
-
-        increment = 0
-        if current_index < destination_index:
-            increment = 1
-        elif current_index > destination_index:
-            increment = -1
-
-        if not increment == 0:
-            state['_exec'].push([(current_index + increment),
-                                 destination_index,
-                                 JustInTimeInstruction('_exec_do*range'),
-                                 to_do])
-
-        state['_integer'].push(current_index)
-        state['_exec'].push(to_do)
-    return state
-
-
-I_exec_do_range = Instruction('_exec_do*range',
-                              exec_do_range,
-                              stack_types=['_exec', '_integer'],
-                              parentheses=1)
-# <instr_open>
-# <instr_name>exec_do*range
-# <instr_desc>An iteration instruction that executes the top item on the `exec` stack a number of times that depends on the top two integers, while also pushing the loop counter onto the `integer` stack for possible access during the execution of the body of the loop. This is similar to `code_do*count` except that it takes its code argument from the `exec` stack. The top integer is the "destination index" and the second integer is the "current index." First the code and the integer arguments are saved locally and popped. Then the integers are compared. If the integers are equal then the current index is pushed onto the `integer` stack and the code (which is the "body" of the loop) is pushed onto the `exec` stack for subsequent execution. If the integers are not equal then the current index will still be pushed onto the `integer` stack but two items will be pushed onto the `exec` stack -- first a recursive call to `exec_do*range` (with the same code and destination index, but with a current index that has been either incremented or decremented by 1 to be closer to the destination index) and then the body code. Note that the range is inclusive of both endpoints; a call with integer arguments 3 and 5 will cause its body to be executed 3 times, with the loop counter having the values 3, 4, and 5. Note also that one can specify a loop that "counts down" by providing a destination index that is less than the specified current index.
-# <instr_close>
-
-
-def code_do_count(state):
-    if not (len(state['_integer']) == 0 or state['_integer'].ref(0) < 1 or len(state['_code']) == 0):
-        to_push = [0,
-                   state['_integer'].ref(0) - 1,
-                   JustInTimeInstruction('_code_from_exec'),
-                   state['_code'].ref(0),
-                   JustInTimeInstruction('_code_do*range')]
-        state['_code'].pop()
-        state['_integer'].pop()
-        state['_exec'].push(to_push)
-    return state
-
-
-I_code_do_count = Instruction('_code_do*count',
-                              code_do_count,
-                              stack_types=['_exec', '_integer', '_code'])
-# <instr_open>
-# <instr_name>code_do*count
-# <instr_desc>An iteration instruction that performs a loop (the body of which is taken from the `code` stack) the number of times indicated by the `integer` argument, pushing an index (which runs from zero to one less than the number of iterations) onto the `integer` stack prior to each execution of the loop body.
-# <instr_close>
-
-
-def exec_do_count(state):
-    '''
-    differs from code.do*count only in the source of the code and the recursive call
-    '''
-    if not (len(state['_integer']) == 0 or state['_integer'].ref(0) < 1 or len(state['_exec']) == 0):
-        to_push = [0,
-                   state['_integer'].ref(0) - 1,
-                   JustInTimeInstruction('_exec_do*range'),
-                   state['_exec'].ref(0)]
-        state['_exec'].pop()
-        state['_integer'].pop()
-        state['_exec'].push(to_push)
-    return state
-
-
-I_exec_do_count = Instruction('_exec_do*count',
-                              exec_do_count,
-                              stack_types=['_exec', '_integer'],
-                              parentheses=1)
-# <instr_open>
-# <instr_name>exec_do*count
-# <instr_desc>An iteration instruction that performs a loop (the body of which is taken from the `exec` stack) the number of times indicated by the `integer` argument, pushing an index (which runs from zero to one less than the number of iterations) onto the `integer` stack prior to each execution of the loop body. This is similar to `code_do*count` except that it takes its code argument from the `exec` stack.
-# <instr_close>
-
-
-def code_do_times(state):
-    if not (len(state['_integer']) == 0 or state['_integer'].ref(0) < 1 or len(state['_code']) == 0):
-        to_push = [0,
-                   state['_integer'].ref(0) - 1,
-                   JustInTimeInstruction('_code_from_exec'),
-                   [JustInTimeInstruction(
-                       '_integer_pop')] + u.ensure_list(state['_code'].ref(0)),
-                   JustInTimeInstruction('_code_do*range')]
-        state['_code'].pop()
-        state['_integer'].pop()
-        state['_exec'].push(to_push)
-
-
-I_code_do_times = Instruction('_code_do*times',
-                              code_do_times,
-                              stack_types=['_code', '_integer'])
-# <instr_open>
-# <instr_name>code_do*times
-# <instr_desc>Like `code_do*count` but does not push the loop counter.
-# <instr_close>
-
-
-def exec_do_times(state):
-    '''
-    differs from code.do*times only in the source of the code and the recursive call
-    '''
-    if not (len(state['_integer']) == 0 or state['_integer'].ref(0) < 1 or len(state['_exec']) == 0):
-        to_push = [0,
-                   state['_integer'].ref(0) - 1,
-                   JustInTimeInstruction('_exec_do*range'),
-                   [JustInTimeInstruction('_integer_pop')] + u.ensure_list(state['_exec'].ref(0))]
-        state['_exec'].pop()
-        state['_integer'].pop()
-        state['_exec'].push(to_push)
-    return state
-
-
-I_exec_do_times = Instruction('_exec_do*times',
-                              exec_do_times,
-                              stack_types=['_exec', '_integer'],
-                              parentheses=1)
-# <instr_open>
-# <instr_name>exec_do*times
-# <instr_desc>Like `exec_do*count` but does not push the loop counter.
-# <instr_close>
-
-
-def exec_while(state):
-    if len(state['_exec']) > 0:
-        if len(state['_boolean']) == 0:
-            state['_exec'].pop()
-        elif not state['_boolean'].ref(0):
-            state['_exec'].pop()
-            state['_boolean'].pop()
-        else:
-            block = state['_exec'].ref(0)
-            state['_exec'].push(JustInTimeInstruction('_exec_while'))
-            state['_exec'].push(block)
-            state['_boolean'].pop()
-    return state
-
-
-I_exec_while = Instruction('_exec_while',
-                           exec_while,
-                           stack_types=['_exec', '_boolean'],
-                           parentheses=1)
-# <instr_open>
-# <instr_name>exec_while
-# <instr_desc>Repeats the top item of the exect stack until the boolean stack has a False or is empty.
-# <instr_close>
-
-
-def exec_do_while(state):
-    if len(state['_exec']) > 0:
-        block = state['_exec'].ref(0)
-        state['_exec'].push(JustInTimeInstruction('_exec_while'))
-        state['_exec'].push(block)
-    return state
-
-
-I_exec_do_while = Instruction('_exec_do*while',
-                              exec_do_while,
-                              stack_types=['_exec', '_boolean'],
-                              parentheses=1)
-# <instr_open>
-# <instr_name>exec_do*while
-# <instr_desc>Pushes the next item on the `exec` stack until the boolean stack has a False or is empty. Similar to `exec_while`, but results in one extra call to the body of the loop.
-# <instr_close>
-
-
-# ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-# Code Map
-# def code_map(state):
-#     if len(state['_code']) > 0 and len(state['_exec']) > 0:
-#         pass
-# ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-
-
-def code_if(state):
-    if len(state['_code']) > 1 and len(state['_boolean']) > 0:
-        to_push = state['_code'].ref(0)
-        if state['_boolean'].ref(0):
-            to_push = state['_code'].ref(1)
-        state['_code'].pop()
-        state['_code'].pop()
-        state['_boolean'].pop()
-        state['_exec'].push(to_push)
-
-
-I_code_if = Instruction('_code_if',
-                        code_if,
-                        stack_types=['_code', '_exec', '_boolean'])
-# <instr_open>
-# <instr_name>code_if
-# <instr_desc>Pushes the second item of the `code` stack to the `exec` stack if the top boolean is True. Otherwise, pushes the top item of the `code` stack to the `exec` stack.
-# <instr_close>
-
-
-def exec_if(state):
-    if len(state['_exec']) > 1 and len(state['_boolean']) > 0:
-        to_push = state['_exec'].ref(1)
-        if state['_boolean'].ref(0):
-            to_push = state['_exec'].ref(0)
-        state['_exec'].pop()
-        state['_exec'].pop()
-        state['_boolean'].pop()
-        state['_exec'].push(to_push)
-
-
-I_exec_if = Instruction('_exec_if',
-                        exec_if,
-                        stack_types=['_exec', '_boolean'],
-                        parentheses=2)
-# <instr_open>
-# <instr_name>exec_if
-# <instr_desc>Pushes the top item of the `exec` stack (after removing the `exec_if` instruction)  to the `exec` stack if the top boolean is True. Otherwise, pushes the second item of the `exec` stack to the `exec` stack. Differs from `code_if` in the source of the code and in the order of the if/then parts.
-# <instr_close>
-
-
-def exec_when(state):
-    if len(state['_exec']) > 0 and len(state['_boolean']) > 0:
-        if not state['_boolean'].ref(0):
-            state['_exec'].pop()
-        state['_boolean'].pop()
-
-
-I_exec_when = Instruction('_exec_when',
-                          exec_when,
-                          stack_types=['_exec', '_boolean'],
-                          parentheses=1)
-# <instr_open>
-# <instr_name>exec_when
-# <instr_desc>If the top boolean is False, pop the top item on the `exec` stack (after `exec_when`) effectively skipping it. If top boolean is True, the top item on `exec` stack is untouched and will be evaluated next interation of the program interpretation.
-# <instr_close>
-
-
-def code_length(state):
-    if len(state['_code']) > 0:
-        l = len(u.ensure_list(state['_code'].ref(0)))
-        state['_code'].pop()
-        state['_integer'].push(l)
-
-
-I_code_length = Instruction('_code_length',
-                            code_length,
-                            stack_types=['_code', '_integer'])
-# <instr_open>
-# <instr_name>code_length
-# <instr_desc>Pushes the length of the top item on the `code` stack to the `integer` stack.
-# <instr_close>
-
-
-def code_list(state):
-    if len(state['_code']) > 1:
-        new_item = [state['_code'].ref(1), state['_code'].ref(0)]
-        if u.count_points(new_item) <= c.global_max_points:
-            state['_code'].pop()
-            state['_code'].pop()
-            state['_code'].push(new_item)
-
-
-I_code_list = Instruction('_code_list',
-                          code_list,
-                          stack_types=['_code'])
-# <instr_open>
-# <instr_name>code_list
-# <instr_desc>Pushes the top two items of the `code` stack back onto the `code` stack in a list.
-# <instr_close>
-
-
-def code_wrap(state):
-    if len(state['_code']) > 0:
-        new_item = [state['_code'].ref(0)]
-        if u.count_points(new_item) <= c.global_max_points:
-            state['_code'].pop()
-            state['_code'].push(new_item)
-
-
-I_code_wrap = Instruction('_code_wrap',
-                          code_wrap,
-                          stack_types=['_code'])
-# <instr_open>
-# <instr_name>code_wrap
-# <instr_desc>Pushes the top item of the code stack back onto the `code` stack inside of a list.
-# <instr_close>
-
-
-def code_member(state):
-    if len(state['_code']) > 1:
-        new_bool = state['_code'].ref(
-            1) in u.ensure_list(state['_code'].ref(0))
-        state['_code'].pop()
-        state['_code'].pop()
-        state['_boolean'].push(new_bool)
-
-
-I_code_member = Instruction('_code_member',
-                            code_member,
-                            stack_types=['_code', '_boolean'])
-# <instr_open>
-# <instr_name>code_member
-# <instr_desc>Pushes True if the second item on the `code` stack is found in the top item on the code stack. Pushes False otherwise.
-# <instr_close>
-
-
-def code_nth(state):
-    if len(state['_integer']) > 0 and len(state['_code']) > 0 and len(u.ensure_list(state['_code'].ref(0))) > 0:
-        top_code_as_list = u.ensure_list(state['_code'].ref(0))
-        i = abs(state['_integer'].ref(0)) % len(top_code_as_list)
-        new_item = top_code_as_list[i]
-        state['_code'].pop()
-        state['_integer'].pop()
-        state['_code'].push(new_item)
-
-
-I_code_nth = Instruction('_code_nth',
-                         code_nth,
-                         stack_types=['_code', '_integer'])
-# <instr_open>
-# <instr_name>code_nth
-# <instr_desc>Pushes the nth item of the top item on the `code` stack. To avoid indexing out of bounds, index of nth idem comes form the top `integer` mod the length of the top `code` item.
-# <instr_close>
-
-
-def code_nthcdr(state):
-    if len(state['_integer']) > 0 and len(state['_code']) > 0 and len(u.ensure_list(state['_code'].ref(0))) > 0:
-        top_code_as_list = u.ensure_list(state['_code'].ref(0))
-        i = abs(state['_integer'].ref(0)) % len(top_code_as_list)
-        new_item = top_code_as_list[:i] + top_code_as_list[i + 1:]
-        state['_code'].pop()
-        state['_integer'].pop()
-        state['_code'].push(new_item)
-
-
-I_code_nthcdr = Instruction('_code_nthcdr',
-                            code_nthcdr,
-                            stack_types=['_code', '_integer'])
-# <instr_open>
-# <instr_name>code_nthcdr
-# <instr_desc>Pushes the top item on the `code` stack, without the nth item. To avoid indexing out of bounds, index of nth idem comes form the top `integer` mod the length of the top `code` item.
-# <instr_close>
+def _code_member(code: Atom, item: Atom) -> Tuple[bool]:
+    if not isinstance(code, CodeBlock):
+        code = CodeBlock(code)
+    return item in code,
+
+
+def _code_nth(code: Atom, ndx: int) -> Tuple[Atom]:
+    if not isinstance(code, CodeBlock):
+        code = CodeBlock(code)
+    if len(code) == 0:
+        return Token.revert
+    ndx = abs(ndx) % len(code)
+    return code[ndx],
+
+
+def _make_empty_code_block() -> Tuple[Atom]:
+    return CodeBlock(),
+
+
+def _is_empty_code_block(code: Atom) -> Tuple[bool]:
+    return isinstance(code, CodeBlock) and len(code) == 0,
+
+
+def _code_size(code: Atom) -> Tuple[int]:
+    if not isinstance(code, CodeBlock):
+        code = CodeBlock(code)
+    return code.size(),
+
+
+def _code_extract(code: Atom, ndx: int) -> Union[Token, Tuple[Atom]]:
+    if isinstance(code, CodeBlock) and code.size() == 0:
+        return Token.revert
+    if not isinstance(code, CodeBlock):
+        return code,
+    ndx = abs(ndx % code.size())
+    return code.code_at_point(ndx),
+
+
+def _code_insert(code1, code2, ndx) -> Union[Token, Tuple[Atom]]:
+    if not isinstance(code1, CodeBlock):
+        code1 = CodeBlock(code1)
+    ndx = abs(ndx) % len(code1)
+    code1.insert_code_at_point(code1, code2, ndx)
+    return code1,
+
+
+def _code_first_position(code1, code2) -> Union[Token, Tuple[Atom]]:
+    if (not isinstance(code1, CodeBlock)) or (len(code1) == 0):
+        if code1 == code2:
+            return 0
+    else:
+        for ndx, el in enumerate(code1):
+            if el == code2:
+                return ndx,
+    return -1,
+
+
+def _code_reverse(code):
+    if not isinstance(code, CodeBlock):
+        return code,
+    return CodeBlock.from_list(code[::-1])
+
+
+def instructions():
+    """Return all core code SimpleInstructions."""
+    i = []
+
+    for push_type in ["bool", "int", "float", "str", "char", "exec"]:
+        i.append(SimpleInstruction(
+            "code_from_{t}".format(t=push_type),
+            _make_code,
+            input_types=[push_type],
+            output_types=["code"],
+            code_blocks=(1 if push_type == "exec" else 0),
+            docstring="Moves the top {t} to the code stack.".format(t=push_type)
+        ))
+
+    i.append(SimpleInstruction(
+        "noop",
+        _revert,
+        input_types=[],
+        output_types=[],
+        code_blocks=0,
+        docstring="A noop SimpleInstruction which does nothing."
+    ))
+
+    i.append(SimpleInstruction(
+        "noop_open",
+        _revert,
+        input_types=[],
+        output_types=[],
+        code_blocks=1,
+        docstring="A noop SimpleInstruction which does nothing. Opens a code block."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_is_code_block",
+        _is_code_block,
+        input_types=["code"],
+        output_types=["bool"],
+        code_blocks=0,
+        docstring="Push True if top item on code stack is a CodeBlock. False otherwise."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_is_singular",
+        _is_singular,
+        input_types=["code"],
+        output_types=["bool"],
+        code_blocks=0,
+        docstring="Push True if top item on code stack is a not CodeBlock. False otherwise."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_length",
+        _code_length,
+        input_types=["code"],
+        output_types=["int"],
+        code_blocks=0,
+        docstring="If the top code item is a CodeBlock, pushes its length, otherwise pushes 1."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_first",
+        _code_first,
+        input_types=["code"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="If the top code item is a CodeBlock, pushes its first element."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_last",
+        _code_first,
+        input_types=["code"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="If the top code item is a CodeBlock, pushes its last element."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_rest",
+        _code_rest,
+        input_types=["code"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="If the top code item is a CodeBlock, pushes it to the code stack without its first element."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_but_last",
+        _code_but_last,
+        input_types=["code"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="If the top code item is a CodeBlock, pushes it to the code stack without its last element."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_wrap",
+        lambda c: [CodeBlock(c)],
+        input_types=["code"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="Wraps the top item on the code stack in a CodeBlock."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_list",
+        lambda a, b: [CodeBlock(a, b)],
+        input_types=["code", "code"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="Wraps the top two items on the code stack in a CodeBlock."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_combine",
+        _code_combine,
+        input_types=["code", "code"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="""Combines the top two items on the code stack in a CodeBlock.
+        If one items is a CodeBlock, the other item is appended to it. If both
+        items are CodeBlocks, they are concatenated together."""
+    ))
+
+    i.append(SimpleInstruction(
+        "code_do",
+        lambda c: [c],
+        input_types=["code"],
+        output_types=["exec"],
+        code_blocks=0,
+        docstring="Moves the top element of the code stack to the exec stack for execution."
+    ))
+
+    i.append(SimpleInstruction(
+        "code_do_dup",
+        lambda c: [c, c],
+        input_types=["code"],
+        output_types=["exec", "code"],
+        code_blocks=0,
+        docstring="Copies the top element of the code stack to the exec stack for execution."
+    ))
+
+    i.append(StateToStateInstruction(
+        "code_do_then_pop",
+        _code_do_then_pop,
+        types_used=["exec", "code"],
+        code_blocks=0,
+        docstring="""Pushes a `code_pop` JitInstructionRef and the top item of the
+        code stack to the exec stack. Result is the top code item executing before
+        it is removed from the code stack."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "code_do_range",
+        _code_do_range,
+        types_used=["exec", "code", "int"],
+        code_blocks=0,
+        docstring="""Evaluates the top item on the code stack for each step along
+        the range `i` to `j`. Both `i` and `j` are taken from the int stack."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "exec_do_range",
+        _exec_do_range,
+        types_used=["exec", "int"],
+        code_blocks=1,
+        docstring="""Evaluates the top item on the exec stack for each step along
+        the range `i` to `j`. Both `i` and `j` are taken from the int stack.
+        Differs from code_do_range only in the source of the code and the
+        recursive call."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "code_do_count",
+        _code_do_count,
+        types_used=["exec", "code", "int"],
+        code_blocks=0,
+        docstring="""Evaluates the top item on the code stack `n` times, where
+        `n` comes from the `n` comes from the top of the int stack."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "exec_do_count",
+        _exec_do_count,
+        types_used=["exec", "int"],
+        code_blocks=1,
+        docstring="""Evaluates the top item on the exec stack `n` times, where
+        `n` comes from the `n` comes from the top of the int stack. Differs from
+        code.do*count only in the source of the code and the recursive call."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "code_do_times",
+        _code_do_times,
+        types_used=["exec", "code", "int"],
+        code_blocks=0,
+        docstring="""Evaluates the top item on the code stack `n` times, where
+        `n` comes from the `n` comes from the top of the int stack."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "exec_do_times",
+        _exec_do_times,
+        types_used=["exec", "code", "int"],
+        code_blocks=1,
+        docstring="""Evaluates the top item on the code stack `n` times, where
+        `n` comes from the `n` comes from the top of the int stack."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "exec_while",
+        _exec_while,
+        types_used=["exec", "bool"],
+        code_blocks=1,
+        docstring="""Evaluates the top item on the exec stack repeated until the top
+        bool is no longer True."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "exec_do_while",
+        _exec_do_while,
+        types_used=["exec", "bool"],
+        code_blocks=1,
+        docstring="""Evaluates the top item on the exec stack repeated until the top
+        bool is no longer True."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "code_map",
+        _code_map,
+        types_used=["exec", "code"],
+        code_blocks=0,
+        docstring="""Evaluates the top item on the exec stack for each element of the top
+        CodeBlock on the code stack. If the top code item is not a CodeBlock, it is wrapped
+        into one."""
+    ))
+
+    i.append(SimpleInstruction(
+        "code_if",
+        _if,
+        input_types=["bool", "code", "code"],
+        output_types=["exec"],
+        code_blocks=0,
+        docstring="""If the top boolean is true, execute the top element of the code
+        stack and skip the second. Otherwise, skip the top element of the
+        code stack and execute the second."""
+    ))
+
+    i.append(SimpleInstruction(
+        "exec_if",
+        _if,
+        input_types=["bool", "exec", "exec"],
+        output_types=["exec"],
+        code_blocks=2,
+        docstring="""If the top boolean is true, execute the top element of the exec
+        stack and skip the second. Otherwise, skip the top element of the
+        exec stack and execute the second."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "code_when",
+        _code_when,
+        types_used=["exec", "code"],
+        code_blocks=0,
+        docstring="""Evalutates the top code item if the top bool is True.
+        Otherwise the top code is popped."""
+    ))
+
+    i.append(StateToStateInstruction(
+        "exec_when",
+        _exec_when,
+        types_used=["exec"],
+        code_blocks=1,
+        docstring="""Pops the next item on the exec stack without evaluating it
+        if the top bool is False. Otherwise, has no effect."""
+    ))
+
+    i.append(SimpleInstruction(
+        "code_member",
+        _code_member,
+        input_types=["code", "code"],
+        output_types=["bool"],
+        code_blocks=0,
+        docstring="""Pushes True if the second code item is a found within the top code item.
+        If the top code item is not a CodeBlock, it is wrapped."""
+    ))
+
+    i.append(SimpleInstruction(
+        "code_nth",
+        _code_nth,
+        input_types=["code", "int"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="""Pushes nth item of the top element on the code stack. If
+        the top item is not a CodeBlock it is wrapped in a CodeBlock."""
+    ))
+
+    i.append(SimpleInstruction(
+        "make_empty_code_block",
+        _make_empty_code_block,
+        input_types=[],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="""Pushes an empty CodeBlock to the code stack."""
+    ))
+
+    i.append(SimpleInstruction(
+        "is_empty_code_block",
+        _is_empty_code_block,
+        input_types=["code"],
+        output_types=["bool"],
+        code_blocks=0,
+        docstring="""Pushes true if top code item is an empty CodeBlock. Pushes
+        false otherwise."""
+    ))
+
+    i.append(SimpleInstruction(
+        "code_size",
+        _code_size,
+        input_types=["code"],
+        output_types=["int"],
+        code_blocks=0,
+        docstring="""Pushes the total size of the top item on the code stack. If
+        the top item is a CodeBlock, this includes the size of all the CodeBlock's
+        elements recusively."""
+    ))
+
+    i.append(SimpleInstruction(
+        "code_extract",
+        _code_extract,
+        input_types=["code", "int"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="""Traverses the top code item depth first and returns the nth
+        item based on the top int."""
+    ))
+
+    # @TODO: code_insert needs test
+    i.append(SimpleInstruction(
+        "code_insert",
+        _code_insert,
+        input_types=["code", "code", "int"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="""Traverses the top code item depth first and inserts the
+        second code item at position `n`. The value of `n` is the top int."""
+    ))
+
+    # code_subst
+    # code_contains
+    # code_container
+
+    # @TODO: code_first_position needs test
+    i.append(SimpleInstruction(
+        "code_first_position",
+        _code_first_position,
+        input_types=["code", "code"],
+        output_types=["int"],
+        code_blocks=0,
+        docstring="""Pushes the first position of the second code item within
+        the top code item. If not found, pushes -1. If the top code item is not
+        a CodeBlock, this instruction returns 0 if the top two code elements are
+        equal and -1 otherwise."""
+    ))
+
+    # @TODO: code_reverse needs test
+    i.append(SimpleInstruction(
+        "code_reverse",
+        _code_reverse,
+        input_types=["code"],
+        output_types=["code"],
+        code_blocks=0,
+        docstring="""Pushes the top code item reversed. No effect if top code
+        item is not a CodeBlock."""
+    ))
+
+    return i

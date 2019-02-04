@@ -1,73 +1,49 @@
-# -*- coding: utf-8 -*-
-"""
-Created on July 24, 2016
+"""Definitions for all core I/O instructions, including input instructions."""
+from typing import Sequence, Callable
 
-@author: Eddie
-"""
-
-from ... import constants as c
-from .. instruction import Instruction
+from pyshgp.push.state import PushState
+from pyshgp.push.atoms import Literal
+from pyshgp.push.instruction import SimpleInstruction, TakesStateInstruction
+from pyshgp.push.types import PUSH_TYPES
 
 
-def print_newline(state):
-    """Appends a newline to the stdout string in the output field.
-    """
-    if len(state.stdout) + 1 > c.max_string_length:
-        return
-    state.stdout += '\n'
+def _nth_inputer(ndx: int) -> Callable:
+    # @TODO: Replace with partial
+    def f(state: PushState) -> Sequence[Literal]:
+        return [Literal(state.inputs[ndx])]
+    return f
 
 
-I_print_newline = Instruction('_print_newline',
-                              print_newline,
-                              stack_types=['_print'])
+def make_input_instruction(ndx: int) -> TakesStateInstruction:
+    """Return insctuction to push a copy of the input value at the given index."""
+    return TakesStateInstruction(
+        "input_{i}".format(i=ndx),
+        _nth_inputer(ndx),
+        output_types=["exec"],
+        other_types=[],
+        code_blocks=0,
+        docstring="Push a copy of input at index {i}.".format(i=ndx)
+    )
 
 
-def printer(pysh_type):
-    """Returns a function that takes a state and prints the top item of the
-    appropriate stack of the state.
-    """
-    def prnt(state):
-        if len(state[pysh_type]) < 1:
-            return
-        top_thing = state[pysh_type].ref(0)
-        top_thing_str = str(top_thing)
-        if len(state.stdout) + len(top_thing_str) > c.max_string_length:
-            return
-        state[pysh_type].pop()
-        state.stdout += top_thing_str
-    instruction = Instruction('_print' + pysh_type, prnt,
-                              stack_types=['_print', pysh_type])
-    if pysh_type == '_exec':
-        instruction.parentheses = 1
-    return instruction
+def make_input_instructions(num_inputs: int) -> Sequence[TakesStateInstruction]:
+    """Return insctuctions to push a copy of the input value at the given index."""
+    return [make_input_instruction(i) for i in range(num_inputs)]
 
 
-I_print_exec = printer('_exec')
-I_print_integer = printer('_integer')
-I_print_float = printer('_float')
-I_print_code = printer('_code')
-I_print_boolean = printer('_boolean')
-# <instr_open>
-# <instr_name>print_exec
-# <instr_desc>Prints the top item of the exec stack to the string on the output stack.
-# <instr_close>
-# <instr_open>
-# <instr_name>print_integer
-# <instr_desc>Prints the top integer to the string on the output stack.
-# <instr_close>
-# <instr_open>
-# <instr_name>print_float
-# <instr_desc>Prints the top float to the string on the output stack.
-# <instr_close>
-# <instr_open>
-# <instr_name>print_code
-# <instr_desc>Prints the top item on the code code stack to the string on the output stack.
-# <instr_close>
-# <instr_open>
-# <instr_name>print_boolean
-# <instr_desc>Prints the top boolean to the string on the output stack.
-# <instr_close>
-# <instr_open>
-# <instr_name>print_string
-# <instr_desc>Prints the top string to the string on the output stack.
-# <instr_close>
+# Printing instructions
+
+def instructions():
+    """Return all core printing instructions."""
+    i = []
+
+    for push_type in PUSH_TYPES:
+        i.append(SimpleInstruction(
+            "print_{t}".format(t=push_type.name),
+            lambda x: [str(x)],
+            input_types=[push_type.name],
+            output_types=["stdout"],
+            code_blocks=0,
+            docstring="Prints the top {t}.".format(t=push_type.name)
+        ))
+    return i

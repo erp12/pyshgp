@@ -1,0 +1,269 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.push.stack module &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyshgp.push.state module" href="pyshgp.push.state.html" />
+    <link rel="prev" title="pyshgp.push.interpreter module" href="pyshgp.push.interpreter.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.push.state.html" title="pyshgp.push.state module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.push.interpreter.html" title="pyshgp.push.interpreter module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" >pyshgp package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="pyshgp.push.html" accesskey="U">pyshgp.push package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-pyshgp.push.stack">
+<span id="pyshgp-push-stack-module"></span><h1>pyshgp.push.stack module<a class="headerlink" href="#module-pyshgp.push.stack" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">stack</span></code> module defines the <code class="docutils literal notranslate"><span class="pre">PushStack</span></code> classself.</p>
+<p>A PushStack is used to hold values of a certain PushType in a PushState object.</p>
+<dl class="class">
+<dt id="pyshgp.push.stack.PushStack">
+<em class="property">class </em><code class="descclassname">pyshgp.push.stack.</code><code class="descname">PushStack</code><span class="sig-paren">(</span><em>push_type: pyshgp.push.types.PushType</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<p>Stack that holds elements of a sinlge PushType.</p>
+<dl class="method">
+<dt id="pyshgp.push.stack.PushStack.flush">
+<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Empty the stack.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PushStack.insert">
+<code class="descname">insert</code><span class="sig-paren">(</span><em>position: int</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert value at position in stack.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>position</strong> (<em>int</em>) – Position in stack to get item.</li>
+<li><strong>value</strong> – Value to insert into stack.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PushStack.is_empty">
+<code class="descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.is_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the stack is empty. Return False otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PushStack.nth">
+<code class="descname">nth</code><span class="sig-paren">(</span><em>position: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.nth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.nth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the element at a given position.</p>
+<p>If stack is empty, returns None. If <code class="docutils literal notranslate"><span class="pre">position</span> <span class="pre">&lt;</span> <span class="pre">0</span></code> or
+<code class="docutils literal notranslate"><span class="pre">position</span> <span class="pre">&gt;</span> <span class="pre">len(self)</span></code> returns a <code class="docutils literal notranslate"><span class="pre">no_stack_item</span></code> token.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>position</strong> (<em>int</em>) – Position in stack to get item.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Element at <code class="docutils literal notranslate"><span class="pre">positon</span></code> in stack.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PushStack.pop">
+<code class="descname">pop</code><span class="sig-paren">(</span><em>index: Optional[int] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.pop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop the top item off the stack.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> – Index to pop from the stack.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Element at <code class="docutils literal notranslate"><span class="pre">index</span></code> in stack.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PushStack.push">
+<code class="descname">push</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.push"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pushes a value to the top of the stack.</p>
+<p>An alias for <cite>append</cite> which makes the definition of push instructions
+more clear.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – Value to push onto stack.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.stack.PushStack.push_type">
+<code class="descname">push_type</code><a class="headerlink" href="#pyshgp.push.stack.PushStack.push_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PushStack.set_nth">
+<code class="descname">set_nth</code><span class="sig-paren">(</span><em>position: int</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.set_nth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.set_nth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwrite the item in the nth position of the stack with the new value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>position</strong> (<em>int</em>) – Position in stack to get item.</li>
+<li><strong>value</strong> – Value to insert into stack.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PushStack.take">
+<code class="descname">take</code><span class="sig-paren">(</span><em>n: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.take"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.take" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the top <cite>n</cite> items from the tack.</p>
+<p>If <cite>n</cite> is less than zero, result is an empty list. If <cite>n</cite> is greater
+than the size of the stack, result contains every element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<em>int</em>) – Number of items</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Element at <code class="docutils literal notranslate"><span class="pre">positon</span></code> in stack.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.stack.PushStack.top">
+<code class="descname">top</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.top"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the top item on the stack, or a <code class="docutils literal notranslate"><span class="pre">no_stack_item</span></code> token if empty.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Returns the top element of the stack, or None if empty.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyshgp.push.interpreter.html"
+                        title="previous chapter">pyshgp.push.interpreter module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyshgp.push.state.html"
+                        title="next chapter">pyshgp.push.state module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/pyshgp.push.stack.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.push.state.html" title="pyshgp.push.state module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.push.interpreter.html" title="pyshgp.push.interpreter module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" >pyshgp package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="pyshgp.push.html" >pyshgp.push package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

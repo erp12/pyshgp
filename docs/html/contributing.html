@@ -1,0 +1,194 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Contributing &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pyshgp.utils module" href="api/pyshgp.utils.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api/pyshgp.utils.html" title="pyshgp.utils module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="reporting-bugs-and-feature-requests">
+<h2>Reporting Bugs and Feature Requests<a class="headerlink" href="#reporting-bugs-and-feature-requests" title="Permalink to this headline">¶</a></h2>
+<p>Reporting bugs and requesting features should be done by opening issues on the
+<a class="reference external" href="https://github.com/erp12/pyshgp/issues">pyshgp GitHub repository page</a>.</p>
+</div>
+<div class="section" id="contributing-code">
+<h2>Contributing Code<a class="headerlink" href="#contributing-code" title="Permalink to this headline">¶</a></h2>
+<p>Contributions to <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> are accepted via GitHub pull requests. If you would like
+to make change to the pyshgp code base (including tests and documentation) you
+must first fork <a class="reference external" href="https://github.com/erp12/pyshgp">the repository</a>.</p>
+<p>After cloning your fork, open a new branch. <strong>Do not add your changes to</strong>
+<code class="docutils literal notranslate"><span class="pre">master</span></code>. Once you have finished making your changes, you must open a pull
+request, which will be reviewed and eventually merged. If your changes are meant
+to address an open GitHub issue, it would be helpful if you mentioned the issue
+in the body of the pull request.</p>
+<div class="section" id="code-reviews">
+<h3>Code Reviews<a class="headerlink" href="#code-reviews" title="Permalink to this headline">¶</a></h3>
+<p>All contributions to pyshgp will undergo 2 code reviews. The first is an
+automated code review performed by <a class="reference external" href="https://www.codacy.com/">Codacy</a>. The
+second will be a manual code review done by project’s maintainers on the GitHub
+page.</p>
+<p>Both code reviews will be done on the GitHub page on open pull requests.</p>
+</div>
+<div class="section" id="code-style">
+<h3>Code Style<a class="headerlink" href="#code-style" title="Permalink to this headline">¶</a></h3>
+<p>Pyshgp strives to conform to <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">pep8</a>
+as much as possible. Codacy has been set up to log almost all pep8 violations as
+issues. Pull requests will not be accepted until all code style issues have
+been resolved.</p>
+</div>
+<div class="section" id="unit-tests">
+<h3>Unit Tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h3>
+<p>Pyshgp uses Codacy to track code coverage. Pull requests are expected to have
+unit tests that cover at least 90% of their code. Pull requests that do not
+contain appropriate unit tests will not be merged.</p>
+</div>
+<div class="section" id="other-issues">
+<h3>Other Issues<a class="headerlink" href="#other-issues" title="Permalink to this headline">¶</a></h3>
+<p>Codacy tracks a number of other types of issues. Currently only the types of
+issues listed above will definitively prevent a pull request from being accepted
+but the <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> maintainers will review the Codacy issues and diff of the pull
+request to determine what needs to be addressed before merging.</p>
+</div>
+</div>
+<div class="section" id="contributing-documentation">
+<h2>Contributing Documentation<a class="headerlink" href="#contributing-documentation" title="Permalink to this headline">¶</a></h2>
+<p>The documentation of <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> is found in the <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder. The documentation
+is built with <a class="reference external" href="http://www.sphinx-doc.org/en/stable/index.html">Sphinx</a> and the
+source code can be found in the <code class="docutils literal notranslate"><span class="pre">docs_source</span></code> folder.</p>
+<p>As much documentation as possible is inserted from docstrings using
+<a class="reference external" href="http://www.sphinx-doc.org/en/stable/ext/autodoc.html">autodoc</a>. This will
+allow other contributors to read documentation from the source code and will
+also cut down on duplicated text.</p>
+</div>
+<div class="section" id="contributing-examples">
+<h2>Contributing Examples<a class="headerlink" href="#contributing-examples" title="Permalink to this headline">¶</a></h2>
+<p>Adding examples to <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> is a great way to demonstrate functionality to users
+and document different use cases.</p>
+<p>Example files should be placed in the <code class="docutils literal notranslate"><span class="pre">examples</span></code> folder. If possible, data
+files should not be included with examples, but constructed or downloaded by
+the example file.</p>
+<p>Examples should never import <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> modules using relative paths. Instead
+assume <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> has been installed as a package.</p>
+</div>
+<div class="section" id="release-pattern">
+<h2>Release Pattern<a class="headerlink" href="#release-pattern" title="Permalink to this headline">¶</a></h2>
+<p>The GitHub repository’s master branch is always kept in sync with what is
+available on PyPi.</p>
+<p>In anticipation of a new release, a “pre-version” branch will be created with
+the naming convention “v##-pre” where “##” is the anticipated version.</p>
+<p>As feature branches (and forks) are opened to address issues, they will be
+reviewed via PR and merged into the “pre-version” branch.</p>
+<p>Once the pre-version branch contains all the features required for the release
+of the next version (as dictated by the project boards on the GitHub page)
+the pre-version branch will be merged with master, a new release will be put on
+PyPI, and a locked version branch will be created.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Contributing</a><ul>
+<li><a class="reference internal" href="#reporting-bugs-and-feature-requests">Reporting Bugs and Feature Requests</a></li>
+<li><a class="reference internal" href="#contributing-code">Contributing Code</a><ul>
+<li><a class="reference internal" href="#code-reviews">Code Reviews</a></li>
+<li><a class="reference internal" href="#code-style">Code Style</a></li>
+<li><a class="reference internal" href="#unit-tests">Unit Tests</a></li>
+<li><a class="reference internal" href="#other-issues">Other Issues</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contributing-documentation">Contributing Documentation</a></li>
+<li><a class="reference internal" href="#contributing-examples">Contributing Examples</a></li>
+<li><a class="reference internal" href="#release-pattern">Release Pattern</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api/pyshgp.utils.html"
+                        title="previous chapter">pyshgp.utils module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/contributing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api/pyshgp.utils.html" title="pyshgp.utils module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

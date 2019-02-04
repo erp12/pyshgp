@@ -1,0 +1,236 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.gp.estimators module &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyshgp.gp.evaluation module" href="pyshgp.gp.evaluation.html" />
+    <link rel="prev" title="pyshgp.gp package" href="pyshgp.gp.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.gp.evaluation.html" title="pyshgp.gp.evaluation module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.gp.html" title="pyshgp.gp package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" >pyshgp package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="pyshgp.gp.html" accesskey="U">pyshgp.gp package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-pyshgp.gp.estimators">
+<span id="pyshgp-gp-estimators-module"></span><h1>pyshgp.gp.estimators module<a class="headerlink" href="#module-pyshgp.gp.estimators" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">estimator</span></code> module defines sklearn estimators.</p>
+<dl class="class">
+<dt id="pyshgp.gp.estimators.PushEstimator">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.estimators.</code><code class="descname">PushEstimator</code><span class="sig-paren">(</span><em>search: Union[pyshgp.gp.search.SearchAlgorithm</em>, <em>str] = 'GA'</em>, <em>spawner: Union[str</em>, <em>pyshgp.gp.genome.GeneSpawner] = 'default'</em>, <em>selector: Union[str</em>, <em>pyshgp.gp.selection.Selector] = 'lexicase'</em>, <em>variation_strategy: str = 'umad'</em>, <em>population_size: int = 300</em>, <em>max_generations: int = 100</em>, <em>initial_genome_size: Tuple[int</em>, <em>int] = (20</em>, <em>100)</em>, <em>simplification_steps: int = 2000</em>, <em>interpreter: pyshgp.push.interpreter.PushInterpreter = 'default'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all estimators that produce Push programs.</p>
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the search algorithm to synthesize a push program.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.</li>
+<li><strong>y</strong> (<em>list</em><em>, </em><em>array-like</em><em>, or </em><em>pandas dataframe.</em>) – The target values (class labels in classification, real numbers in
+regression). Shape = [n_samples] or [n_samples, n_outputs]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>filepath: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a found solution from a JSON file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the synthesized push program on a dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>y_hat</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pandas dataframe of shape = [n_samples, n_outputs]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>filepath: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the found solution to a JSON file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.score">
+<code class="descname">score</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the search algorithm to synthesize a push program.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.</li>
+<li><strong>y</strong> (<em>list</em><em>, </em><em>array-like</em><em>, or </em><em>pandas dataframe.</em>) – The target values (class labels in classification, real numbers in
+regression). Shape = [n_samples] or [n_samples, n_outputs]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.estimators.SearchResult">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.estimators.</code><code class="descname">SearchResult</code><span class="sig-paren">(</span><em>program: pyshgp.push.atoms.CodeBlock, output_types: Sequence[pyshgp.push.types.PushType]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#SearchResult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyshgp.utils.html#pyshgp.utils.JSONable" title="pyshgp.utils.JSONable"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.utils.JSONable</span></code></a></p>
+<p>The best found program and the types it outputs.</p>
+<dl class="classmethod">
+<dt id="pyshgp.gp.estimators.SearchResult.from_json_file">
+<em class="property">classmethod </em><code class="descname">from_json_file</code><span class="sig-paren">(</span><em>filepath: str</em>, <em>instruction_set: pyshgp.push.instruction_set.InstructionSet</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#SearchResult.from_json_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult.from_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a PushSolution from a JSON string.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pyshgp.gp.estimators.SearchResult.from_json_str">
+<em class="property">classmethod </em><code class="descname">from_json_str</code><span class="sig-paren">(</span><em>json_str: str</em>, <em>instruction_set: pyshgp.push.instruction_set.InstructionSet</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#SearchResult.from_json_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult.from_json_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a PushSolution from a JSON string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.SearchResult.jsonify">
+<code class="descname">jsonify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#SearchResult.jsonify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult.jsonify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object as a JSON string.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.estimators.VariationStrategy">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.estimators.</code><code class="descname">VariationStrategy</code><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#VariationStrategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.VariationStrategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib" title="pyshgp.utils.DiscreteProbDistrib"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.utils.DiscreteProbDistrib</span></code></a></p>
+<p>A collection of VariationOperator and how frequently to use them.</p>
+<dl class="method">
+<dt id="pyshgp.gp.estimators.VariationStrategy.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#VariationStrategy.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.VariationStrategy.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an element with a relative probability.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.gp.estimators.random">
+<code class="descclassname">pyshgp.gp.estimators.</code><code class="descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; x in the interval [0, 1).<a class="headerlink" href="#pyshgp.gp.estimators.random" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyshgp.gp.html"
+                        title="previous chapter">pyshgp.gp package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyshgp.gp.evaluation.html"
+                        title="next chapter">pyshgp.gp.evaluation module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/pyshgp.gp.estimators.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.gp.evaluation.html" title="pyshgp.gp.evaluation module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.gp.html" title="pyshgp.gp package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" >pyshgp package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="pyshgp.gp.html" >pyshgp.gp package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,213 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PyghGP &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PyshGP API" href="api.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="PyshGP API"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">PyshGP  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyghgp">
+<h1>PyghGP<a class="headerlink" href="#pyghgp" title="Permalink to this headline">¶</a></h1>
+<p>Push Genetic Programming in Python</p>
+<div class="section" id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="what-is-pushgp">
+<h3>What is PushGP?<a class="headerlink" href="#what-is-pushgp" title="Permalink to this headline">¶</a></h3>
+<p>Push is programming language that plays nice with evolutionary computing / genetic programming. It is a stack-based language that features 1 stack per data type, including code. Programs are represented by lists of instructions, which modify the values on the stacks. Instructions are executed in order.</p>
+<p>More information about PushGP can be found on the <a class="reference external" href="https://erp12.github.io/push-redux/">Push Redux</a> the <a class="reference external" href="http://faculty.hampshire.edu/lspector/push.html">Push Homepage</a> and the <a class="reference external" href="https://Push-language.hampshire.edu">Push Language Discourse</a>.</p>
+</div>
+<div class="section" id="why-use-pushgp">
+<h3>Why use PushGP?<a class="headerlink" href="#why-use-pushgp" title="Permalink to this headline">¶</a></h3>
+<p>PushGP is a leading software synthesis (some called “programming by example”) system. It utilized stochastic (typically evolutionary) search methods to produce programs that are capable of manipulating all the common data types, control structures, and data structures. It is easily extendable to specific use cases and has seen impressive human-competitive coding results. PushGP has <a class="reference external" href="http://faculty.hampshire.edu/lspector/aqcp/">discovered novel quantum computer programs</a> previously unknown to human programers, and has acheived human competitive results in <a class="reference external" href="http://www.cs.bham.ac.uk/~wbl/biblio/gecco2008/docs/p1291.pdf">finding algebraic terms in the study of finite algebras</a>.</p>
+<p>In contrast to the majority of other ML/AI methods, PushGP does not require the transformation of data into numeric structures. PushGP does optimize a set of parameters using a gradient, but rather attempts to intelligently search the space of Push programs. The result is a system where the primary output is a program written in the Turing complete Push language.</p>
+<p>PushGP has proven itself to be one of the most power “general program synthesis” frameworks. Like most evolutionary search frameworks, it usually requires an extremely high runtime, however it can solve problems that no other programming-by-example system can solve.</p>
+<p>Additional references on the successes of PushGP:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://dl.acm.org/citation.cfm?id=3082533">On the difficulty of benchmarking inductive program synthesis methods</a></li>
+<li><a class="reference external" href="https://dl.acm.org/citation.cfm?id=2754769">General Program Synthesis Benchmark Suite</a></li>
+<li><a class="reference external" href="https://dl.acm.org/citation.cfm?id=1068292">The Push3 execution stack and the evolution of control</a></li>
+</ul>
+</div>
+<div class="section" id="goals-of-pyshgp">
+<h3>Goals of <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code>.<a class="headerlink" href="#goals-of-pyshgp" title="Permalink to this headline">¶</a></h3>
+<p>Previous PushGP frameworks have focused on supporting genetic programming and software synthesis research. One of the leading PushGP projects is <a class="reference external" href="https://github.com/lspector/Clojush">Clojush</a>, which is written in Clojure and heavily focused on the experimentation needed to further the research field.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pyshgp</span></code> aims to bring PushGP to a wider range of users and use cases. Many popular ML/AI frameworks are written in Python, and with <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> it is much easier to compare PushGP with other methods or build ML pipelines that contain PushGP and other models together.</p>
+<p>Although PushGP is constantly changing through research and publication, <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> is meant to be a slowly changing, more stable, PushGP framework. It is still possible to use <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> for research and development, however accepted contributions to the main repository will be extensively benchmarked, tested, and documented.</p>
+</div>
+</div>
+<div class="section" id="installing-pyshgp">
+<h2>Installing pyshgp<a class="headerlink" href="#installing-pyshgp" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> is compatible with python 3.5 and up.</p>
+<div class="section" id="install-from-pip">
+<h3>Install from pip<a class="headerlink" href="#install-from-pip" title="Permalink to this headline">¶</a></h3>
+<p>Coming with initial first release of <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code>.
+Check the project milestones to get a sense of how far off this is.</p>
+</div>
+<div class="section" id="build-frome-source">
+<h3>Build Frome source<a class="headerlink" href="#build-frome-source" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Clone the repo</li>
+<li>cd into the <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> repo directory</li>
+<li>run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span> <span class="pre">--upgrade</span></code></li>
+<li>Thats it! Check out the examples and</li>
+</ul>
+</div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="example-usage">
+<h3>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h3>
+<p>Example usages of <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> can be found in the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> <a class="reference external" href="#">folder of the Github repository</a>.</p>
+</div>
+<div class="section" id="api">
+<h3>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h3>
+<p>The full <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> API can be found on <a class="reference external" href="#">official website</a>.</p>
+</div>
+</div>
+<div class="section" id="pysh-roadmap-contributing">
+<h2>Pysh Roadmap / Contributing<a class="headerlink" href="#pysh-roadmap-contributing" title="Permalink to this headline">¶</a></h2>
+<p>PyshGP isn’t quite ready for its 1.0 release. It still has a few key features that need implementing. More details can be found in <code class="docutils literal notranslate"><span class="pre">ROADMAPS.md</span></code> and in the projects tab on Github.</p>
+<p>For information about contributing, see the <a class="reference external" href="#">Contributing Guide</a>.</p>
+</div>
+</div>
+<div class="section" id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyshGP API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/modules.html">pyshgp</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#reporting-bugs-and-feature-requests">Reporting Bugs and Feature Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-code">Contributing Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-documentation">Contributing Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#contributing-examples">Contributing Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#release-pattern">Release Pattern</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">PyghGP</a><ul>
+<li><a class="reference internal" href="#motivation">Motivation</a><ul>
+<li><a class="reference internal" href="#what-is-pushgp">What is PushGP?</a></li>
+<li><a class="reference internal" href="#why-use-pushgp">Why use PushGP?</a></li>
+<li><a class="reference internal" href="#goals-of-pyshgp">Goals of <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code>.</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installing-pyshgp">Installing pyshgp</a><ul>
+<li><a class="reference internal" href="#install-from-pip">Install from pip</a></li>
+<li><a class="reference internal" href="#build-frome-source">Build Frome source</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documentation">Documentation</a><ul>
+<li><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li><a class="reference internal" href="#api">API</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pysh-roadmap-contributing">Pysh Roadmap / Contributing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">PyshGP API</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="PyshGP API"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">PyshGP  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

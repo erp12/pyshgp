@@ -1,0 +1,183 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.push.instructions package &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="pyshgp-push-instructions-package">
+<h1>pyshgp.push.instructions package<a class="headerlink" href="#pyshgp-push-instructions-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyshgp.push.instructions.code">
+<span id="pyshgp-push-instructions-code-module"></span><h2>pyshgp.push.instructions.code module<a class="headerlink" href="#module-pyshgp.push.instructions.code" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core code instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.code.instructions">
+<code class="descclassname">pyshgp.push.instructions.code.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/push/instructions/code.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.code.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core code SimpleInstructions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.common">
+<span id="pyshgp-push-instructions-common-module"></span><h2>pyshgp.push.instructions.common module<a class="headerlink" href="#module-pyshgp.push.instructions.common" title="Permalink to this headline">¶</a></h2>
+<p>Instructions common to all <code class="docutils literal notranslate"><span class="pre">PushTypes</span></code> and <code class="docutils literal notranslate"><span class="pre">PushStacks</span></code>.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.common.instructions">
+<code class="descclassname">pyshgp.push.instructions.common.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/push/instructions/common.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.common.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core numeric instructions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.io">
+<span id="pyshgp-push-instructions-io-module"></span><h2>pyshgp.push.instructions.io module<a class="headerlink" href="#module-pyshgp.push.instructions.io" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core I/O instructions, including input instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.io.instructions">
+<code class="descclassname">pyshgp.push.instructions.io.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/push/instructions/io.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.io.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core printing instructions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.instructions.io.make_input_instruction">
+<code class="descclassname">pyshgp.push.instructions.io.</code><code class="descname">make_input_instruction</code><span class="sig-paren">(</span><em>ndx: int</em><span class="sig-paren">)</span> &#x2192; pyshgp.push.instruction.TakesStateInstruction<a class="reference internal" href="_modules/pyshgp/push/instructions/io.html#make_input_instruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.io.make_input_instruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return insctuction to push a copy of the input value at the given index.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.instructions.io.make_input_instructions">
+<code class="descclassname">pyshgp.push.instructions.io.</code><code class="descname">make_input_instructions</code><span class="sig-paren">(</span><em>num_inputs: int</em><span class="sig-paren">)</span> &#x2192; Sequence[pyshgp.push.instruction.TakesStateInstruction]<a class="reference internal" href="_modules/pyshgp/push/instructions/io.html#make_input_instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.io.make_input_instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return insctuctions to push a copy of the input value at the given index.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.logical">
+<span id="pyshgp-push-instructions-logical-module"></span><h2>pyshgp.push.instructions.logical module<a class="headerlink" href="#module-pyshgp.push.instructions.logical" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core logical instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.logical.instructions">
+<code class="descclassname">pyshgp.push.instructions.logical.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/push/instructions/logical.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.logical.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core numeric instructions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.numeric">
+<span id="pyshgp-push-instructions-numeric-module"></span><h2>pyshgp.push.instructions.numeric module<a class="headerlink" href="#module-pyshgp.push.instructions.numeric" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core numeric instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.numeric.instructions">
+<code class="descclassname">pyshgp.push.instructions.numeric.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/push/instructions/numeric.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.numeric.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core numeric instructions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.text">
+<span id="pyshgp-push-instructions-text-module"></span><h2>pyshgp.push.instructions.text module<a class="headerlink" href="#module-pyshgp.push.instructions.text" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core text instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.text.instructions">
+<code class="descclassname">pyshgp.push.instructions.text.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/push/instructions/text.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.text.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core text instructions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyshgp.push.instructions" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyshGP</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Edward Pantridge.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/pyshgp.push.instructions.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

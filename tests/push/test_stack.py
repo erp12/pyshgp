@@ -1,56 +1,67 @@
-import unittest
+import pytest
 
-import pyshgp.push.stack as stack
+from pyshgp.push.stack import PushStack
+from pyshgp.push.types import PushInt, PushStr
+from pyshgp.utils import PushError, Token
 
 
-class TestStackMethods(unittest.TestCase):
+@pytest.fixture(scope="function")
+def int_stack(atoms):
+   return PushStack(PushInt)
 
-    def setUp(self):
-        self.stck = stack.PyshStack('_integer')
 
-    def test_push(self):
-        self.stck.push(7)
-        self.assertEqual(len(self.stck), 1)
-        self.assertEqual(self.stck[0], 7)
+@pytest.fixture(scope="function")
+def str_stack(atoms):
+    return PushStack(PushStr)
 
-    def test_pop(self):
-        self.stck.push(7)
-        self.stck.pop()
-        self.assertEqual(len(self.stck), 0)
 
-    def test_top_item_A(self):
-        self.stck.push(7)
-        i = self.stck.top_item()
-        self.assertEqual(i, 7)
+class TestPushStack:
 
-    def test_top_item_B(self):
-        i = self.stck.top_item()
-        self.assertIsNone(i)
+    def test_push(self, int_stack: PushStack):
+        int_stack.push(5)
+        assert len(int_stack) == 1
 
-    def test_ref(self):
-        self.stck.push("a")
-        self.stck.push("b")
-        self.stck.push("c")
-        c = self.stck.ref(0)
-        b = self.stck.ref(1)
-        a = self.stck.ref(2)
-        self.assertEqual(a, "a")
-        self.assertEqual(b, "b")
-        self.assertEqual(c, "c")
+    def test_push_wrong_type(self, int_stack: PushStack):
+        with pytest.raises(PushError):
+            int_stack.push("zz")
 
-    def test_insert(self):
-        self.stck.insert(0, "c")
-        self.stck.insert(1, "b")
-        self.stck.insert(2, "a")
-        c = self.stck.ref(0)
-        b = self.stck.ref(1)
-        a = self.stck.ref(2)
-        self.assertEqual(a, "a")
-        self.assertEqual(b, "b")
-        self.assertEqual(c, "c")
+    def test_nth(self, int_stack: PushStack):
+        int_stack.push(5).push(4).push(3)
+        assert int_stack.nth(1) == 4
 
-    def test_flush(self):
-        self.stck.push("a")
-        self.stck.push("b")
-        self.stck.flush()
-        self.assertEqual(len(self.stck), 0)
+    def test_nth_oob(self, int_stack: PushStack):
+        int_stack.push(5)
+        assert int_stack.nth(1) == Token.no_stack_item
+
+    def test_top(self, int_stack: PushStack):
+        int_stack.push(5).push(-10)
+        assert int_stack.top() == -10
+
+    def test_top_of_empty(self, int_stack: PushStack):
+        assert int_stack.top() == Token.no_stack_item
+
+    def test_insert(self, str_stack: PushStack):
+        str_stack.push("a").push("b").push("c").insert(1, "z")
+        assert len(str_stack) == 4
+        assert str_stack.nth(1) == "z"
+        assert str_stack.nth(2) == "b"
+
+    def test_insert_oob(self, str_stack: PushStack):
+        str_stack.push("a").push("b").push("c").insert(10, "z")
+        assert len(str_stack) == 4
+        assert str_stack.nth(1) == "b"
+        assert str_stack.nth(3) == "z"
+
+    def test_set_nth(self, str_stack: PushStack):
+        str_stack.push("a").push("b").push("c").push("d").set_nth(1, "z")
+        assert len(str_stack) == 4
+        print(str_stack)
+        assert str_stack.nth(1) == "z"
+
+    def test_set_nth_oob(self, str_stack: PushStack):
+        with pytest.raises(IndexError):
+            str_stack.push("a").push("b").push("c").set_nth(10, "z")
+
+    def test_flush(self, int_stack: PushStack):
+        int_stack.push(1).push(-1).flush()
+        assert len(int_stack) == 0

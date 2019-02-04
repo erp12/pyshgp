@@ -1,0 +1,281 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.gp.search &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyshgp.gp.search</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The :mod:`search` module defines an algorithms to search for Push programs.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">random</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">DiscreteProbDistrib</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.evaluation</span> <span class="k">import</span> <span class="n">Evaluator</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.genome</span> <span class="k">import</span> <span class="n">GeneSpawner</span><span class="p">,</span> <span class="n">GenomeSimplifier</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.individual</span> <span class="k">import</span> <span class="n">Individual</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.population</span> <span class="k">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.selection</span> <span class="k">import</span> <span class="n">Selector</span><span class="p">,</span> <span class="n">Lexicase</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.variation</span> <span class="k">import</span> <span class="n">VariationOperator</span><span class="p">,</span> <span class="n">SIZE_NEUTRAL_UMAD</span>
+
+
+<div class="viewcode-block" id="SearchConfiguration"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchConfiguration">[docs]</a><span class="k">class</span> <span class="nc">SearchConfiguration</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Configuration of an evolutionar search algorithm.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">evaluator</span><span class="p">:</span> <span class="n">Evaluator</span><span class="p">,</span>
+                 <span class="n">spawning</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GeneSpawner</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">],</span>
+                 <span class="n">selection</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Selector</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">]</span> <span class="o">=</span> <span class="n">Lexicase</span><span class="p">(),</span>
+                 <span class="n">variation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">VariationOperator</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">]</span> <span class="o">=</span> <span class="n">SIZE_NEUTRAL_UMAD</span><span class="p">,</span>
+                 <span class="n">population_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+                 <span class="n">max_generations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                 <span class="n">error_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                 <span class="n">initial_genome_size</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+                 <span class="n">simplification_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">evaluator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">population_size</span> <span class="o">=</span> <span class="n">population_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_generations</span> <span class="o">=</span> <span class="n">max_generations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_threshold</span> <span class="o">=</span> <span class="n">error_threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_genome_size</span> <span class="o">=</span> <span class="n">initial_genome_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simplification_steps</span> <span class="o">=</span> <span class="n">simplification_steps</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spawning</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spawning</span> <span class="o">=</span> <span class="n">spawning</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spawning</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">spawning</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">selection</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variation</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_variation</span> <span class="o">=</span> <span class="n">variation</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_variation</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">variation</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SearchConfiguration.get_spawner"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchConfiguration.get_spawner">[docs]</a>    <span class="k">def</span> <span class="nf">get_spawner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a GenomeSpawner.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spawning</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SearchConfiguration.get_selector"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchConfiguration.get_selector">[docs]</a>    <span class="k">def</span> <span class="nf">get_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a Selector.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SearchConfiguration.get_variation_operator"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchConfiguration.get_variation_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_variation_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a VariationOperator.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variation</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="SearchAlgorithm"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchAlgorithm">[docs]</a><span class="k">class</span> <span class="nc">SearchAlgorithm</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for all search algorithms.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SearchConfiguration</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generation</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_population</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SearchAlgorithm.init_population"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchAlgorithm.init_population">[docs]</a>    <span class="k">def</span> <span class="nf">init_population</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the population.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="n">Population</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">population_size</span><span class="p">):</span>
+            <span class="n">spawner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_spawner</span><span class="p">()</span>
+            <span class="n">genome</span> <span class="o">=</span> <span class="n">spawner</span><span class="o">.</span><span class="n">spawn_genome</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">initial_genome_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Individual</span><span class="p">(</span><span class="n">genome</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SearchAlgorithm.step"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchAlgorithm.step">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Perform one generation (step) of the search. Return if should continue.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_full_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generation</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">evaluator</span><span class="p">)</span>
+
+        <span class="n">best_this_gen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">best</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">best_this_gen</span><span class="o">.</span><span class="n">total_error</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">total_error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span> <span class="o">=</span> <span class="n">best_this_gen</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">total_error</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">error_threshold</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">stat_logs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">stat_logs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;GENERATION: </span><span class="si">{g}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">g</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generation</span>
+            <span class="p">))</span>
+            <span class="n">stat_logs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ERRORS: best=</span><span class="si">{b}</span><span class="s2">, median=</span><span class="si">{m}</span><span class="s2">, diversity=</span><span class="si">{e_d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">best</span><span class="p">()</span><span class="o">.</span><span class="n">total_error</span><span class="p">,</span>
+                <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">median_error</span><span class="p">(),</span>
+                <span class="n">e_d</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">error_diversity</span><span class="p">()</span>
+            <span class="p">))</span>
+            <span class="c1"># stat_logs.append(&quot;Population: size={p_s}, genome_diversity={g_d}&quot;.format(</span>
+            <span class="c1">#     p_s=len(self.population),</span>
+            <span class="c1">#     g_d=self.population.genome_diversity()</span>
+            <span class="c1"># ))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stat_logs</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SearchAlgorithm.run"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchAlgorithm.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the algorithm until termination.&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_full_step</span><span class="p">(</span><span class="n">verbose</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">generation</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">max_generations</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="n">simplifier</span> <span class="o">=</span> <span class="n">GenomeSimplifier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">evaluator</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+        <span class="n">simp_genome</span><span class="p">,</span> <span class="n">simp_error_vector</span> <span class="o">=</span> <span class="n">simplifier</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">genome</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">error_vector</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">simplification_steps</span>
+        <span class="p">)</span>
+        <span class="n">simplified_best</span> <span class="o">=</span> <span class="n">Individual</span><span class="p">(</span><span class="n">simp_genome</span><span class="p">)</span>
+        <span class="n">simplified_best</span><span class="o">.</span><span class="n">error_vector</span> <span class="o">=</span> <span class="n">simp_error_vector</span>
+
+        <span class="k">return</span> <span class="n">simplified_best</span></div></div>
+
+
+<div class="viewcode-block" id="GeneticAlgorithm"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.GeneticAlgorithm">[docs]</a><span class="k">class</span> <span class="nc">GeneticAlgorithm</span><span class="p">(</span><span class="n">SearchAlgorithm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Genetic algorithm to synthesize Push programs.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SearchConfiguration</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_child</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Individual</span><span class="p">:</span>
+        <span class="n">op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_variation_operator</span><span class="p">()</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_selector</span><span class="p">()</span>
+        <span class="n">parent_genomes</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">genome</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">selector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">op</span><span class="o">.</span><span class="n">num_parents</span><span class="p">)]</span>
+        <span class="n">child_genome</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">parent_genomes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_spawner</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">Individual</span><span class="p">(</span><span class="n">child_genome</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GeneticAlgorithm.step"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.GeneticAlgorithm.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform one generation (step) of the genetic algorithm.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="n">Population</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_child</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">population_size</span><span class="p">)]</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SimulatedAnnealing"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SimulatedAnnealing">[docs]</a><span class="k">class</span> <span class="nc">SimulatedAnnealing</span><span class="p">(</span><span class="n">SearchAlgorithm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Algorithm to synthesize Push programs with Simulated Annealing.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">SearchConfiguration</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">population_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;SimulatedAnnealing only supports a population size of 1. Config has been overwritten. &quot;</span><span class="p">)</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">population_size</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">_variation</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">num_parents</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;SimulatedAnnealing cannot take multiple parant variation operators.&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_temp</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;Return the temperature.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generation</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">max_generations</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_acceptance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">next_error</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return probability of acceptance given an error.&quot;&quot;&quot;</span>
+        <span class="n">current_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">best</span><span class="p">()</span><span class="o">.</span><span class="n">total_error</span>
+        <span class="k">if</span> <span class="n">next_error</span> <span class="o">&lt;</span> <span class="n">current_error</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">next_error</span> <span class="o">-</span> <span class="n">current_error</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_temp</span><span class="p">())</span>
+
+<div class="viewcode-block" id="SimulatedAnnealing.step"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SimulatedAnnealing.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform one generation, or step, of the search algorithm.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_temp</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">candidate</span> <span class="o">=</span> <span class="n">Individual</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_variation_operator</span><span class="p">()</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">best</span><span class="p">()</span><span class="o">.</span><span class="n">genome</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_spawner</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">candidate</span><span class="o">.</span><span class="n">error_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">program</span><span class="p">)</span>
+
+        <span class="n">acceptance_probability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptance</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">total_error</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">acceptance_probability</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="n">Population</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># @TODO: class EvolutionaryStrategy(SearchAlgorithm):</span>
+<span class="c1">#     ...</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

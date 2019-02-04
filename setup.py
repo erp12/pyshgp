@@ -5,14 +5,10 @@ Created on 9/1/2016
 @author: Eddie
 """
 import os
-import unittest
 from setuptools import setup, find_packages
 
 
-def pysh_test_suite():
-    test_loader = unittest.TestLoader()
-    test_suite = test_loader.discover('tests', pattern='test_*.py')
-    return test_suite
+exec(open("pyshgp/__init__.py").read())
 
 
 def read(fname):
@@ -21,15 +17,16 @@ def read(fname):
 
 setup(
     name="pyshgp",
-    version="0.1.0",
+    # version="0.1.0",
+    version=__version__,
+    description="Push Genetic Programming in Python",
+    long_description=read('README.md'),
+    keywords=["push gp", "genetic programming", "pushgp", "gp", "push"],
     author="Eddie Pantridge",
     author_email="erp12@hampshire.edu",
-    description="Push Genetic Programming in Python",
     license="LGPL",
-    keywords=["push gp", "genetic programming", "pushgp", "gp", "push"],
-    url="https://github.com/erp12/Pysh",
-    packages=find_packages(exclude=['examples', 'docs', 'run_manager', 'tests*']),
-    long_description=read('README.md'),
+    url="https://github.com/erp12/pyshgp",
+    packages=find_packages(exclude=['examples', 'docs', 'tests*']),
     classifiers=[
         "Development Status :: 4 - Beta",
         'Programming Language :: Python :: 3',
@@ -37,5 +34,18 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
-    test_suite='setup.pysh_test_suite'
+    install_requires=[
+        "numpy>=1.12.0",
+        "scipy>=0.18.0",
+        "scikit-learn>=0.18.0",
+        "pandas>=0.23.4",
+    ],
+    setup_requires=[
+        "pytest-runner",
+        "flake8>=3.5.0",
+        "flake8-docstrings>=1.3.0"
+    ],
+    tests_require=[
+        "pytest"
+    ],
 )

@@ -1,0 +1,6 @@
+[
+  {"a": "instr", "n": "input_0"},
+  {"a": "instr", "n": "float_from_int"},
+  {"a": "lit", "t": "float", "v": 0.0},
+  {"a": "instr", "n": "float_max"}
+]

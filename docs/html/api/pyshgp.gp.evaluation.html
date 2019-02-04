@@ -1,0 +1,245 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.gp.evaluation module &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyshgp.gp.genome module" href="pyshgp.gp.genome.html" />
+    <link rel="prev" title="pyshgp.gp.estimators module" href="pyshgp.gp.estimators.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.gp.genome.html" title="pyshgp.gp.genome module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.gp.estimators.html" title="pyshgp.gp.estimators module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" >pyshgp package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="pyshgp.gp.html" accesskey="U">pyshgp.gp package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-pyshgp.gp.evaluation">
+<span id="pyshgp-gp-evaluation-module"></span><h1>pyshgp.gp.evaluation module<a class="headerlink" href="#module-pyshgp.gp.evaluation" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">evaluation</span></code> module defines classes to evaluate program CodeBlocks.</p>
+<dl class="class">
+<dt id="pyshgp.gp.evaluation.DatasetEvaluator">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">DatasetEvaluator</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>interpreter: pyshgp.push.interpreter.PushInterpreter = 'default'</em>, <em>penalty: float = inf</em>, <em>verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#DatasetEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.DatasetEvaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.evaluation.Evaluator" title="pyshgp.gp.evaluation.Evaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.evaluation.Evaluator</span></code></a></p>
+<p>Evaluator driven by a labeled dataset.</p>
+<dl class="method">
+<dt id="pyshgp.gp.evaluation.DatasetEvaluator.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>program: pyshgp.push.atoms.CodeBlock</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#DatasetEvaluator.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.DatasetEvaluator.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the program and return the error vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>program</strong> – Program (CodeBlock of Push code) to evaluate.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The error vector of the program.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.evaluation.Evaluator">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">Evaluator</code><span class="sig-paren">(</span><em>interpreter: pyshgp.push.interpreter.PushInterpreter = 'default'</em>, <em>penalty: float = inf</em>, <em>verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#Evaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.Evaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Base class or evaluators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>interpreter</strong> (<a class="reference internal" href="pyshgp.push.interpreter.html#pyshgp.push.interpreter.PushInterpreter" title="pyshgp.push.interpreter.PushInterpreter"><em>PushInterpreter</em></a><em>, </em><em>optional</em>) – PushInterpreter used to run program and get their output. Default is
+an interpreter with the default configuration and all core instructions
+registered.</li>
+<li><strong>penalty</strong> (<em>float</em><em>, </em><em>optional</em>) – When a program’s output cannot be evaluated on a particular case, the
+penalty error is assigned. Default is 5e5.</li>
+<li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if verbose printing should be used during evalutation.
+Default is False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.gp.evaluation.Evaluator.default_error_function">
+<code class="descname">default_error_function</code><span class="sig-paren">(</span><em>actuals</em>, <em>expecteds</em><span class="sig-paren">)</span> &#x2192; numpy.array<a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#Evaluator.default_error_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.Evaluator.default_error_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce errors of actual program output given expected program output.</p>
+<p>The default error function is intented to be a universal error function
+for Push programs which only output a subset of the standard data types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>actuals</strong> (<em>list</em>) – The values produced by running a Push program on a sequences of cases.</li>
+<li><strong>expecteds</strong> (<em>list</em>) – The ground truth values for the sequence of cases used to produce the actuals.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An array of error values describing the program’s performance.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.evaluation.Evaluator.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>program: pyshgp.push.atoms.CodeBlock</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#Evaluator.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.Evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the program and return the error vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>program</strong> – Program (CodeBlock of Push code) to evaluate.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The error vector of the program.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.evaluation.FunctionEvaluator">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">FunctionEvaluator</code><span class="sig-paren">(</span><em>error_function: Callable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#FunctionEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.FunctionEvaluator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.evaluation.Evaluator" title="pyshgp.gp.evaluation.Evaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.evaluation.Evaluator</span></code></a></p>
+<p>Evaluator driven by an error function.</p>
+<dl class="method">
+<dt id="pyshgp.gp.evaluation.FunctionEvaluator.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>program: pyshgp.push.atoms.CodeBlock</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#FunctionEvaluator.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.FunctionEvaluator.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the program and return the error vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>program</strong> – Program (CodeBlock of Push code) to evaluate.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The error vector of the program.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.gp.evaluation.damerau_levenshtein_distance">
+<code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">damerau_levenshtein_distance</code><span class="sig-paren">(</span><em>a: Union[str, Sequence[T_co]], b: Union[str, Sequence[T_co]]</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#damerau_levenshtein_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.damerau_levenshtein_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Damerau Levenshtein Distance that works for both strings and lists.</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance">https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance</a>.
+This implemenation is heavily inspired by the implementation in the
+jellyfish package. <a class="reference external" href="https://github.com/jamesturk/jellyfish">https://github.com/jamesturk/jellyfish</a></p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyshgp.gp.estimators.html"
+                        title="previous chapter">pyshgp.gp.estimators module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyshgp.gp.genome.html"
+                        title="next chapter">pyshgp.gp.genome module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/pyshgp.gp.evaluation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.gp.genome.html" title="pyshgp.gp.genome module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.gp.estimators.html" title="pyshgp.gp.estimators module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" >pyshgp package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="pyshgp.gp.html" >pyshgp.gp package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

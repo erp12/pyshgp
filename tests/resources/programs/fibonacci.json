@@ -1,0 +1,31 @@
+[
+  {"a": "instr", "n": "input_0"},
+  {"a": "lit", "t": "int", "v": 0},
+  {"a": "instr", "n": "int_lte"},
+  {"a": "instr", "n": "exec_when"},
+  [
+    {"a": "instr", "n": "exec_flush"}
+  ],
+  {"a": "lit", "t": "int", "v": 1},
+  {"a": "instr", "n": "input_0"},
+  {"a": "lit", "t": "int", "v": 2},
+  {"a": "instr", "n": "int_min"},
+  {"a": "instr", "n": "int_dup_times"},
+  {"a": "instr", "n": "input_0"},
+  {"a": "lit", "t": "int", "v": 2},
+  {"a": "instr", "n": "int_lte"},
+  {"a": "instr", "n": "exec_when"},
+  [
+    {"a": "instr", "n": "exec_flush"}
+  ],
+  {"a": "instr", "n": "input_0"},
+  {"a": "lit", "t": "int", "v": 2},
+  {"a": "instr", "n": "int_sub"},
+  {"a": "instr", "n": "exec_do_times"},
+  [
+    {"a": "instr", "n": "int_dup"},
+    {"a": "lit", "t": "int", "v": 2},
+    {"a": "instr", "n": "int_yank_dup"},
+    {"a": "instr", "n": "int_add"}
+  ]
+]

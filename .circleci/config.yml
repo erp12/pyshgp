@@ -6,6 +6,9 @@ jobs:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
+            - add_ssh_keys:
+                fingerprints:
+                  - "58:3e:5a:a5:e8:2f:48:9a:df:54:a8:b0:be:66:02:fe"
             - checkout
             - run:
                 name: save SHA to a file
@@ -15,6 +18,7 @@ jobs:
                 command: |
                     python3 -m venv venv
                     source venv/bin/activate
+                    pip install -U pip
                     pip install -r requirements-with-dev.txt
             - save_cache:
                 key: repo-{{ checksum ".circle-sha" }}
@@ -52,27 +56,9 @@ jobs:
                 name: run tests
                 command: |
                     source venv/bin/activate
-                    python -m tests.validation.sklearn_regression
-                    python -m tests.validation.sklearn_classification
-
-    coverage:
-        docker:
-            - image: circleci/python:latest
-        working_directory: ~/pyshgp
-        steps:
-            - run:
-                name: save SHA to a file
-                command: echo $CIRCLE_SHA1 > .circle-sha
-            - restore_cache:
-                keys:
-                    - repo-{{ checksum ".circle-sha" }}
-            - run:
-                name: compute coverage
-                command: |
-                    source venv/bin/activate
-                    python -m coverage run ./setup.py test
-                    python -m coverage xml
-                    python-codacy-coverage -r coverage.xml
+                    pip install . -U
+                    python examples/tutorials/string_demo.py
+                    python examples/tutorials/string_demo_annealing.py
 
 workflows:
     version: 2
@@ -83,8 +69,5 @@ workflows:
                 requires:
                     - build_setup
             - validation:
-                requires:
-                    - build_setup
-            - coverage:
                 requires:
                     - build_setup

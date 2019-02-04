@@ -1,0 +1,12 @@
+[
+  {"a": "instr", "n": "input_0"},
+  {"a": "lit", "t": "char", "v": "\n"},
+  {"a": "lit", "t": "char", "v": " "},
+  {"a": "instr", "n": "str_replace_all_char"},
+  {"a": "instr", "n": "print_str"},
+  {"a": "instr", "n": "input_0"},
+  {"a": "instr", "n": "input_0"},
+  {"a": "lit", "t": "char", "v": " "},
+  {"a": "instr", "n": "str_remove_all_char"},
+  {"a": "instr", "n": "str_length"}
+]

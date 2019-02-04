@@ -6,6 +6,9 @@ jobs:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
+            - add_ssh_keys:
+              fingerprints:
+                - "58:3e:5a:a5:e8:2f:48:9a:df:54:a8:b0:be:66:02:fe"
             - checkout
             - run:
                 name: save SHA to a file

@@ -52,14 +52,14 @@ Check the project milestones to get a sense of how far off this is.
 
 ### Example Usage
 
-Example usages of `pyshgp` can be found in the `examples/` [folder of the Github repository](#).
+Example usages of `pyshgp` can be found in the `examples/` [folder of the Github repository](https://github.com/erp12/pyshgp/tree/master/examples).
 
 ### API
 
-The full `pyshgp` API can be found on [official website](#).
+The full `pyshgp` API can be found on [official website](http://erp12.github.io/pyshgp).
 
 ## Pysh Roadmap / Contributing
 
 PyshGP isn't quite ready for its 1.0 release. It still has a few key features that need implementing. More details can be found in `ROADMAPS.md` and in the projects tab on Github.
 
-For information about contributing, see the [Contributing Guide](#).
+For information about contributing, see the [Contributing Guide](http://erp12.github.io/pyshgp/html/contributing.html).

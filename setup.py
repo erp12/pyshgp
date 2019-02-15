@@ -13,16 +13,18 @@ def read(fname):
 
 setup(
     name="pyshgp",
-    # version="0.1.0",
     version=__version__,
     description="Push Genetic Programming in Python",
     long_description=read('README.md'),
+    long_description_content_type="text/markdown",
     keywords=["push gp", "genetic programming", "pushgp", "gp", "push"],
     author="Eddie Pantridge",
     author_email="erp12@hampshire.edu",
     license="LGPL",
     url="https://github.com/erp12/pyshgp",
-    packages=find_packages(exclude=['examples', 'docs', 'tests*']),
+    packages=find_packages(
+        exclude=('examples', 'examples.*', 'tests', 'tests.*', 'docs', 'docs_source')
+    ),
     classifiers=[
         "Development Status :: 4 - Beta",
         'Programming Language :: Python :: 3',
@@ -39,7 +41,10 @@ setup(
     setup_requires=[
         "pytest-runner",
         "flake8>=3.5.0",
-        "flake8-docstrings>=1.3.0"
+        "flake8-docstrings>=1.3.0",
+        "sphinx>=1.8.3",
+        "m2r>=0.2.1",
+        "mkdocs-nature>=0.3.1",
     ],
     tests_require=[
         "pytest"

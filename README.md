@@ -1,5 +1,8 @@
 # PyghGP
 
+[![PyPI version](https://badge.fury.io/py/pyshgp.svg)](https://badge.fury.io/py/pyshgp)
+[![CircleCI](https://circleci.com/gh/erp12/pyshgp/tree/master.svg?style=svg)](https://circleci.com/gh/erp12/pyshgp/tree/master)
+
 Push Genetic Programming in Python
 
 ## Motivation
@@ -38,15 +41,16 @@ Although PushGP is constantly changing through research and publication, `pyshgp
 
 ### Install from pip
 
-Coming with initial first release of `pyshgp`.
-Check the project milestones to get a sense of how far off this is.
+```
+pip install pyshgp
+```
 
 ### Build Frome source
 
 - Clone the repo
 - cd into the `pyshgp` repo directory
 - run `pip install . --upgrade`
-- Thats it! Check out the examples and
+- Thats it! Check out the examples and documentation.
 
 ## Documentation
 

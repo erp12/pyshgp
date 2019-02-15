@@ -1,0 +1,131 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.push.instructions.io &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyshgp.push.instructions.io</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Definitions for all core I/O instructions, including input instructions.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">pyshgp.push.state</span> <span class="k">import</span> <span class="n">PushState</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.instruction</span> <span class="k">import</span> <span class="n">SimpleInstruction</span><span class="p">,</span> <span class="n">TakesStateInstruction</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">PUSH_TYPES</span>
+
+
+<span class="k">def</span> <span class="nf">_nth_inputer</span><span class="p">(</span><span class="n">ndx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="c1"># @TODO: Replace with partial</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Literal</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Literal</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">ndx</span><span class="p">])]</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+
+<div class="viewcode-block" id="make_input_instruction"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.io.html#pyshgp.push.instructions.io.make_input_instruction">[docs]</a><span class="k">def</span> <span class="nf">make_input_instruction</span><span class="p">(</span><span class="n">ndx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TakesStateInstruction</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return insctuction to push a copy of the input value at the given index.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">TakesStateInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;input_</span><span class="si">{i}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">ndx</span><span class="p">),</span>
+        <span class="n">_nth_inputer</span><span class="p">(</span><span class="n">ndx</span><span class="p">),</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;exec&quot;</span><span class="p">],</span>
+        <span class="n">other_types</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Push a copy of input at index </span><span class="si">{i}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">ndx</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="make_input_instructions"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.io.html#pyshgp.push.instructions.io.make_input_instructions">[docs]</a><span class="k">def</span> <span class="nf">make_input_instructions</span><span class="p">(</span><span class="n">num_inputs</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">TakesStateInstruction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Return insctuctions to push a copy of the input value at the given index.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">make_input_instruction</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_inputs</span><span class="p">)]</span></div>
+
+
+<span class="c1"># Printing instructions</span>
+
+<div class="viewcode-block" id="instructions"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.io.html#pyshgp.push.instructions.io.instructions">[docs]</a><span class="k">def</span> <span class="nf">instructions</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Return all core printing instructions.&quot;&quot;&quot;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="n">PUSH_TYPES</span><span class="p">:</span>
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;print_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;stdout&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Prints the top </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="p">))</span>
+    <span class="k">return</span> <span class="n">i</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

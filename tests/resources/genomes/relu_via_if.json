@@ -1,0 +1,11 @@
+[
+  {"a": "instr", "n": "input_0"},
+  {"a": "instr", "n": "float_from_int"},
+  {"a": "lit", "t": "float", "v": 0.0},
+  {"a": "instr", "n": "float_gt"},
+  {"a": "instr", "n": "exec_if"},
+  {"a": "instr", "n": "input_0"},
+  {"a": "close"},
+  {"a": "lit", "t": "float", "v": 0.0},
+  {"a": "close"}
+]

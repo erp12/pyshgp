@@ -1,0 +1,376 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.push.interpreter module &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyshgp.push.stack module" href="pyshgp.push.stack.html" />
+    <link rel="prev" title="pyshgp.push.instruction_set module" href="pyshgp.push.instruction_set.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.push.stack.html" title="pyshgp.push.stack module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.push.instruction_set.html" title="pyshgp.push.instruction_set module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" >pyshgp package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="pyshgp.push.html" accesskey="U">pyshgp.push package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-pyshgp.push.interpreter">
+<span id="pyshgp-push-interpreter-module"></span><h1>pyshgp.push.interpreter module<a class="headerlink" href="#module-pyshgp.push.interpreter" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">interpreter</span></code> module defines the <code class="docutils literal notranslate"><span class="pre">PushInterpreter</span></code> class.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">PushInterpreter</span></code> is capable of running Push programs and returning their
+output. Push interpreters can be configured with a <code class="docutils literal notranslate"><span class="pre">PushInterpreterConfig</span></code>
+class to determine limits.</p>
+<dl class="class">
+<dt id="pyshgp.push.interpreter.PushInterpreter">
+<em class="property">class </em><code class="descclassname">pyshgp.push.interpreter.</code><code class="descname">PushInterpreter</code><span class="sig-paren">(</span><em>instruction_set: Union[pyshgp.push.instruction_set.InstructionSet</em>, <em>str] = 'core'</em>, <em>config: pyshgp.push.interpreter.PushInterpreterConfig = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An interpreter capable of running Push programs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>instruction_set</strong> (<em>Union</em><em>[</em><a class="reference internal" href="pyshgp.push.instruction_set.html#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet"><em>InstructionSet</em></a><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – The InstructionSet to use for executing programs. Default is “core”
+which instansiates an InstructionSet using all the core instructions.</li>
+<li><strong>config</strong> (<a class="reference internal" href="#pyshgp.push.interpreter.PushInterpreterConfig" title="pyshgp.push.interpreter.PushInterpreterConfig"><em>PushInterpreterConfig</em></a><em>, </em><em>optional</em>) – A PushInterpreterConfig specifying limits and early termination
+conditions. Default is None, which creates a config will all default
+values.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreter.instruction_set">
+<code class="descname">instruction_set</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.instruction_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>The InstructionSet to use for executing programs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pyshgp.push.instruction_set.html#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">InstructionSet</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreter.config">
+<code class="descname">config</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>A PushInterpreterConfig specifying limits and early termination
+conditions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#pyshgp.push.interpreter.PushInterpreterConfig" title="pyshgp.push.interpreter.PushInterpreterConfig">PushInterpreterConfig</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreter.state">
+<code class="descname">state</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current PushState. Contains one stack for each PushType utilized
+mentioned by the instructions in the instruction set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pyshgp.push.state.html#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">PushState</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreter.status">
+<code class="descname">status</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string denoting if the Interpreter has enountered a situation
+where non-standard termination was required.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#pyshgp.push.interpreter.PushInterpreterStatus" title="pyshgp.push.interpreter.PushInterpreterStatus">PushInterpreterStatus</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.evaluate_atom">
+<code class="descname">evaluate_atom</code><span class="sig-paren">(</span><em>atom: pyshgp.push.atoms.Atom</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter.evaluate_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.evaluate_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate an Atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>atom</strong> (<a class="reference internal" href="pyshgp.push.atoms.html#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><em>Atom</em></a>) – The Atom (Literal, Instruction, JitInstructionRef, or CodeBlock) to
+evaluate against the current PushState.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the interpreter status and PushState.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>program: pyshgp.push.atoms.CodeBlock, inputs: Sequence[T_co], output_types: Sequence[str], verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a Push program given some inputs and desired output PushTypes.</p>
+<dl class="docutils">
+<dt>The general flow of this method is:</dt>
+<dd><ol class="first last arabic simple">
+<li>Create a new push state</li>
+<li>Load the program and inputs.</li>
+<li>If the exec stack is empty, return the outputs.</li>
+<li>Else, pop the exec stack and process the atom.</li>
+<li>Return to step 3.</li>
+</ol>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>program</strong> – Program to run.</li>
+<li><strong>inputs</strong> – A sequence of values to use as inputs to the push program.</li>
+<li><strong>output_types</strong> – A secence of values that denote the Pushtypes of the expected
+outputs of the push program.</li>
+<li><strong>verbose</strong> – If true, program execution steps will be printed. Default False.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A sequence of values pulled from the final push state. May contain
+pyshgp.utils.Token.no_stack_item if needed stacks are empty.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Sequence</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.push.interpreter.PushInterpreterConfig">
+<em class="property">class </em><code class="descclassname">pyshgp.push.interpreter.</code><code class="descname">PushInterpreterConfig</code><span class="sig-paren">(</span><em>*</em>, <em>atom_limit=500</em>, <em>growth_cap=500</em>, <em>runtime_limit=20000000000.0</em>, <em>reset_on_run=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreterConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Define a configuration for PushInterpreter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>atom_limit</strong> (<em>int</em><em>, </em><em>optional</em>) – Max number of atoms to process before terminating the execution of a
+given program. Default is 500</li>
+<li><strong>growth_cap</strong> (<em>int</em><em>, </em><em>optional</em>) – Max number of elements that can be added to a PushState at any given
+step of program execution. If exceeded, program terminates. Default is
+500.</li>
+<li><strong>runtime_limit</strong> (<em>int</em><em>, </em><em>optional</em>) – Max number of milliseconds to run a push program before forcing
+termination. Default is 2e10.</li>
+<li><strong>reset_on_run</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, interpreter’s state and status are reset every time a program
+is run. Default is True.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterConfig.atom_limit">
+<code class="descname">atom_limit</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterConfig.atom_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Max number of atoms to process before terminating the execution of a
+given program. Default is 500</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterConfig.growth_cap">
+<code class="descname">growth_cap</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterConfig.growth_cap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Max number of elements that can be added to a PushState at any given
+step of program execution. If exceeded, program terminates. Default is
+500.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterConfig.runtime_limit">
+<code class="descname">runtime_limit</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterConfig.runtime_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Max number of milliseconds to run a push program before forcing
+termination. Default is 2e10.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterConfig.reset_on_run">
+<code class="descname">reset_on_run</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterConfig.reset_on_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>If True, interpreter’s state and status are reset every time a program
+is run. Default is True.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus">
+<em class="property">class </em><code class="descclassname">pyshgp.push.interpreter.</code><code class="descname">PushInterpreterStatus</code><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreterStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enum class of all potential statuses of a PushInterpreter.</p>
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus.atom_limit_exceeded">
+<code class="descname">atom_limit_exceeded</code><em class="property"> = 2</em><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus.atom_limit_exceeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus.growth_cap_exceeded">
+<code class="descname">growth_cap_exceeded</code><em class="property"> = 4</em><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus.growth_cap_exceeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus.normal">
+<code class="descname">normal</code><em class="property"> = 1</em><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus.normal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus.runtime_limit_exceeded">
+<code class="descname">runtime_limit_exceeded</code><em class="property"> = 3</em><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus.runtime_limit_exceeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyshgp.push.instruction_set.html"
+                        title="previous chapter">pyshgp.push.instruction_set module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pyshgp.push.stack.html"
+                        title="next chapter">pyshgp.push.stack module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/pyshgp.push.interpreter.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.push.stack.html" title="pyshgp.push.stack module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyshgp.push.instruction_set.html" title="pyshgp.push.instruction_set module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" >pyshgp package</a> &#187;</li>
+          <li class="nav-item nav-item-4"><a href="pyshgp.push.html" >pyshgp.push package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

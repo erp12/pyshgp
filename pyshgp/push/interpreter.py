@@ -1,241 +1,238 @@
-# -*- coding: utf-8 -*-
+"""The :mod:`interpreter` module defines the ``PushInterpreter`` class.
 
+A ``PushInterpreter`` is capable of running Push programs and returning their
+output. Push interpreters can be configured with a ``PushInterpreterConfig``
+class to determine limits.
 """
-The :mod:`interpreter` module defines the ``PushInterpreter`` class which is
-capable of running Push programs.
-"""
+
+from typing import Sequence, Union
 import time
-# from copy import deepcopy  # <- This one is actually needed.
-# from collections import OrderedDict
-import numpy as np
+from enum import Enum
 
-from ..utils import recognize_pysh_type
-from .. import constants as c
-from .. import exceptions as e
-from . import stack
-
-
-class PushState(dict):
-    """Custom dictionary that holds stacks of Pysh types. Includes methods to
-    help with for push program execution.
-    """
-
-    def __init__(self):
-        self.stdout = ''
-        self.inputs = []
-
-        for t in c.pysh_types:
-            self[t] = stack.PyshStack(t)
-
-    def __len__(self):
-        """Returns the size of the PushState.
-        """
-        return (sum([len(s) for s in self.values()]) + len(self.inputs))
-
-    def load_inputs(self, inputs):
-        """Loads a list of input values onto the PushState intputs.
-
-        Parameters
-        ----------
-        inputs : list
-            List of input values.
-        """
-        if not isinstance(inputs, (list, np.ndarray)):
-            raise ValueError(
-                "Push inputs must be a list, got {t}".format(t=type(inputs)))
-        self.inputs = inputs[::-1]
-
-    def observe_outputs(self, output_types):
-        """Returns a list of output values based on the types indicated in
-        ``output_types``. Items are take from the tops of each stack. If
-        multiple occurences of the same type are in ``output_types``, the
-        returned values are taken from progressively deeper in that stack. Does
-        not pop the values off the stacks.
-
-        Parameters
-        ----------
-        output_types : list
-            List of strings denoting the pysh types of the returned values.
-        """
-        outputs = []
-        counts = {}
-        for typ in output_types:
-            if typ in counts.keys():
-                ndx = counts[typ]
-                outputs.append(self[typ].ref(ndx))
-                counts[typ] += 1
-            else:
-                outputs.append(self[typ].ref(0))
-                counts[typ] = 1
-        return outputs
-
-    def from_dict(self, d):
-        """Sets the state to match the given dictionary.
-
-        .. warning::
-            This is written to be used in ``pyshgp`` tests, NOT as part of
-            push program execution or evolution. There are no checks to confirm
-            that the ``d`` can be converted to a valid Push state.
-
-        Parameters
-        ----------
-        d : dict
-            Dict that is converted into a Push state.
-        """
-        # Clear existing stacks.
-        for t in c.pysh_types:
-            self[t] = stack.PyshStack(t)
-        # Overwrite stacks found in dict
-        for k in d.keys():
-            if k == '_input':
-                self.inputs = d[k]
-            elif k == '_stdout':
-                self.stdout += d[k]
-            else:
-                # Append all values from dictionary onto corrisponding stack.
-                for v in d[k]:
-                    self[k].push(v)
-
-    def pretty_print(self):
-        """Prints state of all stacks in the PushState.
-        """
-        for t in c.pysh_types:
-            if len(self[t]) > 0:
-                print(self[t].pysh_type, ":", self[t])
-        print('Inputs :', self.inputs)
-        print('Stdout :', self.stdout)
+from pyshgp.push.state import PushState
+from pyshgp.push.instruction_set import InstructionSet
+from pyshgp.push.atoms import (
+    Atom, Closer, Literal, Instruction, JitInstructionRef, CodeBlock
+)
+from pyshgp.utils import PushError
 
 
-class PushInterpreter:
-    """Object that can run Push programs and stores the state of the Push
-    stacks.
+class PushInterpreterConfig:
+    """Define a configuration for PushInterpreter.
 
     Parameters
     ----------
-    inputs : list
-        A list of all values that should be accessible as inputs.
+    atom_limit : int, optional
+        Max number of atoms to process before terminating the execution of a
+        given program. Default is 500
+    growth_cap : int, optional
+        Max number of elements that can be added to a PushState at any given
+        step of program execution. If exceeded, program terminates. Default is
+        500.
+    runtime_limit : int, optional
+        Max number of milliseconds to run a push program before forcing
+        termination. Default is 2e10.
+    reset_on_run : bool, optional
+        If True, interpreter's state and status are reset every time a program
+        is run. Default is True.
+
 
     Attributes
     ----------
-    state : PushState
-        A :mod:`PushState` that hold the current state of all of the stacks.
+    atom_limit : int
+        Max number of atoms to process before terminating the execution of a
+        given program. Default is 500
+    growth_cap : int
+        Max number of elements that can be added to a PushState at any given
+        step of program execution. If exceeded, program terminates. Default is
+        500.
+    runtime_limit : int
+        Max number of milliseconds to run a push program before forcing
+        termination. Default is 2e10.
+    reset_on_run : bool
+        If True, interpreter's state and status are reset every time a program
+        is run. Default is True.
 
-    status : str
-        Current status of the interpreter. Either '_normal' or some kind of
-        error indicator.
     """
 
-    def __init__(self):
+    # @TODO: Should PushInterpreterConfig be JSON serializable?
+    # @TODO: Refactor atom_limit to step_limit
+
+    def __init__(self, *, atom_limit=500, growth_cap=500, runtime_limit=2e10,
+                 reset_on_run=True):
+        self.atom_limit = atom_limit
+        self.growth_cap = growth_cap
+        self.runtime_limit = runtime_limit
+        self.reset_on_run = reset_on_run
+
+
+class PushInterpreterStatus(Enum):
+    """Enum class of all potential statuses of a PushInterpreter."""
+
+    normal = 1
+    atom_limit_exceeded = 2
+    runtime_limit_exceeded = 3
+    growth_cap_exceeded = 4
+
+
+class PushInterpreter:
+    """An interpreter capable of running Push programs.
+
+    Parameters
+    ----------
+    instruction_set : Union[InstructionSet, str], optional
+        The InstructionSet to use for executing programs. Default is "core"
+        which instansiates an InstructionSet using all the core instructions.
+    config : PushInterpreterConfig, optional
+        A PushInterpreterConfig specifying limits and early termination
+        conditions. Default is None, which creates a config will all default
+        values.
+
+    Attributes
+    ----------
+    instruction_set : InstructionSet
+        The InstructionSet to use for executing programs.
+    config : PushInterpreterConfig
+        A PushInterpreterConfig specifying limits and early termination
+        conditions.
+    state : PushState
+        The current PushState. Contains one stack for each PushType utilized
+        mentioned by the instructions in the instruction set.
+    status : PushInterpreterStatus
+        A string denoting if the Interpreter has enountered a situation
+        where non-standard termination was required.
+
+    """
+
+    def __init__(self, instruction_set: Union[InstructionSet, str] = "core", config: PushInterpreterConfig = None):
+        # If no instruction set given, create one and register all instructions.
+        if instruction_set == "core":
+            self.instruction_set = InstructionSet(register_all=True)
+        else:
+            self.instruction_set = instruction_set
+        self._supported_types = self.instruction_set.supported_types()
+
+        if config is None:
+            self.config = PushInterpreterConfig()
+        else:
+            self.config = config
+
+        # Initialize the PushState and status
         self.reset()
 
     def reset(self):
-        """Resets the PushInterpreter. Should be called between push program
-        executions.
-        """
-        self.state = PushState()
-        self.status = '_normal'
+        """Reset the interpreter status and PushState."""
+        self.state: PushState = PushState(self._supported_types)
+        self.status: PushInterpreterStatus = PushInterpreterStatus.normal
 
-    def eval_atom(self, instruction):
-        """Executes a push instruction or literal.
+    def _evaluate_instruction(self, instruction: Union[Instruction, JitInstructionRef]):
+        self.state = instruction.evaluate(self.state, self.config)
 
-        Parameters
-        ----------
-        instruction : PushInstruction
-            The instruction to the executed.
-        """
-        # If the instruction is None, return.
-        if instruction is None:
-            return
-
-        # If the instruction is a callable function, call it to get a
-        # value for ``instruction``.
-        if callable(instruction):
-            instruction = instruction()
-
-        # Detect the pysh type of the instruction.
-        pysh_type = recognize_pysh_type(instruction)
-
-        if pysh_type == '_instruction':
-            # If the instruction is a standard push instruction, call it's
-            # function on the current push state.
-            instruction.execute(self.state)
-        elif pysh_type == '_list':
-            # If the instruction is a list, then decompose it. Copy the list to
-            # avoid mutability madness and then reverse the list and  push all
-            # contents of the list to the ``exec`` stack.
-            for i in instruction[::-1]:
-                self.state['_exec'].push(i)
-        elif not pysh_type:
-            # If pysh type was not found, raise exception.
-            raise e.UnknownPyshType(instruction)
-        else:
-            # If here, instruction is a pysh literal and will be pushed
-            # on to its corrisponding stack.
-            self.state[pysh_type].push(instruction)
-
-    def eval_push(self, print_steps=False):
-        """Executes the contents of the exec stack.
-
-        Aborts prematurely if execution limits are exceeded. If execution
-        limits are reached, status will be denoted.
+    def evaluate_atom(self, atom: Atom):
+        """Evaluate an Atom.
 
         Parameters
         ----------
-        print_steps : bool, optional
-            Denotes if stack state should be printed.
+        atom : Atom
+            The Atom (Literal, Instruction, JitInstructionRef, or CodeBlock) to
+            evaluate against the current PushState.
+
         """
-        iteration = 1
-        time_limit = 0
-        if c.global_evalpush_time_limit != 0:
-            time_limit = time.time() + c.global_evalpush_time_limit
+        try:
+            if isinstance(atom, Instruction):
+                self._evaluate_instruction(atom)
+            elif isinstance(atom, JitInstructionRef):
+                self._evaluate_instruction(self.instruction_set[atom.name])
+            elif isinstance(atom, CodeBlock):
+                for a in atom[::-1]:
+                    self.state["exec"].push(a)
+            elif isinstance(atom, Literal):
+                self.state[atom.push_type.name].push(atom.value)
+            elif isinstance(atom, Closer):
+                raise PushError("Closers should not be in push programs. Only genomes.")
+            else:
+                raise PushError("Cannont evaluate {t}, require a subclass of Atom".format(t=type(atom)))
+        except (TypeError, ValueError) as e:
+            err_type = type(e).__name__
+            err_msg = str(e)
+            raise PushError(
+                "{t} raised while evaluating {atom}. Origional mesage: \"{m}\"".format(
+                    t=err_type,
+                    atom=atom,
+                    m=err_msg
+                )
+            )
 
-        while len(self.state['_exec']) > 0:
+    def run(self, program: CodeBlock, inputs: Sequence,
+            output_types: Sequence[str],
+            verbose: bool = False):
+        """Run a Push program given some inputs and desired output PushTypes.
 
-            # Check for adnormal stops
-            if iteration > c.global_evalpush_limit:
-                self.status = '_evalpush_limit_reached'
-                break
-            if time_limit != 0 and time.time() > time_limit:
-                self.status = '_evalpush_time_limit_reached'
-                break
-
-            # Advance program 1 step
-            top_exec = self.state['_exec'].top_item()
-            self.state['_exec'].pop()
-            self.eval_atom(top_exec)
-
-            # print steps
-            if print_steps:
-                print("\nState after " + str(iteration) + " steps:")
-                self.state.pretty_print()
-
-            iteration += 1
-
-    def run(self, code, inputs, output_types, print_steps=False):
-        """The top level method of the push interpreter.
-
-        Calls eval-push between appropriate code/exec pushing/popping.
+        The general flow of this method is:
+            1. Create a new push state
+            2. Load the program and inputs.
+            3. If the exec stack is empty, return the outputs.
+            4. Else, pop the exec stack and process the atom.
+            5. Return to step 3.
 
         Parameters
         ----------
-        code : list
-            The push program to run.
-        print_steps : bool, optional
-            Denotes if stack states should be printed.
+        program
+            Program to run.
+        inputs
+            A sequence of values to use as inputs to the push program.
+        output_types
+            A secence of values that denote the Pushtypes of the expected
+            outputs of the push program.
+        verbose
+            If true, program execution steps will be printed. Default False.
 
         Returns
         -------
-        Returns the output structure as a dictionary.
+        Sequence
+            A sequence of values pulled from the final push state. May contain
+            pyshgp.utils.Token.no_stack_item if needed stacks are empty.
+
         """
-        self.reset()
-        # If you don't copy the code, the reference to the program will get
-        # reversed and other bad things.
-        code_copy = code[:]
-        self.state['_exec'].push(code_copy)
+        if self.config.reset_on_run:
+            self.reset()
+
+        self.state.load_program(program)
         self.state.load_inputs(inputs)
-        self.eval_push(print_steps)
+        stop_time = time.time() + self.config.runtime_limit
+        steps = 0
 
-        if print_steps:
-            print("=== Finished Push Execution ===")
+        if verbose:
+            print("Initial State:")
+            self.state.pretty_print()
+            print()
 
-        return self.state.observe_outputs(output_types)
+        while len(self.state["exec"]) > 0:
+            if steps > self.config.atom_limit:
+                self.status = PushInterpreterStatus.atom_limit_exceeded
+                break
+            if time.time() > stop_time:
+                self.status = PushInterpreterStatus.runtime_limit_exceeded
+                break
+
+            next_atom = self.state["exec"].pop()
+
+            if verbose:
+                print("Current Atom:", next_atom)
+
+            old_size = len(self.state)
+            self.evaluate_atom(next_atom)
+            if len(self.state) > old_size + self.config.growth_cap:
+                self.status = PushInterpreterStatus.growth_cap_exceeded
+                break
+
+            if verbose:
+                print("Current State:")
+                self.state.pretty_print()
+                print()
+            steps += 1
+
+        return self.state.observe_stacks(output_types)
+
+
+DEFAULT_INTERPRETER = PushInterpreter()

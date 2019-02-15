@@ -1,0 +1,8 @@
+tmp-pyshgp-reboot
+=================
+
+.. toctree::
+   :maxdepth: 4
+
+   pyshgp
+   pyshgp

@@ -1,0 +1,46 @@
+examples.tutorials package
+==========================
+
+Submodules
+----------
+
+examples.tutorials.integer\_regression module
+---------------------------------------------
+
+.. automodule:: examples.tutorials.integer_regression
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+examples.tutorials.leaky\_relu module
+-------------------------------------
+
+.. automodule:: examples.tutorials.leaky_relu
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+examples.tutorials.odd module
+-----------------------------
+
+.. automodule:: examples.tutorials.odd
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+examples.tutorials.string\_demo module
+--------------------------------------
+
+.. automodule:: examples.tutorials.string_demo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: examples.tutorials
+    :members:
+    :undoc-members:
+    :show-inheritance:

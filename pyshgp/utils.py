@@ -1,585 +1,118 @@
-# -*- coding: utf-8 -*-
-"""
-The :mod:`utils` module provides classes and functions that are used throughout
-the push interpreter and GP modules.
-"""
-import random
-import math
+"""Utility classes and functions used throughout pyshgp."""
+from typing import Optional, Union
+from abc import ABC, abstractmethod
+from enum import Enum
+
 import numpy as np
-
-from . import exceptions as e
-from . import constants as c
-from .push.instruction import Instruction
+from numpy.random import choice
 
 
-# Utility Types #
+class DiscreteProbDistrib:
+    """Discrete Probability Distribution."""
 
-class Character(object):
-    """Holds a string of length 1.
+    __slots__ = ["elements", "_total", "_raw_probabilities", "_normalized_probabilities"]
 
-    Used to distinguish between string and char literals
-    in Push program interpretation.
+    def __init__(self):
+        self.elements = []
+        self._total = 0.0
+        self._raw_probabilities = []
+        self._normalize()
 
-    Attributes
-    ----------
-    char : str
-        String of length 1.
-    """
+    def _normalize(self):
+        self._normalized_probabilities = np.array(self._raw_probabilities) / self._total
 
-    def __init__(self, char):
-        if len(char) == 0:
-            raise e.EmptyCharacterException()
-        if len(char) > 1:
-            raise e.LongCharacterException()
-        self.char = char
+    def add(self, el, p):
+        """Add an element with a relative probability."""
+        self.elements.append(el)
+        self._total += float(p)
+        self._raw_probabilities.append(p)
+        self._normalize()
+        return self
 
-    def __repr__(self):
-        if self.char == '\n':
-            return 'c_newline'
-        if self.char == ' ':
-            return 'c_space'
-        return "c_" + self.char
+    def size(self):
+        """Return the number of elements in the distribution."""
+        return len(self.elements)
 
-    def __eq__(self, other):
-        if isinstance(other, Character):
-            return self.char == other.char
-        return False
+    def sample(self):
+        """Return a sample from the distribution."""
+        if self.size() == 1:
+            return self.elements[0]
+        return choice(self.elements, p=self._normalized_probabilities)
 
-
-class PushVector(list):
-    """List where elements are all of same pysh literal type. Is a subclass of
-    the Python list, and has access to all list methods.
-
-    Parameters
-    ----------
-    lst : list of :obj:`typ`
-        Python list where all elements are of type ``typ``.
-
-    typ : data-type
-        Python Type that denotes the type of the vector.
-
-    Attributes
-    ----------
-    typ : type
-        Python type that all elements must be.
-    """
-
-    def __init__(self, lst, typ):
-        self.typ = typ
-        if typ is None:
-            self.typ = '_exec'
-
-        for el in lst:
-            if isinstance(el, typ):
-                self.append(el)
-            else:
-                raise e.PushVectorTypeException(typ, type(el))
-
-    def append(self, item):
-        """Overload of the ``append`` method to ensure that only items of the
-        correct type are placed in the PushVector.
-
-        Parameters
-        ----------
-        item :
-            The thing trying to be placed into the PushVector.
-        """
-        if not isinstance(item, self.typ):
-            raise TypeError('Item is not of type {}'.format(self.type))
-        super(PushVector, self).append(item)
+    def sample_n(self, n: int = 1, replace: bool = True):
+        """Return n samples from the distribution."""
+        if self.size() == 1 and replace:
+            return [self.elements[0]] * n
+        return choice(self.elements, n, replace, self._normalized_probabilities)
 
 
-# Utility Functions #
+class Token(Enum):
+    """Enum class of all Tokens."""
 
-def flatten_all(lst):
-    """Recursively flattens nested lists into a single list.
+    no_stack_item = 1
+    revert = 2
+    whole_state = 3
 
-    Parameters
-    ----------
-    lst : Nested lists.
 
-    Returns
-    --------
-    Flattened lists.
+class PushError(Exception):
+    """Error raised during Push program execution."""
 
-    Examples
-    --------
-    >>> flatten_all([1, [2, 3, [4], 5]])
-    [1, 2, 3, 4, 5]
-    """
-    result = []
-    for i in lst:
-        if isinstance(i, list):
-            result += flatten_all(i)
+    @classmethod
+    def no_type(cls, thing):
+        """Raise PushError when no PushType can be found for something."""
+        return cls("Unkown PushType for {th}.".format(th=thing))
+
+    @classmethod
+    def failed_coerce(cls, thing, push_type):
+        """Raise PushError when something fails to coerce to a PushType."""
+        return cls("Could not convert {typ1} {th} to {typ2}.".format(
+            th=thing,
+            typ1=type(thing),
+            typ2=push_type
+        ))
+
+    @classmethod
+    def empty_character(cls):
+        """Raise PushError when Character is made from empty string."""
+        return cls("Character object cannot be created from empty string.")
+
+    @classmethod
+    def long_character(cls):
+        """Raise PushError when Character is made from string length more than 1."""
+        return cls("Character object cannot be created from string of length > 1.")
+
+
+class JSONable(ABC):
+    """Abstract base class for objects can be transformed into JSON."""
+
+    @abstractmethod
+    def jsonify(self) -> str:
+        """Return the object as a JSON string."""
+        pass
+
+    def to_json(self, filepath: Optional[str] = None) -> Optional[str]:
+        """Write the object to either a string or a file."""
+        json_str = self.jsonify()
+        if filepath is None:
+            return json_str
         else:
-            result.append(i)
-    return result
+            with open(filepath, "w+") as f:
+                f.write(json_str)
 
 
-def is_str_type(thing):
-    """Returns true if thing is a string, agnostic to Python version.
+def jsonify_collection(root: Union[list, dict]) -> str:
+    """Return the given list or dict and all elements as a JSON string."""
+    def _helper(thing) -> str:
+        if isinstance(thing, list):
+            return "[" + ",".join([_helper(el) for el in thing]) + "]"
+        elif isinstance(thing, dict):
+            return "{" + ",".join([str(k) + ":" + _helper(v) for k, v in thing.items()]) + "}"
+        elif isinstance(thing, JSONable):
+            return thing.jsonify()
+        else:
+            return str(thing)
 
-    .. TODO:: TODO: This function needs a unit test.
-
-    Parameters
-    ----------
-    thing : Any python obect or primitive.
-
-    Returns
-    --------
-    True if ``thing`` is a str. False otherwise.
-
-    Examples
-    --------
-    >>> is_str_type('Hello')
-    True
-    >>> is_str_type(7)
-    False
-    """
-    return isinstance(thing, (str, bytes))
-
-
-def is_int_type(thing):
-    """Returns true if thing is an int or long, agnostic to Python version.
-
-    .. TODO:: TODO: This function needs a unit test.
-
-    Parameters
-    ----------
-    thing : Any python obect or primitive.
-
-    Returns
-    --------
-    True if ``thing`` is an int. False otherwise.
-
-    Examples
-    --------
-    >>> is_int_type('Hello')
-    False
-    >>> is_int_type(7)
-    True
-    """
-    return isinstance(thing, (np.int64, int))
-
-
-def is_float_type(thing):
-    """Returns true if thing is an float, agnostic to numpy or not.
-
-    .. TODO:: TODO: This function needs a unit test.
-
-    Parameters
-    ----------
-    thing : Any python obect or primitive.
-
-    Returns
-    --------
-    True if ``thing`` is an float. False otherwise.
-
-    Examples
-    --------
-    >>> is_float_type('Hello')
-    False
-    >>> is_float_type(1.23)
-    True
-    """
-    return isinstance(thing, (float, np.float, np.float64))
-
-
-def type_to_pysh_type(typ) -> str:
-    """Returns a string denoting the Push type version of given python/numpy
-    type.
-
-    Parameters
-    ----------
-    typ: A python or numpy type.
-
-    Returns
-    -------
-    A string with a ``_`` as the first char. This is how Pysh types are denoted
-    throughout the entire package. If there is no appropriate Pysh type,
-    returns False.
-
-    Examples
-    --------
-    >>> type_to_pysh_type(int)
-    '_integer'
-    """
-    if typ in (bool, np.bool_):
-        return '_boolean'
-    elif typ in (np.int64, int):
-        return '_integer'
-    elif typ in (float, np.float, np.float64):
-        return '_float'
-    elif typ in (str, bytes):
-        return '_string'
-    elif typ in (list, np.ndarray):
-        return '_list'
+    if isinstance(root, (list, dict)):
+        return _helper(root)
     else:
-        print("Could not find pysh type for type", typ)
-        return False
-
-
-def recognize_pysh_type(thing):
-    """Returns a string denoting the Push type of ``thing``.
-
-    Parameters
-    ----------
-    thing : Any python obect or primitive.
-
-    Returns
-    --------
-    A string with a ``_`` as the first char. This is how Pysh types are denoted
-    throughout the entire package. If there is no appropriate Pysh type,
-    returns False.
-
-    Examples
-    --------
-    >>> recognize_pysh_type(True)
-    '_bool'
-    >>> recognize_pysh_type(77)
-    '_integer'
-    >>> recognize_pysh_type(abs)
-    False
-    """
-    if isinstance(thing, Instruction):
-        return '_instruction'
-    elif isinstance(thing, (bool, np.bool_)):
-        return '_boolean'
-    elif is_int_type(thing):
-        return '_integer'
-    elif is_float_type(thing):
-        return '_float'
-    elif is_str_type(thing):
-        return '_string'
-    elif isinstance(thing, Character):
-        return '_char'
-    elif isinstance(thing, PushVector):
-        t = type_to_pysh_type(thing.typ)
-        return '_vector' + t
-    elif isinstance(thing, list):
-        return '_list'
-    else:
-        print("Could not find pysh type for", thing, "of type", type(thing))
-        return False
-
-
-def keep_number_reasonable(n):
-    """Returns a version of n that obeys the limits set in :mod:`constants`.
-
-    Parameters
-    ----------
-    n : int or float
-        Any numeric value.
-
-    Returns
-    --------
-    ``n`` clamped to ``-max_number_magnitude < n < max_number_magnitude``
-    """
-    if n > c.max_number_magnitude:
-        n = c.max_number_magnitude
-    elif n < -c.max_number_magnitude:
-        n = -c.max_number_magnitude
-    return n
-
-
-def count_parens(tree):
-    """Returns the number of paren pairs in tree.
-
-    Parameters
-    ----------
-    tree : list
-        Nested list structure equivalent to tree.
-
-    Returns
-    --------
-    Integer equal to the number of paren/bracket pairs.
-    """
-    remaining = tree
-    total = 0
-
-    while True:
-        if not isinstance(remaining, list):
-            return total
-        elif len(remaining) == 0:
-            return total + 1
-        elif isinstance(remaining[0], list):
-            remaining.pop(0)
-        else:
-            remaining = remaining[0] + remaining[1:]
-            total += 1
-
-
-def count_points(tree):
-    """Returns the number of points in tree. Each atom and each pair of
-    parentheses counts as a point.
-
-    Parameters
-    ----------
-    tree : list
-        Nested list structure equivalent to tree.
-
-    Returns
-    --------
-    Integer equal to the number of points.
-    """
-    remaining = tree
-    total = 0
-
-    while True:
-        if not isinstance(remaining, list):
-            return total + 1
-        elif len(remaining) == 0:
-            return total + 1
-        elif not isinstance(remaining[0], list):
-            remaining = remaining[1:]
-            total += 1
-        else:
-            remaining = remaining[0] + remaining[1:]
-            total += 1
-    return total
-
-
-def reductions(f, l):
-    """Returns intermediate values of the reduction of ``l`` by ``f``.
-
-    Parameters
-    ----------
-    f : function
-        Function to be reduced down ``l``.
-
-    l : list
-        List to reduce ``f`` down.
-
-    Returns
-    --------
-    List of intermediate values.
-
-    Examples
-    --------
-    >>> reductions(lambda x,y: x * y, [1, 3, 5, 7])
-    [1, 3, 15, 105]
-    """
-    result = []
-    for i, val in enumerate(l):
-        if i == 0:
-            result.append(val)
-        else:
-            result.append(f(result[-1], val))
-    return result
-
-
-def merge_dicts(*dict_args):
-    """Merges arbitrary number of dicts into one dict.
-
-    Given any number of dicts, shallow copy and merge into a new dict,
-    precedence goes to key value pairs in latter dicts.
-    Taken From: http://stackoverflow.com/a/26853961/4297413 Thanks to Aaron Hall
-
-    Parameters
-    ----------
-    dict_args: dicts
-        Arbitrary number of arguments, all must be dicts.
-
-    Returns
-    --------
-    Result of merging all dicts into a single dict.
-    """
-    result = {}
-    for dictionary in dict_args:
-        result.update(dictionary)
-    return result
-
-
-def merge_sets(*set_args):
-    """Given any number of sets, shallow copy and merge into a new set.
-
-    Parameters
-    ----------
-    set_args: dicts
-        Arbitrary number of arguments, all must be sets.
-
-    Returns
-    --------
-    Result of union-ing all sets into a single set.
-    """
-    result = set()
-    for s in set_args:
-        result.update(s)
-    return result
-
-
-def ensure_list(thing):
-    """Returns argument inside of a list if it is not already a list.
-
-    Parameters
-    ----------
-    thing :
-        Anything!
-
-    Returns
-    --------
-    If ``thing`` is a list, returns ``thing``, otherwise returns ``[thing]``.
-
-
-    Examples
-    --------
-    >>> ensure_list("ABC")
-    ["ABC"]
-    >>> ensure_list([1, 2, 3])
-    [1, 2, 3]
-    """
-    if isinstance(thing, list):
-        return thing
-    else:
-        return [thing]
-
-
-def levenshtein_distance(s1, s2):
-    """Computes the string edit distance based on the Levenshtein Distance.
-
-    All credit for implementation goes to:
-    https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
-    Much appreciated.
-
-    .. note::
-        If ``s1`` and ``s2`` must both be strings or both be list. Cannot mix
-        types.
-
-    Parameters
-    ----------
-    s1 : str or list
-        String or list.
-
-    s1 : str or list
-        Other string or list.
-
-    Returns
-    --------
-    Integer equal to the number of edits to get from ``s1`` to ``s2``.
-    """
-    if len(s1) < len(s2):
-        return levenshtein_distance(s2, s1)
-
-    if len(s2) == 0:
-        return len(s1)
-
-    previous_row = range(len(s2) + 1)
-    for i, c1 in enumerate(s1):
-        current_row = [i + 1]
-        for j, c2 in enumerate(s2):
-            insertions = previous_row[j + 1] + 1
-            deletions = current_row[j] + 1
-            substitutions = previous_row[j] + (c1 != c2)
-            current_row.append(min(insertions, deletions, substitutions))
-        previous_row = current_row
-
-    return previous_row[-1]
-
-
-def test_and_train_data_from_domains(domains):
-    """Creates train and test data.
-
-    Takes a list of domains and creates a set of (random) train inputs and a
-    set of test inputs based on the domains. Returns [train test].
-
-    .. note::
-        This will likely no longer be used once integration with scikit-learn
-        and other libraries improves.
-    """
-    train_set = []
-    test_set = []
-
-    for d in domains:
-        num_train = d["train_test_split"][0]
-        num_test = d["train_test_split"][1]
-
-        inpts = d["inputs"]
-        if callable(inpts):
-            inpts = [inpts() for x in range(num_train + num_test)]
-        else:
-            inpts = inpts[:]
-
-        random.shuffle(list(inpts))
-        train_set += inpts[:num_train]
-        test_set += inpts[-num_test:]
-
-    return [train_set, test_set]
-
-
-def int_to_char(i):
-    """Convert int ``i`` to chars and only get English-friendly chars
-
-    Parameters
-    ----------
-    i : int
-        Any integer.
-
-    Returns
-    --------
-    English-friendly string of length 1.
-
-    Examples
-    --------
-    >>> int_to_char(42)
-    'J'
-    >>> int_to_char(-42)
-    'v'
-    """
-    i = (i + 32) % 128
-    return chr(i)
-
-
-def gaussian_noise_factor():
-    """Returns Gaussian noise of mean 0, std dev 1.
-
-    Returns
-    --------
-    Float samples from Gaussian distribution.
-
-    Examples
-    --------
-    >>> gaussian_noise_factor()
-    1.43412557975
-    >>> gaussian_noise_factor()
-    -0.0410900866765
-    """
-    return math.sqrt(-2.0 * math.log(random.random())) * math.cos(2.0 * math.pi * random.random())
-
-
-def perturb_with_gaussian_noise(sd, n):
-    """Returns n perturbed with standard deviation.
-
-    Parameters
-    ----------
-    sd : float
-        Standard deviation
-
-    n : float
-        Number to perturb.
-
-    Returns
-    --------
-    Perturbed float.
-
-    Examples
-    --------
-    >>> perturb_with_gaussian_noise(5, 0)
-    5.03608878454
-    >>> perturb_with_gaussian_noise(1, 100)
-    99.9105032498
-    """
-    return n + (sd * gaussian_noise_factor())
-
-
-def median_absolute_deviation(a):
-    """Returns the MAD of X.
-
-    Parameters
-    ----------
-    a : array-like, shape = (n,)
-
-    Returns
-    -------
-    mad : float
-    """
-    return np.median(np.abs(a - np.median(a)))
+        raise ValueError("Can jsonify_collection lists and dicts. Got {t}.".format(t=type(root)))

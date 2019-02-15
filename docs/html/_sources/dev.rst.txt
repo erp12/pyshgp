@@ -1,0 +1,7 @@
+dev module
+==========
+
+.. automodule:: dev
+    :members:
+    :undoc-members:
+    :show-inheritance:

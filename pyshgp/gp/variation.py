@@ -1,494 +1,454 @@
-# _*_ coding: utf_8 _*_
+"""The :mod:`variation` module defines classes for variation operators.
+
+Variation operators (aka genetic operators) are used in evolutionary/genetic
+algorithms to create "child" genomes from "parent" genomes.
+
 """
-The :mod:`variation` module defines classes for variation operators (aka
-genetic operators). These operators are used in evoluation to create new
-children from selected parents.
-"""
+from abc import ABC, abstractmethod
+from typing import Sequence, Union
+import math
+from copy import copy
 
-from abc import ABCMeta, abstractmethod
-import random
+from numpy.random import random, choice
 
-from .population import Individual
-from ..utils import (
-    perturb_with_gaussian_noise,
-    gaussian_noise_factor,
-    recognize_pysh_type
-)
+from pyshgp.push.types import PushType
+from pyshgp.push.atoms import Literal
+from pyshgp.gp.genome import Genome, GeneSpawner
+from pyshgp.utils import DiscreteProbDistrib
 
 
-class VariationOperator(metaclass=ABCMeta):
-    """The base class for all variation operators.
+class VariationOperator(ABC):
+    """Base class of all VariationOperators.
 
     Parameters
     ----------
     num_parents : int
-        Number of parent Individuals the operator needs to produce a child
+        Number of parent Genomes the operator needs to produce a child
         Individual.
+
+    Attributes
+    ----------
+    num_parents : int
+        Number of parent Genomes the operator needs to produce a child
+        Individual.
+
     """
 
-    _num_parents = None
+    def __init__(self, num_parents: int):
+        self.num_parents = num_parents
 
-    def __init__(self, num_parents):
-        self._num_parents = num_parents
+    def checknum_parents(self, parents: Sequence[Genome]):
+        """Raise error if given too few parents.
 
-    def check_num_parents(self, parents):
-        if not len(parents) >= self._num_parents:
-            msg = "{} parents passed to variation operator. Expected {}."
-            raise ValueError(msg.format(len(parents), self._num_parents))
+        Parameters
+        ----------
+        parents
+            A list of parent Genomes given to the operator.
+
+        """
+        if not len(parents) >= self.num_parents:
+            raise ValueError("Variation operator given {a} parents. Expected {e}.".format(
+                a=len(parents),
+                e=self.num_parents)
+            )
 
     @abstractmethod
-    def produce(self, parents, spawner):
-        """Produces a child.
+    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner = None) -> Genome:
+        """Produce a child Genome from parent Genomes and optional GenomeSpawner.
+
+        Parameters
+        ----------
+        parents
+            A list of parent Genomes given to the operator.
+        spawner
+            A GeneSpawner that can be used to produce new genes (aka Atoms).
+
         """
+        pass
 
 
-class VariationOperatorPipeline(VariationOperator):
-    """Variation operator that chains together other variation operators.
+class VariationStrategy(DiscreteProbDistrib):
+    """A collection of VariationOperator and how frequently to use them."""
+
+    def add(self, op: VariationOperator, p: float):
+        """Add an element with a relative probability.
+
+        Parameters
+        ----------
+        op : VariationOperator
+            The VariationOperator to add to the variaiton strategy.
+        p : float
+            The probability of using the given operator relative to the other
+            operators that have been added to the VariationStrategy.
+
+        """
+        super().add(op, p)
+
+
+class VariationPipeline(VariationOperator):
+    """Variation operator that sequencially applies multiple others variation operators.
 
     Parameters
     ----------
     operators : list of VariationOperators
-        A list of operators to apply in order to produce the child Individual.
+        A list of operators to apply in order to produce the child Genome.
+
+    Attributes
+    ----------
+    operators : list of VariationOperators
+        A list of operators to apply in order to produce the child Genome.
+    num_parents : int
+        Number of parent Genomes the operator needs to produce a child
+        Individual.
+
     """
 
-    def __init__(self, operators):
+    def __init__(self, operators: Sequence[VariationOperator]):
+        num_parents_needed = max([op.num_parents for op in operators])
+        super().__init__(num_parents_needed)
         self.operators = operators
-        needed_genomes = max([op._num_parents for op in self.operators])
-        VariationOperator.__init__(self, needed_genomes)
 
-    def produce(self, parents, spawner):
-        """Produces a child using the VariationOperatorPipeline.
+    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
+        """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
         Parameters
         ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
+        parents
+            A list of parent Genomes given to the operator.
+        spawner
+            A GeneSpawner that can be used to produce new genes (aka Atoms).
 
-        spawner : pyshgp.push.spawn.Spawner
-            A spawner that can be used to create random Push code.
         """
-        self.check_num_parents(parents)
-        child = parents[0]
+        self.checknum_parents(parents)
+        child = parents[0].copy()
         for op in self.operators:
-            child = op.produce([child] + list(parents[1:]), spawner)
+            child = op.produce([child] + parents[1:], spawner)
         return child
 
 
-class LiteralMutation(VariationOperator, metaclass=ABCMeta):
-    """Base class for all constant mutators.
+# Utilities
+
+def _gaussian_noise_factor():
+    """Return Gaussian noise of mean 0, std dev 1.
+
+    Returns
+    --------
+    Float samples from Gaussian distribution.
+
+    Examples
+    --------
+    >>> gaussian_noise_factor()
+    1.43412557975
+    >>> gaussian_noise_factor()
+    -0.0410900866765
+
+    """
+    return math.sqrt(-2.0 * math.log(random())) * math.cos(2.0 * math.pi * random())
+
+
+# Mutations
+
+# @TODO: Implement all the common literal mutations.
+class LiteralMutation(VariationOperator, ABC):
+    """Base class for mutations of literal Atoms.
+
+    Parameters
+    ----------
+    push_type : pyshgp.push.types.PushType
+        The PushType which the operator can mutate.
+    rate : float
+        The probablility of applying the mutation to a given Literal.
+
+    Attributes
+    ----------
+    push_type : pyshgp.push.types.PushType
+        The PushType which the operator can mutate.
+    rate : float
+        The probablility of applying the mutation to a given Literal.
+    num_parents : int
+        Number of parent Genomes the operator needs to produce a child
+        Individual.
+
     """
 
-    def __init__(self, pysh_type, rate=0.01):
+    def __init__(self, push_type: PushType, rate: float = 0.01):
         super().__init__(1)
         self.rate = rate
-        self.pysh_type = pysh_type
-
-    def produce(self, parents, spawner):
-        """Produces a child by perturbing some floats in the parent.
-
-        Parameters
-        ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
-
-        spawner : pyshgp.push.spawn.Spawner
-            A spawner that can be used to create random Push code.
-        """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if gene.is_literal:
-                lit = gene.atom
-                if (recognize_pysh_type(lit) == self.pysh_type) and (random.random() < self.rate):
-                    gene.atom = self._mutate_literal(lit)
-            new_genome.append(gene)
-        return Individual(new_genome)
+        self.push_type = push_type
 
     @abstractmethod
-    def _mutate_literal(self, literal):
-        """Mutates the literal.
-        """
+    def _mutate_literal(literal: Literal) -> Literal:
+        ...
 
-
-##
-#   Mutation
-##
-
-class PerturbIntegerMutation(LiteralMutation):
-    """Randomly perturbs the genes containing integer literals.
-    """
-
-    def __init__(self, rate=0.01, standard_deviation=1):
-        super().__init__('_integer', rate)
-        self.standard_deviation = standard_deviation
-
-    def _mutate_literal(self, literal):
-        """Mutates an interger literal.
+    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner = None) -> Genome:
+        """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
         Parameters
         ----------
-        literal : int
-            An interger to perturb.
+        parents
+            A list of parent Genomes given to the operator.
+        spawner
+            A GeneSpawner that can be used to produce new genes (aka Atoms).
 
-        Returns
-        --------
-        A perturbed interger.
         """
-        return int(perturb_with_gaussian_noise(self.standard_deviation, literal))
+        self.checknum_parents(parents)
+        new_genome = Genome()
+        for atom in parents[0]:
+            if isinstance(atom, Literal) and self.push_type == atom.push_type and random() < self.rate:
+                new_atom = self._mutate_literal(atom)
+            else:
+                new_atom = atom
+            new_genome.append(new_atom)
+        return new_genome
 
 
-class PerturbFloatMutation(LiteralMutation):
-    """Randomly perturbs the genes containing float literals.
+class DeletionMutation(VariationOperator):
+    """Uniformly randomly removes some Atoms from parent.
+
+    Parameters
+    ----------
+    rate : float
+        The probablility of removing any given Atom in the parent Genome.
+        Default is 0.01.
+
+    Attributes
+    ----------
+    rate : float
+        The probablility of removing any given Atom in the parent Genome.
+        Default is 0.01.
+    num_parents : int
+        Number of parent Genomes the operator needs to produce a child
+        Individual.
+
     """
 
-    def __init__(self, rate=0.01, standard_deviation=1):
-        super().__init__('_float', rate)
-        self.standard_deviation = standard_deviation
-
-    def _mutate_literal(self, literal):
-        """Mutates a float literal.
-
-        Parameters
-        ----------
-        literal : float
-            An float to perturb.
-
-        Returns
-        --------
-        A perturbed float.
-        """
-        return perturb_with_gaussian_noise(self.standard_deviation, literal)
-
-
-def _tweak_string(literal, char_tweak_rate):
-    new_s = ""
-    for c in literal:
-        if random.random() < char_tweak_rate:
-            new_s += random.choice(['\t', '\n'] + list(map(chr, range(32, 127))))
-        else:
-            new_s += c
-    return new_s
-
-
-class TweakStringMutation(LiteralMutation):
-    """Randomly tweaks the string values in string literal genes.
-    """
-
-    def __init__(self, rate=0.01, char_tweak_rate=0.1):
-        super().__init__('_string', rate)
-        self.char_tweak_rate = char_tweak_rate
-
-    def _mutate_literal(self, literal):
-        """Mutates a string literal.
-
-        Parameters
-        ----------
-        literal : str
-            An string to tweak.
-
-        Returns
-        --------
-        A tweaked string.
-        """
-        return _tweak_string(literal, self.char_tweak_rate)
-
-
-class FlipBooleanMutation(LiteralMutation):
-    """Randomly flips the boolean literal genes.
-    """
-
-    def __init__(self, rate=0.01):
-        super().__init__('_boolean', rate)
-
-    def _mutate_literal(self, literal):
-        """Mutates a boolean literal.
-
-        Parameters
-        ----------
-        literal : str
-            An string to flip.
-
-        Returns
-        --------
-        A flipped bool.
-        """
-        return not literal
-
-
-class PerturbCloseMutation(VariationOperator):
-    """Randomly perturbs the number of close markers on each gene.
-    """
-
-    def __init__(self, rate=0.01, standard_deviation=1):
+    def __init__(self, deletion_rate: float = 0.01):
         super().__init__(1)
-        self.rate = rate
-        self.standard_deviation = standard_deviation
+        self.rate = deletion_rate
 
-    def produce(self, parents, spawner=None):
-        """Produces a child by perturbing some floats in the parent.
-
-        Parameters
-        ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
-
-        spawner : pyshgp.push.spawn.Spawner
-            A spawner that can be used to create random Push code.
-
-        Returns
-        --------
-        A child Individual.
-        """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if random.random() < self.rate:
-                gene.closes = int(
-                    perturb_with_gaussian_noise(
-                        self.standard_deviation,
-                        gene.closes))
-                if gene.closes < 0:
-                    gene.closes = 0
-            new_genome.append(gene)
-        return Individual(new_genome)
-
-
-class RandomDeletionMutation(VariationOperator):
-    """Randomly removes some genes.
-    """
-
-    def __init__(self, rate=0.01):
-        super().__init__(1)
-        self.rate = rate
-
-    def produce(self, parents, spawner):
-        """Produces a child by perturbing some floats in the parent.
+    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
+        """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
         Parameters
         ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
+        parents
+            A list of parent Genomes given to the operator.
+        spawner
+            A GeneSpawner that can be used to produce new genes (aka Atoms).
 
-        spawner : pyshgp.push.spawn.Spawner
-            A spawner that can be used to create random Push code.
         """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if random.random() < self.rate:
+        self.checknum_parents(parents)
+        new_genome = Genome()
+        for gene in parents[0]:
+            if random() < self.rate:
                 continue
             new_genome.append(gene)
-        return Individual(new_genome)
+        return new_genome
 
 
-class RandomAdditionMutation(VariationOperator):
-    """Randomly adds new genes.
+class AdditionMutation(VariationOperator):
+    """Uniformly randomly adds some Atoms to parent.
+
+    Parameters
+    ----------
+    rate : float
+        The probablility of adding a new Atom at any given point in the parent
+        Genome. Default is 0.01.
+
+    Attributes
+    ----------
+    rate : float
+        The probablility of adding a new Atom at any given point in the parent
+        Genome. Default is 0.01.
+    num_parents : int
+        Number of parent Genomes the operator needs to produce a child
+        Individual.
+
     """
 
-    def __init__(self, rate=0.01):
+    def __init__(self, addition_rate: float = 0.01):
         super().__init__(1)
-        self.rate = rate
+        self.rate = addition_rate
 
-    def produce(self, parents, spawner):
-        """Produces a child by perturbing some floats in the parent.
+    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
+        """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
         Parameters
         ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
+        parents
+            A list of parent Genomes given to the operator.
+        spawner
+            A GeneSpawner that can be used to produce new genes (aka Atoms).
 
-        spawner : pyshgp.push.spawn.Spawner
-            A spawner that can be used to create random Push code.
         """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if random.random() < self.rate:
-                new_genome.append(spawner.random_plush_gene())
+        self.checknum_parents(parents)
+        new_genome = Genome()
+        for gene in parents[0]:
+            if random() < self.rate:
+                new_genome.append(spawner.spawn_atom())
             new_genome.append(gene)
-        return Individual(new_genome)
+        return new_genome
 
 
-class RandomReplaceMutation(VariationOperator):
-    """Randomly replaces genes.
-    """
-
-    def __init__(self, rate=0.01):
-        super().__init__(1)
-        self.rate = rate
-
-    def produce(self, parents, spawner):
-        """Produces a child by perturbing some floats in the parent.
-
-        Parameters
-        ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
-
-        spawner : pyshgp.push.spawn.Spawner
-            A spawner that can be used to create random Push code.
-        """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if random.random() < self.rate:
-                new_genome.append(spawner.random_plush_gene())
-            else:
-                new_genome.append(gene)
-        return Individual(new_genome)
-
-
-class UniformMutation(VariationOperator):
-    """A simple mutation operator that mutates all genes.
-    """
-
-    def __init__(self,
-                 rate=0.01,
-                 literal_tweak_rate=0.5,
-                 float_standard_deviation=1.0,
-                 int_standard_deviation=1.0,
-                 string_char_tweak_rate=0.1):
-        super().__init__(1)
-        self.rate = rate
-        self.literal_tweak_rate = literal_tweak_rate
-        self.float_standard_deviation = float_standard_deviation
-        self.int_standard_deviation = int_standard_deviation
-        self.string_char_tweak_rate = string_char_tweak_rate
-
-    def _literal_mutator(self, gene, spawner):
-        pysh_type = recognize_pysh_type(gene.atom)
-        if pysh_type == "_float":
-            gene.atom = perturb_with_gaussian_noise(self.float_standard_deviation,
-                                                    gene.atom)
-        elif pysh_type == "_integer":
-            gene.atom = int(perturb_with_gaussian_noise(self.float_standard_deviation,
-                                                        gene.atom))
-        elif pysh_type == "_string":
-            gene.atom = _tweak_string(gene.atom,
-                                      self.string_char_tweak_rate)
-        elif pysh_type == "_boolean":
-            gene.atom = not gene.atom
-        else:
-            spawner.random_plush_gene()
-
-    def produce(self, parents, spawner):
-        """Produces a child by perturbing some floats in the parent.
-
-        Parameters
-        ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
-
-        spawner : pyshgp.push.spawn.Spawner
-            A spawner that can be used to create random Push code.
-        """
-        self.check_num_parents(parents)
-        new_genome = []
-        for gene in parents[0].genome:
-            if random.random() < self.rate:
-                if random.random() < self.literal_tweak_rate:
-                    new_genome.append(spawner.random_plush_gene())
-                else:
-                    self._literal_mutator(gene, spawner)
-            else:
-                new_genome.append(gene)
-        return Individual(new_genome)
-
-
-# #               # #
-#   Recombination   #
-# #               # #
-
+# Recombinations
 
 class Alternation(VariationOperator):
-    """Uniformly alternates between the two parents.
-
-    More information can be found on the `this Push-Redux page
-    <https://erp12.github.io/push-redux/pages/genetic_operators/index.html#recombination>`_.
+    """Uniformly alternates between the two parent genomes.
 
     Parameters
     ----------
     rate : float, optional (default=0.01)
         The probablility of switching which parent program elements are being
         copied from. Must be 0 <= rate <= 1. Defaults to 0.1.
-
     alignment_deviation : int, optional (default=10)
         The standard deviation of how far alternation may jump between indices
         when switching between parents.
+
+    Attributes
+    ----------
+    rate : float, optional (default=0.01)
+        The probablility of switching which parent program elements are being
+        copied from. Must be 0 <= rate <= 1. Defaults to 0.1.
+    alignment_deviation : int, optional (default=10)
+        The standard deviation of how far alternation may jump between indices
+        when switching between parents.
+    num_parents : int
+        Number of parent Genomes the operator needs to produce a child
+        Individual.
+
     """
 
-    def __init__(self, rate=0.01, alignment_deviation=10):
-        # Initialize as a recombination operator
+    def __init__(self, alternation_rate=0.01, alignment_deviation=10):
         super().__init__(2)
-        # Set attributes
-        self.rate = rate
+        self.rate = alternation_rate
         self.alignment_deviation = alignment_deviation
 
-    def produce(self, parents, spawner=None):
-        """Produces a child using the UniformMutation operator.
+    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner = None) -> Genome:
+        """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
         Parameters
         ----------
-        parents : list of Individuals
-            A list of parents to use when producing the child.
+        parents
+            A list of parent Genomes given to the operator.
+        spawner
+            A GeneSpawner that can be used to produce new genes (aka Atoms).
 
-        spawner : pyshgp.push.spawn.Spawner, optional
-            A spawner that can be used to create random Push code. Not used by
-            this operator.
         """
-        self.check_num_parents(parents)
-        gn1 = parents[0].genome
-        gn2 = parents[1].genome
-        resulting_genome = []
+        self.checknum_parents(parents)
+        gn1 = parents[0].copy()
+        gn2 = parents[1].copy()
+        new_genome = Genome()
         # Random pick which parent to start from
-        use_parent_1 = random.choice([True, False])
+        use_parent_1 = choice([True, False])
         loop_times = len(gn1)
         if not use_parent_1:
             loop_times = len(gn2)
         i = 0
         while (i < loop_times):
-            if random.random() < self.rate:
+            if random() < self.rate:
                 # Switch which parent we are pulling genes from
-                i += round(self.alignment_deviation * gaussian_noise_factor())
+                i += round(self.alignment_deviation * _gaussian_noise_factor())
                 i = int(max(0, i))
                 use_parent_1 = not use_parent_1
             else:
                 # Pull gene from parent
                 if use_parent_1:
-                    resulting_genome.append(gn1[i])
+                    new_genome.append(gn1[i])
                 else:
-                    resulting_genome.append(gn2[i])
+                    new_genome.append(gn2[i])
                 i = int(i + 1)
             # Change loop stop condition
             loop_times = len(gn1)
             if not use_parent_1:
                 loop_times = len(gn2)
-        return Individual(resulting_genome)
+        return new_genome
 
 
-##
-#   Other
-##
-
+# Other
 
 class Genesis(VariationOperator):
     """Creates an entirely new (and random) genome.
+
+    Parameters
+    ----------
+    size
+        The child genome will contain this many Atoms if size is an integer.
+        If size is a pair of integers, the genome will be of a random
+        size in the range of the two integers.
+
+    Attributes
+    ----------
+    size
+        The child genome will contain this many Atoms if size is an integer.
+        If size is a pair of integers, the genome will be of a random
+        size in the range of the two integers.
+    num_parents : int
+        Number of parent Genomes the operator needs to produce a child
+        Individual.
+
     """
 
-    def __init__(self, max_genome_size):
-        VariationOperator.__init__(self, 0)
-        self.max_genome_size = max_genome_size
+    def __init__(self, *, size: Union[int, Sequence[int]]):
+        super().__init__(0)
+        self.size = size
 
-    def produce(self, parents, spawner):
-        return Individual(spawner.random_plush_genome(self.max_genome_size))
+    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
+        """Produce a child Genome from parent Genomes and optional GenomeSpawner.
+
+        Parameters
+        ----------
+        parents
+            A list of parent Genomes given to the operator.
+        spawner
+            A GeneSpawner that can be used to produce new genes (aka Atoms).
+
+        """
+        return spawner.spawn_genome(self.size)
 
 
-class Reproduction(VariationOperator):
+class Cloning(VariationOperator):
     """Clones the parent genome.
+
+    Attributes
+    ----------
+    num_parents : int
+        Number of parent Genomes the operator needs to produce a child
+        Individual.
+
     """
 
     def __init__(self):
-        VariationOperator.__init__(self, 1)
+        super().__init__(1)
 
-    def produce(self, parents, spawner=None):
-        return parents[0]
+    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner = None) -> Genome:
+        """Produce a child Genome from parent Genomes and optional GenomeSpawner.
+
+        Parameters
+        ----------
+        parents
+            A list of parent Genomes given to the operator.
+        spawner
+            A GeneSpawner that can be used to produce new genes (aka Atoms).
+
+        """
+        return copy.copy(parents[0])
+
+
+def get_variation_operator(name: str) -> VariationOperator:
+    """Get the variaton operator class with the given name."""
+    name_to_cls = {
+        "deletion": DeletionMutation,
+        "addition": AdditionMutation,
+        "alternation": Alternation,
+        # UMAD citation: https://dl.acm.org/citation.cfm?id=3205455.3205603
+        "umad": VariationPipeline([AdditionMutation(0.09), DeletionMutation(0.0826)]),
+        "umad-shrink": VariationPipeline([AdditionMutation(0.09), DeletionMutation(0.1)]),
+        "umad-grow": VariationPipeline([AdditionMutation(0.09), DeletionMutation(0.0652)])
+    }
+    op = name_to_cls.get(name, None)
+    if op is None:
+        raise ValueError("No varition operator '{nm}'. Supported names: {lst}.".format(
+            nm=name,
+            lst=list(name_to_cls.keys())
+        ))
+    return op

@@ -1,0 +1,410 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.push.instruction &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyshgp.push.instruction</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Concrete implementations of the Instruction Atom type.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">from</span> <span class="nn">pyshgp.push.state</span> <span class="k">import</span> <span class="n">PushState</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">Instruction</span>
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">Token</span>
+
+
+<div class="viewcode-block" id="SimpleInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.SimpleInstruction">[docs]</a><span class="k">class</span> <span class="nc">SimpleInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A simple instruction implementation.</span>
+
+<span class="sd">    A SimpleInstruction uses a standardized way of manipulating PushStates. In</span>
+<span class="sd">    other words, it handles popping its own function arguments and pushing the</span>
+<span class="sd">    function return values.</span>
+
+<span class="sd">    The first step of evaluating a SimpleInstruction is to pop the arguments</span>
+<span class="sd">    from the stacks corresponding the instrution&#39;s ``input_types`` list.</span>
+<span class="sd">    If multiple occurences of the same type are in ``input_types``, items are</span>
+<span class="sd">    taken from progressively deeper in that stack. If the stacks of the</span>
+<span class="sd">    PushState do not contain a sufficent number of items, the instruction does</span>
+<span class="sd">    not modify the PushState.</span>
+
+<span class="sd">    The popped arguments are then passed to the instruction&#39;s function to produce</span>
+<span class="sd">    a tuple of outputs. It is crucial that the instruction&#39;s function produce a</span>
+<span class="sd">    tuple of outputs, even if it only conains a single element. The elements of</span>
+<span class="sd">    the tuple are then routed to the corresponding stacks specified in the</span>
+<span class="sd">    instruction&#39;s ``output_types``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str,</span>
+<span class="sd">        A unique name for the instruction.</span>
+<span class="sd">    f : Callable</span>
+<span class="sd">        A function whose signature matches input_types and output_types.</span>
+<span class="sd">    input_types : Sequence[str]</span>
+<span class="sd">        A list of PushType names to use when popping arguments from the PushState.</span>
+<span class="sd">    output_types : Sequence[str]</span>
+<span class="sd">        A list of PushType names to use when pushing function results to the PushState.</span>
+<span class="sd">    code_blocks : int</span>
+<span class="sd">        The number of CodeBlocks to open following the instruction in a Genome.</span>
+<span class="sd">    docstring : str, optional</span>
+<span class="sd">        A string describing in the behavior of the Instruction.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;input_types&quot;</span><span class="p">,</span> <span class="s2">&quot;output_types&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+                 <span class="n">input_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">output_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">code_blocks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Write me!&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">code_blocks</span><span class="p">,</span> <span class="n">docstring</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_types</span> <span class="o">=</span> <span class="n">input_types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span> <span class="o">=</span> <span class="n">output_types</span>
+
+<div class="viewcode-block" id="SimpleInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.SimpleInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the instruction on the given PushState. Return mutated State.</span>
+
+<span class="sd">        A SimpleInstruction infers which values to pop and push from the stack</span>
+<span class="sd">        based on its `input_types` and `output_types`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state : PushState</span>
+<span class="sd">            Push state to modify with the Instruction.</span>
+<span class="sd">        config : PushInterpreterConfig</span>
+<span class="sd">            Configuration of the interpreter. Used to get various limits.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PushState</span>
+<span class="sd">            Return the given state, possibly modified by the Instruction.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Pull args, if present.</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">push_state</span><span class="o">.</span><span class="n">observe_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">no_stack_item</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">push_state</span>
+
+        <span class="c1"># Compute result, return if revert or response too big.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">push_state</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Instruction result must be a collection. </span><span class="si">{i}</span><span class="s2"> gave </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">i</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">t</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="p">))</span>
+
+        <span class="c1"># Remove arguments, push results.</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">pop_from_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span><span class="p">)</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">push_to_stacks</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">push_state</span></div>
+
+<div class="viewcode-block" id="SimpleInstruction.relevant_types"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.SimpleInstruction.relevant_types">[docs]</a>    <span class="k">def</span> <span class="nf">relevant_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of PushType names relevant to the instruction.</span>
+
+<span class="sd">        Based on the the instructions input and output types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="StateToStateInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.StateToStateInstruction">[docs]</a><span class="k">class</span> <span class="nc">StateToStateInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Instruction that takes entire PushState and returns entire PushState.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;types_used&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+                 <span class="n">types_used</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">code_blocks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Write me!&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">code_blocks</span><span class="p">,</span> <span class="n">docstring</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">types_used</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">types_used</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StateToStateInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.StateToStateInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the instruction on the given PushState. Return mutated State.</span>
+
+<span class="sd">        A SimpleInstruction infers which values to pop and push from the stack</span>
+<span class="sd">        based on its `input_types` and `output_types`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state : PushState</span>
+<span class="sd">            Push state to modify with the Instruction.</span>
+<span class="sd">        config : PushInterpreterConfig</span>
+<span class="sd">            Configuration of the interpreter. Used to get various limits.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PushState</span>
+<span class="sd">            Return the given state, possibly modified by the Instruction.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">push_state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">push_state</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="StateToStateInstruction.relevant_types"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.StateToStateInstruction.relevant_types">[docs]</a>    <span class="k">def</span> <span class="nf">relevant_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of PushType names relevant to the instruction.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">types_used</span></div></div>
+
+
+<div class="viewcode-block" id="TakesStateInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.TakesStateInstruction">[docs]</a><span class="k">class</span> <span class="nc">TakesStateInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Instruction that takes entire PushState and returns particular values.</span>
+
+<span class="sd">    The function of a TakesStateInstruction accepts an entire PushState as input</span>
+<span class="sd">    and produces either a ``Token.revert`` or a tuple of outputs values. It is</span>
+<span class="sd">    crucial that the instruction&#39;s function produce a tuple of outputs, even if</span>
+<span class="sd">    it only conains a single element.</span>
+
+<span class="sd">    The elements of the tuple are then routed to the corresponding stacks</span>
+<span class="sd">    specified in the instruction&#39;s ``output_types``.</span>
+
+<span class="sd">    Additional PushTypes utilized by the instruction are denoted in ``other_types``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str,</span>
+<span class="sd">        A unique name for the instruction.</span>
+<span class="sd">    f : Callable</span>
+<span class="sd">        A function that takes a PushState as input and produces values corresponding to ``output_types.``</span>
+<span class="sd">    output_types : Sequence[str]</span>
+<span class="sd">        A list of PushType names to use when pushing function results to the PushState.</span>
+<span class="sd">    other_types : Sequence[str]</span>
+<span class="sd">        A list of additional PushType names used by the Insturction&#39;s function.</span>
+<span class="sd">    code_blocks : int</span>
+<span class="sd">        The number of CodeBlocks to open following the instruction in a Genome.</span>
+<span class="sd">    docstring : str, optional</span>
+<span class="sd">        A string describing in the behavior of the Instruction.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;output_types&quot;</span><span class="p">,</span> <span class="s2">&quot;other_types&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+                 <span class="n">output_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">other_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">code_blocks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Write me!&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">code_blocks</span><span class="p">,</span> <span class="n">docstring</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span> <span class="o">=</span> <span class="n">output_types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_types</span> <span class="o">=</span> <span class="n">other_types</span>
+
+<div class="viewcode-block" id="TakesStateInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.TakesStateInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the instruction on the given PushState. Return mutated State.</span>
+
+<span class="sd">        A SimpleInstruction infers which values to pop and push from the stack</span>
+<span class="sd">        based on its `input_types` and `output_types`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state : PushState</span>
+<span class="sd">            Push state to modify with the Instruction.</span>
+<span class="sd">        config : PushInterpreterConfig</span>
+<span class="sd">            Configuration of the interpreter. Used to get various limits.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PushState</span>
+<span class="sd">            Return the given state, possibly modified by the Instruction.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Compute result. State should be modified in place during function.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">push_state</span><span class="p">)</span>
+
+        <span class="c1"># Return if revert.</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">push_state</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Instruction result must be a list. </span><span class="si">{i}</span><span class="s2"> gave </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">i</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">t</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="p">))</span>
+
+        <span class="c1"># Push results.</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">push_to_stacks</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">push_state</span></div>
+
+<div class="viewcode-block" id="TakesStateInstruction.relevant_types"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.TakesStateInstruction.relevant_types">[docs]</a>    <span class="k">def</span> <span class="nf">relevant_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of PushType names relevant to the instruction.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_types</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ProducesManyOfTypeInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.ProducesManyOfTypeInstruction">[docs]</a><span class="k">class</span> <span class="nc">ProducesManyOfTypeInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Instruction that produces arbitarily many values of a given PushType.</span>
+
+<span class="sd">    ProducesManyOfTypeInstructions pop their arguments in the same was as</span>
+<span class="sd">    SimpleInstructions. Items are popped from the stacks corresponding the</span>
+<span class="sd">    types denoted in the ``input_types`` list. If multiple occurences of the</span>
+<span class="sd">    same type are in ``input_types``, items are taken from progressively deeper</span>
+<span class="sd">    in that stack. If the stacks of the PushState do not contain a sufficent</span>
+<span class="sd">    number of items, the instruction does not modify the PushState.</span>
+
+<span class="sd">    The popped arguments are then passed to the instruction&#39;s function to produce</span>
+<span class="sd">    a tuple of outputs. It is crucial that the instruction&#39;s function produce a</span>
+<span class="sd">    tuple of outputs, even if it only conains a single element. All elements of</span>
+<span class="sd">    the tuple are pushed individually to the stack denoted in ``output_type``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str,</span>
+<span class="sd">        A unique name for the instruction.</span>
+<span class="sd">    f : Callable</span>
+<span class="sd">        A function whose signature matches input_types and output_types.</span>
+<span class="sd">    input_types : Sequence[str]</span>
+<span class="sd">        A list of PushType names to use when popping arguments from the PushState.</span>
+<span class="sd">    output_type : str</span>
+<span class="sd">        The name of a PushType to use when pushing function results to the PushState.</span>
+<span class="sd">        All values returned by the function go to the stack for this type.</span>
+<span class="sd">    code_blocks : int</span>
+<span class="sd">        The number of CodeBlocks to open following the instruction in a Genome.</span>
+<span class="sd">    docstring : str, optional</span>
+<span class="sd">        A string describing in the behavior of the Instruction.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;input_types&quot;</span><span class="p">,</span> <span class="s2">&quot;output_type&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+                 <span class="n">input_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">output_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">code_blocks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Write me!&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">code_blocks</span><span class="p">,</span> <span class="n">docstring</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_types</span> <span class="o">=</span> <span class="n">input_types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_type</span> <span class="o">=</span> <span class="n">output_type</span>
+
+<div class="viewcode-block" id="ProducesManyOfTypeInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.ProducesManyOfTypeInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the instruction on the given PushState. Return mutated State.</span>
+
+<span class="sd">        A ProducesManyOfTypeInstruction infers which values to pop from the stack</span>
+<span class="sd">        based on `input_types` and pushes each output to the same stack</span>
+<span class="sd">        based on `output_type`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state : PushState</span>
+<span class="sd">            Push state to modify with the Instruction.</span>
+<span class="sd">        config : PushInterpreterConfig</span>
+<span class="sd">            Configuration of the interpreter. Used to get various limits.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PushState</span>
+<span class="sd">            Return the given state, possibly modified by the Instruction.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Pull args, if present.</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">push_state</span><span class="o">.</span><span class="n">observe_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">no_stack_item</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">push_state</span>
+
+        <span class="c1"># Compute result, return if revert or response too big.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">push_state</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Instruction result must be a collection. </span><span class="si">{i}</span><span class="s2"> gave </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">i</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">t</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="p">))</span>
+
+        <span class="c1"># Remove arguments, push results.</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">pop_from_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span><span class="p">)</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">push_to_stacks</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_type</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">push_state</span></div>
+
+<div class="viewcode-block" id="ProducesManyOfTypeInstruction.relevant_types"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.ProducesManyOfTypeInstruction.relevant_types">[docs]</a>    <span class="k">def</span> <span class="nf">relevant_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of PushType names relevant to the instruction.</span>
+
+<span class="sd">        Based on the the instructions input types and output type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_type</span><span class="p">])</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

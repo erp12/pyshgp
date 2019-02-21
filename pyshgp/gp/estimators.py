@@ -1,6 +1,5 @@
 """The :mod:`estimator` module defines a ``PushEstimator`` class."""
 import json
-import inspect
 from typing import Union, Tuple, Sequence
 
 import numpy as np
@@ -109,8 +108,8 @@ class PushEstimator:
     """
 
     def __init__(self,
-                 search: Union[sr.SearchAlgorithm, str] = "GA",
-                 spawner: Union[GeneSpawner, str] = "default",
+                 spawner: GeneSpawner,
+                 search: str = "GA",
                  selector: Union[sl.Selector, str] = "lexicase",
                  variation_strategy: Union[vr.VariationStrategy, dict, str] = "umad",
                  population_size: int = 300,
@@ -119,7 +118,7 @@ class PushEstimator:
                  simplification_steps: int = 2000,
                  interpreter: PushInterpreter = "default",
                  **kwargs):
-        self.search = search
+        self._search_name = search
         self.spawner = spawner
         self.selector = selector
         self.variation_strategy = variation_strategy
@@ -135,64 +134,28 @@ class PushEstimator:
 
         self.ext = kwargs
 
-    def _build_component(self, component_cls, **kwargs):
-        arg_names = inspect.getfullargspec(component_cls.__init__)[0][1:]
-        args = kwargs
-        for arg_name in arg_names:
-            if arg_name in self.ext:
-                args[arg_name] = self.ext[arg_name]
-        return component_cls(**args)
-
     def _build_search_algo(self):
-        if isinstance(self.spawner, GeneSpawner):
-            self._spawner = self.spawner
-        elif self.spawner == "default":
-            self._spawner = GeneSpawner(
-                instruction_set=self.interpreter.instruction_set,
-                literals=[],
-                erc_generators=[]
-            )
-        else:
-            raise ValueError("Bad spawner: {}".format(self.spawner))
-
-        if isinstance(self.selector, sl.Selector):
-            self._selector = self.selector
-        else:
-            selector_cls = sl.get_selector(self.selector)
-            self._selector = self._build_component(selector_cls)
-
-        if isinstance(self.variation_strategy, vr.VariationStrategy):
-            self._variation_strategy = self.variation_strategy
-        else:
-            self._variation_strategy = vr.VariationStrategy()
-            if isinstance(self.variation_strategy, dict):
-                for op_name, prob in self.variation_strategy.items():
-                    var_op = vr.get_variation_operator(op_name)
-                    if not isinstance(var_op, vr.VariationOperator):
-                        var_op = self._build_component(var_op)
-                    self._variation_strategy.add(var_op, prob)
-            else:
-                var_op = vr.get_variation_operator(self.variation_strategy)
+        if isinstance(self.variation_strategy, dict):
+            var_strat = vr.VariationStrategy()
+            for op_name, prob in self.variation_strategy.items():
+                var_op = vr.get_variation_operator(op_name)
                 if not isinstance(var_op, vr.VariationOperator):
                     var_op = self._build_component(var_op)
-                self._variation_strategy.add(var_op, 1.0)
+                var_strat.add(var_op, prob)
+            self.variation_strategy = var_strat
 
         search_config = sr.SearchConfiguration(
-            spawning=self._spawner,
+            spawner=self.spawner,
             evaluator=self.evaluator,
-            selection=self._selector,
-            variation=self._variation_strategy,
+            selection=self.selector,
+            variation=self.variation_strategy,
             population_size=self.population_size,
             max_generations=self.max_generations,
             initial_genome_size=self.initial_genome_size,
             simplification_steps=self.simplification_steps
         )
 
-        if isinstance(self.search, sr.SearchAlgorithm):
-            self._search = self.search
-        else:
-            search_algo_cls = sr.get_search_algo(self.search)
-            self._search = self._build_component(search_algo_cls, config=search_config)
+        self.search = sr.get_search_algo(self._search_name, config=search_config, **self.ext)
 
     def fit(self, X, y, verbose: bool = False):
         """Run the search algorithm to synthesize a push program.
@@ -209,8 +172,15 @@ class PushEstimator:
             Default is False.
 
         """
-        X, y = check_X_y(X, y, force_all_finite=False, allow_nd=True, multi_output=True)
+        X, y = check_X_y(
+            X, y,
+            dtype=None,
+            force_all_finite=False,
+            allow_nd=True,
+            multi_output=True
+        )
 
+        # Determine required arity of programs.
         if isinstance(X, (pd.DataFrame, np.ndarray)):
             if len(X.shape) > 1:
                 arity = X.shape[1]
@@ -225,6 +195,7 @@ class PushEstimator:
             arity = 1
         self.interpreter.instruction_set.register_n_inputs(arity)
 
+        # Determine the output signature of programs.
         if isinstance(y, pd.DataFrame):
             y_types = list(y.dtypes)
         elif isinstance(y, pd.Series):
@@ -243,7 +214,7 @@ class PushEstimator:
 
         self.evaluator = DatasetEvaluator(X, y, interpreter=self.interpreter)
         self._build_search_algo()
-        best_seen = self._search.run(verbose)
+        best_seen = self.search.run(verbose)
 
         self._result = SearchResult(best_seen.program, output_types)
 
@@ -282,6 +253,13 @@ class PushEstimator:
 
         """
         check_is_fitted(self, "_result")
+        X, y = check_X_y(
+            X, y,
+            dtype=None,
+            force_all_finite=False,
+            allow_nd=True,
+            multi_output=True
+        )
         self.evaluator = DatasetEvaluator(X, y)
         return self.evaluator.evaluate(self._result.program)
 

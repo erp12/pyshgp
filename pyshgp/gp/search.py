@@ -13,6 +13,7 @@ from pyshgp.gp.individual import Individual
 from pyshgp.gp.population import Population
 from pyshgp.gp.selection import Selector, get_selector
 from pyshgp.gp.variation import VariationOperator, get_variation_operator
+from pyshgp.utils import instantiate_using
 
 
 # @TODO: Should SearchConfiguration be JSON serializable?
@@ -23,10 +24,10 @@ class SearchConfiguration:
     ----------
     evaluator : Evaluator
         The Evaluator to use when evaluating individuals.
-    spawning : Union[GeneSpawner, str], optional
-        The GeneSpawner, or DiscreteProbDistrib of gene spawners to use when
-        producing Genomes during initialization and variation.
-    selection :Union[Selector, DiscreteProbDistrib, str], optional
+    spawning : GeneSpawner
+        The GeneSpawner to use when producing Genomes during initialization and
+        variation.
+    selection : Union[Selector, DiscreteProbDistrib, str], optional
         A Selector, or DiscreteProbDistrib of selectors, to use when selecting
         parents. The default is lexicase selection.
     variation : Union[VariationOperator, DiscreteProbDistrib, str], optional
@@ -51,49 +52,45 @@ class SearchConfiguration:
 
     def __init__(self,
                  evaluator: Evaluator,
-                 spawning: Union[GeneSpawner, DiscreteProbDistrib],
+                 spawner: GeneSpawner,
                  selection: Union[Selector, DiscreteProbDistrib, str] = "lexicase",
                  variation: Union[VariationOperator, DiscreteProbDistrib, str] = "umad",
                  population_size: int = 500,
                  max_generations: int = 100,
                  error_threshold: float = 0.0,
                  initial_genome_size: Tuple[int, int] = (10, 50),
-                 simplification_steps: int = 2000):
+                 simplification_steps: int = 2000,
+                 **kwargs):
         self.evaluator = evaluator
+        self.spawner = spawner
         self.population_size = population_size
         self.max_generations = max_generations
         self.error_threshold = error_threshold
         self.initial_genome_size = initial_genome_size
         self.simplification_steps = simplification_steps
+        self.ext = kwargs
 
-        if isinstance(spawning, DiscreteProbDistrib):
-            self._spawning = spawning
-        else:
-            self._spawning = DiscreteProbDistrib().add(spawning, 1.0)
-
-        if isinstance(selection, str):
-            self._selection = DiscreteProbDistrib().add(get_selector(selection), 1.0)
+        if isinstance(selection, Selector):
+            self._selection = DiscreteProbDistrib().add(selection, 1.0)
         elif isinstance(selection, DiscreteProbDistrib):
             self._selection = selection
         else:
-            self._selection = DiscreteProbDistrib().add(selection, 1.0)
+            selector = get_selector(selection, **self.ext)
+            self._selection = DiscreteProbDistrib().add(selector, 1.0)
 
-        if variation == "umad":
-            self._variation = DiscreteProbDistrib().add(get_variation_operator, 1.0)
+        if isinstance(variation, VariationOperator):
+            self._variation = DiscreteProbDistrib().add(variation, 1.0)
         elif isinstance(variation, DiscreteProbDistrib):
             self._variation = variation
         else:
-            self._variation = DiscreteProbDistrib().add(variation, 1.0)
-
-    def get_spawner(self):
-        """Return a GeneSpawner."""
-        return self._spawning.sample()
+            variationOp = get_variation_operator(variation, **self.ext)
+            self._variation = DiscreteProbDistrib().add(variationOp, 1.0)
 
     def get_selector(self):
         """Return a Selector."""
         return self._selection.sample()
 
-    def get_variation_operator(self):
+    def get_variation_op(self):
         """Return a VariationOperator."""
         return self._variation.sample()
 
@@ -129,7 +126,7 @@ class SearchAlgorithm(ABC):
         """Initialize the population."""
         self.population = Population()
         for i in range(self.config.population_size):
-            spawner = self.config.get_spawner()
+            spawner = self.config.spawner
             genome = spawner.spawn_genome(self.config.initial_genome_size)
             self.population.add(Individual(genome))
 
@@ -214,10 +211,10 @@ class GeneticAlgorithm(SearchAlgorithm):
         super().__init__(config)
 
     def _make_child(self) -> Individual:
-        op = self.config.get_variation_operator()
+        op = self.config.get_variation_op()
         selector = self.config.get_selector()
         parent_genomes = [p.genome for p in selector.select(self.population, n=op.num_parents)]
-        child_genome = op.produce(parent_genomes, self.config.get_spawner())
+        child_genome = op.produce(parent_genomes, self.config.spawner)
         return Individual(child_genome)
 
     def step(self):
@@ -281,9 +278,9 @@ class SimulatedAnnealing(SearchAlgorithm):
             return
 
         candidate = Individual(
-            self.config.get_variation_operator().produce(
+            self.config.get_variation_op().produce(
                 [self.population.best().genome],
-                self.config.get_spawner()
+                self.config.spawner
             )
         )
         candidate.error_vector = self.config.evaluator.evaluate(candidate.program)
@@ -297,17 +294,17 @@ class SimulatedAnnealing(SearchAlgorithm):
 #     ...
 
 
-def get_search_algo(name: str) -> SearchAlgorithm:
+def get_search_algo(name: str, **kwargs) -> SearchAlgorithm:
     """Return the search algorithm class with the given name."""
     name_to_cls = {
         "GA": GeneticAlgorithm,
         "SA": SimulatedAnnealing,
         # "ES": EvolutionaryStrategy,
     }
-    search_algo = name_to_cls.get(name, None)
-    if search_algo is None:
+    _cls = name_to_cls.get(name, None)
+    if _cls is None:
         raise ValueError("No search algo '{nm}'. Supported names: {lst}.".format(
             nm=name,
             lst=list(name_to_cls.keys())
         ))
-    return search_algo
+    return instantiate_using(_cls, kwargs)

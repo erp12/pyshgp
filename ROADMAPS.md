@@ -69,10 +69,3 @@
 
 - Users should be able to define their own PushTypes which get associated Stacks.
 - This is meant to aid in domain-specific applications (ie. NeuroEvolution, Quantum Algorithms, etc)
-
-
-## CLI
-
-### To Do
-
-- [x] Build instruction set documentation HTML/MD

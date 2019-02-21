@@ -8,6 +8,7 @@ from numpy.random import random, choice, shuffle
 
 from pyshgp.gp.individual import Individual
 from pyshgp.gp.population import Population
+from pyshgp.utils import instantiate_using
 
 
 class Selector(ABC):
@@ -260,7 +261,7 @@ class Elite(Selector):
         return population.best_n(n)
 
 
-def get_selector(name: str) -> Selector:
+def get_selector(name: str, **kwargs) -> Selector:
     """Get the selector class with the given name."""
     name_to_cls = {
         "roulette": FitnessProportionate,
@@ -268,10 +269,10 @@ def get_selector(name: str) -> Selector:
         "lexicase": Lexicase,
         "elite": Elite,
     }
-    selector = name_to_cls.get(name, None)
-    if selector is None:
+    _cls = name_to_cls.get(name, None)
+    if _cls is None:
         raise ValueError("No selector '{nm}'. Supported names: {lst}.".format(
             nm=name,
             lst=list(name_to_cls.keys())
         ))
-    return selector
+    return instantiate_using(_cls, kwargs)

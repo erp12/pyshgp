@@ -1,19 +1,8 @@
 import pytest
 
-import random
-
-from pyshgp.gp.genome import Opener, _has_opener, Genome, GeneSpawner, GenomeSimplifier
+from pyshgp.gp.genome import Opener, _has_opener, Genome, GenomeSimplifier
 from pyshgp.gp.evaluation import DatasetEvaluator
 from pyshgp.push.atoms import Atom, Literal, Instruction, CodeBlock
-from pyshgp.push.instruction_set import InstructionSet
-
-
-@pytest.fixture(scope="function")
-def simple_genome_spawner(atoms):
-    i_set = InstructionSet()
-    i_set.register_list([atoms["add"], atoms["sub"], atoms["if"]])
-    l_set = [atoms["5"], atoms["1.2"], atoms["true"]]
-    return GeneSpawner(i_set, l_set, [random.random])
 
 
 def test_opener():
@@ -60,27 +49,27 @@ class TestGenome:
         assert s == '[{"a":"lit","t":"bool","v":true},{"a":"instr","n":"exec_if"},{"a":"lit","t":"float","v":1.2},{"a":"close"},{"a":"lit","t":"int","v":5}]'
 
 
-class TestGenomeSpawner:
+class TestGeneSpawner:
 
-    def test_random_instruction(self, simple_genome_spawner):
-        assert isinstance(simple_genome_spawner.random_instruction(), Instruction)
+    def test_random_instruction(self, simple_gene_spawner):
+        assert isinstance(simple_gene_spawner.random_instruction(), Instruction)
 
-    def test_random_literal(self, simple_genome_spawner):
-        assert isinstance(simple_genome_spawner.random_literal(), Literal)
+    def test_random_literal(self, simple_gene_spawner):
+        assert isinstance(simple_gene_spawner.random_literal(), Literal)
 
-    def test_random_erc(self, simple_genome_spawner):
-        assert isinstance(simple_genome_spawner.random_erc(), Literal)
+    def test_random_erc(self, simple_gene_spawner):
+        assert isinstance(simple_gene_spawner.random_erc(), Literal)
 
-    def test_spawn_atom(self, simple_genome_spawner):
-        assert isinstance(simple_genome_spawner.spawn_atom(), Atom)
+    def test_spawn_atom(self, simple_gene_spawner):
+        assert isinstance(simple_gene_spawner.spawn_atom(), Atom)
 
-    def test_spawn_genome(self, simple_genome_spawner):
-        gn = simple_genome_spawner.spawn_genome(10)
+    def test_spawn_genome(self, simple_gene_spawner):
+        gn = simple_gene_spawner.spawn_genome(10)
         assert isinstance(gn, Genome)
         assert len(gn) == 10
 
-    def test_spawn_var_length_genome(self, simple_genome_spawner):
-        gn = simple_genome_spawner.spawn_genome((8, 10))
+    def test_spawn_var_length_genome(self, simple_gene_spawner):
+        gn = simple_gene_spawner.spawn_genome((8, 10))
         assert isinstance(gn, Genome)
         assert len(gn) >= 8
         assert len(gn) <= 10

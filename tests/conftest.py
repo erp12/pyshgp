@@ -1,10 +1,11 @@
 import pytest
+import random
 
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.atoms import Closer, Literal
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.state import PushState
-from pyshgp.gp.genome import Genome
+from pyshgp.gp.genome import Genome, GeneSpawner
 
 
 @pytest.fixture(scope="session")
@@ -38,3 +39,11 @@ def interpreter():
 @pytest.fixture(scope="function")
 def simple_genome(atoms):
     return Genome([atoms["5"], atoms["5"], atoms["add"]])
+
+
+@pytest.fixture(scope="function")
+def simple_gene_spawner(atoms):
+    i_set = InstructionSet()
+    i_set.register_list([atoms["add"], atoms["sub"], atoms["if"]])
+    l_set = [atoms["5"], atoms["1.2"], atoms["true"]]
+    return GeneSpawner(i_set, l_set, [random.random])

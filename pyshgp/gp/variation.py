@@ -14,7 +14,7 @@ from numpy.random import random, choice
 from pyshgp.push.types import PushType
 from pyshgp.push.atoms import Literal
 from pyshgp.gp.genome import Genome, GeneSpawner
-from pyshgp.utils import DiscreteProbDistrib
+from pyshgp.utils import DiscreteProbDistrib, instantiate_using
 
 
 class VariationOperator(ABC):
@@ -434,12 +434,14 @@ class Cloning(VariationOperator):
         return copy.copy(parents[0])
 
 
-def get_variation_operator(name: str) -> VariationOperator:
+def get_variation_operator(name: str, **kwargs) -> VariationOperator:
     """Get the variaton operator class with the given name."""
     name_to_cls = {
         "deletion": DeletionMutation,
         "addition": AdditionMutation,
         "alternation": Alternation,
+        "genesis": Genesis,
+        "cloning": Cloning,
         # UMAD citation: https://dl.acm.org/citation.cfm?id=3205455.3205603
         "umad": VariationPipeline([AdditionMutation(0.09), DeletionMutation(0.0826)]),
         "umad-shrink": VariationPipeline([AdditionMutation(0.09), DeletionMutation(0.1)]),
@@ -451,4 +453,6 @@ def get_variation_operator(name: str) -> VariationOperator:
             nm=name,
             lst=list(name_to_cls.keys())
         ))
+    if isinstance(op, type):
+        op = instantiate_using(op, kwargs)
     return op

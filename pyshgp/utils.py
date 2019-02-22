@@ -2,9 +2,20 @@
 from typing import Optional, Union
 from abc import ABC, abstractmethod
 from enum import Enum
+import inspect
 
 import numpy as np
 from numpy.random import choice
+
+
+def instantiate_using(cls: type, args: dict):
+    """Call the given function using only the relevant kwargs present in the args dict."""
+    arg_names = inspect.getfullargspec(cls)[0][1:]
+    kwargs = {}
+    for arg_name in arg_names:
+        if arg_name in args:
+            kwargs[arg_name] = args[arg_name]
+    return cls(**kwargs)
 
 
 class DiscreteProbDistrib:

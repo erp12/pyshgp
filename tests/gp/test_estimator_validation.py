@@ -9,7 +9,7 @@ from pyshgp.push.atoms import CodeBlock
 
 def test_ga_on_odd():
     X = np.arange(-10, 10).reshape(-1, 1)
-    y = [bool(x % 2) for x in X]
+    y = [[bool(x[0] % 2)] for x in X]
 
     instruction_set = (
         InstructionSet()

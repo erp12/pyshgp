@@ -10,7 +10,7 @@ from typing import Any, Tuple, Optional
 
 import numpy as np
 
-from pyshgp.utils import PushError
+from pyshgp.validation import PushError
 
 
 class PushType:

@@ -5,7 +5,7 @@ programs. The ``GenomeSpawner`` class is a factory of random genes (``Atoms``)
 and random ``Genomes``.
 
 """
-from typing import Callable, Sequence, Union, Tuple, Any
+from typing import Callable, Sequence, Union, Tuple, Any, Optional
 from copy import copy, deepcopy
 
 import numpy as np
@@ -16,6 +16,7 @@ from pyshgp.push.atoms import (
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.gp.evaluation import Evaluator
 from pyshgp.utils import DiscreteProbDistrib, JSONable, jsonify_collection
+from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS
 
 
 class Opener:
@@ -98,9 +99,9 @@ class Genome(list, Atom, JSONable):
                  evaluator: Evaluator,
                  origional_error: float,
                  steps: int,
-                 verbose: bool = False):
+                 verbosity_config: VerbosityConfig = None):
         """Simplify genome while preserving or improving error."""
-        simplifier = GenomeSimplifier(evaluator, verbose)
+        simplifier = GenomeSimplifier(evaluator, verbosity_config)
         gn, _ = simplifier.simplify(self, origional_error, steps)
         return gn
 
@@ -299,9 +300,9 @@ class GenomeSimplifier:
 
     # @TODO: Add noop swaps to simplification.
 
-    def __init__(self, evaluator: Evaluator, verbose: bool = False):
+    def __init__(self, evaluator: Evaluator, verbosity_config: Optional[VerbosityConfig] = None):
         self.evaluator = evaluator
-        self.verbose = verbose
+        self.verbosity_config = verbosity_config
 
     def _remove_rand_genes(self, genome: Genome) -> Genome:
         gn = genome.copy()
@@ -320,8 +321,10 @@ class GenomeSimplifier:
         new_gn = self._remove_rand_genes(genome)
         new_errs = self._errors_of_genome(new_gn)
         if np.sum(new_errs) <= np.sum(errors_to_beat):
-            if self.verbose:
-                print("Simplified genome to length {ln}.".format(ln=len(new_gn)))
+            if self.verbosity_config.simplification_step:
+                self.verbosity_config.simplification_step(
+                    "Simplified to length {ln}.".format(ln=len(new_gn))
+                )
             return new_gn, new_errs
         return genome, errors_to_beat
 
@@ -346,11 +349,26 @@ class GenomeSimplifier:
             A Genome with random contents of a given size.
 
         """
-        print("Simplifying genome of length {ln}.".format(ln=len(genome)))
+        if self.verbosity_config is None:
+            self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
+        if self.verbosity_config.simplification:
+            self.verbosity_config.simplification(
+                "Simplifying genome of length {ln}.".format(ln=len(genome))
+            )
+
         gn = genome
         errs = origional_errors
         for step in range(steps):
             gn, errs = self._step(gn, errs)
             if len(gn) == 1:
                 break
+
+        if self.verbosity_config.simplification:
+            self.verbosity_config.simplification(
+                "Simplified genome length {ln}.".format(ln=len(gn))
+            )
+            self.verbosity_config.simplification(
+                "Simplified genome total error {te}.".format(te=np.sum(errs))
+            )
+
         return gn, errs

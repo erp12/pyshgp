@@ -52,6 +52,14 @@ pip install pyshgp
 - run `pip install . --upgrade`
 - Thats it! Check out the examples and documentation.
 
+### Running Tests
+
+Run the following command from project root directory. Make sure all the packages from `requirements-with-dev.txt` are installed in the instance of python you are using.
+
+```
+python -m pytest
+```
+
 ## Documentation
 
 ### Example Usage

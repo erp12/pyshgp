@@ -38,16 +38,15 @@
 - [ ] Perform evaluation, and collect results.
 
 
-## Verbosity and Logging
+## Logging
 
 ### Goals
 
-- Add Enum of verbosity levels of OFF, ON, DEBUG
 - Implement system which produces log files for analysis
 
 ### To Do
 
-- [ ] Add verbosity level, and log directory to search config
+- [ ] Add optional log directory to search config
 - [ ] Create a directory for logs at start of each run.
 - [ ] Create a `metadata.json` file in each run log directory
   - Datetime run started

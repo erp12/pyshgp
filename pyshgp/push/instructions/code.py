@@ -289,7 +289,7 @@ def _is_empty_code_block(code: Atom) -> Tuple[bool]:
 
 def _code_size(code: Atom) -> Tuple[int]:
     if not isinstance(code, CodeBlock):
-        code = CodeBlock(code)
+        return 1,
     return code.size(),
 
 
@@ -303,13 +303,19 @@ def _code_extract(code: Atom, ndx: int) -> Union[Token, Tuple[Atom]]:
 
 
 def _code_insert(code1, code2, ndx) -> Union[Token, Tuple[Atom]]:
-    if not isinstance(code1, CodeBlock):
+    if isinstance(code1, CodeBlock):
+        code1 = code1.copy(True)
+    else:
         code1 = CodeBlock(code1)
+
+    if isinstance(code2, CodeBlock):
+        code2 = code2.copy(True)
+
     if code1.size() == 0:
         code1.append(code2)
         return code1,
     ndx = abs(ndx) % code1.size()
-    return code1.copy().insert_code_at_point(code2, ndx),
+    return code1.insert_code_at_point(code2, ndx),
 
 
 def _code_first_position(code1, code2) -> Union[Token, Tuple[Atom]]:

@@ -2,7 +2,8 @@ import pytest
 
 from pyshgp.push.stack import PushStack
 from pyshgp.push.types import PushInt, PushStr
-from pyshgp.utils import PushError, Token
+from pyshgp.utils import Token
+from pyshgp.validation import PushError
 
 
 @pytest.fixture(scope="function")

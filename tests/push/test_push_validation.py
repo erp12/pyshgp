@@ -14,44 +14,44 @@ def load_program(name: str) -> CodeBlock:
 
 def test_program_relu_1(interpreter: PushInterpreter):
     prog = load_program("relu_via_max")
-    result = interpreter.run(prog, [-5], ["float"], verbose=True)
+    result = interpreter.run(prog, [-5], ["float"])
     assert result == [0.0]
 
-    result = interpreter.run(prog, [5.6], ["float"], verbose=True)
+    result = interpreter.run(prog, [5.6], ["float"])
     assert result == [5.6]
 
 
 def test_program_relu_2(interpreter: PushInterpreter):
     prog = load_program("relu_via_if")
-    result = interpreter.run(prog, [-5], ["float"], verbose=True)
+    result = interpreter.run(prog, [-5], ["float"])
     assert result == [0.0]
 
-    result = interpreter.run(prog, [5.6], ["float"], verbose=True)
+    result = interpreter.run(prog, [5.6], ["float"])
     assert result == [5.6]
 
 
 def test_program_fibonacci(interpreter: PushInterpreter):
     prog = load_program("fibonacci")
-    interpreter.run(prog, [5], [], verbose=True)
+    interpreter.run(prog, [5], [])
     assert list(interpreter.state["int"]) == [1, 1, 2, 3, 5]
 
-    interpreter.run(prog, [1], [], verbose=True)
+    interpreter.run(prog, [1], [])
     assert list(interpreter.state["int"]) == [1]
 
-    interpreter.run(prog, [-3], [], verbose=True)
+    interpreter.run(prog, [-3], [])
     assert list(interpreter.state["int"]) == []
 
 
 def test_program_rswn(interpreter: PushInterpreter):
     prog = load_program("replace_space_with_newline")
-    interpreter.run(prog, ["hello world"], [], verbose=True)
+    interpreter.run(prog, ["hello world"], [])
     assert list(interpreter.state["int"]) == [10]
     assert interpreter.state.stdout == "hello\nworld"
 
-    interpreter.run(prog, ["nospace"], [], verbose=True)
+    interpreter.run(prog, ["nospace"], [])
     assert list(interpreter.state["int"]) == [7]
     assert interpreter.state.stdout == "nospace"
 
-    interpreter.run(prog, ["   "], [], verbose=True)
+    interpreter.run(prog, ["   "], [])
     assert list(interpreter.state["int"]) == [0]
     assert interpreter.state.stdout == "\n\n\n"

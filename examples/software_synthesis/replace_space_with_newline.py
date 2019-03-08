@@ -12,6 +12,7 @@ import numpy as np
 import time
 import string
 import logging
+import sys
 
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
@@ -114,7 +115,11 @@ est = PushEstimator(
 )
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+        stream=sys.stdout
+    )
     start = time.time()
     est.fit(X=X_train, y=y_train)
     end = time.time()

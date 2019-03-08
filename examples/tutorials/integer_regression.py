@@ -1,7 +1,8 @@
 import logging
 import random
-
 import numpy as np
+import sys
+
 from pyshgp.gp.selection import Lexicase
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
@@ -38,11 +39,15 @@ est = PushEstimator(
     max_generations=50,
     spawner=spawner,
     selector=ep_lex_sel,
-    verbose=1
+    verbose=2
 )
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+        stream=sys.stdout
+    )
     est.fit(X=X, y=y)
     print(est._result.program)
     print(est.predict(X))

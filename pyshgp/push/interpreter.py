@@ -128,8 +128,8 @@ class PushInterpreter:
 
     def reset(self):
         """Reset the interpreter status and PushState."""
-        self.state: PushState = PushState(self._supported_types)
-        self.status: PushInterpreterStatus = PushInterpreterStatus.normal
+        self.state = PushState(self._supported_types)
+        self.status = PushInterpreterStatus.normal
 
     def _evaluate_instruction(self, instruction: Union[Instruction, JitInstructionRef]):
         self.state = instruction.evaluate(self.state, self.config)
@@ -158,7 +158,7 @@ class PushInterpreter:
                 raise PushError("Closers should not be in push programs. Only genomes.")
             else:
                 raise PushError("Cannont evaluate {t}, require a subclass of Atom".format(t=type(atom)))
-        except (TypeError, ValueError) as e:
+        except Exception as e:
             err_type = type(e).__name__
             err_msg = str(e)
             raise PushError(

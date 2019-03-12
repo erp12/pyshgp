@@ -8,6 +8,8 @@ Contents
    :maxdepth: 2
 
    api
+   instructions
+   release_notes
    contributing
 
 

@@ -1,4 +1,5 @@
 import math
+import sys
 
 from pyshgp.push.atoms import Literal, CodeBlock, JitInstructionRef
 from pyshgp.push.interpreter import DEFAULT_INTERPRETER
@@ -27,6 +28,11 @@ SPECS = [
         "instr": i_set["float_dup_times"],
         "in": {"int": [3], "float": [1.23]},
         "ex": {"int": [],  "float": [1.23, 1.23, 1.23]}
+    },
+    {
+        "instr": i_set["bool_dup_times"],
+        "in": {"int": [sys.maxsize + 1], "bool": [True]},
+        "ex": {"int": [],               "bool": [True] * 500}
     },
     {
         "instr": i_set["char_swap"],

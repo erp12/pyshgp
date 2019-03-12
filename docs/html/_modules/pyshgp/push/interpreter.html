@@ -168,8 +168,8 @@
 
 <div class="viewcode-block" id="PushInterpreter.reset"><a class="viewcode-back" href="../../../api/pyshgp.push.interpreter.html#pyshgp.push.interpreter.PushInterpreter.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reset the interpreter status and PushState.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">:</span> <span class="n">PushState</span> <span class="o">=</span> <span class="n">PushState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">:</span> <span class="n">PushInterpreterStatus</span> <span class="o">=</span> <span class="n">PushInterpreterStatus</span><span class="o">.</span><span class="n">normal</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">PushState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">PushInterpreterStatus</span><span class="o">.</span><span class="n">normal</span></div>
 
     <span class="k">def</span> <span class="nf">_evaluate_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Instruction</span><span class="p">,</span> <span class="n">JitInstructionRef</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">instruction</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
@@ -198,7 +198,7 @@
                 <span class="k">raise</span> <span class="n">PushError</span><span class="p">(</span><span class="s2">&quot;Closers should not be in push programs. Only genomes.&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">PushError</span><span class="p">(</span><span class="s2">&quot;Cannont evaluate </span><span class="si">{t}</span><span class="s2">, require a subclass of Atom&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">atom</span><span class="p">)))</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">err_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="n">err_msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">PushError</span><span class="p">(</span>
@@ -328,7 +328,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

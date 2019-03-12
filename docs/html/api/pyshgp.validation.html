@@ -17,7 +17,7 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Contributing" href="../contributing.html" />
+    <link rel="next" title="Push Instructions" href="../instructions.html" />
     <link rel="prev" title="pyshgp.utils module" href="pyshgp.utils.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../contributing.html" title="Contributing"
+          <a href="../instructions.html" title="Push Instructions"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="pyshgp.utils.html" title="pyshgp.utils module"
@@ -83,19 +83,19 @@
 
 <dl class="function">
 <dt id="pyshgp.validation.check_1d">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_1d</code><span class="sig-paren">(</span><em>seq: Sequence[T_co]</em><span class="sig-paren">)</span> &#x2192; Sequence[T_co]<a class="reference internal" href="../_modules/pyshgp/validation.html#check_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_1d" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyshgp.validation.</code><code class="descname">check_1d</code><span class="sig-paren">(</span><em>seq: Sequence</em><span class="sig-paren">)</span> &#x2192; Sequence<a class="reference internal" href="../_modules/pyshgp/validation.html#check_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check given seq is one-dimensional. Raise error if can’t be easily transformed.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="pyshgp.validation.check_2d">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_2d</code><span class="sig-paren">(</span><em>seq: Sequence[T_co]</em><span class="sig-paren">)</span> &#x2192; Sequence[T_co]<a class="reference internal" href="../_modules/pyshgp/validation.html#check_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_2d" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyshgp.validation.</code><code class="descname">check_2d</code><span class="sig-paren">(</span><em>seq: Sequence</em><span class="sig-paren">)</span> &#x2192; Sequence<a class="reference internal" href="../_modules/pyshgp/validation.html#check_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check given seq is two-dimensional. Raise error if can’t be easily transformed.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="pyshgp.validation.check_X_y">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_X_y</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span> &#x2192; Tuple[Sequence[T_co], Sequence[T_co], int, Sequence[T_co]]<a class="reference internal" href="../_modules/pyshgp/validation.html#check_X_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_X_y" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyshgp.validation.</code><code class="descname">check_X_y</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span> &#x2192; Tuple[Sequence, Sequence, int, Sequence]<a class="reference internal" href="../_modules/pyshgp/validation.html#check_X_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_X_y" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check the given X and y datasets are prepared to be passed to a PushEstimator.</p>
 <p>Inspired by the scikit-learn function with the same name.
 <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.utils.check_X_y.html#sklearn.utils.check_X_y">https://scikit-learn.org/stable/modules/generated/sklearn.utils.check_X_y.html#sklearn.utils.check_X_y</a></p>
@@ -103,7 +103,7 @@
 
 <dl class="function">
 <dt id="pyshgp.validation.check_column_types">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_column_types</code><span class="sig-paren">(</span><em>seq: Sequence[T_co], certainty_proportion: float = 0.2</em><span class="sig-paren">)</span> &#x2192; Sequence[type]<a class="reference internal" href="../_modules/pyshgp/validation.html#check_column_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_column_types" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyshgp.validation.</code><code class="descname">check_column_types</code><span class="sig-paren">(</span><em>seq: Sequence</em>, <em>certainty_proportion: float = 0.2</em><span class="sig-paren">)</span> &#x2192; Sequence[type]<a class="reference internal" href="../_modules/pyshgp/validation.html#check_column_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_column_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check all elements of each column are of the same type.</p>
 </dd></dl>
 
@@ -117,7 +117,7 @@
 
 <dl class="function">
 <dt id="pyshgp.validation.check_num_columns">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_num_columns</code><span class="sig-paren">(</span><em>seq: Sequence[T_co], certainty_proportion: float = 0.2</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/pyshgp/validation.html#check_num_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_num_columns" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyshgp.validation.</code><code class="descname">check_num_columns</code><span class="sig-paren">(</span><em>seq: Sequence</em>, <em>certainty_proportion: float = 0.2</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/pyshgp/validation.html#check_num_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_num_columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of columns of in the dataset.</p>
 </dd></dl>
 
@@ -133,8 +133,8 @@
   <p class="topless"><a href="pyshgp.utils.html"
                         title="previous chapter">pyshgp.utils module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../contributing.html"
-                        title="next chapter">Contributing</a></p>
+  <p class="topless"><a href="../instructions.html"
+                        title="next chapter">Push Instructions</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -168,7 +168,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../contributing.html" title="Contributing"
+          <a href="../instructions.html" title="Push Instructions"
              >next</a> |</li>
         <li class="right" >
           <a href="pyshgp.utils.html" title="pyshgp.utils module"
@@ -181,7 +181,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

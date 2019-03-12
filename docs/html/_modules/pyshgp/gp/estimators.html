@@ -40,12 +40,7 @@
   <h1>Source code for pyshgp.gp.estimators</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;The :mod:`estimator` module defines a ``PushEstimator`` class.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span><span class="p">,</span> <span class="n">check_X_y</span>
 
 <span class="kn">import</span> <span class="nn">pyshgp.gp.search</span> <span class="k">as</span> <span class="nn">sr</span>
 <span class="kn">import</span> <span class="nn">pyshgp.gp.selection</span> <span class="k">as</span> <span class="nn">sl</span>
@@ -56,11 +51,13 @@
 <span class="kn">from</span> <span class="nn">pyshgp.push.interpreter</span> <span class="k">import</span> <span class="n">PushInterpreter</span><span class="p">,</span> <span class="n">DEFAULT_INTERPRETER</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">CodeBlock</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">push_type_for_type</span>
-<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">JSONable</span>
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">JSONable</span><span class="p">,</span> <span class="n">list_rindex</span>
+<span class="kn">from</span> <span class="nn">pyshgp.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span><span class="p">,</span> <span class="n">check_X_y</span>
+<span class="kn">from</span> <span class="nn">pyshgp.monitoring</span> <span class="k">import</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span>
 
 
 <div class="viewcode-block" id="SearchResult"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.SearchResult">[docs]</a><span class="k">class</span> <span class="nc">SearchResult</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The best program found by a search algorith and the types it outputs.</span>
+    <span class="sd">&quot;&quot;&quot;The best program found by a search algorithm and the types it outputs.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -141,6 +138,9 @@
 <span class="sd">    interpreter : PushInterpreter, optional</span>
 <span class="sd">        The PushInterpreter to use when making predictions. Also holds the instruction</span>
 <span class="sd">        set to use</span>
+<span class="sd">    verbose : int, optional</span>
+<span class="sd">        Indicates if verbose printing should be used during searching.</span>
+<span class="sd">        Default is 0. Options are 0, 1, or 2.</span>
 <span class="sd">    **kwargs</span>
 <span class="sd">        Arbitrary keyword arguments. Examples of supported arguments are</span>
 <span class="sd">        `epsilon` (bool or float) when using Lexicase as the selector, and</span>
@@ -149,17 +149,19 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">search</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">sr</span><span class="o">.</span><span class="n">SearchAlgorithm</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;GA&quot;</span><span class="p">,</span>
-                 <span class="n">spawner</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GeneSpawner</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                 <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">,</span>
+                 <span class="n">search</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GA&quot;</span><span class="p">,</span>
                  <span class="n">selector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">sl</span><span class="o">.</span><span class="n">Selector</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;lexicase&quot;</span><span class="p">,</span>
                  <span class="n">variation_strategy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">vr</span><span class="o">.</span><span class="n">VariationStrategy</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;umad&quot;</span><span class="p">,</span>
                  <span class="n">population_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
                  <span class="n">max_generations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
                  <span class="n">initial_genome_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
                  <span class="n">simplification_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span>
+                 <span class="n">last_str_from_stdout</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">interpreter</span><span class="p">:</span> <span class="n">PushInterpreter</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">search</span> <span class="o">=</span> <span class="n">search</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_search_name</span> <span class="o">=</span> <span class="n">search</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spawner</span> <span class="o">=</span> <span class="n">spawner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">selector</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span> <span class="o">=</span> <span class="n">variation_strategy</span>
@@ -167,6 +169,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">max_generations</span> <span class="o">=</span> <span class="n">max_generations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_genome_size</span> <span class="o">=</span> <span class="n">initial_genome_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">simplification_steps</span> <span class="o">=</span> <span class="n">simplification_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_str_from_stdout</span> <span class="o">=</span> <span class="n">last_str_from_stdout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
         <span class="k">if</span> <span class="n">interpreter</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span> <span class="o">=</span> <span class="n">DEFAULT_INTERPRETER</span>
@@ -175,66 +179,30 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ext</span> <span class="o">=</span> <span class="n">kwargs</span>
 
-    <span class="k">def</span> <span class="nf">_build_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">arg_names</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">component_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="k">for</span> <span class="n">arg_name</span> <span class="ow">in</span> <span class="n">arg_names</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">arg_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">:</span>
-                <span class="n">args</span><span class="p">[</span><span class="n">arg_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">[</span><span class="n">arg_name</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">component_cls</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">_build_search_algo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spawner</span><span class="p">,</span> <span class="n">GeneSpawner</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_spawner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spawner</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">spawner</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_spawner</span> <span class="o">=</span> <span class="n">GeneSpawner</span><span class="p">(</span>
-                <span class="n">instruction_set</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">instruction_set</span><span class="p">,</span>
-                <span class="n">literals</span><span class="o">=</span><span class="p">[],</span>
-                <span class="n">erc_generators</span><span class="o">=</span><span class="p">[]</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bad spawner: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spawner</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="p">,</span> <span class="n">sl</span><span class="o">.</span><span class="n">Selector</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">selector_cls</span> <span class="o">=</span> <span class="n">sl</span><span class="o">.</span><span class="n">get_selector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_selector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_component</span><span class="p">(</span><span class="n">selector_cls</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="p">,</span> <span class="n">vr</span><span class="o">.</span><span class="n">VariationStrategy</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_variation_strategy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_variation_strategy</span> <span class="o">=</span> <span class="n">vr</span><span class="o">.</span><span class="n">VariationStrategy</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">prob</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">var_op</span> <span class="o">=</span> <span class="n">vr</span><span class="o">.</span><span class="n">get_variation_operator</span><span class="p">(</span><span class="n">op_name</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var_op</span><span class="p">,</span> <span class="n">vr</span><span class="o">.</span><span class="n">VariationOperator</span><span class="p">):</span>
-                        <span class="n">var_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_component</span><span class="p">(</span><span class="n">var_op</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_variation_strategy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">var_op</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">var_op</span> <span class="o">=</span> <span class="n">vr</span><span class="o">.</span><span class="n">get_variation_operator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">var_strat</span> <span class="o">=</span> <span class="n">vr</span><span class="o">.</span><span class="n">VariationStrategy</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">prob</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">var_op</span> <span class="o">=</span> <span class="n">vr</span><span class="o">.</span><span class="n">get_variation_operator</span><span class="p">(</span><span class="n">op_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var_op</span><span class="p">,</span> <span class="n">vr</span><span class="o">.</span><span class="n">VariationOperator</span><span class="p">):</span>
                     <span class="n">var_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_component</span><span class="p">(</span><span class="n">var_op</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_variation_strategy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">var_op</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+                <span class="n">var_strat</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">var_op</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span> <span class="o">=</span> <span class="n">var_strat</span>
 
         <span class="n">search_config</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">SearchConfiguration</span><span class="p">(</span>
-            <span class="n">spawning</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_spawner</span><span class="p">,</span>
+            <span class="n">spawner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spawner</span><span class="p">,</span>
             <span class="n">evaluator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span><span class="p">,</span>
-            <span class="n">selection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_selector</span><span class="p">,</span>
-            <span class="n">variation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_variation_strategy</span><span class="p">,</span>
+            <span class="n">selection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="p">,</span>
+            <span class="n">variation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="p">,</span>
             <span class="n">population_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">population_size</span><span class="p">,</span>
             <span class="n">max_generations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_generations</span><span class="p">,</span>
             <span class="n">initial_genome_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_genome_size</span><span class="p">,</span>
-            <span class="n">simplification_steps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">simplification_steps</span>
+            <span class="n">simplification_steps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">simplification_steps</span><span class="p">,</span>
+            <span class="n">verbosity_config</span><span class="o">=</span><span class="n">DEFAULT_VERBOSITY_LEVELS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">]</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">get_search_algo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">search_config</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">,</span> <span class="n">sr</span><span class="o">.</span><span class="n">SearchAlgorithm</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_search</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">search_algo_cls</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">get_search_algo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_search</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_component</span><span class="p">(</span><span class="n">search_algo_cls</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">search_config</span><span class="p">)</span>
-
-<div class="viewcode-block" id="PushEstimator.fit"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="PushEstimator.fit"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run the search algorithm to synthesize a push program.</span>
 
 <span class="sd">        Parameters</span>
@@ -244,50 +212,26 @@
 <span class="sd">        y : list, array-like, or pandas dataframe.</span>
 <span class="sd">            The target values (class labels in classification, real numbers in</span>
 <span class="sd">            regression). Shape = [n_samples] or [n_samples, n_outputs]</span>
-<span class="sd">        verbose : bool, optional</span>
-<span class="sd">            Indicates if verbose printing should be used during searching.</span>
-<span class="sd">            Default is False.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">force_all_finite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_nd</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">multi_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">arity</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">arity</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">arity</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                <span class="n">arity</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">arity</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">arity</span><span class="p">,</span> <span class="n">y_types</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">instruction_set</span><span class="o">.</span><span class="n">register_n_inputs</span><span class="p">(</span><span class="n">arity</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-            <span class="n">y_types</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dtypes</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-            <span class="n">y_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">y_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">y_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="c1"># @TODO: Implement a better way to detect type than check the first element.</span>
-            <span class="n">y_types</span> <span class="o">=</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">y_types</span> <span class="o">=</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
         <span class="n">output_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">push_type_for_type</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">y_types</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">DatasetEvaluator</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">interpreter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_str_from_stdout</span><span class="p">:</span>
+            <span class="n">ndx</span> <span class="o">=</span> <span class="n">list_rindex</span><span class="p">(</span><span class="n">output_types</span><span class="p">,</span> <span class="s2">&quot;str&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ndx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">output_types</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;stdout&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">DatasetEvaluator</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+            <span class="n">interpreter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="p">,</span>
+            <span class="n">last_str_from_stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_str_from_stdout</span><span class="p">,</span>
+            <span class="n">verbosity_config</span><span class="o">=</span><span class="n">DEFAULT_VERBOSITY_LEVELS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">]</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_search_algo</span><span class="p">()</span>
-        <span class="n">best_seen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-
+        <span class="n">best_seen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">SearchResult</span><span class="p">(</span><span class="n">best_seen</span><span class="o">.</span><span class="n">program</span><span class="p">,</span> <span class="n">output_types</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PushEstimator.predict"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="PushEstimator.predict"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute the synthesized push program on a dataset.</span>
 
 <span class="sd">        Parameters</span>
@@ -305,7 +249,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_result&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">program</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">output_types</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span> <span class="k">for</span> <span class="n">inputs</span> <span class="ow">in</span> <span class="n">X</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">program</span><span class="p">,</span>
+                <span class="n">inputs</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">output_types</span><span class="p">,</span>
+                <span class="n">verbosity_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_config</span>
+            <span class="p">)</span> <span class="k">for</span> <span class="n">inputs</span> <span class="ow">in</span> <span class="n">X</span>
         <span class="p">]</span></div>
 
 <div class="viewcode-block" id="PushEstimator.score"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -322,7 +271,8 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_result&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">DatasetEvaluator</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">arity</span><span class="p">,</span> <span class="n">y_types</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">DatasetEvaluator</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">program</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PushEstimator.save"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>

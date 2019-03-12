@@ -45,7 +45,7 @@
 <span class="sd">and random ``Genomes``.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">copy</span><span class="p">,</span> <span class="n">deepcopy</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -56,6 +56,7 @@
 <span class="kn">from</span> <span class="nn">pyshgp.push.instruction_set</span> <span class="k">import</span> <span class="n">InstructionSet</span>
 <span class="kn">from</span> <span class="nn">pyshgp.gp.evaluation</span> <span class="k">import</span> <span class="n">Evaluator</span>
 <span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">DiscreteProbDistrib</span><span class="p">,</span> <span class="n">JSONable</span><span class="p">,</span> <span class="n">jsonify_collection</span>
+<span class="kn">from</span> <span class="nn">pyshgp.monitoring</span> <span class="k">import</span> <span class="n">VerbosityConfig</span><span class="p">,</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span>
 
 
 <div class="viewcode-block" id="Opener"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Opener">[docs]</a><span class="k">class</span> <span class="nc">Opener</span><span class="p">:</span>
@@ -138,9 +139,9 @@
                  <span class="n">evaluator</span><span class="p">:</span> <span class="n">Evaluator</span><span class="p">,</span>
                  <span class="n">origional_error</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                  <span class="n">steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                 <span class="n">verbosity_config</span><span class="p">:</span> <span class="n">VerbosityConfig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simplify genome while preserving or improving error.&quot;&quot;&quot;</span>
-        <span class="n">simplifier</span> <span class="o">=</span> <span class="n">GenomeSimplifier</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+        <span class="n">simplifier</span> <span class="o">=</span> <span class="n">GenomeSimplifier</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="n">verbosity_config</span><span class="p">)</span>
         <span class="n">gn</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">simplifier</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origional_error</span><span class="p">,</span> <span class="n">steps</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">gn</span></div>
 
@@ -339,9 +340,9 @@
 
     <span class="c1"># @TODO: Add noop swaps to simplification.</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evaluator</span><span class="p">:</span> <span class="n">Evaluator</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evaluator</span><span class="p">:</span> <span class="n">Evaluator</span><span class="p">,</span> <span class="n">verbosity_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VerbosityConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">evaluator</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span> <span class="o">=</span> <span class="n">verbosity_config</span>
 
     <span class="k">def</span> <span class="nf">_remove_rand_genes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genome</span><span class="p">:</span> <span class="n">Genome</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="n">gn</span> <span class="o">=</span> <span class="n">genome</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -360,8 +361,10 @@
         <span class="n">new_gn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_rand_genes</span><span class="p">(</span><span class="n">genome</span><span class="p">)</span>
         <span class="n">new_errs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors_of_genome</span><span class="p">(</span><span class="n">new_gn</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">new_errs</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">errors_to_beat</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Simplified genome to length </span><span class="si">{ln}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">new_gn</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification_step</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification_step</span><span class="p">(</span>
+                    <span class="s2">&quot;Simplified to length </span><span class="si">{ln}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">new_gn</span><span class="p">))</span>
+                <span class="p">)</span>
             <span class="k">return</span> <span class="n">new_gn</span><span class="p">,</span> <span class="n">new_errs</span>
         <span class="k">return</span> <span class="n">genome</span><span class="p">,</span> <span class="n">errors_to_beat</span>
 
@@ -386,13 +389,28 @@
 <span class="sd">            A Genome with random contents of a given size.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Simplifying genome of length </span><span class="si">{ln}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">genome</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span> <span class="o">=</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">(</span>
+                <span class="s2">&quot;Simplifying genome of length </span><span class="si">{ln}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">genome</span><span class="p">))</span>
+            <span class="p">)</span>
+
         <span class="n">gn</span> <span class="o">=</span> <span class="n">genome</span>
         <span class="n">errs</span> <span class="o">=</span> <span class="n">origional_errors</span>
         <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
             <span class="n">gn</span><span class="p">,</span> <span class="n">errs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">gn</span><span class="p">,</span> <span class="n">errs</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gn</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">break</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">(</span>
+                <span class="s2">&quot;Simplified genome length </span><span class="si">{ln}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">gn</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">(</span>
+                <span class="s2">&quot;Simplified genome total error </span><span class="si">{te}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">te</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">errs</span><span class="p">))</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="n">gn</span><span class="p">,</span> <span class="n">errs</span></div></div>
 </pre></div>
 

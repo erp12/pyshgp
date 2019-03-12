@@ -329,7 +329,7 @@
 
 <span class="k">def</span> <span class="nf">_code_size</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="n">Atom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">CodeBlock</span><span class="p">):</span>
-        <span class="n">code</span> <span class="o">=</span> <span class="n">CodeBlock</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="p">,</span>
     <span class="k">return</span> <span class="n">code</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span>
 
 
@@ -343,13 +343,19 @@
 
 
 <span class="k">def</span> <span class="nf">_code_insert</span><span class="p">(</span><span class="n">code1</span><span class="p">,</span> <span class="n">code2</span><span class="p">,</span> <span class="n">ndx</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Token</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Atom</span><span class="p">]]:</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code1</span><span class="p">,</span> <span class="n">CodeBlock</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code1</span><span class="p">,</span> <span class="n">CodeBlock</span><span class="p">):</span>
+        <span class="n">code1</span> <span class="o">=</span> <span class="n">code1</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
         <span class="n">code1</span> <span class="o">=</span> <span class="n">CodeBlock</span><span class="p">(</span><span class="n">code1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code2</span><span class="p">,</span> <span class="n">CodeBlock</span><span class="p">):</span>
+        <span class="n">code2</span> <span class="o">=</span> <span class="n">code2</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">code1</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">code1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">code2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">code1</span><span class="p">,</span>
     <span class="n">ndx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ndx</span><span class="p">)</span> <span class="o">%</span> <span class="n">code1</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">code1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">insert_code_at_point</span><span class="p">(</span><span class="n">code2</span><span class="p">,</span> <span class="n">ndx</span><span class="p">),</span>
+    <span class="k">return</span> <span class="n">code1</span><span class="o">.</span><span class="n">insert_code_at_point</span><span class="p">(</span><span class="n">code2</span><span class="p">,</span> <span class="n">ndx</span><span class="p">),</span>
 
 
 <span class="k">def</span> <span class="nf">_code_first_position</span><span class="p">(</span><span class="n">code1</span><span class="p">,</span> <span class="n">code2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Token</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Atom</span><span class="p">]]:</span>

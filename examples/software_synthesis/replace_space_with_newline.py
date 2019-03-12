@@ -111,6 +111,7 @@ est = PushEstimator(
     population_size=1000,
     max_generations=100,
     spawner=spawner,
+    last_str_from_stdout=True,
     verbose=2
 )
 

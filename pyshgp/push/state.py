@@ -110,9 +110,12 @@ class PushState(dict):
         values = []
         counts = {}
         for typ in types:
-            ndx = counts.get(typ, 0)
-            values.append(self[typ].nth(ndx))
-            counts[typ] = ndx + 1
+            if typ == "stdout":
+                values.append(self.stdout)
+            else:
+                ndx = counts.get(typ, 0)
+                values.append(self[typ].nth(ndx))
+                counts[typ] = ndx + 1
         return values
 
     def pop_from_stacks(self, types: Sequence[str]) -> Union[Sequence, Token]:

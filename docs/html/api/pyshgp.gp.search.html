@@ -147,17 +147,8 @@ selection and variation (producing children).</p>
 
 <dl class="method">
 <dt id="pyshgp.gp.search.SearchAlgorithm.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchAlgorithm.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchAlgorithm.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchAlgorithm.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchAlgorithm.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the algorithm until termination.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if verbose printing should be used during searching.
-Default is False.</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -174,7 +165,7 @@ assign a new Population to the population attribute.</p>
 
 <dl class="class">
 <dt id="pyshgp.gp.search.SearchConfiguration">
-<em class="property">class </em><code class="descclassname">pyshgp.gp.search.</code><code class="descname">SearchConfiguration</code><span class="sig-paren">(</span><em>evaluator: pyshgp.gp.evaluation.Evaluator, spawning: Union[pyshgp.gp.genome.GeneSpawner, pyshgp.utils.DiscreteProbDistrib], selection: Union[pyshgp.gp.selection.Selector, pyshgp.utils.DiscreteProbDistrib, str] = 'lexicase', variation: Union[pyshgp.gp.variation.VariationOperator, pyshgp.utils.DiscreteProbDistrib, str] = 'umad', population_size: int = 500, max_generations: int = 100, error_threshold: float = 0.0, initial_genome_size: Tuple[int, int] = (10, 50), simplification_steps: int = 2000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchConfiguration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchConfiguration" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyshgp.gp.search.</code><code class="descname">SearchConfiguration</code><span class="sig-paren">(</span><em>evaluator: pyshgp.gp.evaluation.Evaluator</em>, <em>spawner: pyshgp.gp.genome.GeneSpawner</em>, <em>selection: Union[pyshgp.gp.selection.Selector</em>, <em>pyshgp.utils.DiscreteProbDistrib</em>, <em>str] = 'lexicase'</em>, <em>variation: Union[pyshgp.gp.variation.VariationOperator</em>, <em>pyshgp.utils.DiscreteProbDistrib</em>, <em>str] = 'umad'</em>, <em>population_size: int = 500</em>, <em>max_generations: int = 100</em>, <em>error_threshold: float = 0.0</em>, <em>initial_genome_size: Tuple[int</em>, <em>int] = (10</em>, <em>50)</em>, <em>simplification_steps: int = 2000</em>, <em>verbosity_config: Union[pyshgp.monitoring.VerbosityConfig</em>, <em>str] = 'default'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchConfiguration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchConfiguration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Configuration of an search algorithm.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -183,8 +174,8 @@ assign a new Population to the population attribute.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>evaluator</strong> (<a class="reference internal" href="pyshgp.gp.evaluation.html#pyshgp.gp.evaluation.Evaluator" title="pyshgp.gp.evaluation.Evaluator"><em>Evaluator</em></a>) – The Evaluator to use when evaluating individuals.</li>
-<li><strong>spawning</strong> (<em>Union</em><em>[</em><a class="reference internal" href="pyshgp.gp.genome.html#pyshgp.gp.genome.GeneSpawner" title="pyshgp.gp.genome.GeneSpawner"><em>GeneSpawner</em></a><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – The GeneSpawner, or DiscreteProbDistrib of gene spawners to use when
-producing Genomes during initialization and variation.</li>
+<li><strong>spawning</strong> (<a class="reference internal" href="pyshgp.gp.genome.html#pyshgp.gp.genome.GeneSpawner" title="pyshgp.gp.genome.GeneSpawner"><em>GeneSpawner</em></a>) – The GeneSpawner to use when producing Genomes during initialization and
+variation.</li>
 <li><strong>selection</strong> (<em>Union</em><em>[</em><a class="reference internal" href="pyshgp.gp.selection.html#pyshgp.gp.selection.Selector" title="pyshgp.gp.selection.Selector"><em>Selector</em></a><em>, </em><a class="reference internal" href="pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib" title="pyshgp.utils.DiscreteProbDistrib"><em>DiscreteProbDistrib</em></a><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – A Selector, or DiscreteProbDistrib of selectors, to use when selecting
 parents. The default is lexicase selection.</li>
 <li><strong>variation</strong> (<em>Union</em><em>[</em><a class="reference internal" href="pyshgp.gp.variation.html#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator"><em>VariationOperator</em></a><em>, </em><a class="reference internal" href="pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib" title="pyshgp.utils.DiscreteProbDistrib"><em>DiscreteProbDistrib</em></a><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – A VariationOperator, or DiscreteProbDistrib of VariationOperators, to
@@ -196,8 +187,10 @@ is 300.</li>
 than this values, stop searching. Default is 0.0.</li>
 <li><strong>initial_genome_size</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>, </em><em>optional</em>) – The range of genome sizes to produce during initialization. Default is
 (20, 100)</li>
-<li><strong>simplification_steps</strong> (<em>int</em>) – The number of simplification iterations to apply to the best Push program
-produced by the search algorithm.</li>
+<li><strong>simplification_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of simplification iterations to apply to the best Push program
+produced by the search algorithm. Default is 2000.</li>
+<li><strong>verbosity_config</strong> (<em>Union</em><em>[</em><a class="reference internal" href="pyshgp.monitoring.html#pyshgp.monitoring.VerbosityConfig" title="pyshgp.monitoring.VerbosityConfig"><em>VerbosityConfig</em></a><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – A VerbosityConfig controling what is logged during the search. Default
+is no verbosity.</li>
 </ul>
 </td>
 </tr>
@@ -210,14 +203,8 @@ produced by the search algorithm.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyshgp.gp.search.SearchConfiguration.get_spawner">
-<code class="descname">get_spawner</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchConfiguration.get_spawner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchConfiguration.get_spawner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a GeneSpawner.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyshgp.gp.search.SearchConfiguration.get_variation_operator">
-<code class="descname">get_variation_operator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchConfiguration.get_variation_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchConfiguration.get_variation_operator" title="Permalink to this definition">¶</a></dt>
+<dt id="pyshgp.gp.search.SearchConfiguration.get_variation_op">
+<code class="descname">get_variation_op</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchConfiguration.get_variation_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchConfiguration.get_variation_op" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a VariationOperator.</p>
 </dd></dl>
 
@@ -249,52 +236,8 @@ Population.</p>
 
 <dl class="function">
 <dt id="pyshgp.gp.search.get_search_algo">
-<code class="descclassname">pyshgp.gp.search.</code><code class="descname">get_search_algo</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.search.SearchAlgorithm<a class="reference internal" href="../_modules/pyshgp/gp/search.html#get_search_algo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.get_search_algo" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyshgp.gp.search.</code><code class="descname">get_search_algo</code><span class="sig-paren">(</span><em>name: str</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.search.SearchAlgorithm<a class="reference internal" href="../_modules/pyshgp/gp/search.html#get_search_algo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.get_search_algo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the search algorithm class with the given name.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.gp.search.random">
-<code class="descclassname">pyshgp.gp.search.</code><code class="descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.gp.search.random" title="Permalink to this definition">¶</a></dt>
-<dd><p>random_sample(size=None)</p>
-<p>Return random floats in the half-open interval [0.0, 1.0).</p>
-<p>Results are from the “continuous uniform” distribution over the
-stated interval.  To sample <span class="math notranslate nohighlight">\(Unif[a, b), b &gt; a\)</span> multiply
-the output of <cite>random_sample</cite> by <cite>(b-a)</cite> and add <cite>a</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">random_sample</span><span class="p">()</span> <span class="o">+</span> <span class="n">a</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> (<em>int</em><em> or </em><em>tuple of ints</em><em>, </em><em>optional</em>) – Output shape.  If the given shape is, e.g., <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then
-<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn.  Default is None, in which case a
-single value is returned.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>out</strong> – Array of random floats of shape <cite>size</cite> (unless <code class="docutils literal notranslate"><span class="pre">size=None</span></code>, in which
-case a single float is returned).</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float or ndarray of floats</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">()</span>
-<span class="go">0.47108547995356098</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">())</span>
-<span class="go">&lt;type &#39;float&#39;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="mi">5</span><span class="p">,))</span>
-<span class="go">array([ 0.30220482,  0.86820401,  0.1654503 ,  0.11659149,  0.54323428])</span>
-</pre></div>
-</div>
-<p>Three-by-two array of random numbers from [-5, 0):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">5</span>
-<span class="go">array([[-3.99149989, -0.52338984],</span>
-<span class="go">       [-2.99091858, -0.79479508],</span>
-<span class="go">       [-1.23204345, -1.75224494]])</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </div>
@@ -358,7 +301,7 @@ case a single float is returned).</td>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

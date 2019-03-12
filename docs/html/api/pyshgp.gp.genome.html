@@ -270,7 +270,7 @@ size in the range of the two integers.</td>
 
 <dl class="method">
 <dt id="pyshgp.gp.genome.Genome.simplify">
-<code class="descname">simplify</code><span class="sig-paren">(</span><em>evaluator: pyshgp.gp.evaluation.Evaluator</em>, <em>origional_error: float</em>, <em>steps: int</em>, <em>verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome.simplify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome.simplify" title="Permalink to this definition">¶</a></dt>
+<code class="descname">simplify</code><span class="sig-paren">(</span><em>evaluator: pyshgp.gp.evaluation.Evaluator</em>, <em>origional_error: float</em>, <em>steps: int</em>, <em>verbosity_config: pyshgp.monitoring.VerbosityConfig = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome.simplify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome.simplify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simplify genome while preserving or improving error.</p>
 </dd></dl>
 
@@ -287,7 +287,7 @@ by an Evaluator.</p>
 
 <dl class="class">
 <dt id="pyshgp.gp.genome.GenomeSimplifier">
-<em class="property">class </em><code class="descclassname">pyshgp.gp.genome.</code><code class="descname">GenomeSimplifier</code><span class="sig-paren">(</span><em>evaluator: pyshgp.gp.evaluation.Evaluator</em>, <em>verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GenomeSimplifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GenomeSimplifier" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyshgp.gp.genome.</code><code class="descname">GenomeSimplifier</code><span class="sig-paren">(</span><em>evaluator: pyshgp.gp.evaluation.Evaluator</em>, <em>verbosity_config: Optional[pyshgp.monitoring.VerbosityConfig] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GenomeSimplifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GenomeSimplifier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Simplifies a genome while preserving, or improving, its error.</p>
 <p>Genomes, and Push programs, can contain superfluous Push code. This extra
@@ -414,7 +414,7 @@ ACM, New York, NY, USA, 937-944. DOI: <a class="reference external" href="https:
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

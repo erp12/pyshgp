@@ -50,7 +50,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">PushError</span>
+<span class="kn">from</span> <span class="nn">pyshgp.validation</span> <span class="k">import</span> <span class="n">PushError</span>
 
 
 <div class="viewcode-block" id="PushType"><a class="viewcode-back" href="../../../api/pyshgp.push.types.html#pyshgp.push.types.PushType">[docs]</a><span class="k">class</span> <span class="nc">PushType</span><span class="p">:</span>
@@ -120,7 +120,7 @@
 <span class="k">class</span> <span class="nc">_PushStrType</span><span class="p">(</span><span class="n">PushType</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;&lt;U28&#39;</span><span class="p">)))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">))</span>
 
 
 <span class="k">class</span> <span class="nc">_PushBoolType</span><span class="p">(</span><span class="n">PushType</span><span class="p">):</span>
@@ -230,7 +230,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

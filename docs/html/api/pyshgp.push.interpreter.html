@@ -156,7 +156,7 @@ evaluate against the current PushState.</td>
 
 <dl class="method">
 <dt id="pyshgp.push.interpreter.PushInterpreter.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>program: pyshgp.push.atoms.CodeBlock, inputs: Sequence[T_co], output_types: Sequence[str], verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>program: pyshgp.push.atoms.CodeBlock, inputs: Sequence, output_types: Sequence[str], verbosity_config: pyshgp.monitoring.VerbosityConfig = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a Push program given some inputs and desired output PushTypes.</p>
 <dl class="docutils">
 <dt>The general flow of this method is:</dt>
@@ -178,7 +178,8 @@ evaluate against the current PushState.</td>
 <li><strong>inputs</strong> – A sequence of values to use as inputs to the push program.</li>
 <li><strong>output_types</strong> – A secence of values that denote the Pushtypes of the expected
 outputs of the push program.</li>
-<li><strong>verbose</strong> – If true, program execution steps will be printed. Default False.</li>
+<li><strong>verbosity_config</strong> (<a class="reference internal" href="pyshgp.monitoring.html#pyshgp.monitoring.VerbosityConfig" title="pyshgp.monitoring.VerbosityConfig"><em>VerbosityConfig</em></a><em>, </em><em>optional</em>) – A VerbosityConfig controling what is logged during the execution
+of the program. Default is no verbosity.</li>
 </ul>
 </td>
 </tr>
@@ -370,7 +371,7 @@ is run. Default is True.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

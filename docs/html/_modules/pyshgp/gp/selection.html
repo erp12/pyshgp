@@ -48,6 +48,7 @@
 
 <span class="kn">from</span> <span class="nn">pyshgp.gp.individual</span> <span class="k">import</span> <span class="n">Individual</span>
 <span class="kn">from</span> <span class="nn">pyshgp.gp.population</span> <span class="k">import</span> <span class="n">Population</span>
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">instantiate_using</span>
 
 
 <div class="viewcode-block" id="Selector"><a class="viewcode-back" href="../../../api/pyshgp.gp.selection.html#pyshgp.gp.selection.Selector">[docs]</a><span class="k">class</span> <span class="nc">Selector</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
@@ -300,7 +301,7 @@
         <span class="k">return</span> <span class="n">population</span><span class="o">.</span><span class="n">best_n</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="get_selector"><a class="viewcode-back" href="../../../api/pyshgp.gp.selection.html#pyshgp.gp.selection.get_selector">[docs]</a><span class="k">def</span> <span class="nf">get_selector</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Selector</span><span class="p">:</span>
+<div class="viewcode-block" id="get_selector"><a class="viewcode-back" href="../../../api/pyshgp.gp.selection.html#pyshgp.gp.selection.get_selector">[docs]</a><span class="k">def</span> <span class="nf">get_selector</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Selector</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the selector class with the given name.&quot;&quot;&quot;</span>
     <span class="n">name_to_cls</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;roulette&quot;</span><span class="p">:</span> <span class="n">FitnessProportionate</span><span class="p">,</span>
@@ -308,13 +309,13 @@
         <span class="s2">&quot;lexicase&quot;</span><span class="p">:</span> <span class="n">Lexicase</span><span class="p">,</span>
         <span class="s2">&quot;elite&quot;</span><span class="p">:</span> <span class="n">Elite</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">selector</span> <span class="o">=</span> <span class="n">name_to_cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">_cls</span> <span class="o">=</span> <span class="n">name_to_cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No selector &#39;</span><span class="si">{nm}</span><span class="s2">&#39;. Supported names: </span><span class="si">{lst}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">nm</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">lst</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">name_to_cls</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="p">))</span>
-    <span class="k">return</span> <span class="n">selector</span></div>
+    <span class="k">return</span> <span class="n">instantiate_using</span><span class="p">(</span><span class="n">_cls</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -353,7 +354,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

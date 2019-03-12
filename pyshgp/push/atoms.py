@@ -77,7 +77,9 @@ class Literal(Atom):
 
     def __init__(self, value: Any, push_type: PushType = None):
         self.push_type = push_type_of(value) if push_type is None else push_type
-        self.value = self.push_type.coerce(value)
+        if not self.push_type.is_instance(value):
+            value = self.push_type.coerce(value)
+        self.value = value
 
     def jsonify(self) -> str:
         """Return the object as a JSON string."""

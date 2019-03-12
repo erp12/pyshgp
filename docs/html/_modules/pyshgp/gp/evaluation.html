@@ -40,14 +40,15 @@
   <h1>Source code for pyshgp.gp.evaluation</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;The :mod:`evaluation` module defines classes to evaluate program CodeBlocks.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">pyshgp.push.interpreter</span> <span class="k">import</span> <span class="n">PushInterpreter</span><span class="p">,</span> <span class="n">DEFAULT_INTERPRETER</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">CodeBlock</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">push_type_of</span>
-<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">Token</span>
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">Token</span><span class="p">,</span> <span class="n">list_rindex</span>
+<span class="kn">from</span> <span class="nn">pyshgp.monitoring</span> <span class="k">import</span> <span class="n">VerbosityConfig</span>
 
 
 <div class="viewcode-block" id="damerau_levenshtein_distance"><a class="viewcode-back" href="../../../api/pyshgp.gp.evaluation.html#pyshgp.gp.evaluation.damerau_levenshtein_distance">[docs]</a><span class="k">def</span> <span class="nf">damerau_levenshtein_distance</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -106,16 +107,18 @@
 <span class="sd">    penalty : float, optional</span>
 <span class="sd">        When a program&#39;s output cannot be evaluated on a particular case, the</span>
 <span class="sd">        penalty error is assigned. Default is 5e5.</span>
-<span class="sd">    verbose : bool, optional</span>
-<span class="sd">        Indicates if verbose printing should be used during evalutation.</span>
-<span class="sd">        Default is False.</span>
+<span class="sd">    verbosity_config : Optional[VerbosityConfig] (default = None)</span>
+<span class="sd">        A VerbosityConfig controling what is logged during evaluation.</span>
+<span class="sd">        Default is no verbosity.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interpreter</span><span class="p">:</span> <span class="n">PushInterpreter</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
-                 <span class="n">penalty</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">interpreter</span><span class="p">:</span> <span class="n">PushInterpreter</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                 <span class="n">penalty</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+                 <span class="n">verbosity_config</span><span class="p">:</span> <span class="n">VerbosityConfig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">penalty</span> <span class="o">=</span> <span class="n">penalty</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span> <span class="o">=</span> <span class="n">verbosity_config</span>
         <span class="k">if</span> <span class="n">interpreter</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span> <span class="o">=</span> <span class="n">DEFAULT_INTERPRETER</span>
         <span class="k">else</span><span class="p">:</span>
@@ -131,6 +134,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        actuals : list</span>
 <span class="sd">            The values produced by running a Push program on a sequences of cases.</span>
+
 <span class="sd">        expecteds: list</span>
 <span class="sd">            The ground truth values for the sequence of cases used to produce the actuals.</span>
 
@@ -181,13 +185,17 @@
 <div class="viewcode-block" id="DatasetEvaluator"><a class="viewcode-back" href="../../../api/pyshgp.gp.evaluation.html#pyshgp.gp.evaluation.DatasetEvaluator">[docs]</a><span class="k">class</span> <span class="nc">DatasetEvaluator</span><span class="p">(</span><span class="n">Evaluator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluator driven by a labeled dataset.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">interpreter</span><span class="p">:</span> <span class="n">PushInterpreter</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
-                 <span class="n">penalty</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                 <span class="n">interpreter</span><span class="p">:</span> <span class="n">PushInterpreter</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                 <span class="n">penalty</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+                 <span class="n">last_str_from_stdout</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">verbosity_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VerbosityConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create Evaluator based on a labeled dataset. Inspired by sklearn.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">        X : list, array-like, or pandas dataframe of shape = [n_samples, n_features]</span>
 <span class="sd">            The inputs to evaluate each program on.</span>
 
 <span class="sd">        y : list, array-like, or pandas dataframe.</span>
@@ -200,13 +208,15 @@
 <span class="sd">            If no response is given by the program on a given input, assign this</span>
 <span class="sd">            error as the error.</span>
 
-<span class="sd">        verbose : bool (default = False)</span>
-<span class="sd">            Print all program traces while evaluating.</span>
+<span class="sd">        verbosity_config : Optional[VerbosityConfig] (default = None)</span>
+<span class="sd">            A VerbosityConfig controling what is logged during evaluation.</span>
+<span class="sd">            Default is no verbosity.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">interpreter</span><span class="p">,</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">interpreter</span><span class="p">,</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">verbosity_config</span><span class="o">=</span><span class="n">verbosity_config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_str_from_stdout</span> <span class="o">=</span> <span class="n">last_str_from_stdout</span>
 
 <div class="viewcode-block" id="DatasetEvaluator.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.gp.evaluation.html#pyshgp.gp.evaluation.DatasetEvaluator.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">:</span> <span class="n">CodeBlock</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Evaluate the program and return the error vector.</span>
@@ -227,8 +237,14 @@
             <span class="n">expected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
                 <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="n">expected</span><span class="p">]</span>
+
             <span class="n">output_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">push_type_of</span><span class="p">(</span><span class="n">_</span><span class="p">)</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">expected</span><span class="p">]</span>
-            <span class="n">actual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">case</span><span class="p">,</span> <span class="n">output_types</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_str_from_stdout</span><span class="p">:</span>
+                <span class="n">ndx</span> <span class="o">=</span> <span class="n">list_rindex</span><span class="p">(</span><span class="n">output_types</span><span class="p">,</span> <span class="s2">&quot;str&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ndx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">output_types</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;stdout&quot;</span>
+
+            <span class="n">actual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">case</span><span class="p">,</span> <span class="n">output_types</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="p">)</span>
             <span class="n">errors_on_cases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_error_function</span><span class="p">(</span><span class="n">actual</span><span class="p">,</span> <span class="n">expected</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">errors_on_cases</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span></div></div>
 
@@ -309,7 +325,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

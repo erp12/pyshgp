@@ -1,0 +1,246 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Push Instructions &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PyshGP v0.1.4 Instruction Set" href="core_instructions/v0_1_4_core_instructions.html" />
+    <link rel="prev" title="pyshgp.validation module" href="api/pyshgp.validation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core_instructions/v0_1_4_core_instructions.html" title="PyshGP v0.1.4 Instruction Set"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api/pyshgp.validation.html" title="pyshgp.validation module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="push-instructions">
+<h1>Push Instructions<a class="headerlink" href="#push-instructions" title="Permalink to this headline">¶</a></h1>
+<p>A Push instruction is object that can manipulate the typed Stacks of a <code class="docutils literal notranslate"><span class="pre">PushState</span></code>. Typically, an instruction is defined by some function. When evaluated, the arguments to the instruction’s function are taken from the stacks of the <code class="docutils literal notranslate"><span class="pre">PushInterpreter</span></code>’s PushState and the returned values are pushed to back to the stacks.</p>
+<p>In PyshGP, there are a variety of classes that concretely implement the concept of an Instruction. These definitions capture all the required information about an instruction. For example, the <code class="docutils literal notranslate"><span class="pre">SimpleInstruction</span></code> class automatically handles the popping of arguments and pushing of returned values for functions that only require access to the top items of some stacks. Meanwhile, the more flexible <code class="docutils literal notranslate"><span class="pre">StateToStateInstruction</span></code> only requires a function which takes the entire PushState and returns a PushState.</p>
+<p>Every instruction must contain information on which <code class="docutils literal notranslate"><span class="pre">PushTypes</span></code> it manipulates. This is so that the <code class="docutils literal notranslate"><span class="pre">PushInterpreter</span></code> will know which stacks to create given a collection of Instruction that will be used. It also aids in filtering collections of instructions based on what types they manipulate.</p>
+<p>Instructions also denote how many code blocks are expected to follow the instructions. This is used during <code class="docutils literal notranslate"><span class="pre">Genome</span></code> to <code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code> translation to provide the nested structure of code blocks. For example, the <code class="docutils literal notranslate"><span class="pre">exec_if</span></code> instruction should be followed by two code blocks: one for the “then” clause, one for the “else” clause.</p>
+<p>With the exception of <code class="docutils literal notranslate"><span class="pre">StateToStateInstruction</span></code> objects, the function passed to the <code class="docutils literal notranslate"><span class="pre">f</span></code> argument of an Instruction must return a collection of values (either <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>). Each element of this collection will be pushed to its respective stack after evaluation of the instruction.</p>
+<p>If an instruction is unable to be evaluated, it can return a <code class="docutils literal notranslate"><span class="pre">Token.revert</span></code> object to indicate the instruction should be skipped and no change should be made to the <code class="docutils literal notranslate"><span class="pre">PushState</span></code>. This ensures each instruction is an atomic transaction.</p>
+<div class="section" id="core-instructions">
+<h2>Core Instructions<a class="headerlink" href="#core-instructions" title="Permalink to this headline">¶</a></h2>
+<p>PyshGP contains a collection of “core” instructions that work with the typical data types. To read about all the core instructions provided by the version of PyshGP you are using, see the following pages.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core_instructions/v0_1_4_core_instructions.html">PyshGP v0.1.4 Instruction Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_instructions/v0_1_3_core_instructions.html">PyshGP v0.1.3 Instruction Set</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="example-instruction-definitions">
+<h2>Example Instruction Definitions<a class="headerlink" href="#example-instruction-definitions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="simple-instruction">
+<h3>Simple Instruction<a class="headerlink" href="#simple-instruction" title="Permalink to this headline">¶</a></h3>
+<p>Used when the exact function is known. In other words, how many argument are needed and their types, as well as the number of returned values and their types.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">protected_divison</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span>
+    <span class="k">return</span> <span class="n">b</span> <span class="o">/</span> <span class="n">a</span><span class="p">,</span>
+
+<span class="n">int_div_instr</span> <span class="o">=</span> <span class="n">SimpleInstruction</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;int_div&quot;</span><span class="p">,</span>
+    <span class="n">f</span><span class="o">=</span><span class="n">protected_divison</span><span class="p">,</span>
+    <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+    <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+    <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Divides the top two ints and pushes the result.&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="produces-many-of-type-instruction">
+<h3>Produces Many Of Type Instruction<a class="headerlink" href="#produces-many-of-type-instruction" title="Permalink to this headline">¶</a></h3>
+<p>Same as <code class="docutils literal notranslate"><span class="pre">SimpleInstruction</span></code> except that a variable number of returned values will be produced. All returned values will be of the same type.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">split_on_comma</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+<span class="n">str_split_instr</span> <span class="o">=</span> <span class="n">ProducesManyOfTypeInstruction</span><span class="p">(</span>
+    <span class="s2">&quot;str_split_on_comma&quot;</span><span class="p">,</span>
+    <span class="n">split_on_comma</span><span class="p">,</span>
+    <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+    <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;str&quot;</span><span class="p">,</span>
+    <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes multiple strs produced by splitting the top str on all commas.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="takes-state-instruction">
+<h3>Takes State Instruction<a class="headerlink" href="#takes-state-instruction" title="Permalink to this headline">¶</a></h3>
+<p>Same as <code class="docutils literal notranslate"><span class="pre">SimpleInstruction</span></code> except that the argument to the function is the entire <code class="docutils literal notranslate"><span class="pre">PushState</span></code>. This is typically used when a variable number of elements are needed as input or one of the <code class="docutils literal notranslate"><span class="pre">PushState</span></code>’s other attributes are needed to determine the result.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">bool_stack_depth</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+  <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">]),</span>
+
+<span class="n">bool_depth_instr</span> <span class="o">=</span> <span class="n">TakesStateInstruction</span><span class="p">(</span>
+    <span class="s2">&quot;bool_stack_depth&quot;</span><span class="p">,</span>
+    <span class="n">bool_stack_depth</span><span class="p">,</span>
+    <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+    <span class="n">other_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+    <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the size of the bool stack to the int stack.&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="state-to-state-instruction">
+<h3>State-to-State Instruction<a class="headerlink" href="#state-to-state-instruction" title="Permalink to this headline">¶</a></h3>
+<p>An Instruction that takes entire <code class="docutils literal notranslate"><span class="pre">PushState</span></code> and returns entire <code class="docutils literal notranslate"><span class="pre">PushState</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">exec_when</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;exec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">or</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">():</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;exec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">state</span>
+
+<span class="n">exec_when_instr</span> <span class="o">=</span> <span class="n">StateToStateInstruction</span><span class="p">(</span>
+    <span class="s2">&quot;exec_when&quot;</span><span class="p">,</span>
+    <span class="n">exec_when</span><span class="p">,</span>
+    <span class="n">types_used</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;exec&quot;</span><span class="p">],</span>
+    <span class="n">code_blocks</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pops the next item on the exec stack without evaluating it</span>
+<span class="s2">    if the top bool is False. Otherwise, has no effect.&quot;&quot;&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="preparing-instruction-sets">
+<h2>Preparing Instruction Sets<a class="headerlink" href="#preparing-instruction-sets" title="Permalink to this headline">¶</a></h2>
+<p>To specify which instructions should be used during program synthesis (Specifically during gene spawning, and genome variation), PyshGP utilizes an InstructionSet object. Instructions can be added, or “registered,” into an InsturctionSet as long as the instructions name is unique across the set.</p>
+<p>Subsets of the “core” instruction can easily be registered using the methods of the InstructionSet object.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">instruction_set</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">InstructionSet</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">register_by_type</span><span class="p">(</span>
+      <span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;stdout&quot;</span><span class="p">],</span> <span class="c1"># All core instructions that manipulate any of these types...</span>
+      <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">]</span>            <span class="c1"># ... but remove any instructions that any of these types.</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">register_by_name</span><span class="p">(</span><span class="s2">&quot;.*_add&quot;</span><span class="p">)</span>  <span class="c1"># All core instructions with name matching regex.</span>
+    <span class="o">.</span><span class="n">register_n_inputs</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>        <span class="c1"># Register 2 input instructions when arity 2 programs are synthesized.</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>If custom instructions are instantiated (either via a provided class or by extending the Instruction abstract base class) they can also be registered in an InstructionSet.</p>
+<p>Defining Instructions which manipulate custom PushTypes or custom PushStacks is not currently supported, however it will be future versions.</p>
+<div class="section" id="registering-custom-instructions">
+<h3>Registering Custom Instructions<a class="headerlink" href="#registering-custom-instructions" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">instruction_set</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">int_div_instr</span><span class="p">)</span>
+<span class="n">instruction_set</span><span class="o">.</span><span class="n">register_list</span><span class="p">([</span><span class="n">str_split_instr</span><span class="p">,</span> <span class="n">bool_depth_instr</span><span class="p">,</span> <span class="n">exec_when_instr</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Push Instructions</a><ul>
+<li><a class="reference internal" href="#core-instructions">Core Instructions</a></li>
+<li><a class="reference internal" href="#example-instruction-definitions">Example Instruction Definitions</a><ul>
+<li><a class="reference internal" href="#simple-instruction">Simple Instruction</a></li>
+<li><a class="reference internal" href="#produces-many-of-type-instruction">Produces Many Of Type Instruction</a></li>
+<li><a class="reference internal" href="#takes-state-instruction">Takes State Instruction</a></li>
+<li><a class="reference internal" href="#state-to-state-instruction">State-to-State Instruction</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#preparing-instruction-sets">Preparing Instruction Sets</a><ul>
+<li><a class="reference internal" href="#registering-custom-instructions">Registering Custom Instructions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api/pyshgp.validation.html"
+                        title="previous chapter">pyshgp.validation module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="core_instructions/v0_1_4_core_instructions.html"
+                        title="next chapter">PyshGP v0.1.4 Instruction Set</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/instructions.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core_instructions/v0_1_4_core_instructions.html" title="PyshGP v0.1.4 Instruction Set"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api/pyshgp.validation.html" title="pyshgp.validation module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

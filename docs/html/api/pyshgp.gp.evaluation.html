@@ -53,7 +53,7 @@
 <p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">evaluation</span></code> module defines classes to evaluate program CodeBlocks.</p>
 <dl class="class">
 <dt id="pyshgp.gp.evaluation.DatasetEvaluator">
-<em class="property">class </em><code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">DatasetEvaluator</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>interpreter: pyshgp.push.interpreter.PushInterpreter = 'default'</em>, <em>penalty: float = inf</em>, <em>verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#DatasetEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.DatasetEvaluator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">DatasetEvaluator</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>interpreter: pyshgp.push.interpreter.PushInterpreter = 'default'</em>, <em>penalty: float = inf</em>, <em>last_str_from_stdout: bool = False</em>, <em>verbosity_config: Optional[pyshgp.monitoring.VerbosityConfig] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#DatasetEvaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.DatasetEvaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.evaluation.Evaluator" title="pyshgp.gp.evaluation.Evaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.evaluation.Evaluator</span></code></a></p>
 <p>Evaluator driven by a labeled dataset.</p>
 <dl class="method">
@@ -78,7 +78,7 @@
 
 <dl class="class">
 <dt id="pyshgp.gp.evaluation.Evaluator">
-<em class="property">class </em><code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">Evaluator</code><span class="sig-paren">(</span><em>interpreter: pyshgp.push.interpreter.PushInterpreter = 'default'</em>, <em>penalty: float = inf</em>, <em>verbose: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#Evaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.Evaluator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">Evaluator</code><span class="sig-paren">(</span><em>interpreter: pyshgp.push.interpreter.PushInterpreter = 'default'</em>, <em>penalty: float = inf</em>, <em>verbosity_config: pyshgp.monitoring.VerbosityConfig = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#Evaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.Evaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Base class or evaluators.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -91,8 +91,8 @@ an interpreter with the default configuration and all core instructions
 registered.</li>
 <li><strong>penalty</strong> (<em>float</em><em>, </em><em>optional</em>) – When a program’s output cannot be evaluated on a particular case, the
 penalty error is assigned. Default is 5e5.</li>
-<li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if verbose printing should be used during evalutation.
-Default is False.</li>
+<li><strong>verbosity_config</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="pyshgp.monitoring.html#pyshgp.monitoring.VerbosityConfig" title="pyshgp.monitoring.VerbosityConfig"><em>VerbosityConfig</em></a><em>] </em><em>(</em><em>default = None</em><em>)</em>) – A VerbosityConfig controling what is logged during evaluation.
+Default is no verbosity.</li>
 </ul>
 </td>
 </tr>
@@ -171,7 +171,7 @@ for Push programs which only output a subset of the standard data types.</p>
 
 <dl class="function">
 <dt id="pyshgp.gp.evaluation.damerau_levenshtein_distance">
-<code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">damerau_levenshtein_distance</code><span class="sig-paren">(</span><em>a: Union[str, Sequence[T_co]], b: Union[str, Sequence[T_co]]</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#damerau_levenshtein_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.damerau_levenshtein_distance" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyshgp.gp.evaluation.</code><code class="descname">damerau_levenshtein_distance</code><span class="sig-paren">(</span><em>a: Sequence</em>, <em>b: Sequence</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/pyshgp/gp/evaluation.html#damerau_levenshtein_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.evaluation.damerau_levenshtein_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Damerau Levenshtein Distance that works for both strings and lists.</p>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance">https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance</a>.
 This implemenation is heavily inspired by the implementation in the
@@ -239,7 +239,7 @@ jellyfish package. <a class="reference external" href="https://github.com/jamest
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

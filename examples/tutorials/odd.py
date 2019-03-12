@@ -15,8 +15,7 @@ y = [[bool(x % 2)] for x in X]
 
 
 instruction_set = (
-    InstructionSet()
-    .register_all()
+    InstructionSet(register_all=True)
     .register_n_inputs(X.shape[1])
 )
 

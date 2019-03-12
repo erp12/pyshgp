@@ -7,7 +7,7 @@ import numpy as np
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
 from pyshgp.push.atoms import CodeBlock
 from pyshgp.push.types import push_type_of
-from pyshgp.utils import Token
+from pyshgp.utils import Token, list_rindex
 from pyshgp.monitoring import VerbosityConfig
 
 
@@ -149,6 +149,7 @@ class DatasetEvaluator(Evaluator):
                  X, y,
                  interpreter: PushInterpreter = "default",
                  penalty: float = np.inf,
+                 last_str_from_stdout: bool = False,
                  verbosity_config: Optional[VerbosityConfig] = None):
         """Create Evaluator based on a labeled dataset. Inspired by sklearn.
 
@@ -175,6 +176,7 @@ class DatasetEvaluator(Evaluator):
         super().__init__(interpreter, penalty, verbosity_config=verbosity_config)
         self.X = X
         self.y = y
+        self.last_str_from_stdout = last_str_from_stdout
 
     def evaluate(self, program: CodeBlock) -> np.ndarray:
         """Evaluate the program and return the error vector.
@@ -195,7 +197,13 @@ class DatasetEvaluator(Evaluator):
             expected = self.y[ndx]
             if not isinstance(expected, (list, np.ndarray)):
                 expected = [expected]
+
             output_types = [push_type_of(_).name for _ in expected]
+            if self.last_str_from_stdout:
+                ndx = list_rindex(output_types, "str")
+                if ndx is not None:
+                    output_types[ndx] = "stdout"
+
             actual = self.interpreter.run(program, case, output_types, self.verbosity_config)
             errors_on_cases.append(self.default_error_function(actual, expected))
         return np.array(errors_on_cases).flatten()

@@ -18,6 +18,14 @@ def instantiate_using(cls: type, args: dict):
     return cls(**kwargs)
 
 
+def list_rindex(lst, el):
+    """Index of the last occurrence of an item in a list. Return None is item not found."""
+    for i in reversed(range(len(lst))):
+        if lst[i] == el:
+            return i
+    return None
+
+
 class DiscreteProbDistrib:
     """Discrete Probability Distribution."""
 

@@ -29,7 +29,7 @@ class TestPushState:
         assert state.size() == 1
         assert len(state["exec"].top()) == 3
 
-    def test_inspect_outputs(self, state: PushState):
+    def test_observe_stacks(self, state: PushState):
         state["int"].push(100)
         state["int"].push(-77)
         state["str"].push("Hello")
@@ -37,9 +37,13 @@ class TestPushState:
         ouputs = state.observe_stacks(["int", "int", "str"])
         assert ouputs == [-77, 100, "World"]
 
-    def test_inspect_outputs_empty(self, state: PushState):
+    def test_observe_stacks_empty(self, state: PushState):
         ouputs = state.observe_stacks(["int", "int", "str"])
         assert ouputs == [Token.no_stack_item] * 3
+
+    def test_observe_stacks_stdout(self, state: PushState):
+        ouputs = state.observe_stacks(["stdout"])
+        assert ouputs[0] == ""
 
     def test_pop_values(self, state: PushState):
         state["int"].push(100)

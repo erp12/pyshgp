@@ -1,7 +1,6 @@
 """The :mod:`search` module defines algorithms to search for Push programs."""
 from abc import ABC, abstractmethod
 from typing import Union, Tuple
-from warnings import warn
 
 import numpy as np
 import math
@@ -264,13 +263,9 @@ class SimulatedAnnealing(SearchAlgorithm):
     """
 
     def __init__(self, config: SearchConfiguration):
-        if not config.population_size == 1:
-            warn("SimulatedAnnealing only supports a population size of 1. Config has been overwritten. ")
-            config.population_size = 1
-
+        config.population_size = 1
         for op in config._variation.elements:
             assert op.num_parents <= 1, "SimulatedAnnealing cannot take multiple parant variation operators."
-
         super().__init__(config)
 
     def _get_temp(self,):

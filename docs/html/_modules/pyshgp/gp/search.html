@@ -43,7 +43,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 
-<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">DiscreteProbDistrib</span>
@@ -53,6 +53,8 @@
 <span class="kn">from</span> <span class="nn">pyshgp.gp.population</span> <span class="k">import</span> <span class="n">Population</span>
 <span class="kn">from</span> <span class="nn">pyshgp.gp.selection</span> <span class="k">import</span> <span class="n">Selector</span><span class="p">,</span> <span class="n">get_selector</span>
 <span class="kn">from</span> <span class="nn">pyshgp.gp.variation</span> <span class="k">import</span> <span class="n">VariationOperator</span><span class="p">,</span> <span class="n">get_variation_operator</span>
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">instantiate_using</span>
+<span class="kn">from</span> <span class="nn">pyshgp.monitoring</span> <span class="k">import</span> <span class="n">VerbosityConfig</span><span class="p">,</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span>
 
 
 <span class="c1"># @TODO: Should SearchConfiguration be JSON serializable?</span>
@@ -63,10 +65,10 @@
 <span class="sd">    ----------</span>
 <span class="sd">    evaluator : Evaluator</span>
 <span class="sd">        The Evaluator to use when evaluating individuals.</span>
-<span class="sd">    spawning : Union[GeneSpawner, str], optional</span>
-<span class="sd">        The GeneSpawner, or DiscreteProbDistrib of gene spawners to use when</span>
-<span class="sd">        producing Genomes during initialization and variation.</span>
-<span class="sd">    selection :Union[Selector, DiscreteProbDistrib, str], optional</span>
+<span class="sd">    spawning : GeneSpawner</span>
+<span class="sd">        The GeneSpawner to use when producing Genomes during initialization and</span>
+<span class="sd">        variation.</span>
+<span class="sd">    selection : Union[Selector, DiscreteProbDistrib, str], optional</span>
 <span class="sd">        A Selector, or DiscreteProbDistrib of selectors, to use when selecting</span>
 <span class="sd">        parents. The default is lexicase selection.</span>
 <span class="sd">    variation : Union[VariationOperator, DiscreteProbDistrib, str], optional</span>
@@ -83,57 +85,62 @@
 <span class="sd">    initial_genome_size : Tuple[int, int], optional</span>
 <span class="sd">        The range of genome sizes to produce during initialization. Default is</span>
 <span class="sd">        (20, 100)</span>
-<span class="sd">    simplification_steps : int</span>
+<span class="sd">    simplification_steps : int, optional</span>
 <span class="sd">        The number of simplification iterations to apply to the best Push program</span>
-<span class="sd">        produced by the search algorithm.</span>
+<span class="sd">        produced by the search algorithm. Default is 2000.</span>
+<span class="sd">    verbosity_config :  Union[VerbosityConfig, str], optional</span>
+<span class="sd">        A VerbosityConfig controling what is logged during the search. Default</span>
+<span class="sd">        is no verbosity.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">evaluator</span><span class="p">:</span> <span class="n">Evaluator</span><span class="p">,</span>
-                 <span class="n">spawning</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GeneSpawner</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">],</span>
+                 <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">,</span>
                  <span class="n">selection</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Selector</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;lexicase&quot;</span><span class="p">,</span>
                  <span class="n">variation</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">VariationOperator</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;umad&quot;</span><span class="p">,</span>
                  <span class="n">population_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
                  <span class="n">max_generations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
                  <span class="n">error_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                  <span class="n">initial_genome_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
-                 <span class="n">simplification_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">):</span>
+                 <span class="n">simplification_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span>
+                 <span class="n">verbosity_config</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">VerbosityConfig</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">evaluator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spawner</span> <span class="o">=</span> <span class="n">spawner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">population_size</span> <span class="o">=</span> <span class="n">population_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_generations</span> <span class="o">=</span> <span class="n">max_generations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_threshold</span> <span class="o">=</span> <span class="n">error_threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_genome_size</span> <span class="o">=</span> <span class="n">initial_genome_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">simplification_steps</span> <span class="o">=</span> <span class="n">simplification_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ext</span> <span class="o">=</span> <span class="n">kwargs</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spawning</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_spawning</span> <span class="o">=</span> <span class="n">spawning</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_spawning</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">spawning</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">get_selector</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">Selector</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">selection</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">selector</span> <span class="o">=</span> <span class="n">get_selector</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">variation</span> <span class="o">==</span> <span class="s2">&quot;umad&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_variation</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">get_variation_operator</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variation</span><span class="p">,</span> <span class="n">VariationOperator</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_variation</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">variation</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variation</span><span class="p">,</span> <span class="n">DiscreteProbDistrib</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_variation</span> <span class="o">=</span> <span class="n">variation</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_variation</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">variation</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">variationOp</span> <span class="o">=</span> <span class="n">get_variation_operator</span><span class="p">(</span><span class="n">variation</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_variation</span> <span class="o">=</span> <span class="n">DiscreteProbDistrib</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">variationOp</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SearchConfiguration.get_spawner"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchConfiguration.get_spawner">[docs]</a>    <span class="k">def</span> <span class="nf">get_spawner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a GeneSpawner.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spawning</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="n">verbosity_config</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span> <span class="o">=</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span> <span class="o">=</span> <span class="n">verbosity_config</span>
 
 <div class="viewcode-block" id="SearchConfiguration.get_selector"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchConfiguration.get_selector">[docs]</a>    <span class="k">def</span> <span class="nf">get_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a Selector.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SearchConfiguration.get_variation_operator"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchConfiguration.get_variation_operator">[docs]</a>    <span class="k">def</span> <span class="nf">get_variation_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SearchConfiguration.get_variation_op"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchConfiguration.get_variation_op">[docs]</a>    <span class="k">def</span> <span class="nf">get_variation_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a VariationOperator.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variation</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span></div></div>
 
@@ -169,7 +176,7 @@
         <span class="sd">&quot;&quot;&quot;Initialize the population.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="n">Population</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">population_size</span><span class="p">):</span>
-            <span class="n">spawner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_spawner</span><span class="p">()</span>
+            <span class="n">spawner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">spawner</span>
             <span class="n">genome</span> <span class="o">=</span> <span class="n">spawner</span><span class="o">.</span><span class="n">spawn_genome</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">initial_genome_size</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Individual</span><span class="p">(</span><span class="n">genome</span><span class="p">))</span></div>
 
@@ -185,7 +192,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-    <span class="k">def</span> <span class="nf">_full_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_full_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">generation</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">evaluator</span><span class="p">)</span>
 
@@ -195,7 +202,8 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">total_error</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">error_threshold</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">generation</span> <span class="ow">and</span> \
+           <span class="bp">self</span><span class="o">.</span><span class="n">generation</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">every_n_generations</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">stat_logs</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">stat_logs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;GENERATION: </span><span class="si">{g}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">g</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generation</span>
@@ -209,26 +217,29 @@
             <span class="c1">#     p_s=len(self.population),</span>
             <span class="c1">#     g_d=self.population.genome_diversity()</span>
             <span class="c1"># ))</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stat_logs</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">generation</span><span class="p">(</span><span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stat_logs</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-<div class="viewcode-block" id="SearchAlgorithm.run"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchAlgorithm.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run the algorithm until termination.</span>
+    <span class="k">def</span> <span class="nf">_is_solved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">total_error</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">error_threshold</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        verbose : bool, optional</span>
-<span class="sd">            Indicates if verbose printing should be used during searching.</span>
-<span class="sd">            Default is False.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_full_step</span><span class="p">(</span><span class="n">verbose</span><span class="p">):</span>
+<div class="viewcode-block" id="SearchAlgorithm.run"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.SearchAlgorithm.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the algorithm until termination.&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_full_step</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">generation</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">max_generations</span><span class="p">:</span>
                 <span class="k">break</span>
 
-        <span class="n">simplifier</span> <span class="o">=</span> <span class="n">GenomeSimplifier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">evaluator</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+        <span class="n">verbose_solution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">solution_found</span>
+        <span class="k">if</span> <span class="n">verbose_solution</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_solved</span><span class="p">():</span>
+                <span class="n">verbose_solution</span><span class="p">(</span><span class="s2">&quot;Unsimplified solution found.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">verbose_solution</span><span class="p">(</span><span class="s2">&quot;No unsimplified solution found.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Simplify the best individual for a better generalization and interpreteation.</span>
+        <span class="n">simplifier</span> <span class="o">=</span> <span class="n">GenomeSimplifier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">evaluator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_config</span><span class="p">)</span>
         <span class="n">simp_genome</span><span class="p">,</span> <span class="n">simp_error_vector</span> <span class="o">=</span> <span class="n">simplifier</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">genome</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">error_vector</span><span class="p">,</span>
@@ -236,6 +247,12 @@
         <span class="p">)</span>
         <span class="n">simplified_best</span> <span class="o">=</span> <span class="n">Individual</span><span class="p">(</span><span class="n">simp_genome</span><span class="p">)</span>
         <span class="n">simplified_best</span><span class="o">.</span><span class="n">error_vector</span> <span class="o">=</span> <span class="n">simp_error_vector</span>
+
+        <span class="k">if</span> <span class="n">verbose_solution</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_solved</span><span class="p">():</span>
+                <span class="n">verbose_solution</span><span class="p">(</span><span class="s2">&quot;Simplified solution found.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">verbose_solution</span><span class="p">(</span><span class="s2">&quot;No simplified solution found.&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">simplified_best</span></div></div>
 
@@ -254,10 +271,10 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_make_child</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Individual</span><span class="p">:</span>
-        <span class="n">op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_variation_operator</span><span class="p">()</span>
+        <span class="n">op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_variation_op</span><span class="p">()</span>
         <span class="n">selector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_selector</span><span class="p">()</span>
         <span class="n">parent_genomes</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">genome</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">selector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">op</span><span class="o">.</span><span class="n">num_parents</span><span class="p">)]</span>
-        <span class="n">child_genome</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">parent_genomes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_spawner</span><span class="p">())</span>
+        <span class="n">child_genome</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="n">parent_genomes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">spawner</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Individual</span><span class="p">(</span><span class="n">child_genome</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GeneticAlgorithm.step"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.GeneticAlgorithm.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -303,7 +320,7 @@
     <span class="k">def</span> <span class="nf">_acceptance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">next_error</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return probability of acceptance given an error.&quot;&quot;&quot;</span>
         <span class="n">current_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">best</span><span class="p">()</span><span class="o">.</span><span class="n">total_error</span>
-        <span class="k">if</span> <span class="n">next_error</span> <span class="o">&lt;</span> <span class="n">current_error</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">current_error</span><span class="p">)</span> <span class="ow">or</span> <span class="n">next_error</span> <span class="o">&lt;</span> <span class="n">current_error</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">next_error</span> <span class="o">-</span> <span class="n">current_error</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_temp</span><span class="p">())</span>
@@ -321,15 +338,15 @@
             <span class="k">return</span>
 
         <span class="n">candidate</span> <span class="o">=</span> <span class="n">Individual</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_variation_operator</span><span class="p">()</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_variation_op</span><span class="p">()</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span>
                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">best</span><span class="p">()</span><span class="o">.</span><span class="n">genome</span><span class="p">],</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_spawner</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">spawner</span>
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="n">candidate</span><span class="o">.</span><span class="n">error_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">program</span><span class="p">)</span>
 
         <span class="n">acceptance_probability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptance</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">total_error</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">acceptance_probability</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">acceptance_probability</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="n">Population</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span></div></div>
 
 
@@ -337,20 +354,20 @@
 <span class="c1">#     ...</span>
 
 
-<div class="viewcode-block" id="get_search_algo"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.get_search_algo">[docs]</a><span class="k">def</span> <span class="nf">get_search_algo</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SearchAlgorithm</span><span class="p">:</span>
+<div class="viewcode-block" id="get_search_algo"><a class="viewcode-back" href="../../../api/pyshgp.gp.search.html#pyshgp.gp.search.get_search_algo">[docs]</a><span class="k">def</span> <span class="nf">get_search_algo</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SearchAlgorithm</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return the search algorithm class with the given name.&quot;&quot;&quot;</span>
     <span class="n">name_to_cls</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;GA&quot;</span><span class="p">:</span> <span class="n">GeneticAlgorithm</span><span class="p">,</span>
         <span class="s2">&quot;SA&quot;</span><span class="p">:</span> <span class="n">SimulatedAnnealing</span><span class="p">,</span>
         <span class="c1"># &quot;ES&quot;: EvolutionaryStrategy,</span>
     <span class="p">}</span>
-    <span class="n">search_algo</span> <span class="o">=</span> <span class="n">name_to_cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">search_algo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">_cls</span> <span class="o">=</span> <span class="n">name_to_cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No search algo &#39;</span><span class="si">{nm}</span><span class="s2">&#39;. Supported names: </span><span class="si">{lst}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">nm</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">lst</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">name_to_cls</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="p">))</span>
-    <span class="k">return</span> <span class="n">search_algo</span></div>
+    <span class="k">return</span> <span class="n">instantiate_using</span><span class="p">(</span><span class="n">_cls</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

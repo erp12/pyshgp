@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyshgp &#8212; PyshGP  documentation</title>
+    <title>pyshgp.monitoring module &#8212; PyshGP  documentation</title>
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -17,8 +17,8 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pyshgp package" href="pyshgp.html" />
-    <link rel="prev" title="PyshGP API" href="../api.html" /> 
+    <link rel="next" title="pyshgp.utils module" href="pyshgp.utils.html" />
+    <link rel="prev" title="pyshgp.push.types module" href="pyshgp.push.types.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -30,13 +30,15 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyshgp.html" title="pyshgp package"
+          <a href="pyshgp.utils.html" title="pyshgp.utils module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../api.html" title="PyshGP API"
+          <a href="pyshgp.push.types.html" title="pyshgp.push.types module"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">PyshGP API</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" accesskey="U">pyshgp package</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -45,36 +47,16 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyshgp">
-<h1>pyshgp<a class="headerlink" href="#pyshgp" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="pyshgp.html">pyshgp package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pyshgp.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pyshgp.gp.html">pyshgp.gp package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pyshgp.gp.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyshgp.gp.html#module-pyshgp.gp">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pyshgp.push.html">pyshgp.push package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pyshgp.push.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyshgp.push.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pyshgp.push.html#module-pyshgp.push">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="pyshgp.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pyshgp.monitoring.html">pyshgp.monitoring module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyshgp.utils.html">pyshgp.utils module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pyshgp.validation.html">pyshgp.validation module</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="pyshgp.html#module-pyshgp">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
+  <div class="section" id="module-pyshgp.monitoring">
+<span id="pyshgp-monitoring-module"></span><h1>pyshgp.monitoring module<a class="headerlink" href="#module-pyshgp.monitoring" title="Permalink to this headline">¶</a></h1>
+<p>Verbosity configuration.</p>
+<dl class="class">
+<dt id="pyshgp.monitoring.VerbosityConfig">
+<em class="property">class </em><code class="descclassname">pyshgp.monitoring.</code><code class="descname">VerbosityConfig</code><span class="sig-paren">(</span><em>solution_found: Union[bool</em>, <em>Callable] = False</em>, <em>generation: Union[bool</em>, <em>Callable] = False</em>, <em>every_n_generations: int = 1</em>, <em>simplification: Union[bool</em>, <em>Callable] = False</em>, <em>simplification_step: Union[bool</em>, <em>Callable] = False</em>, <em>program_trace: Union[bool</em>, <em>Callable] = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/monitoring.html#VerbosityConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.monitoring.VerbosityConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Collection of indicators for what should be logged in a run.</p>
+</dd></dl>
+
 </div>
 
 
@@ -84,15 +66,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../api.html"
-                        title="previous chapter">PyshGP API</a></p>
+  <p class="topless"><a href="pyshgp.push.types.html"
+                        title="previous chapter">pyshgp.push.types module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pyshgp.html"
-                        title="next chapter">pyshgp package</a></p>
+  <p class="topless"><a href="pyshgp.utils.html"
+                        title="next chapter">pyshgp.utils module</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/api/modules.rst.txt"
+      <li><a href="../_sources/api/pyshgp.monitoring.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -122,13 +104,15 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyshgp.html" title="pyshgp package"
+          <a href="pyshgp.utils.html" title="pyshgp.utils module"
              >next</a> |</li>
         <li class="right" >
-          <a href="../api.html" title="PyshGP API"
+          <a href="pyshgp.push.types.html" title="pyshgp.push.types module"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >pyshgp</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="pyshgp.html" >pyshgp package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

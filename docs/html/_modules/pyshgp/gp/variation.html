@@ -54,7 +54,7 @@
 <span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">PushType</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">Literal</span>
 <span class="kn">from</span> <span class="nn">pyshgp.gp.genome</span> <span class="k">import</span> <span class="n">Genome</span><span class="p">,</span> <span class="n">GeneSpawner</span>
-<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">DiscreteProbDistrib</span>
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">DiscreteProbDistrib</span><span class="p">,</span> <span class="n">instantiate_using</span>
 
 
 <div class="viewcode-block" id="VariationOperator"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.VariationOperator">[docs]</a><span class="k">class</span> <span class="nc">VariationOperator</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
@@ -474,12 +474,14 @@
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
 
 
-<div class="viewcode-block" id="get_variation_operator"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.get_variation_operator">[docs]</a><span class="k">def</span> <span class="nf">get_variation_operator</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VariationOperator</span><span class="p">:</span>
+<div class="viewcode-block" id="get_variation_operator"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.get_variation_operator">[docs]</a><span class="k">def</span> <span class="nf">get_variation_operator</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VariationOperator</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the variaton operator class with the given name.&quot;&quot;&quot;</span>
     <span class="n">name_to_cls</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;deletion&quot;</span><span class="p">:</span> <span class="n">DeletionMutation</span><span class="p">,</span>
         <span class="s2">&quot;addition&quot;</span><span class="p">:</span> <span class="n">AdditionMutation</span><span class="p">,</span>
         <span class="s2">&quot;alternation&quot;</span><span class="p">:</span> <span class="n">Alternation</span><span class="p">,</span>
+        <span class="s2">&quot;genesis&quot;</span><span class="p">:</span> <span class="n">Genesis</span><span class="p">,</span>
+        <span class="s2">&quot;cloning&quot;</span><span class="p">:</span> <span class="n">Cloning</span><span class="p">,</span>
         <span class="c1"># UMAD citation: https://dl.acm.org/citation.cfm?id=3205455.3205603</span>
         <span class="s2">&quot;umad&quot;</span><span class="p">:</span> <span class="n">VariationPipeline</span><span class="p">([</span><span class="n">AdditionMutation</span><span class="p">(</span><span class="mf">0.09</span><span class="p">),</span> <span class="n">DeletionMutation</span><span class="p">(</span><span class="mf">0.0826</span><span class="p">)]),</span>
         <span class="s2">&quot;umad-shrink&quot;</span><span class="p">:</span> <span class="n">VariationPipeline</span><span class="p">([</span><span class="n">AdditionMutation</span><span class="p">(</span><span class="mf">0.09</span><span class="p">),</span> <span class="n">DeletionMutation</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)]),</span>
@@ -491,6 +493,8 @@
             <span class="n">nm</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">lst</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">name_to_cls</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="p">))</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="n">op</span> <span class="o">=</span> <span class="n">instantiate_using</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">op</span></div>
 </pre></div>
 

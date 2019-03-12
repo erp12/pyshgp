@@ -14,7 +14,9 @@ Submodules
 
 .. toctree::
 
+   pyshgp.monitoring
    pyshgp.utils
+   pyshgp.validation
 
 Module contents
 ---------------

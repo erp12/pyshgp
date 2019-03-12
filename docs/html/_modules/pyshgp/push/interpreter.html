@@ -54,7 +54,8 @@
 <span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">Atom</span><span class="p">,</span> <span class="n">Closer</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Instruction</span><span class="p">,</span> <span class="n">JitInstructionRef</span><span class="p">,</span> <span class="n">CodeBlock</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">PushError</span>
+<span class="kn">from</span> <span class="nn">pyshgp.validation</span> <span class="k">import</span> <span class="n">PushError</span>
+<span class="kn">from</span> <span class="nn">pyshgp.monitoring</span> <span class="k">import</span> <span class="n">VerbosityConfig</span><span class="p">,</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span>
 
 
 <div class="viewcode-block" id="PushInterpreterConfig"><a class="viewcode-back" href="../../../api/pyshgp.push.interpreter.html#pyshgp.push.interpreter.PushInterpreterConfig">[docs]</a><span class="k">class</span> <span class="nc">PushInterpreterConfig</span><span class="p">:</span>
@@ -98,7 +99,10 @@
     <span class="c1"># @TODO: Should PushInterpreterConfig be JSON serializable?</span>
     <span class="c1"># @TODO: Refactor atom_limit to step_limit</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">atom_limit</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">growth_cap</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">runtime_limit</span><span class="o">=</span><span class="mf">2e10</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">atom_limit</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+                 <span class="n">growth_cap</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+                 <span class="n">runtime_limit</span><span class="o">=</span><span class="mf">2e10</span><span class="p">,</span>
                  <span class="n">reset_on_run</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atom_limit</span> <span class="o">=</span> <span class="n">atom_limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">growth_cap</span> <span class="o">=</span> <span class="n">growth_cap</span>
@@ -144,7 +148,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruction_set</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">InstructionSet</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">PushInterpreterConfig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">instruction_set</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">InstructionSet</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;core&quot;</span><span class="p">,</span>
+                 <span class="n">config</span><span class="p">:</span> <span class="n">PushInterpreterConfig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="c1"># If no instruction set given, create one and register all instructions.</span>
         <span class="k">if</span> <span class="n">instruction_set</span> <span class="o">==</span> <span class="s2">&quot;core&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">instruction_set</span> <span class="o">=</span> <span class="n">InstructionSet</span><span class="p">(</span><span class="n">register_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -203,9 +209,11 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="PushInterpreter.run"><a class="viewcode-back" href="../../../api/pyshgp.push.interpreter.html#pyshgp.push.interpreter.PushInterpreter.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">:</span> <span class="n">CodeBlock</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span>
+<div class="viewcode-block" id="PushInterpreter.run"><a class="viewcode-back" href="../../../api/pyshgp.push.interpreter.html#pyshgp.push.interpreter.PushInterpreter.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">program</span><span class="p">:</span> <span class="n">CodeBlock</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span>
             <span class="n">output_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">verbosity_config</span><span class="p">:</span> <span class="n">VerbosityConfig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run a Push program given some inputs and desired output PushTypes.</span>
 
 <span class="sd">        The general flow of this method is:</span>
@@ -224,8 +232,9 @@
 <span class="sd">        output_types</span>
 <span class="sd">            A secence of values that denote the Pushtypes of the expected</span>
 <span class="sd">            outputs of the push program.</span>
-<span class="sd">        verbose</span>
-<span class="sd">            If true, program execution steps will be printed. Default False.</span>
+<span class="sd">        verbosity_config : VerbosityConfig, optional</span>
+<span class="sd">            A VerbosityConfig controling what is logged during the execution</span>
+<span class="sd">            of the program. Default is no verbosity.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -242,10 +251,13 @@
         <span class="n">stop_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">runtime_limit</span>
         <span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial State:&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">verbosity_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">verbosity_config</span> <span class="o">=</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">verbose_trace</span> <span class="o">=</span> <span class="n">verbosity_config</span><span class="o">.</span><span class="n">program_trace</span>
+
+        <span class="k">if</span> <span class="n">verbose_trace</span><span class="p">:</span>
+            <span class="n">verbose_trace</span><span class="p">(</span><span class="s2">&quot;Initial State:&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">(</span><span class="n">verbose_trace</span><span class="p">)</span>
 
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;exec&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">steps</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">atom_limit</span><span class="p">:</span>
@@ -257,8 +269,8 @@
 
             <span class="n">next_atom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;exec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current Atom:&quot;</span><span class="p">,</span> <span class="n">next_atom</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose_trace</span><span class="p">:</span>
+                <span class="n">verbose_trace</span><span class="p">(</span><span class="s2">&quot;Current Atom: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">next_atom</span><span class="p">))</span>
 
             <span class="n">old_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_atom</span><span class="p">(</span><span class="n">next_atom</span><span class="p">)</span>
@@ -266,11 +278,13 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">PushInterpreterStatus</span><span class="o">.</span><span class="n">growth_cap_exceeded</span>
                 <span class="k">break</span>
 
-            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current State:&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
-                <span class="nb">print</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">verbose_trace</span><span class="p">:</span>
+                <span class="n">verbose_trace</span><span class="p">(</span><span class="s2">&quot;Current State:&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">(</span><span class="n">verbose_trace</span><span class="p">)</span>
             <span class="n">steps</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">verbose_trace</span><span class="p">:</span>
+            <span class="n">verbose_trace</span><span class="p">(</span><span class="s2">&quot;Finished program evaluation.&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">observe_stacks</span><span class="p">(</span><span class="n">output_types</span><span class="p">)</span></div></div>
 

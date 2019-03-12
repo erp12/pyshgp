@@ -11,7 +11,7 @@ from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
 from pyshgp.push.atoms import CodeBlock
 from pyshgp.push.types import push_type_for_type
-from pyshgp.utils import JSONable
+from pyshgp.utils import JSONable, list_rindex
 from pyshgp.validation import check_is_fitted, check_X_y
 from pyshgp.monitoring import DEFAULT_VERBOSITY_LEVELS
 
@@ -117,6 +117,7 @@ class PushEstimator:
                  max_generations: int = 100,
                  initial_genome_size: Tuple[int, int] = (20, 100),
                  simplification_steps: int = 2000,
+                 last_str_from_stdout: bool = False,
                  interpreter: PushInterpreter = "default",
                  verbose: int = 0,
                  **kwargs):
@@ -128,6 +129,7 @@ class PushEstimator:
         self.max_generations = max_generations
         self.initial_genome_size = initial_genome_size
         self.simplification_steps = simplification_steps
+        self.last_str_from_stdout = last_str_from_stdout
         self.verbose = verbose
 
         if interpreter == "default":
@@ -175,9 +177,14 @@ class PushEstimator:
         X, y, arity, y_types = check_X_y(X, y)
         self.interpreter.instruction_set.register_n_inputs(arity)
         output_types = [push_type_for_type(t).name for t in y_types]
+        if self.last_str_from_stdout:
+            ndx = list_rindex(output_types, "str")
+            if ndx is not None:
+                output_types[ndx] = "stdout"
         self.evaluator = DatasetEvaluator(
             X, y,
             interpreter=self.interpreter,
+            last_str_from_stdout=self.last_str_from_stdout,
             verbosity_config=DEFAULT_VERBOSITY_LEVELS[self.verbose]
         )
         self._build_search_algo()

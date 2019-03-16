@@ -110,9 +110,12 @@ class PushState(dict):
         values = []
         counts = {}
         for typ in types:
-            ndx = counts.get(typ, 0)
-            values.append(self[typ].nth(ndx))
-            counts[typ] = ndx + 1
+            if typ == "stdout":
+                values.append(self.stdout)
+            else:
+                ndx = counts.get(typ, 0)
+                values.append(self[typ].nth(ndx))
+                counts[typ] = ndx + 1
         return values
 
     def pop_from_stacks(self, types: Sequence[str]) -> Union[Sequence, Token]:
@@ -141,9 +144,9 @@ class PushState(dict):
         """Return the size of the PushState."""
         return sum([len(s) for s in self.values()]) + len(self.inputs)
 
-    def pretty_print(self):
+    def pretty_print(self, print_or_log_func=print):
         """Print the state of all stacks in the PushState."""
         for k, v in self.items():
-            print(k, ":", v)
-        print('inputs :', self.inputs)
-        print('stdout :', self.stdout)
+            print_or_log_func(" ".join([k, ":", str(v)]))
+        print_or_log_func(" ".join(['inputs :', str(self.inputs)]))
+        print_or_log_func(" ".join(['stdout :', str(self.stdout)]))

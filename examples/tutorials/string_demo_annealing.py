@@ -7,8 +7,10 @@ result with itself.
 
 By default, the error function will be the Damerau-Levenshtein Distance.
 """
+import logging
 import numpy as np
 import random
+import sys
 
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
@@ -23,7 +25,7 @@ X = np.array([
     "abcde", "", "E", "Hi", "Tom", "leprechaun", "zoomzoomzoom",
     "qwertyuiopasd", "GallopTrotCanter", "Quinona", "_abc"
 ]).reshape(-1, 1)
-y = np.array([target_function(s[0]) for s in X])
+y = np.array([[target_function(s[0])] for s in X])
 
 
 instruction_set = (
@@ -44,12 +46,18 @@ spawner = GeneSpawner(
 
 est = PushEstimator(
     search="SA",
-    max_generations=5000,
-    spawner=spawner
+    max_generations=2000,
+    spawner=spawner,
+    verbose=2
 )
 
 if __name__ == "__main__":
-    est.fit(X=X, y=y, verbose=False)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+        stream=sys.stdout
+    )
+    est.fit(X=X, y=y)
     print(est._result.program)
     print(est.predict(X))
     print(est.score(X, y))

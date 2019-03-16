@@ -2,7 +2,7 @@
 from typing import Sequence, Callable
 
 from pyshgp.push.state import PushState
-from pyshgp.push.atoms import Literal
+from pyshgp.push.atoms import Atom, Literal
 from pyshgp.push.instruction import SimpleInstruction, TakesStateInstruction
 from pyshgp.push.types import PUSH_TYPES
 
@@ -10,7 +10,10 @@ from pyshgp.push.types import PUSH_TYPES
 def _nth_inputer(ndx: int) -> Callable:
     # @TODO: Replace with partial
     def f(state: PushState) -> Sequence[Literal]:
-        return [Literal(state.inputs[ndx])]
+        input_value = state.inputs[ndx]
+        if isinstance(input_value, Atom):
+            return input_value,
+        return Literal(input_value),
     return f
 
 

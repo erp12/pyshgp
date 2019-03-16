@@ -1,4 +1,4 @@
-# PyghGP
+# PyshGP
 
 [![PyPI version](https://badge.fury.io/py/pyshgp.svg)](https://badge.fury.io/py/pyshgp)
 [![CircleCI](https://circleci.com/gh/erp12/pyshgp/tree/master.svg?style=svg)](https://circleci.com/gh/erp12/pyshgp/tree/master)
@@ -15,11 +15,11 @@ More information about PushGP can be found on the [Push Redux](https://erp12.git
 
 ### Why use PushGP?
 
-PushGP is a leading software synthesis (some called "programming by example") system. It utilized stochastic (typically evolutionary) search methods to produce programs that are capable of manipulating all the common data types, control structures, and data structures. It is easily extendable to specific use cases and has seen impressive human-competitive coding results. PushGP has [discovered novel quantum computer programs](http://faculty.hampshire.edu/lspector/aqcp/) previously unknown to human programers, and has achieved human competitive results in [finding algebraic terms in the study of finite algebras](http://www.cs.bham.ac.uk/~wbl/biblio/gecco2008/docs/p1291.pdf).
+PushGP is a leading software synthesis (sometimes called "programming by example") system. It utilized stochastic (typically evolutionary) search methods to produce programs that are capable of manipulating all the common data types, control structures, and data structures. It is easily extendable to specific use cases and has seen impressive human-competitive coding results. PushGP has [discovered novel quantum computer programs](http://faculty.hampshire.edu/lspector/aqcp/) previously unknown to human programers, and has achieved human competitive results in [finding algebraic terms in the study of finite algebras](http://www.cs.bham.ac.uk/~wbl/biblio/gecco2008/docs/p1291.pdf).
 
-In contrast to the majority of other ML/AI methods, PushGP does not require the transformation of data into numeric structures. PushGP does optimize a set of parameters using a gradient, but rather attempts to intelligently search the space of Push programs. The result is a system where the primary output is a program written in the Turing complete Push language.
+In contrast to the majority of other ML/AI methods, PushGP does not require the transformation of data into numeric structures. PushGP does not optimize a set of numeric parameters using a gradient, but rather attempts to intelligently search the space of programs. The result is a system where the primary output is a program written in the Turing complete Push language.
 
-PushGP has proven itself to be one of the most power "general program synthesis" frameworks. Like most evolutionary search frameworks, it usually requires an extremely high runtime, however it can solve problems that no other programming-by-example system can solve.
+PushGP has proven itself to be one of the most power "general program synthesis" frameworks. Like most evolutionary search frameworks, it usually requires an extremely high runtime, however it can solve problems that few other programming-by-example system can solve.
 
 Additional references on the successes of PushGP:
 
@@ -51,6 +51,14 @@ pip install pyshgp
 - cd into the `pyshgp` repo directory
 - run `pip install . --upgrade`
 - Thats it! Check out the examples and documentation.
+
+### Running Tests
+
+Run the following command from project root directory. Make sure all the packages from `requirements-with-dev.txt` are installed in the instance of python you are using.
+
+```
+python -m pytest
+```
 
 ## Documentation
 

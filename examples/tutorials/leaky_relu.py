@@ -15,8 +15,10 @@ leaky_relu(x) = max(0.1x, x)
 This problem attempts to synthesize a program that compute the output of both
 the ReLU and LeakyReLU functions.
 """
+import logging
 import numpy as np
 import random
+import sys
 
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
@@ -54,12 +56,17 @@ est = PushEstimator(
     population_size=500,
     max_generations=50,
     spawner=spawner,
-    selector=ep_lex_sel
+    selector=ep_lex_sel,
+    verbose=2
 )
 
 if __name__ == "__main__":
-    est.fit(X=X, y=y, verbose=True)
-
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+        stream=sys.stdout
+    )
+    est.fit(X=X, y=y)
     print(est._result.program)
     print(est.predict(X))
     print(est.score(X, y))

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PyghGP &#8212; PyshGP  documentation</title>
+    <title>PyshGP &#8212; PyshGP  documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -40,8 +40,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyghgp">
-<h1>PyghGP<a class="headerlink" href="#pyghgp" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="pyshgp">
+<h1>PyshGP<a class="headerlink" href="#pyshgp" title="Permalink to this headline">¶</a></h1>
 <a class="reference external image-reference" href="https://badge.fury.io/py/pyshgp"><img alt="PyPI version" src="https://badge.fury.io/py/pyshgp.svg" /></a>
 <a class="reference external image-reference" href="https://circleci.com/gh/erp12/pyshgp/tree/master"><img alt="CircleCI" src="https://circleci.com/gh/erp12/pyshgp/tree/master.svg?style=svg" /></a>
 <p>Push Genetic Programming in Python</p>
@@ -54,9 +54,9 @@
 </div>
 <div class="section" id="why-use-pushgp">
 <h3>Why use PushGP?<a class="headerlink" href="#why-use-pushgp" title="Permalink to this headline">¶</a></h3>
-<p>PushGP is a leading software synthesis (some called “programming by example”) system. It utilized stochastic (typically evolutionary) search methods to produce programs that are capable of manipulating all the common data types, control structures, and data structures. It is easily extendable to specific use cases and has seen impressive human-competitive coding results. PushGP has <a class="reference external" href="http://faculty.hampshire.edu/lspector/aqcp/">discovered novel quantum computer programs</a> previously unknown to human programers, and has achieved human competitive results in <a class="reference external" href="http://www.cs.bham.ac.uk/~wbl/biblio/gecco2008/docs/p1291.pdf">finding algebraic terms in the study of finite algebras</a>.</p>
-<p>In contrast to the majority of other ML/AI methods, PushGP does not require the transformation of data into numeric structures. PushGP does optimize a set of parameters using a gradient, but rather attempts to intelligently search the space of Push programs. The result is a system where the primary output is a program written in the Turing complete Push language.</p>
-<p>PushGP has proven itself to be one of the most power “general program synthesis” frameworks. Like most evolutionary search frameworks, it usually requires an extremely high runtime, however it can solve problems that no other programming-by-example system can solve.</p>
+<p>PushGP is a leading software synthesis (sometimes called “programming by example”) system. It utilized stochastic (typically evolutionary) search methods to produce programs that are capable of manipulating all the common data types, control structures, and data structures. It is easily extendable to specific use cases and has seen impressive human-competitive coding results. PushGP has <a class="reference external" href="http://faculty.hampshire.edu/lspector/aqcp/">discovered novel quantum computer programs</a> previously unknown to human programers, and has achieved human competitive results in <a class="reference external" href="http://www.cs.bham.ac.uk/~wbl/biblio/gecco2008/docs/p1291.pdf">finding algebraic terms in the study of finite algebras</a>.</p>
+<p>In contrast to the majority of other ML/AI methods, PushGP does not require the transformation of data into numeric structures. PushGP does not optimize a set of numeric parameters using a gradient, but rather attempts to intelligently search the space of programs. The result is a system where the primary output is a program written in the Turing complete Push language.</p>
+<p>PushGP has proven itself to be one of the most power “general program synthesis” frameworks. Like most evolutionary search frameworks, it usually requires an extremely high runtime, however it can solve problems that few other programming-by-example system can solve.</p>
 <p>Additional references on the successes of PushGP:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://dl.acm.org/citation.cfm?id=3082533">On the difficulty of benchmarking inductive program synthesis methods</a></li>
@@ -89,6 +89,13 @@
 <li>Thats it! Check out the examples and documentation.</li>
 </ul>
 </div>
+<div class="section" id="running-tests">
+<h3>Running Tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h3>
+<p>Run the following command from project root directory. Make sure all the packages from <code class="docutils literal notranslate"><span class="pre">requirements-with-dev.txt</span></code> are installed in the instance of python you are using.</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>python -m pytest
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
@@ -113,6 +120,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">PyshGP API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/modules.html">pyshgp</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">Push Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html#example-instruction-definitions">Example Instruction Definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html#preparing-instruction-sets">Preparing Instruction Sets</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
@@ -143,7 +155,7 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">PyghGP</a><ul>
+<li><a class="reference internal" href="#">PyshGP</a><ul>
 <li><a class="reference internal" href="#motivation">Motivation</a><ul>
 <li><a class="reference internal" href="#what-is-pushgp">What is PushGP?</a></li>
 <li><a class="reference internal" href="#why-use-pushgp">Why use PushGP?</a></li>
@@ -153,6 +165,7 @@
 <li><a class="reference internal" href="#installing-pyshgp">Installing pyshgp</a><ul>
 <li><a class="reference internal" href="#install-from-pip">Install from pip</a></li>
 <li><a class="reference internal" href="#build-frome-source">Build Frome source</a></li>
+<li><a class="reference internal" href="#running-tests">Running Tests</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#documentation">Documentation</a><ul>

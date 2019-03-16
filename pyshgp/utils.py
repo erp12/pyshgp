@@ -18,6 +18,14 @@ def instantiate_using(cls: type, args: dict):
     return cls(**kwargs)
 
 
+def list_rindex(lst, el):
+    """Index of the last occurrence of an item in a list. Return None is item not found."""
+    for i in reversed(range(len(lst))):
+        if lst[i] == el:
+            return i
+    return None
+
+
 class DiscreteProbDistrib:
     """Discrete Probability Distribution."""
 
@@ -65,32 +73,12 @@ class Token(Enum):
     whole_state = 3
 
 
-class PushError(Exception):
-    """Error raised during Push program execution."""
+class Verbosity(Enum):
+    """Enum class of all verbosity levels."""
 
-    @classmethod
-    def no_type(cls, thing):
-        """Raise PushError when no PushType can be found for something."""
-        return cls("Unkown PushType for {th}.".format(th=thing))
-
-    @classmethod
-    def failed_coerce(cls, thing, push_type):
-        """Raise PushError when something fails to coerce to a PushType."""
-        return cls("Could not convert {typ1} {th} to {typ2}.".format(
-            th=thing,
-            typ1=type(thing),
-            typ2=push_type
-        ))
-
-    @classmethod
-    def empty_character(cls):
-        """Raise PushError when Character is made from empty string."""
-        return cls("Character object cannot be created from empty string.")
-
-    @classmethod
-    def long_character(cls):
-        """Raise PushError when Character is made from string length more than 1."""
-        return cls("Character object cannot be created from string of length > 1.")
+    off = 1
+    debug = 2
+    on = 3
 
 
 class JSONable(ABC):

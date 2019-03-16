@@ -42,9 +42,20 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">choice</span>
+
+
+<div class="viewcode-block" id="instantiate_using"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.instantiate_using">[docs]</a><span class="k">def</span> <span class="nf">instantiate_using</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Call the given function using only the relevant kwargs present in the args dict.&quot;&quot;&quot;</span>
+    <span class="n">arg_names</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">cls</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">arg_name</span> <span class="ow">in</span> <span class="n">arg_names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arg_name</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">arg_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">arg_name</span><span class="p">]</span>
+    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DiscreteProbDistrib"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib">[docs]</a><span class="k">class</span> <span class="nc">DiscreteProbDistrib</span><span class="p">:</span>
@@ -94,32 +105,12 @@
     <span class="n">whole_state</span> <span class="o">=</span> <span class="mi">3</span></div>
 
 
-<div class="viewcode-block" id="PushError"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.PushError">[docs]</a><span class="k">class</span> <span class="nc">PushError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Error raised during Push program execution.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Verbosity"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.Verbosity">[docs]</a><span class="k">class</span> <span class="nc">Verbosity</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Enum class of all verbosity levels.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="PushError.no_type"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.PushError.no_type">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">no_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">thing</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Raise PushError when no PushType can be found for something.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Unkown PushType for </span><span class="si">{th}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">=</span><span class="n">thing</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="PushError.failed_coerce"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.PushError.failed_coerce">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">failed_coerce</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">thing</span><span class="p">,</span> <span class="n">push_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Raise PushError when something fails to coerce to a PushType.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Could not convert </span><span class="si">{typ1}</span><span class="s2"> </span><span class="si">{th}</span><span class="s2"> to </span><span class="si">{typ2}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">th</span><span class="o">=</span><span class="n">thing</span><span class="p">,</span>
-            <span class="n">typ1</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">thing</span><span class="p">),</span>
-            <span class="n">typ2</span><span class="o">=</span><span class="n">push_type</span>
-        <span class="p">))</span></div>
-
-<div class="viewcode-block" id="PushError.empty_character"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.PushError.empty_character">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">empty_character</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Raise PushError when Character is made from empty string.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Character object cannot be created from empty string.&quot;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="PushError.long_character"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.PushError.long_character">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">long_character</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Raise PushError when Character is made from string length more than 1.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Character object cannot be created from string of length &gt; 1.&quot;</span><span class="p">)</span></div></div>
+    <span class="n">off</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">debug</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">on</span> <span class="o">=</span> <span class="mi">3</span></div>
 
 
 <div class="viewcode-block" id="JSONable"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.JSONable">[docs]</a><span class="k">class</span> <span class="nc">JSONable</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>

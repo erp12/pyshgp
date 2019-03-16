@@ -17,8 +17,8 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Contributing" href="../contributing.html" />
-    <link rel="prev" title="pyshgp.push.types module" href="pyshgp.push.types.html" /> 
+    <link rel="next" title="pyshgp.validation module" href="pyshgp.validation.html" />
+    <link rel="prev" title="pyshgp.monitoring module" href="pyshgp.monitoring.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -30,10 +30,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../contributing.html" title="Contributing"
+          <a href="pyshgp.validation.html" title="pyshgp.validation module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="pyshgp.push.types.html" title="pyshgp.push.types module"
+          <a href="pyshgp.monitoring.html" title="pyshgp.monitoring module"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
@@ -105,37 +105,6 @@
 
 </dd></dl>
 
-<dl class="exception">
-<dt id="pyshgp.utils.PushError">
-<em class="property">exception </em><code class="descclassname">pyshgp.utils.</code><code class="descname">PushError</code><a class="reference internal" href="../_modules/pyshgp/utils.html#PushError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.PushError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Error raised during Push program execution.</p>
-<dl class="classmethod">
-<dt id="pyshgp.utils.PushError.empty_character">
-<em class="property">classmethod </em><code class="descname">empty_character</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#PushError.empty_character"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.PushError.empty_character" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise PushError when Character is made from empty string.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="pyshgp.utils.PushError.failed_coerce">
-<em class="property">classmethod </em><code class="descname">failed_coerce</code><span class="sig-paren">(</span><em>thing</em>, <em>push_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#PushError.failed_coerce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.PushError.failed_coerce" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise PushError when something fails to coerce to a PushType.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="pyshgp.utils.PushError.long_character">
-<em class="property">classmethod </em><code class="descname">long_character</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#PushError.long_character"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.PushError.long_character" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise PushError when Character is made from string length more than 1.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="pyshgp.utils.PushError.no_type">
-<em class="property">classmethod </em><code class="descname">no_type</code><span class="sig-paren">(</span><em>thing</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#PushError.no_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.PushError.no_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise PushError when no PushType can be found for something.</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="class">
 <dt id="pyshgp.utils.Token">
 <em class="property">class </em><code class="descclassname">pyshgp.utils.</code><code class="descname">Token</code><a class="reference internal" href="../_modules/pyshgp/utils.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Token" title="Permalink to this definition">¶</a></dt>
@@ -154,6 +123,28 @@
 <dl class="attribute">
 <dt id="pyshgp.utils.Token.whole_state">
 <code class="descname">whole_state</code><em class="property"> = 3</em><a class="headerlink" href="#pyshgp.utils.Token.whole_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.utils.Verbosity">
+<em class="property">class </em><code class="descclassname">pyshgp.utils.</code><code class="descname">Verbosity</code><a class="reference internal" href="../_modules/pyshgp/utils.html#Verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Verbosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enum class of all verbosity levels.</p>
+<dl class="attribute">
+<dt id="pyshgp.utils.Verbosity.debug">
+<code class="descname">debug</code><em class="property"> = 2</em><a class="headerlink" href="#pyshgp.utils.Verbosity.debug" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.utils.Verbosity.off">
+<code class="descname">off</code><em class="property"> = 1</em><a class="headerlink" href="#pyshgp.utils.Verbosity.off" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.utils.Verbosity.on">
+<code class="descname">on</code><em class="property"> = 3</em><a class="headerlink" href="#pyshgp.utils.Verbosity.on" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -239,6 +230,12 @@ instead of just integers. For instance:</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyshgp.utils.instantiate_using">
+<code class="descclassname">pyshgp.utils.</code><code class="descname">instantiate_using</code><span class="sig-paren">(</span><em>cls: type</em>, <em>args: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#instantiate_using"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.instantiate_using" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call the given function using only the relevant kwargs present in the args dict.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyshgp.utils.jsonify_collection">
 <code class="descclassname">pyshgp.utils.</code><code class="descname">jsonify_collection</code><span class="sig-paren">(</span><em>root: Union[list, dict]</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/utils.html#jsonify_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.jsonify_collection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the given list or dict and all elements as a JSON string.</p>
@@ -253,11 +250,11 @@ instead of just integers. For instance:</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="pyshgp.push.types.html"
-                        title="previous chapter">pyshgp.push.types module</a></p>
+  <p class="topless"><a href="pyshgp.monitoring.html"
+                        title="previous chapter">pyshgp.monitoring module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../contributing.html"
-                        title="next chapter">Contributing</a></p>
+  <p class="topless"><a href="pyshgp.validation.html"
+                        title="next chapter">pyshgp.validation module</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -291,10 +288,10 @@ instead of just integers. For instance:</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../contributing.html" title="Contributing"
+          <a href="pyshgp.validation.html" title="pyshgp.validation module"
              >next</a> |</li>
         <li class="right" >
-          <a href="pyshgp.push.types.html" title="pyshgp.push.types module"
+          <a href="pyshgp.monitoring.html" title="pyshgp.monitoring module"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">PyshGP  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>

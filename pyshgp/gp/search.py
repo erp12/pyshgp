@@ -1,9 +1,8 @@
 """The :mod:`search` module defines algorithms to search for Push programs."""
 from abc import ABC, abstractmethod
 from typing import Union, Tuple
-from warnings import warn
 
-from numpy.random import random
+import numpy as np
 import math
 
 from pyshgp.utils import DiscreteProbDistrib
@@ -14,6 +13,7 @@ from pyshgp.gp.population import Population
 from pyshgp.gp.selection import Selector, get_selector
 from pyshgp.gp.variation import VariationOperator, get_variation_operator
 from pyshgp.utils import instantiate_using
+from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS
 
 
 # @TODO: Should SearchConfiguration be JSON serializable?
@@ -44,9 +44,12 @@ class SearchConfiguration:
     initial_genome_size : Tuple[int, int], optional
         The range of genome sizes to produce during initialization. Default is
         (20, 100)
-    simplification_steps : int
+    simplification_steps : int, optional
         The number of simplification iterations to apply to the best Push program
-        produced by the search algorithm.
+        produced by the search algorithm. Default is 2000.
+    verbosity_config :  Union[VerbosityConfig, str], optional
+        A VerbosityConfig controling what is logged during the search. Default
+        is no verbosity.
 
     """
 
@@ -60,6 +63,7 @@ class SearchConfiguration:
                  error_threshold: float = 0.0,
                  initial_genome_size: Tuple[int, int] = (10, 50),
                  simplification_steps: int = 2000,
+                 verbosity_config: Union[VerbosityConfig, str] = "default",
                  **kwargs):
         self.evaluator = evaluator
         self.spawner = spawner
@@ -85,6 +89,11 @@ class SearchConfiguration:
         else:
             variationOp = get_variation_operator(variation, **self.ext)
             self._variation = DiscreteProbDistrib().add(variationOp, 1.0)
+
+        if verbosity_config == "default":
+            self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
+        else:
+            self.verbosity_config = verbosity_config
 
     def get_selector(self):
         """Return a Selector."""
@@ -142,7 +151,7 @@ class SearchAlgorithm(ABC):
         """
         pass
 
-    def _full_step(self, verbose: bool) -> bool:
+    def _full_step(self) -> bool:
         self.generation += 1
         self.population.evaluate(self.config.evaluator)
 
@@ -152,7 +161,8 @@ class SearchAlgorithm(ABC):
             if self.best_seen.total_error <= self.config.error_threshold:
                 return False
 
-        if verbose:
+        if self.config.verbosity_config.generation and \
+           self.generation % self.config.verbosity_config.every_n_generations == 0:
             stat_logs = []
             stat_logs.append("GENERATION: {g}".format(
                 g=self.generation
@@ -166,26 +176,29 @@ class SearchAlgorithm(ABC):
             #     p_s=len(self.population),
             #     g_d=self.population.genome_diversity()
             # ))
-            print(" | ".join(stat_logs))
+            self.config.verbosity_config.generation(" | ".join(stat_logs))
 
         self.step()
         return True
 
-    def run(self, verbose: bool = False):
-        """Run the algorithm until termination.
+    def _is_solved(self):
+        return self.best_seen.total_error <= self.config.error_threshold
 
-        Parameters
-        ----------
-        verbose : bool, optional
-            Indicates if verbose printing should be used during searching.
-            Default is False.
-
-        """
-        while self._full_step(verbose):
+    def run(self):
+        """Run the algorithm until termination."""
+        while self._full_step():
             if self.generation >= self.config.max_generations:
                 break
 
-        simplifier = GenomeSimplifier(self.config.evaluator, verbose)
+        verbose_solution = self.config.verbosity_config.solution_found
+        if verbose_solution:
+            if self._is_solved():
+                verbose_solution("Unsimplified solution found.")
+            else:
+                verbose_solution("No unsimplified solution found.")
+
+        # Simplify the best individual for a better generalization and interpreteation.
+        simplifier = GenomeSimplifier(self.config.evaluator, self.config.verbosity_config)
         simp_genome, simp_error_vector = simplifier.simplify(
             self.best_seen.genome,
             self.best_seen.error_vector,
@@ -193,6 +206,12 @@ class SearchAlgorithm(ABC):
         )
         simplified_best = Individual(simp_genome)
         simplified_best.error_vector = simp_error_vector
+
+        if verbose_solution:
+            if self._is_solved():
+                verbose_solution("Simplified solution found.")
+            else:
+                verbose_solution("No simplified solution found.")
 
         return simplified_best
 
@@ -244,13 +263,9 @@ class SimulatedAnnealing(SearchAlgorithm):
     """
 
     def __init__(self, config: SearchConfiguration):
-        if not config.population_size == 1:
-            warn("SimulatedAnnealing only supports a population size of 1. Config has been overwritten. ")
-            config.population_size = 1
-
+        config.population_size = 1
         for op in config._variation.elements:
             assert op.num_parents <= 1, "SimulatedAnnealing cannot take multiple parant variation operators."
-
         super().__init__(config)
 
     def _get_temp(self,):
@@ -260,7 +275,7 @@ class SimulatedAnnealing(SearchAlgorithm):
     def _acceptance(self, next_error):
         """Return probability of acceptance given an error."""
         current_error = self.population.best().total_error
-        if next_error < current_error:
+        if np.isinf(current_error) or next_error < current_error:
             return 1
         else:
             return math.exp(-(next_error - current_error) / self._get_temp())
@@ -286,7 +301,7 @@ class SimulatedAnnealing(SearchAlgorithm):
         candidate.error_vector = self.config.evaluator.evaluate(candidate.program)
 
         acceptance_probability = self._acceptance(candidate.total_error)
-        if random() < acceptance_probability:
+        if np.random.random() < acceptance_probability:
             self.population = Population().add(candidate)
 
 

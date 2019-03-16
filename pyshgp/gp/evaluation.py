@@ -1,13 +1,14 @@
 """The :mod:`evaluation` module defines classes to evaluate program CodeBlocks."""
 from abc import ABC, abstractmethod
-from typing import Sequence, Union, Callable
+from typing import Sequence, Union, Callable, Optional
 from collections import defaultdict
 import numpy as np
 
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
 from pyshgp.push.atoms import CodeBlock
 from pyshgp.push.types import push_type_of
-from pyshgp.utils import Token
+from pyshgp.utils import Token, list_rindex
+from pyshgp.monitoring import VerbosityConfig
 
 
 def damerau_levenshtein_distance(a: Union[str, Sequence], b: Union[str, Sequence]) -> int:
@@ -66,16 +67,18 @@ class Evaluator(ABC):
     penalty : float, optional
         When a program's output cannot be evaluated on a particular case, the
         penalty error is assigned. Default is 5e5.
-    verbose : bool, optional
-        Indicates if verbose printing should be used during evalutation.
-        Default is False.
+    verbosity_config : Optional[VerbosityConfig] (default = None)
+        A VerbosityConfig controling what is logged during evaluation.
+        Default is no verbosity.
 
     """
 
-    def __init__(self, interpreter: PushInterpreter = "default",
-                 penalty: float = np.inf, verbose: bool = False):
+    def __init__(self,
+                 interpreter: PushInterpreter = "default",
+                 penalty: float = np.inf,
+                 verbosity_config: VerbosityConfig = None):
         self.penalty = penalty
-        self.verbose = verbose
+        self.verbosity_config = verbosity_config
         if interpreter == "default":
             self.interpreter = DEFAULT_INTERPRETER
         else:
@@ -91,6 +94,7 @@ class Evaluator(ABC):
         ----------
         actuals : list
             The values produced by running a Push program on a sequences of cases.
+
         expecteds: list
             The ground truth values for the sequence of cases used to produce the actuals.
 
@@ -141,13 +145,17 @@ class Evaluator(ABC):
 class DatasetEvaluator(Evaluator):
     """Evaluator driven by a labeled dataset."""
 
-    def __init__(self, X, y, interpreter: PushInterpreter = "default",
-                 penalty: float = np.inf, verbose: bool = False):
+    def __init__(self,
+                 X, y,
+                 interpreter: PushInterpreter = "default",
+                 penalty: float = np.inf,
+                 last_str_from_stdout: bool = False,
+                 verbosity_config: Optional[VerbosityConfig] = None):
         """Create Evaluator based on a labeled dataset. Inspired by sklearn.
 
         Parameters
         ----------
-        X : pandas dataframe of shape = [n_samples, n_features]
+        X : list, array-like, or pandas dataframe of shape = [n_samples, n_features]
             The inputs to evaluate each program on.
 
         y : list, array-like, or pandas dataframe.
@@ -160,13 +168,15 @@ class DatasetEvaluator(Evaluator):
             If no response is given by the program on a given input, assign this
             error as the error.
 
-        verbose : bool (default = False)
-            Print all program traces while evaluating.
+        verbosity_config : Optional[VerbosityConfig] (default = None)
+            A VerbosityConfig controling what is logged during evaluation.
+            Default is no verbosity.
 
         """
-        super().__init__(interpreter, penalty, verbose=verbose)
+        super().__init__(interpreter, penalty, verbosity_config=verbosity_config)
         self.X = X
         self.y = y
+        self.last_str_from_stdout = last_str_from_stdout
 
     def evaluate(self, program: CodeBlock) -> np.ndarray:
         """Evaluate the program and return the error vector.
@@ -187,8 +197,14 @@ class DatasetEvaluator(Evaluator):
             expected = self.y[ndx]
             if not isinstance(expected, (list, np.ndarray)):
                 expected = [expected]
+
             output_types = [push_type_of(_).name for _ in expected]
-            actual = self.interpreter.run(program, case, output_types, verbose=self.verbose)
+            if self.last_str_from_stdout:
+                ndx = list_rindex(output_types, "str")
+                if ndx is not None:
+                    output_types[ndx] = "stdout"
+
+            actual = self.interpreter.run(program, case, output_types, self.verbosity_config)
             errors_on_cases.append(self.default_error_function(actual, expected))
         return np.array(errors_on_cases).flatten()
 

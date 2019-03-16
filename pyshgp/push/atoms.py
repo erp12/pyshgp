@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Sequence
 from itertools import chain, count
 import json
-from copy import copy
+from copy import copy, deepcopy
 
 from pyshgp.push.types import PushType, push_type_by_name, push_type_of
 from pyshgp.utils import JSONable, jsonify_collection
@@ -77,7 +77,9 @@ class Literal(Atom):
 
     def __init__(self, value: Any, push_type: PushType = None):
         self.push_type = push_type_of(value) if push_type is None else push_type
-        self.value = self.push_type.coerce(value)
+        if not self.push_type.is_instance(value):
+            value = self.push_type.coerce(value)
+        self.value = value
 
     def jsonify(self) -> str:
         """Return the object as a JSON string."""
@@ -214,7 +216,9 @@ class CodeBlock(list, Atom):
             self._add(el)
 
     def _add(self, el):
-        if isinstance(el, Atom):
+        if isinstance(el, CodeBlock):
+            self.append(el.copy())
+        elif isinstance(el, Atom):
             self.append(el)
         elif isinstance(el, list):
             self.append(CodeBlock.from_list(el))
@@ -241,9 +245,6 @@ class CodeBlock(list, Atom):
 
     def size(self, depth: int = 1) -> int:
         """Return the size of the block and the size of all the nested blocks."""
-        if depth == 89:
-            # Avoid RecursionError.
-            return len(self)
         return sum([el.size(depth + 1) + 1 if isinstance(el, CodeBlock) else 1 for el in self])
 
     def depth(self) -> int:
@@ -277,6 +278,8 @@ class CodeBlock(list, Atom):
         i = index
         for ndx, el in enumerate(self):
             if i == 0:
+                if isinstance(code, CodeBlock):
+                    code = code.copy(True)
                 self.insert(ndx, code)
                 return self
             i = i - 1
@@ -286,9 +289,9 @@ class CodeBlock(list, Atom):
                     return self
                 i = i - el.size()
 
-    def copy(self):
+    def copy(self, deep: bool = False):
         """Copy the CodeBlock."""
-        return copy(self)
+        return deepcopy(self) if deep else copy(self)
 
 
 class AtomFactory:

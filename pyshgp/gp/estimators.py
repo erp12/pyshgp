@@ -2,10 +2,6 @@
 import json
 from typing import Union, Tuple, Sequence
 
-import numpy as np
-import pandas as pd
-from sklearn.utils.validation import check_is_fitted, check_X_y
-
 import pyshgp.gp.search as sr
 import pyshgp.gp.selection as sl
 import pyshgp.gp.variation as vr
@@ -15,11 +11,13 @@ from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
 from pyshgp.push.atoms import CodeBlock
 from pyshgp.push.types import push_type_for_type
-from pyshgp.utils import JSONable
+from pyshgp.utils import JSONable, list_rindex
+from pyshgp.validation import check_is_fitted, check_X_y
+from pyshgp.monitoring import DEFAULT_VERBOSITY_LEVELS
 
 
 class SearchResult(JSONable):
-    """The best program found by a search algorith and the types it outputs.
+    """The best program found by a search algorithm and the types it outputs.
 
     Parameters
     ----------
@@ -100,6 +98,9 @@ class PushEstimator:
     interpreter : PushInterpreter, optional
         The PushInterpreter to use when making predictions. Also holds the instruction
         set to use
+    verbose : int, optional
+        Indicates if verbose printing should be used during searching.
+        Default is 0. Options are 0, 1, or 2.
     **kwargs
         Arbitrary keyword arguments. Examples of supported arguments are
         `epsilon` (bool or float) when using Lexicase as the selector, and
@@ -116,7 +117,9 @@ class PushEstimator:
                  max_generations: int = 100,
                  initial_genome_size: Tuple[int, int] = (20, 100),
                  simplification_steps: int = 2000,
+                 last_str_from_stdout: bool = False,
                  interpreter: PushInterpreter = "default",
+                 verbose: int = 0,
                  **kwargs):
         self._search_name = search
         self.spawner = spawner
@@ -126,6 +129,8 @@ class PushEstimator:
         self.max_generations = max_generations
         self.initial_genome_size = initial_genome_size
         self.simplification_steps = simplification_steps
+        self.last_str_from_stdout = last_str_from_stdout
+        self.verbose = verbose
 
         if interpreter == "default":
             self.interpreter = DEFAULT_INTERPRETER
@@ -152,12 +157,12 @@ class PushEstimator:
             population_size=self.population_size,
             max_generations=self.max_generations,
             initial_genome_size=self.initial_genome_size,
-            simplification_steps=self.simplification_steps
+            simplification_steps=self.simplification_steps,
+            verbosity_config=DEFAULT_VERBOSITY_LEVELS[self.verbose]
         )
-
         self.search = sr.get_search_algo(self._search_name, config=search_config, **self.ext)
 
-    def fit(self, X, y, verbose: bool = False):
+    def fit(self, X, y):
         """Run the search algorithm to synthesize a push program.
 
         Parameters
@@ -167,58 +172,26 @@ class PushEstimator:
         y : list, array-like, or pandas dataframe.
             The target values (class labels in classification, real numbers in
             regression). Shape = [n_samples] or [n_samples, n_outputs]
-        verbose : bool, optional
-            Indicates if verbose printing should be used during searching.
-            Default is False.
 
         """
-        X, y = check_X_y(
-            X, y,
-            dtype=None,
-            force_all_finite=False,
-            allow_nd=True,
-            multi_output=True
-        )
-
-        # Determine required arity of programs.
-        if isinstance(X, (pd.DataFrame, np.ndarray)):
-            if len(X.shape) > 1:
-                arity = X.shape[1]
-            else:
-                arity = 1
-        elif isinstance(X, (pd.Series, list)):
-            try:
-                arity = len(X[0])
-            except TypeError:
-                arity = 1
-        else:
-            arity = 1
+        X, y, arity, y_types = check_X_y(X, y)
         self.interpreter.instruction_set.register_n_inputs(arity)
-
-        # Determine the output signature of programs.
-        if isinstance(y, pd.DataFrame):
-            y_types = list(y.dtypes)
-        elif isinstance(y, pd.Series):
-            y_types = [y.dtype]
-        elif isinstance(y, np.ndarray):
-            if len(y.shape) > 1:
-                y_types = [y.dtype] * y.shape[1]
-            else:
-                y_types = [y.dtype]
-        elif isinstance(y[0], list):
-            # @TODO: Implement a better way to detect type than check the first element.
-            y_types = [type(_) for _ in y[0]]
-        else:
-            y_types = [type(y[0])]
         output_types = [push_type_for_type(t).name for t in y_types]
-
-        self.evaluator = DatasetEvaluator(X, y, interpreter=self.interpreter)
+        if self.last_str_from_stdout:
+            ndx = list_rindex(output_types, "str")
+            if ndx is not None:
+                output_types[ndx] = "stdout"
+        self.evaluator = DatasetEvaluator(
+            X, y,
+            interpreter=self.interpreter,
+            last_str_from_stdout=self.last_str_from_stdout,
+            verbosity_config=DEFAULT_VERBOSITY_LEVELS[self.verbose]
+        )
         self._build_search_algo()
-        best_seen = self.search.run(verbose)
-
+        best_seen = self.search.run()
         self._result = SearchResult(best_seen.program, output_types)
 
-    def predict(self, X, verbose: bool = False):
+    def predict(self, X):
         """Execute the synthesized push program on a dataset.
 
         Parameters
@@ -236,7 +209,12 @@ class PushEstimator:
         """
         check_is_fitted(self, "_result")
         return [
-            self.interpreter.run(self._result.program, inputs, self._result.output_types, verbose=verbose) for inputs in X
+            self.interpreter.run(
+                self._result.program,
+                inputs,
+                self._result.output_types,
+                verbosity_config=self.search.config.verbosity_config
+            ) for inputs in X
         ]
 
     def score(self, X, y):
@@ -253,14 +231,8 @@ class PushEstimator:
 
         """
         check_is_fitted(self, "_result")
-        X, y = check_X_y(
-            X, y,
-            dtype=None,
-            force_all_finite=False,
-            allow_nd=True,
-            multi_output=True
-        )
-        self.evaluator = DatasetEvaluator(X, y)
+        X, y, arity, y_types = check_X_y(X, y)
+        self.evaluator = DatasetEvaluator(X, y, )
         return self.evaluator.evaluate(self._result.program)
 
     def save(self, filepath: str):

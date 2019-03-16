@@ -14,7 +14,8 @@ from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.atoms import (
     Atom, Closer, Literal, Instruction, JitInstructionRef, CodeBlock
 )
-from pyshgp.utils import PushError
+from pyshgp.validation import PushError
+from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS
 
 
 class PushInterpreterConfig:
@@ -58,7 +59,10 @@ class PushInterpreterConfig:
     # @TODO: Should PushInterpreterConfig be JSON serializable?
     # @TODO: Refactor atom_limit to step_limit
 
-    def __init__(self, *, atom_limit=500, growth_cap=500, runtime_limit=2e10,
+    def __init__(self, *,
+                 atom_limit=500,
+                 growth_cap=500,
+                 runtime_limit=2e10,
                  reset_on_run=True):
         self.atom_limit = atom_limit
         self.growth_cap = growth_cap
@@ -104,7 +108,9 @@ class PushInterpreter:
 
     """
 
-    def __init__(self, instruction_set: Union[InstructionSet, str] = "core", config: PushInterpreterConfig = None):
+    def __init__(self,
+                 instruction_set: Union[InstructionSet, str] = "core",
+                 config: PushInterpreterConfig = None):
         # If no instruction set given, create one and register all instructions.
         if instruction_set == "core":
             self.instruction_set = InstructionSet(register_all=True)
@@ -152,7 +158,7 @@ class PushInterpreter:
                 raise PushError("Closers should not be in push programs. Only genomes.")
             else:
                 raise PushError("Cannont evaluate {t}, require a subclass of Atom".format(t=type(atom)))
-        except (TypeError, ValueError) as e:
+        except Exception as e:
             err_type = type(e).__name__
             err_msg = str(e)
             raise PushError(
@@ -163,9 +169,11 @@ class PushInterpreter:
                 )
             )
 
-    def run(self, program: CodeBlock, inputs: Sequence,
+    def run(self,
+            program: CodeBlock,
+            inputs: Sequence,
             output_types: Sequence[str],
-            verbose: bool = False):
+            verbosity_config: VerbosityConfig = None):
         """Run a Push program given some inputs and desired output PushTypes.
 
         The general flow of this method is:
@@ -184,8 +192,9 @@ class PushInterpreter:
         output_types
             A secence of values that denote the Pushtypes of the expected
             outputs of the push program.
-        verbose
-            If true, program execution steps will be printed. Default False.
+        verbosity_config : VerbosityConfig, optional
+            A VerbosityConfig controling what is logged during the execution
+            of the program. Default is no verbosity.
 
         Returns
         -------
@@ -202,10 +211,13 @@ class PushInterpreter:
         stop_time = time.time() + self.config.runtime_limit
         steps = 0
 
-        if verbose:
-            print("Initial State:")
-            self.state.pretty_print()
-            print()
+        if verbosity_config is None:
+            verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
+        verbose_trace = verbosity_config.program_trace
+
+        if verbose_trace:
+            verbose_trace("Initial State:")
+            self.state.pretty_print(verbose_trace)
 
         while len(self.state["exec"]) > 0:
             if steps > self.config.atom_limit:
@@ -217,8 +229,8 @@ class PushInterpreter:
 
             next_atom = self.state["exec"].pop()
 
-            if verbose:
-                print("Current Atom:", next_atom)
+            if verbose_trace:
+                verbose_trace("Current Atom: " + str(next_atom))
 
             old_size = len(self.state)
             self.evaluate_atom(next_atom)
@@ -226,11 +238,13 @@ class PushInterpreter:
                 self.status = PushInterpreterStatus.growth_cap_exceeded
                 break
 
-            if verbose:
-                print("Current State:")
-                self.state.pretty_print()
-                print()
+            if verbose_trace:
+                verbose_trace("Current State:")
+                self.state.pretty_print(verbose_trace)
             steps += 1
+
+        if verbose_trace:
+            verbose_trace("Finished program evaluation.")
 
         return self.state.observe_stacks(output_types)
 

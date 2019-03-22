@@ -158,7 +158,7 @@ class PushInterpreter:
                 raise PushError("Closers should not be in push programs. Only genomes.")
             else:
                 raise PushError("Cannont evaluate {t}, require a subclass of Atom".format(t=type(atom)))
-        except (TypeError, ValueError) as e:
+        except Exception as e:
             err_type = type(e).__name__
             err_msg = str(e)
             raise PushError(

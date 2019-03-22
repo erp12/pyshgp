@@ -80,7 +80,7 @@ class _PushFloatType(PushType):
 class _PushStrType(PushType):
 
     def __init__(self):
-        super().__init__("str", (str, np.str_, np.object, np.dtype('<U28')))
+        super().__init__("str", (str, np.str_))
 
 
 class _PushBoolType(PushType):

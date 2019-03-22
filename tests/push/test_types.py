@@ -29,4 +29,4 @@ def test_push_type_for_type_python_str():
 
 
 def test_push_type_for_type_numpy_str():
-    assert push_type_for_type(np.object) == PushStr
+    assert push_type_for_type(np.str_) == PushStr

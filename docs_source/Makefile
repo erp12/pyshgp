@@ -14,6 +14,8 @@ help:
 api:
 	sphinx-apidoc -f --separate -o source/api/ ../pyshgp ../tests/ ../examples/ ../dev* ../scratch* ../setup*
 
+# @TODO: Instruction Set to rst.
+
 .PHONY: help Makefile
 
 # Catch-all target: route all unknown targets to Sphinx using the new

@@ -218,8 +218,8 @@ class TakesStateInstruction(Instruction):
         # Return if revert.
         if result is Token.revert:
             return push_state
-        if not isinstance(result, list):
-            raise ValueError("Instruction result must be a list. {i} gave {t}.".format(
+        if not isinstance(result, (list, tuple)):
+            raise ValueError("Instruction result must be a collection. {i} gave {t}.".format(
                 i=self,
                 t=type(result)
             ))

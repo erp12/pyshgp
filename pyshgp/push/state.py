@@ -144,7 +144,7 @@ class PushState(dict):
         """Return the size of the PushState."""
         return sum([len(s) for s in self.values()]) + len(self.inputs)
 
-    def pretty_print(self, print_or_log_func: print):
+    def pretty_print(self, print_or_log_func=print):
         """Print the state of all stacks in the PushState."""
         for k, v in self.items():
             print_or_log_func(" ".join([k, ":", str(v)]))

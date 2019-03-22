@@ -125,6 +125,7 @@ def _get_cli_args():
         choices=[
             "md",
             "html",
+            # @TODO: rst instruction set list.
         ],
         default="markdown"
     )

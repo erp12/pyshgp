@@ -1,7 +1,0 @@
-foo\_pyshgp module
-==================
-
-.. automodule:: foo_pyshgp
-    :members:
-    :undoc-members:
-    :show-inheritance:

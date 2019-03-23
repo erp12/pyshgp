@@ -4,7 +4,7 @@ A PushState object holds the PushStacks, stdout string, and collection of input
 values. The PushState is what controls the setup of all stacks before program
 manipulation, and the producing of outputs after program execution.
 """
-from typing import Sequence, Union, Any, Set
+from typing import Sequence, Union, Set
 import numpy as np
 
 from pyshgp.push.types import PushType, push_type_by_name
@@ -20,9 +20,9 @@ class PushState(dict):
 
     def __init__(self, push_types: Set[Union[PushType, str]]):
         super().__init__()
-        self.stdout: str = ""
-        self.inputs: Sequence[Any] = []
-        self._jit_push_types: dict = {}
+        self.stdout = ""
+        self.inputs = []
+        self._jit_push_types = {}
 
         for push_type in set(list(push_types) + ["exec"]):
             if isinstance(push_type, str):

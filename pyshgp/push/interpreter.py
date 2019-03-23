@@ -128,8 +128,8 @@ class PushInterpreter:
 
     def reset(self):
         """Reset the interpreter status and PushState."""
-        self.state: PushState = PushState(self._supported_types)
-        self.status: PushInterpreterStatus = PushInterpreterStatus.normal
+        self.state = PushState(self._supported_types)
+        self.status = PushInterpreterStatus.normal
 
     def _evaluate_instruction(self, instruction: Union[Instruction, JitInstructionRef]):
         self.state = instruction.evaluate(self.state, self.config)

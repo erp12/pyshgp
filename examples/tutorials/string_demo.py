@@ -6,6 +6,12 @@ Take the input string, remove the last 2 characters, and then concat this
 result with itself.
 
 By default, the error function will be the Damerau-Levenshtein Distance.
+
+NOTE: This problem file is run during PyshGP's CI tests as validation tests.
+For this reason, the hyperparameters that contribute the most to runtime are kept
+aritifically low. To see the best search performance, consider increasing
+population size, max generations, and initial_genome_size.
+
 """
 import logging
 import numpy as np
@@ -45,9 +51,10 @@ spawner = GeneSpawner(
 
 
 est = PushEstimator(
-    population_size=200,
-    max_generations=50,
     spawner=spawner,
+    population_size=200,
+    max_generations=30,
+    initial_genome_size=(10, 50),
     verbose=2
 )
 

@@ -7,7 +7,7 @@ result with itself.
 
 By default, the error function will be the Damerau-Levenshtein Distance.
 
-NOTE: This problem file is run during PyshGP's CI tests as validation tests.
+NOTICE: This problem file is run during PyshGP's CI tests as validation tests.
 For this reason, the hyperparameters that contribute the most to runtime are kept
 aritifically low. To see the best search performance, consider increasing
 population size, max generations, and initial_genome_size.

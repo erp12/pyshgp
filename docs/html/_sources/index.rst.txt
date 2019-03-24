@@ -9,6 +9,7 @@ Contents
 
    api
    instructions
+   release_notes
    contributing
 
 

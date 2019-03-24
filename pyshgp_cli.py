@@ -23,6 +23,9 @@ from pyshgp.push.instruction import (
 from pyshgp.push.instruction_set import _CORE_INSTRUCTIONS
 
 
+# @TODO: Create a way to prepare a release from pyshgp_cli.py
+
+
 DOC_DIR = "build/doc/"
 
 

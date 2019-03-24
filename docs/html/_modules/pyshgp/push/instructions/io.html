@@ -42,7 +42,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span>
 
 <span class="kn">from</span> <span class="nn">pyshgp.push.state</span> <span class="k">import</span> <span class="n">PushState</span>
-<span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Literal</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.instruction</span> <span class="k">import</span> <span class="n">SimpleInstruction</span><span class="p">,</span> <span class="n">TakesStateInstruction</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">PUSH_TYPES</span>
 
@@ -50,7 +50,10 @@
 <span class="k">def</span> <span class="nf">_nth_inputer</span><span class="p">(</span><span class="n">ndx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="c1"># @TODO: Replace with partial</span>
     <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Literal</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">Literal</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">ndx</span><span class="p">])]</span>
+        <span class="n">input_value</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_value</span><span class="p">,</span> <span class="n">Atom</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">input_value</span><span class="p">,</span>
+        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">input_value</span><span class="p">),</span>
     <span class="k">return</span> <span class="n">f</span>
 
 
@@ -125,7 +128,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

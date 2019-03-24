@@ -1,0 +1,341 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.gp.estimators &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyshgp.gp.estimators</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The :mod:`estimator` module defines a ``PushEstimator`` class.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">pyshgp.gp.search</span> <span class="k">as</span> <span class="nn">sr</span>
+<span class="kn">import</span> <span class="nn">pyshgp.gp.selection</span> <span class="k">as</span> <span class="nn">sl</span>
+<span class="kn">import</span> <span class="nn">pyshgp.gp.variation</span> <span class="k">as</span> <span class="nn">vr</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.evaluation</span> <span class="k">import</span> <span class="n">DatasetEvaluator</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.genome</span> <span class="k">import</span> <span class="n">GeneSpawner</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.instruction_set</span> <span class="k">import</span> <span class="n">InstructionSet</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.interpreter</span> <span class="k">import</span> <span class="n">PushInterpreter</span><span class="p">,</span> <span class="n">DEFAULT_INTERPRETER</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">CodeBlock</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">push_type_for_type</span>
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">JSONable</span><span class="p">,</span> <span class="n">list_rindex</span>
+<span class="kn">from</span> <span class="nn">pyshgp.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span><span class="p">,</span> <span class="n">check_X_y</span>
+<span class="kn">from</span> <span class="nn">pyshgp.monitoring</span> <span class="k">import</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span>
+
+
+<div class="viewcode-block" id="SearchResult"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.SearchResult">[docs]</a><span class="k">class</span> <span class="nc">SearchResult</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The best program found by a search algorithm and the types it outputs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    program : CodeBlock</span>
+<span class="sd">        The Push program found by a SearchAlgorithm.</span>
+<span class="sd">    output_types : Sequence[str]</span>
+<span class="sd">        The types output by the program.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    program : CodeBlock</span>
+<span class="sd">        The Push program found by a SearchAlgorithm.</span>
+<span class="sd">    output_types : Sequence[str]</span>
+<span class="sd">        The types output by the program.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">:</span> <span class="n">CodeBlock</span><span class="p">,</span> <span class="n">output_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">program</span> <span class="o">=</span> <span class="n">program</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span> <span class="o">=</span> <span class="n">output_types</span>
+
+<div class="viewcode-block" id="SearchResult.from_json_str"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.SearchResult.from_json_str">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json_str</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">instruction_set</span><span class="p">:</span> <span class="n">InstructionSet</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a PushSolution from a JSON string.&quot;&quot;&quot;</span>
+        <span class="n">solution_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">CodeBlock</span><span class="o">.</span><span class="n">from_json_str</span><span class="p">(</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">solution_dict</span><span class="p">[</span><span class="s2">&quot;program&quot;</span><span class="p">],</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)),</span>
+                <span class="n">instruction_set</span>
+            <span class="p">),</span>
+            <span class="n">solution_dict</span><span class="p">[</span><span class="s2">&quot;output_types&quot;</span><span class="p">]</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SearchResult.from_json_file"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.SearchResult.from_json_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">instruction_set</span><span class="p">:</span> <span class="n">InstructionSet</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a PushSolution from a JSON string.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_json_str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">instruction_set</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SearchResult.jsonify"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.SearchResult.jsonify">[docs]</a>    <span class="k">def</span> <span class="nf">jsonify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the object as a JSON string.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;{{&quot;program&quot;:</span><span class="si">{p}</span><span class="s1">,&quot;output_types&quot;:</span><span class="si">{o}</span><span class="s1">}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">program</span><span class="o">.</span><span class="n">to_json</span><span class="p">(),</span>
+            <span class="n">o</span><span class="o">=</span><span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">t</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PushEstimator"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator">[docs]</a><span class="k">class</span> <span class="nc">PushEstimator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Simple estimator that synthesizes Push programs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    search : Union[SearchAlgorithm, str], optional</span>
+<span class="sd">        The search algorithm, or its abbreviation, to use to when synthesizing</span>
+<span class="sd">        Push programs.</span>
+<span class="sd">    spawner : Union[GeneSpawner, str], optional</span>
+<span class="sd">        The GeneSpawner to use when producing Genomes during initialization and</span>
+<span class="sd">        variation. Default is all core intructions, no literals, and no ERC Generators.</span>
+<span class="sd">    selector : Union[Selector, str], optional</span>
+<span class="sd">        The selector, or name of selector, to use when selecting parents.</span>
+<span class="sd">        The default is lexicase selection.</span>
+<span class="sd">    variation_strategy : Union[VariationStrategy, dict, str]</span>
+<span class="sd">        A VariationStrategy describing a collection of VariationOperators and how</span>
+<span class="sd">        frequently to use them. If a dict is supplied, keys should be operator</span>
+<span class="sd">        names and values should be the probability distirution. If a string is</span>
+<span class="sd">        provided, the VariationOperators with that name will always be used.</span>
+<span class="sd">    population_size : int, optional</span>
+<span class="sd">        The number of individuals hold in the population each generation. Default</span>
+<span class="sd">        is 300.</span>
+<span class="sd">    max_generations : int, optional</span>
+<span class="sd">        The number of generations to run the search algorithm. Default is 100.</span>
+<span class="sd">    initial_genome_size : Tuple[int, int], optional</span>
+<span class="sd">        The range of genome sizes to produce during initialization. Default is</span>
+<span class="sd">        (20, 100)</span>
+<span class="sd">    simplification_steps : int</span>
+<span class="sd">        The number of simplification iterations to apply to the best Push program</span>
+<span class="sd">        produced by the search algorithm.</span>
+<span class="sd">    interpreter : PushInterpreter, optional</span>
+<span class="sd">        The PushInterpreter to use when making predictions. Also holds the instruction</span>
+<span class="sd">        set to use</span>
+<span class="sd">    verbose : int, optional</span>
+<span class="sd">        Indicates if verbose printing should be used during searching.</span>
+<span class="sd">        Default is 0. Options are 0, 1, or 2.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Arbitrary keyword arguments. Examples of supported arguments are</span>
+<span class="sd">        `epsilon` (bool or float) when using Lexicase as the selector, and</span>
+<span class="sd">        `tournament_size` (int) when using tournament selection.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">,</span>
+                 <span class="n">search</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GA&quot;</span><span class="p">,</span>
+                 <span class="n">selector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">sl</span><span class="o">.</span><span class="n">Selector</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;lexicase&quot;</span><span class="p">,</span>
+                 <span class="n">variation_strategy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">vr</span><span class="o">.</span><span class="n">VariationStrategy</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;umad&quot;</span><span class="p">,</span>
+                 <span class="n">population_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+                 <span class="n">max_generations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                 <span class="n">initial_genome_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+                 <span class="n">simplification_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span>
+                 <span class="n">last_str_from_stdout</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">interpreter</span><span class="p">:</span> <span class="n">PushInterpreter</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_search_name</span> <span class="o">=</span> <span class="n">search</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spawner</span> <span class="o">=</span> <span class="n">spawner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">selector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span> <span class="o">=</span> <span class="n">variation_strategy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">population_size</span> <span class="o">=</span> <span class="n">population_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_generations</span> <span class="o">=</span> <span class="n">max_generations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_genome_size</span> <span class="o">=</span> <span class="n">initial_genome_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simplification_steps</span> <span class="o">=</span> <span class="n">simplification_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_str_from_stdout</span> <span class="o">=</span> <span class="n">last_str_from_stdout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+        <span class="k">if</span> <span class="n">interpreter</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span> <span class="o">=</span> <span class="n">DEFAULT_INTERPRETER</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span> <span class="o">=</span> <span class="n">interpreter</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ext</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="nf">_build_search_algo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">var_strat</span> <span class="o">=</span> <span class="n">vr</span><span class="o">.</span><span class="n">VariationStrategy</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">prob</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">var_op</span> <span class="o">=</span> <span class="n">vr</span><span class="o">.</span><span class="n">get_variation_operator</span><span class="p">(</span><span class="n">op_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var_op</span><span class="p">,</span> <span class="n">vr</span><span class="o">.</span><span class="n">VariationOperator</span><span class="p">):</span>
+                    <span class="n">var_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_component</span><span class="p">(</span><span class="n">var_op</span><span class="p">)</span>
+                <span class="n">var_strat</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">var_op</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span> <span class="o">=</span> <span class="n">var_strat</span>
+
+        <span class="n">search_config</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">SearchConfiguration</span><span class="p">(</span>
+            <span class="n">spawner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spawner</span><span class="p">,</span>
+            <span class="n">evaluator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span><span class="p">,</span>
+            <span class="n">selection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">selector</span><span class="p">,</span>
+            <span class="n">variation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variation_strategy</span><span class="p">,</span>
+            <span class="n">population_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">population_size</span><span class="p">,</span>
+            <span class="n">max_generations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_generations</span><span class="p">,</span>
+            <span class="n">initial_genome_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_genome_size</span><span class="p">,</span>
+            <span class="n">simplification_steps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">simplification_steps</span><span class="p">,</span>
+            <span class="n">verbosity_config</span><span class="o">=</span><span class="n">DEFAULT_VERBOSITY_LEVELS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">get_search_algo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_name</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">search_config</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PushEstimator.fit"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the search algorithm to synthesize a push program.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+<span class="sd">        y : list, array-like, or pandas dataframe.</span>
+<span class="sd">            The target values (class labels in classification, real numbers in</span>
+<span class="sd">            regression). Shape = [n_samples] or [n_samples, n_outputs]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">arity</span><span class="p">,</span> <span class="n">y_types</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">instruction_set</span><span class="o">.</span><span class="n">register_n_inputs</span><span class="p">(</span><span class="n">arity</span><span class="p">)</span>
+        <span class="n">output_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">push_type_for_type</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">y_types</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_str_from_stdout</span><span class="p">:</span>
+            <span class="n">ndx</span> <span class="o">=</span> <span class="n">list_rindex</span><span class="p">(</span><span class="n">output_types</span><span class="p">,</span> <span class="s2">&quot;str&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ndx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">output_types</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;stdout&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">DatasetEvaluator</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+            <span class="n">interpreter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="p">,</span>
+            <span class="n">last_str_from_stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_str_from_stdout</span><span class="p">,</span>
+            <span class="n">verbosity_config</span><span class="o">=</span><span class="n">DEFAULT_VERBOSITY_LEVELS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_search_algo</span><span class="p">()</span>
+        <span class="n">best_seen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">SearchResult</span><span class="p">(</span><span class="n">best_seen</span><span class="o">.</span><span class="n">program</span><span class="p">,</span> <span class="n">output_types</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PushEstimator.predict"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute the synthesized push program on a dataset.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The set of cases to predict.</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            Indicates if verbose printing should be used during searching.</span>
+<span class="sd">            Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_hat : pandas dataframe of shape = [n_samples, n_outputs]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_result&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">program</span><span class="p">,</span>
+                <span class="n">inputs</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">output_types</span><span class="p">,</span>
+                <span class="n">verbosity_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">verbosity_config</span>
+            <span class="p">)</span> <span class="k">for</span> <span class="n">inputs</span> <span class="ow">in</span> <span class="n">X</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="PushEstimator.score"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the search algorithm to synthesize a push program.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : pandas dataframe of shape = [n_samples, n_features]</span>
+<span class="sd">            The training input samples.</span>
+
+<span class="sd">        y : list, array-like, or pandas dataframe.</span>
+<span class="sd">            The target values (class labels in classification, real numbers in</span>
+<span class="sd">            regression). Shape = [n_samples] or [n_samples, n_outputs]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_result&quot;</span><span class="p">)</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">arity</span><span class="p">,</span> <span class="n">y_types</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">DatasetEvaluator</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">program</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PushEstimator.save"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load the found solution to a JSON file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath</span>
+<span class="sd">            Filepath to write the serialized search result to.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_result&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PushEstimator.load"><a class="viewcode-back" href="../../../api/pyshgp.gp.estimators.html#pyshgp.gp.estimators.PushEstimator.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load a found solution from a JSON file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath</span>
+<span class="sd">            Filepath to read the serialized search result from.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">SearchResult</span><span class="o">.</span><span class="n">from_json_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">instruction_set</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

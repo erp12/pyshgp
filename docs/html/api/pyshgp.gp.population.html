@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pyshgp.gp.search module" href="pyshgp.gp.search.html" />
@@ -25,6 +26,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.gp.search.html" title="pyshgp.gp.search module"
              accesskey="N">next</a> |</li>
@@ -44,8 +48,80 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyshgp-gp-population-module">
-<h1>pyshgp.gp.population module<a class="headerlink" href="#pyshgp-gp-population-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyshgp.gp.population">
+<span id="pyshgp-gp-population-module"></span><h1>pyshgp.gp.population module<a class="headerlink" href="#module-pyshgp.gp.population" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">population</span></code> module defines an evolutionary population of Individuals.</p>
+<dl class="class">
+<dt id="pyshgp.gp.population.Population">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.population.</code><code class="descname">Population</code><span class="sig-paren">(</span><em>individuals: list = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Sequence</span></code></p>
+<p>A sequence of Individuals kept in sorted order, with respect to their total errors.</p>
+<dl class="method">
+<dt id="pyshgp.gp.population.Population.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>individual: pyshgp.gp.individual.Individual</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an Individaul to the population.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.population.Population.all_error_vectors">
+<code class="descname">all_error_vectors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population.all_error_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population.all_error_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D array containing all Individuals’ error vectors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.population.Population.all_total_errors">
+<code class="descname">all_total_errors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population.all_total_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population.all_total_errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>1D array containing all Individuals’ total errors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.population.Population.best">
+<code class="descname">best</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population.best"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population.best" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the best n individual in the population.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.population.Population.best_n">
+<code class="descname">best_n</code><span class="sig-paren">(</span><em>n: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population.best_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population.best_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the best n individuals in the population.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.population.Population.error_diversity">
+<code class="descname">error_diversity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population.error_diversity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population.error_diversity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Proportion of unique error vectors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.population.Population.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>evaluator: pyshgp.gp.evaluation.Evaluator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate all unevaluated individuals in the population.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.population.Population.evaluated">
+<code class="descname">evaluated</code><a class="headerlink" href="#pyshgp.gp.population.Population.evaluated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.population.Population.genome_diversity">
+<code class="descname">genome_diversity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population.genome_diversity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population.genome_diversity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Proportion of unique genomes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.population.Population.median_error">
+<code class="descname">median_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/population.html#Population.median_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.population.Population.median_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Median total error in the population.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.population.Population.unevaluated">
+<code class="descname">unevaluated</code><a class="headerlink" href="#pyshgp.gp.population.Population.unevaluated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -89,6 +165,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.gp.search.html" title="pyshgp.gp.search module"
              >next</a> |</li>

@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pyshgp.push.instructions.logical module" href="pyshgp.push.instructions.logical.html" />
@@ -25,6 +26,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.push.instructions.logical.html" title="pyshgp.push.instructions.logical module"
              accesskey="N">next</a> |</li>
@@ -45,8 +49,27 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyshgp-push-instructions-io-module">
-<h1>pyshgp.push.instructions.io module<a class="headerlink" href="#pyshgp-push-instructions-io-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyshgp.push.instructions.io">
+<span id="pyshgp-push-instructions-io-module"></span><h1>pyshgp.push.instructions.io module<a class="headerlink" href="#module-pyshgp.push.instructions.io" title="Permalink to this headline">¶</a></h1>
+<p>Definitions for all core I/O instructions, including input instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.io.instructions">
+<code class="descclassname">pyshgp.push.instructions.io.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instructions/io.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.io.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core printing instructions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.instructions.io.make_input_instruction">
+<code class="descclassname">pyshgp.push.instructions.io.</code><code class="descname">make_input_instruction</code><span class="sig-paren">(</span><em>ndx: int</em><span class="sig-paren">)</span> &#x2192; pyshgp.push.instruction.TakesStateInstruction<a class="reference internal" href="../_modules/pyshgp/push/instructions/io.html#make_input_instruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.io.make_input_instruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return insctuction to push a copy of the input value at the given index.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.instructions.io.make_input_instructions">
+<code class="descclassname">pyshgp.push.instructions.io.</code><code class="descname">make_input_instructions</code><span class="sig-paren">(</span><em>num_inputs: int</em><span class="sig-paren">)</span> &#x2192; Sequence[pyshgp.push.instruction.TakesStateInstruction]<a class="reference internal" href="../_modules/pyshgp/push/instructions/io.html#make_input_instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.io.make_input_instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return insctuctions to push a copy of the input value at the given index.</p>
+</dd></dl>
+
 </div>
 
 
@@ -90,6 +113,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.push.instructions.logical.html" title="pyshgp.push.instructions.logical module"
              >next</a> |</li>

@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pyshgp.gp.population module" href="pyshgp.gp.population.html" />
@@ -25,6 +26,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.gp.population.html" title="pyshgp.gp.population module"
              accesskey="N">next</a> |</li>
@@ -44,8 +48,110 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyshgp-gp-individual-module">
-<h1>pyshgp.gp.individual module<a class="headerlink" href="#pyshgp-gp-individual-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyshgp.gp.individual">
+<span id="pyshgp-gp-individual-module"></span><h1>pyshgp.gp.individual module<a class="headerlink" href="#module-pyshgp.gp.individual" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">individual</span></code> module defines an Individaul in an evolutionary population.</p>
+<p>Individuals are made up of Genomes, which are the linear Push program
+representations which can be manipulated by seach algorithms.</p>
+<dl class="class">
+<dt id="pyshgp.gp.individual.Individual">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.individual.</code><code class="descname">Individual</code><span class="sig-paren">(</span><em>genome: pyshgp.gp.genome.Genome = &lt;class 'pyshgp.gp.genome.Genome'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/individual.html#Individual"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.individual.Individual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An individual in an evolutionary population.</p>
+<dl class="attribute">
+<dt id="pyshgp.gp.individual.Individual.genome">
+<code class="descname">genome</code><a class="headerlink" href="#pyshgp.gp.individual.Individual.genome" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Genome of the Individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pyshgp.gp.genome.html#pyshgp.gp.genome.Genome" title="pyshgp.gp.genome.Genome">Genome</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.individual.Individual.program">
+<code class="descname">program</code><a class="headerlink" href="#pyshgp.gp.individual.Individual.program" title="Permalink to this definition">¶</a></dt>
+<dd><p>The CodeBlock produced by translating the Individual’s genome.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pyshgp.push.atoms.html#pyshgp.push.atoms.CodeBlock" title="pyshgp.push.atoms.CodeBlock">CodeBlock</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.individual.Individual.error_vector">
+<code class="descname">error_vector</code><a class="headerlink" href="#pyshgp.gp.individual.Individual.error_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>An array of error values produced by evaluating the Individual’s program.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.individual.Individual.total_error">
+<code class="descname">total_error</code><a class="headerlink" href="#pyshgp.gp.individual.Individual.total_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>The sum of all error values in the Individaul’s error_vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.individual.Individual.error_vector_bytes">
+<code class="descname">error_vector_bytes</code><a class="headerlink" href="#pyshgp.gp.individual.Individual.error_vector_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hashable Byte representation of the individual’s error vector.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">error_vector</code></dt>
+<dd><p>Numpy array of numeric error values.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">error_vector_bytes</code></dt>
+<dd><p>Hashable Byte representation of the individual’s error vector.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">genome</code></dt>
+<dd><p>Plush Genome of individual.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">program</code></dt>
+<dd><p>Push program of individual. Taken from Plush genome.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">total_error</code></dt>
+<dd><p>Numeric sum of the error vector.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -89,6 +195,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.gp.population.html" title="pyshgp.gp.population module"
              >next</a> |</li>

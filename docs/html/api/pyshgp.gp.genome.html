@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pyshgp.gp.individual module" href="pyshgp.gp.individual.html" />
@@ -25,6 +26,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.gp.individual.html" title="pyshgp.gp.individual module"
              accesskey="N">next</a> |</li>
@@ -44,8 +48,311 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyshgp-gp-genome-module">
-<h1>pyshgp.gp.genome module<a class="headerlink" href="#pyshgp-gp-genome-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyshgp.gp.genome">
+<span id="pyshgp-gp-genome-module"></span><h1>pyshgp.gp.genome module<a class="headerlink" href="#module-pyshgp.gp.genome" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">genome</span></code> module defines classes related to Genomesself.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Genome</span></code> class defines Genomes as flat, linear representations of Push
+programs. The <code class="docutils literal notranslate"><span class="pre">GenomeSpawner</span></code> class is a factory of random genes (<code class="docutils literal notranslate"><span class="pre">Atoms</span></code>)
+and random <code class="docutils literal notranslate"><span class="pre">Genomes</span></code>.</p>
+<dl class="class">
+<dt id="pyshgp.gp.genome.GeneSpawner">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.genome.</code><code class="descname">GeneSpawner</code><span class="sig-paren">(</span><em>instruction_set: pyshgp.push.instruction_set.InstructionSet, literals: Sequence[Union[pyshgp.push.atoms.Literal, Any]], erc_generators: Sequence[Callable], distribution: pyshgp.utils.DiscreteProbDistrib = 'proportional'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GeneSpawner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A factory of random Genes (Atoms) and Genomes.</p>
+<p>When  spawning a random gene, the result can be one of three types of Atoms.
+An Instruction, a Closer, or a Literal. If the Atom is a Literal, it may
+be one of the supplied Literals, or it may be the result of running one of
+the Ephemeral Random Constant generators.</p>
+<p>Reference for ERCs:
+“A field guide to genetic programming”, Section 3.1
+Riccardo Poli and William B. Langdon and Nicholas Freitag McPhee,
+<a class="reference external" href="http://www.gp-field-guide.org.uk/">http://www.gp-field-guide.org.uk/</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>instruction_set</strong> (<a class="reference internal" href="pyshgp.push.instruction_set.html#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet"><em>pyshgp.push.instruction_set.InstructionSet</em></a>) – InstructionSet containing instructions to use when spawning genes and
+genomes.</li>
+<li><strong>literals</strong> (<em>Sequence</em><em>[</em><em>pyshgp.push.instruction_set.atoms.Literal</em><em>, </em><em>Any</em><em>]</em>) – A list of Literal objects to pull from when spawning genes and genomes.
+If an element of <code class="docutils literal notranslate"><span class="pre">literals</span></code> is not an instance of Literal, an attempt
+to wrap the value in a Literal will be made.</li>
+<li><strong>erc_generator</strong> (<em>Sequence</em><em>[</em><em>Callable</em><em>]</em>) – A list of functions (aka Ephemeral Random Constant generators). When one
+of these functions is called, the output is placed in a Literal and
+returned as the spawned gene.</li>
+<li><strong>distribution</strong> (<a class="reference internal" href="pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib" title="pyshgp.utils.DiscreteProbDistrib"><em>pyshgp.utils.DiscreteProbDistrib</em></a><em>, </em><em>optional</em>) – A probability distribution describing how frequently to produce
+Instructions, Closers, Literals, and ERCs. The default is “proportional”
+which gives all Instructions, Literals, and ERC generators equal probability.
+If “proportional”, the likelyhood of producing a Closer is the same as
+the likelyhood of producing an Instruction with opens a code block.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.gp.genome.GeneSpawner.instruction_set">
+<code class="descname">instruction_set</code><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner.instruction_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>InstructionSet containing instructions to use when spawning genes and
+genomes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pyshgp.push.instruction_set.html#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">pyshgp.push.instruction_set.InstructionSet</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.genome.GeneSpawner.literals">
+<code class="descname">literals</code><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner.literals" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of Literal objects to pull from when spawning genes and genomes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">Sequence[pyshgp.push.instruction_set.atoms.Literal]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.genome.GeneSpawner.erc_generator">
+<code class="descname">erc_generator</code><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner.erc_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of functions (aka Ephemeral Random Constant generators). When one
+of these functions is called, the output is placed in a Literal and
+returned as the spawned gene.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">Sequence[Callable]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.genome.GeneSpawner.distribution">
+<code class="descname">distribution</code><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner.distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>A probability distribution describing how frequently to produce
+Instructions, Closers, Literals, and ERCs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib" title="pyshgp.utils.DiscreteProbDistrib">pyshgp.utils.DiscreteProbDistrib</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.GeneSpawner.random_erc">
+<code class="descname">random_erc</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pyshgp.push.atoms.Literal<a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GeneSpawner.random_erc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner.random_erc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Materialize a random ERC generator into a Literal and return it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A Literal whose value comes from running a ERC generator function.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pushgp.push.atoms.Literal</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.GeneSpawner.random_instruction">
+<code class="descname">random_instruction</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pyshgp.push.atoms.Instruction<a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GeneSpawner.random_instruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner.random_instruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a random Instruction from the InstructionSet.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A randomly selected Literal.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pushgp.push.atoms.Instruction</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.GeneSpawner.random_literal">
+<code class="descname">random_literal</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pyshgp.push.atoms.Literal<a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GeneSpawner.random_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner.random_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a random Literal from the set of Literals.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A randomly selected Literal.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pushgp.push.atoms.Literal</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.GeneSpawner.spawn_atom">
+<code class="descname">spawn_atom</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pyshgp.push.atoms.Atom<a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GeneSpawner.spawn_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner.spawn_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a random Atom based on the GenomeSpawner’s distribution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An random Atom. Either an Instruction, Closer, or Literal.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pushgp.push.atoms.Atom</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.GeneSpawner.spawn_genome">
+<code class="descname">spawn_genome</code><span class="sig-paren">(</span><em>size: Union[int, Sequence[int]]</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.genome.Genome<a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GeneSpawner.spawn_genome"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GeneSpawner.spawn_genome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a random Genome based on the GenomeSpawner’s distribution.</p>
+<p>The genome will contain the specified number of Atoms if size is an
+integer. If size is a pair of integers, the genome will be of a random
+size in the range of the two integers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> – The resulting genome will contain this many Atoms if size is an
+integer. If size is a pair of integers, the genome will be of a random
+size in the range of the two integers.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A Genome with random contents of a given size.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pushgp.gp.genome.Genome</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.genome.Genome">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.genome.</code><code class="descname">Genome</code><span class="sig-paren">(</span><em>atoms: Sequence[pyshgp.push.atoms.Atom] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <a class="reference internal" href="pyshgp.push.atoms.html#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <a class="reference internal" href="pyshgp.utils.html#pyshgp.utils.JSONable" title="pyshgp.utils.JSONable"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.utils.JSONable</span></code></a></p>
+<p>A flat sequence of Atoms where each Atom is a “gene” in the genome.</p>
+<dl class="method">
+<dt id="pyshgp.gp.genome.Genome.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>el: pyshgp.push.atoms.Atom</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append Atom to end of Genome.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.Genome.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><em>*</em>, <em>deep: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a copy of the Genome.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pyshgp.gp.genome.Genome.from_json_str">
+<em class="property">static </em><code class="descname">from_json_str</code><span class="sig-paren">(</span><em>json_str: str</em>, <em>instruction_set: pyshgp.push.instruction_set.InstructionSet</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome.from_json_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome.from_json_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Genome from a JSON string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.Genome.jsonify">
+<code class="descname">jsonify</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome.jsonify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome.jsonify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object as a JSON string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.Genome.simplify">
+<code class="descname">simplify</code><span class="sig-paren">(</span><em>evaluator: pyshgp.gp.evaluation.Evaluator</em>, <em>origional_error: float</em>, <em>steps: int</em>, <em>verbosity_config: pyshgp.monitoring.VerbosityConfig = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome.simplify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome.simplify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simplify genome while preserving or improving error.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.Genome.to_code_block">
+<code class="descname">to_code_block</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pyshgp.push.atoms.CodeBlock<a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome.to_code_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome.to_code_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate into nested CodeBlocks.</p>
+<p>These CodeBlocks can be considered the Push program representation of
+the Genome which can be executed by a PushInterpreter and evaluated
+by an Evaluator.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.genome.GenomeSimplifier">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.genome.</code><code class="descname">GenomeSimplifier</code><span class="sig-paren">(</span><em>evaluator: pyshgp.gp.evaluation.Evaluator</em>, <em>verbosity_config: Optional[pyshgp.monitoring.VerbosityConfig] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GenomeSimplifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GenomeSimplifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simplifies a genome while preserving, or improving, its error.</p>
+<p>Genomes, and Push programs, can contain superfluous Push code. This extra
+code often has no effect on the program behavior, but occasionally it can
+introduce subtle errors or behaviors that is not covered by the training
+cases. Removing the superfluous code makes genomes (and thus programs)
+smaller and easier to understand. More importantly, simplification can
+imporve the generalization of the given genome/program.</p>
+<p>The process of geneome simplification is iterative and closely resembles
+simple hill climbing. For each iteration, the simplifier will randomly
+select a small number of random genes to remove. The Genome is re-evaluated
+and if its error gets worse, the change is reverted. After repeating this
+for some number of steps, the resulting genome will be the same size or
+smaller while containing the same (or better) error value.</p>
+<p>Reference:
+“Improving generalization of evolved programs through automatic simplification”
+Thomas Helmuth, Nicholas Freitag McPhee, Edward Pantridge, and Lee Spector. 2017.
+In Proceedings of the Genetic and Evolutionary Computation Conference (GECCO ‘17).
+ACM, New York, NY, USA, 937-944. DOI: <a class="reference external" href="https://doi.org/10.1145/3071178.3071330">https://doi.org/10.1145/3071178.3071330</a></p>
+<p><a class="reference external" href="https://dl.acm.org/citation.cfm?id=3071178.3071330">https://dl.acm.org/citation.cfm?id=3071178.3071330</a></p>
+<dl class="method">
+<dt id="pyshgp.gp.genome.GenomeSimplifier.simplify">
+<code class="descname">simplify</code><span class="sig-paren">(</span><em>genome: pyshgp.gp.genome.Genome</em>, <em>origional_errors: numpy.ndarray</em>, <em>steps: int = 2000</em><span class="sig-paren">)</span> &#x2192; Tuple[pyshgp.gp.genome.Genome, numpy.ndarray]<a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GenomeSimplifier.simplify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GenomeSimplifier.simplify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simplify the given geome while maintaining error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>genome</strong> – The Genome to simplifiy.</li>
+<li><strong>origional_errors</strong> – Error vector of the genome to simplify.</li>
+<li><strong>steps</strong> – Number of simplification iterations to perform. Default is 2000.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A Genome with random contents of a given size.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pushgp.gp.genome.Genome</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.genome.Opener">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.genome.</code><code class="descname">Opener</code><span class="sig-paren">(</span><em>count: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Opener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Opener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Marks the start of one or more CodeBlock.</p>
+<dl class="attribute">
+<dt id="pyshgp.gp.genome.Opener.count">
+<code class="descname">count</code><a class="headerlink" href="#pyshgp.gp.genome.Opener.count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.genome.Opener.dec">
+<code class="descname">dec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Opener.dec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Opener.dec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decrements the count by 1.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -89,6 +396,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.gp.individual.html" title="pyshgp.gp.individual module"
              >next</a> |</li>

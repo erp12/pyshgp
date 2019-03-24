@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pyshgp.gp.evaluation module" href="pyshgp.gp.evaluation.html" />
@@ -25,6 +26,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.gp.evaluation.html" title="pyshgp.gp.evaluation module"
              accesskey="N">next</a> |</li>
@@ -44,8 +48,206 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyshgp-gp-estimators-module">
-<h1>pyshgp.gp.estimators module<a class="headerlink" href="#pyshgp-gp-estimators-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyshgp.gp.estimators">
+<span id="pyshgp-gp-estimators-module"></span><h1>pyshgp.gp.estimators module<a class="headerlink" href="#module-pyshgp.gp.estimators" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">estimator</span></code> module defines a <code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code> class.</p>
+<dl class="class">
+<dt id="pyshgp.gp.estimators.PushEstimator">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.estimators.</code><code class="descname">PushEstimator</code><span class="sig-paren">(</span><em>spawner: pyshgp.gp.genome.GeneSpawner</em>, <em>search: str = 'GA'</em>, <em>selector: Union[pyshgp.gp.selection.Selector</em>, <em>str] = 'lexicase'</em>, <em>variation_strategy: Union[pyshgp.gp.variation.VariationStrategy</em>, <em>dict</em>, <em>str] = 'umad'</em>, <em>population_size: int = 300</em>, <em>max_generations: int = 100</em>, <em>initial_genome_size: Tuple[int</em>, <em>int] = (20</em>, <em>100)</em>, <em>simplification_steps: int = 2000</em>, <em>last_str_from_stdout: bool = False</em>, <em>interpreter: pyshgp.push.interpreter.PushInterpreter = 'default'</em>, <em>verbose: int = 0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple estimator that synthesizes Push programs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>search</strong> (<em>Union</em><em>[</em><a class="reference internal" href="pyshgp.gp.search.html#pyshgp.gp.search.SearchAlgorithm" title="pyshgp.gp.search.SearchAlgorithm"><em>SearchAlgorithm</em></a><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – The search algorithm, or its abbreviation, to use to when synthesizing
+Push programs.</li>
+<li><strong>spawner</strong> (<em>Union</em><em>[</em><a class="reference internal" href="pyshgp.gp.genome.html#pyshgp.gp.genome.GeneSpawner" title="pyshgp.gp.genome.GeneSpawner"><em>GeneSpawner</em></a><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – The GeneSpawner to use when producing Genomes during initialization and
+variation. Default is all core intructions, no literals, and no ERC Generators.</li>
+<li><strong>selector</strong> (<em>Union</em><em>[</em><a class="reference internal" href="pyshgp.gp.selection.html#pyshgp.gp.selection.Selector" title="pyshgp.gp.selection.Selector"><em>Selector</em></a><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – The selector, or name of selector, to use when selecting parents.
+The default is lexicase selection.</li>
+<li><strong>variation_strategy</strong> (<em>Union</em><em>[</em><a class="reference internal" href="pyshgp.gp.variation.html#pyshgp.gp.variation.VariationStrategy" title="pyshgp.gp.variation.VariationStrategy"><em>VariationStrategy</em></a><em>, </em><em>dict</em><em>, </em><em>str</em><em>]</em>) – A VariationStrategy describing a collection of VariationOperators and how
+frequently to use them. If a dict is supplied, keys should be operator
+names and values should be the probability distirution. If a string is
+provided, the VariationOperators with that name will always be used.</li>
+<li><strong>population_size</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of individuals hold in the population each generation. Default
+is 300.</li>
+<li><strong>max_generations</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of generations to run the search algorithm. Default is 100.</li>
+<li><strong>initial_genome_size</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>, </em><em>optional</em>) – The range of genome sizes to produce during initialization. Default is
+(20, 100)</li>
+<li><strong>simplification_steps</strong> (<em>int</em>) – The number of simplification iterations to apply to the best Push program
+produced by the search algorithm.</li>
+<li><strong>interpreter</strong> (<a class="reference internal" href="pyshgp.push.interpreter.html#pyshgp.push.interpreter.PushInterpreter" title="pyshgp.push.interpreter.PushInterpreter"><em>PushInterpreter</em></a><em>, </em><em>optional</em>) – The PushInterpreter to use when making predictions. Also holds the instruction
+set to use</li>
+<li><strong>verbose</strong> (<em>int</em><em>, </em><em>optional</em>) – Indicates if verbose printing should be used during searching.
+Default is 0. Options are 0, 1, or 2.</li>
+<li><strong>**kwargs</strong> – Arbitrary keyword arguments. Examples of supported arguments are
+<cite>epsilon</cite> (bool or float) when using Lexicase as the selector, and
+<cite>tournament_size</cite> (int) when using tournament selection.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the search algorithm to synthesize a push program.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.</li>
+<li><strong>y</strong> (<em>list</em><em>, </em><em>array-like</em><em>, or </em><em>pandas dataframe.</em>) – The target values (class labels in classification, real numbers in
+regression). Shape = [n_samples] or [n_samples, n_outputs]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>filepath: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a found solution from a JSON file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – Filepath to read the serialized search result from.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the synthesized push program on a dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The set of cases to predict.</li>
+<li><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if verbose printing should be used during searching.
+Default is False.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y_hat</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pandas dataframe of shape = [n_samples, n_outputs]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>filepath: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the found solution to a JSON file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – Filepath to write the serialized search result to.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.PushEstimator.score">
+<code class="descname">score</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#PushEstimator.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.PushEstimator.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the search algorithm to synthesize a push program.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>pandas dataframe of shape =</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The training input samples.</li>
+<li><strong>y</strong> (<em>list</em><em>, </em><em>array-like</em><em>, or </em><em>pandas dataframe.</em>) – The target values (class labels in classification, real numbers in
+regression). Shape = [n_samples] or [n_samples, n_outputs]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.estimators.SearchResult">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.estimators.</code><code class="descname">SearchResult</code><span class="sig-paren">(</span><em>program: pyshgp.push.atoms.CodeBlock, output_types: Sequence[str]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#SearchResult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyshgp.utils.html#pyshgp.utils.JSONable" title="pyshgp.utils.JSONable"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.utils.JSONable</span></code></a></p>
+<p>The best program found by a search algorithm and the types it outputs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>program</strong> (<a class="reference internal" href="pyshgp.push.atoms.html#pyshgp.push.atoms.CodeBlock" title="pyshgp.push.atoms.CodeBlock"><em>CodeBlock</em></a>) – The Push program found by a SearchAlgorithm.</li>
+<li><strong>output_types</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – The types output by the program.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.gp.estimators.SearchResult.program">
+<code class="descname">program</code><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult.program" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Push program found by a SearchAlgorithm.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pyshgp.push.atoms.html#pyshgp.push.atoms.CodeBlock" title="pyshgp.push.atoms.CodeBlock">CodeBlock</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.estimators.SearchResult.output_types">
+<code class="descname">output_types</code><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult.output_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>The types output by the program.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">Sequence[str]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pyshgp.gp.estimators.SearchResult.from_json_file">
+<em class="property">classmethod </em><code class="descname">from_json_file</code><span class="sig-paren">(</span><em>filepath: str</em>, <em>instruction_set: pyshgp.push.instruction_set.InstructionSet</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#SearchResult.from_json_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult.from_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a PushSolution from a JSON string.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pyshgp.gp.estimators.SearchResult.from_json_str">
+<em class="property">classmethod </em><code class="descname">from_json_str</code><span class="sig-paren">(</span><em>json_str: str</em>, <em>instruction_set: pyshgp.push.instruction_set.InstructionSet</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#SearchResult.from_json_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult.from_json_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a PushSolution from a JSON string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.estimators.SearchResult.jsonify">
+<code class="descname">jsonify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/estimators.html#SearchResult.jsonify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.estimators.SearchResult.jsonify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object as a JSON string.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -89,6 +291,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.gp.evaluation.html" title="pyshgp.gp.evaluation module"
              >next</a> |</li>

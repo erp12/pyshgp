@@ -1,0 +1,625 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyshgp.push.instructions.text &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyshgp.push.instructions.text</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Definitions for all core text instructions.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.instruction</span> <span class="k">import</span> <span class="n">SimpleInstruction</span><span class="p">,</span> <span class="n">ProducesManyOfTypeInstruction</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">Char</span>
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">Token</span>
+
+
+<span class="k">def</span> <span class="nf">_concat</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">),</span>
+
+
+<span class="k">def</span> <span class="nf">_first_char</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+
+
+<span class="k">def</span> <span class="nf">_last_char</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+
+
+<span class="k">def</span> <span class="nf">_nth_char</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ndx</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="n">ndx</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)],</span>
+
+
+<span class="k">def</span> <span class="nf">_contains</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">,</span>
+
+
+<span class="k">def</span> <span class="nf">_p_index</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">substr</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">substr</span><span class="p">),</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+
+
+<span class="k">def</span> <span class="nf">_head</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)],</span>
+
+
+<span class="k">def</span> <span class="nf">_tail</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):],</span>
+
+
+<span class="k">def</span> <span class="nf">_rest</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+
+
+<span class="k">def</span> <span class="nf">_but_last</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+
+
+<span class="k">def</span> <span class="nf">_drop</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):],</span>
+
+
+<span class="k">def</span> <span class="nf">_but_last_n</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))],</span>
+
+
+<span class="k">def</span> <span class="nf">_split_on</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_replace_n</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">old</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">new</span><span class="p">),</span> <span class="n">n</span><span class="p">),</span>
+
+
+<span class="k">def</span> <span class="nf">_replace_all</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">old</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">new</span><span class="p">)),</span>
+
+
+<span class="k">def</span> <span class="nf">_remove_n</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_replace_n</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_remove_all</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_replace_all</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_len</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">),</span>
+
+
+<span class="k">def</span> <span class="nf">_reverse</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+
+
+<span class="k">def</span> <span class="nf">_make_empty</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+
+
+<span class="k">def</span> <span class="nf">_is_empty</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+
+
+<span class="k">def</span> <span class="nf">_occurrences_of</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span>
+
+
+<span class="k">def</span> <span class="nf">_remove_nth</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ndx</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="n">ndx</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">ndx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:],</span>
+
+
+<span class="k">def</span> <span class="nf">_set_nth</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">ndx</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="n">ndx</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">ndx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:],</span>
+
+
+<span class="k">def</span> <span class="nf">_insert</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ndx</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="n">ndx</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">ndx</span><span class="p">:],</span>
+
+
+<span class="k">def</span> <span class="nf">_strip_whitespace</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+
+
+<span class="c1"># @TODO: Implement exec_string_iterate instruction.</span>
+
+
+<span class="k">def</span> <span class="nf">_is_whitespace</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">isspace</span><span class="p">(),</span>
+
+
+<span class="k">def</span> <span class="nf">_is_letter</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">isalpha</span><span class="p">(),</span>
+
+
+<span class="k">def</span> <span class="nf">_is_digit</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">(),</span>
+
+
+<span class="k">def</span> <span class="nf">_str_from_thing</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">thing</span><span class="p">),</span>
+
+
+<span class="k">def</span> <span class="nf">_char_from_bool</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">b</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Char</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">),</span>
+    <span class="k">return</span> <span class="n">Char</span><span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">),</span>
+
+
+<span class="k">def</span> <span class="nf">_char_from_ascii</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Char</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">128</span><span class="p">)),</span>
+
+
+<span class="k">def</span> <span class="nf">_char_from_float</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_char_from_ascii</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_all_chars</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Char</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="instructions"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.text.html#pyshgp.push.instructions.text.instructions">[docs]</a><span class="k">def</span> <span class="nf">instructions</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Return all core text instructions.&quot;&quot;&quot;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;char&quot;</span><span class="p">]:</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_concat&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_concat</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Concatenates the top two </span><span class="si">{t}</span><span class="s2">s and pushes the resulting string.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_insert_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_insert</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Inserts </span><span class="si">{t}</span><span class="s2"> into the top str at index `n` and pushes</span>
+<span class="s2">            the resulting string. The value for `n` is taken from the int stack.&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Getting Characters</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_from_first_char&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_first_char</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes a </span><span class="si">{t}</span><span class="s2"> of the first character of the top string.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_from_last_char&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_last_char</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes a </span><span class="si">{t}</span><span class="s2"> of the last character of the top string.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_from_nth_char&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_nth_char</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes a </span><span class="si">{t}</span><span class="s2"> of the nth character of the top string. The top integer denotes nth position.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Checking string contents</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_contains_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_contains</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes true if the next </span><span class="si">{t}</span><span class="s2"> is in the top string. Pushes false otherwise.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_index_of_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_p_index</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the index of the next </span><span class="si">{t}</span><span class="s2"> in the top string. If not found, pushes -1.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Splitting</span>
+
+        <span class="c1"># @TODO: srt_split_on_space</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ProducesManyOfTypeInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_split_on_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_split_on</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;str&quot;</span><span class="p">,</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes multiple strs produced by splitting the top str on the top </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Replacements</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_replace_first_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_replace_n</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes the str produced by replaceing the first occurrence of the</span>
+<span class="s2">            top </span><span class="si">{t}</span><span class="s2"> with the second </span><span class="si">{t}</span><span class="s2">.&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_replace_n_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_replace_n</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes the str produced by replaceing the first `n` occurrences of the</span>
+<span class="s2">            top </span><span class="si">{t}</span><span class="s2"> with the second </span><span class="si">{t}</span><span class="s2">. The value for `n` is the top int.&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_replace_all_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_replace_all</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes the str produced by replaceing all occurrences of the</span>
+<span class="s2">            top </span><span class="si">{t}</span><span class="s2"> with the second </span><span class="si">{t}</span><span class="s2">.&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Removals</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_remove_first_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_remove_n</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the str produced by removing the first occurrence of the top </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_remove_n_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_remove_n</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes the str produced by remvoing the first `n` occurrences of the</span>
+<span class="s2">            top </span><span class="si">{t}</span><span class="s2">. The value for `n` is the top int.&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_remove_all_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_remove_all</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the str produced by removing all occurrences of the top </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Misc</span>
+
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_occurrences_of_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_occurrences_of</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the number of times the top </span><span class="si">{t}</span><span class="s2"> occurs in the top str to the int stack.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_reverse&quot;</span><span class="p">,</span>
+        <span class="n">_reverse</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Takes the top string and pushes it reversed.&quot;&quot;&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_head&quot;</span><span class="p">,</span>
+        <span class="n">_head</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes a string of the first `n` characters from the top string. The value</span>
+<span class="s2">        for `n` is the top int mod the length of the string.&quot;&quot;&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_tail&quot;</span><span class="p">,</span>
+        <span class="n">_tail</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes a string of the last `n` characters from the top string. The value</span>
+<span class="s2">        for `n` is the top int mod the length of the string.&quot;&quot;&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_append_char&quot;</span><span class="p">,</span>
+        <span class="n">_concat</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;char&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Appends the top char to the top string pushes the resulting string.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_rest&quot;</span><span class="p">,</span>
+        <span class="n">_rest</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the top str without its first character.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_but_last&quot;</span><span class="p">,</span>
+        <span class="n">_but_last</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the top str without its last character.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_drop&quot;</span><span class="p">,</span>
+        <span class="n">_drop</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes the top str without its first `n` character. The value for `n`</span>
+<span class="s2">        is the top int mod the length of the string.&quot;&quot;&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_but_last_n&quot;</span><span class="p">,</span>
+        <span class="n">_but_last_n</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes the top str without its last `n` character. The value for `n`</span>
+<span class="s2">        is the top int mod the length of the string.&quot;&quot;&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_length&quot;</span><span class="p">,</span>
+        <span class="n">_len</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the length of the top str to the int stack.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_make_empty&quot;</span><span class="p">,</span>
+        <span class="n">_make_empty</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes an empty string.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_is_empty_string&quot;</span><span class="p">,</span>
+        <span class="n">_is_empty</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes True if top string is empty. Pushes False otherwise.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_remove_nth&quot;</span><span class="p">,</span>
+        <span class="n">_remove_nth</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the top str with the nth character removed.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_set_nth&quot;</span><span class="p">,</span>
+        <span class="n">_set_nth</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;char&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the top str with the nth character set to the top character.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;str_strip_whitespace&quot;</span><span class="p">,</span>
+        <span class="n">_strip_whitespace</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the top str with trailing and leading whitespace stripped.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="c1"># @TODO: Instructions for trim_left and trim_right</span>
+    <span class="c1"># @TODO: Instructions for pad_left and pad_right</span>
+
+    <span class="c1">#  CHARACTER INSTRUCTIONS</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;char_is_whitespace&quot;</span><span class="p">,</span>
+        <span class="n">_is_whitespace</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;char&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes True if the top Char is whitespace. Pushes False otherwise.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;char_is_letter&quot;</span><span class="p">,</span>
+        <span class="n">_is_letter</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;char&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes True if the top Char is a letter. Pushes False otherwise.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;char_is_digit&quot;</span><span class="p">,</span>
+        <span class="n">_is_digit</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;char&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes True if the top Char is a numeric digit. Pushes False otherwise.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="c1">#  TYPE CONVERTING</span>
+
+    <span class="k">for</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;char&quot;</span><span class="p">]:</span>
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;str_from_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">_str_from_thing</span><span class="p">,</span>
+            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the top </span><span class="si">{t}</span><span class="s2"> converted into a str.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;char_from_bool&quot;</span><span class="p">,</span>
+        <span class="n">_char_from_bool</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;char&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes the char </span><span class="se">\&quot;</span><span class="s2">T</span><span class="se">\&quot;</span><span class="s2"> if the top bool is True. If the top</span>
+<span class="s2">        bool is False, pushes the char </span><span class="se">\&quot;</span><span class="s2">F</span><span class="se">\&quot;</span><span class="s2">.&quot;&quot;&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;char_from_ascii_int&quot;</span><span class="p">,</span>
+        <span class="n">_char_from_ascii</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;char&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the top int converted into a Character by using the int mod 128 as an ascii value.&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;_char_from_float&quot;</span><span class="p">,</span>
+        <span class="n">_char_from_float</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;char&quot;</span><span class="p">],</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes the top float converted into a Character by flooring</span>
+<span class="s2">        the float to an int, taking the int mod 128, and using it as an ascii value.&quot;&quot;&quot;</span>
+    <span class="p">))</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ProducesManyOfTypeInstruction</span><span class="p">(</span>
+        <span class="s2">&quot;chars_from_str&quot;</span><span class="p">,</span>
+        <span class="n">_all_chars</span><span class="p">,</span>
+        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;str&quot;</span><span class="p">],</span>
+        <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;char&quot;</span><span class="p">,</span>
+        <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Pushes each character of the top str to the char stack in reverse order.&quot;&quot;&quot;</span>
+    <span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">i</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

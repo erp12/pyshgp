@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pyshgp.push package" href="pyshgp.push.html" />
@@ -25,6 +26,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.push.html" title="pyshgp.push package"
              accesskey="N">next</a> |</li>
@@ -44,8 +48,682 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyshgp-gp-variation-module">
-<h1>pyshgp.gp.variation module<a class="headerlink" href="#pyshgp-gp-variation-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pyshgp.gp.variation">
+<span id="pyshgp-gp-variation-module"></span><h1>pyshgp.gp.variation module<a class="headerlink" href="#module-pyshgp.gp.variation" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">variation</span></code> module defines classes for variation operators.</p>
+<p>Variation operators (aka genetic operators) are used in evolutionary/genetic
+algorithms to create “child” genomes from “parent” genomes.</p>
+<dl class="class">
+<dt id="pyshgp.gp.variation.AdditionMutation">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.variation.</code><code class="descname">AdditionMutation</code><span class="sig-paren">(</span><em>addition_rate: float = 0.01</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#AdditionMutation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.AdditionMutation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.variation.VariationOperator</span></code></a></p>
+<p>Uniformly randomly adds some Atoms to parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rate</strong> (<em>float</em>) – The probablility of adding a new Atom at any given point in the parent
+Genome. Default is 0.01.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.AdditionMutation.rate">
+<code class="descname">rate</code><a class="headerlink" href="#pyshgp.gp.variation.AdditionMutation.rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The probablility of adding a new Atom at any given point in the parent
+Genome. Default is 0.01.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.AdditionMutation.num_parents">
+<code class="descname">num_parents</code><a class="headerlink" href="#pyshgp.gp.variation.AdditionMutation.num_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of parent Genomes the operator needs to produce a child
+Individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.variation.AdditionMutation.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>parents: Sequence[pyshgp.gp.genome.Genome], spawner: pyshgp.gp.genome.GeneSpawner</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.genome.Genome<a class="reference internal" href="../_modules/pyshgp/gp/variation.html#AdditionMutation.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.AdditionMutation.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a child Genome from parent Genomes and optional GenomeSpawner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parents</strong> – A list of parent Genomes given to the operator.</li>
+<li><strong>spawner</strong> – A GeneSpawner that can be used to produce new genes (aka Atoms).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.variation.Alternation">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.variation.</code><code class="descname">Alternation</code><span class="sig-paren">(</span><em>alternation_rate=0.01</em>, <em>alignment_deviation=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#Alternation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.Alternation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.variation.VariationOperator</span></code></a></p>
+<p>Uniformly alternates between the two parent genomes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rate</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default=0.01</em><em>)</em>) – The probablility of switching which parent program elements are being
+copied from. Must be 0 &lt;= rate &lt;= 1. Defaults to 0.1.</li>
+<li><strong>alignment_deviation</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=10</em><em>)</em>) – The standard deviation of how far alternation may jump between indices
+when switching between parents.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.Alternation.rate">
+<code class="descname">rate</code><a class="headerlink" href="#pyshgp.gp.variation.Alternation.rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The probablility of switching which parent program elements are being
+copied from. Must be 0 &lt;= rate &lt;= 1. Defaults to 0.1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float, optional (default=0.01)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.Alternation.alignment_deviation">
+<code class="descname">alignment_deviation</code><a class="headerlink" href="#pyshgp.gp.variation.Alternation.alignment_deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>The standard deviation of how far alternation may jump between indices
+when switching between parents.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int, optional (default=10)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.Alternation.num_parents">
+<code class="descname">num_parents</code><a class="headerlink" href="#pyshgp.gp.variation.Alternation.num_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of parent Genomes the operator needs to produce a child
+Individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.variation.Alternation.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>parents: Sequence[pyshgp.gp.genome.Genome], spawner: pyshgp.gp.genome.GeneSpawner = None</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.genome.Genome<a class="reference internal" href="../_modules/pyshgp/gp/variation.html#Alternation.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.Alternation.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a child Genome from parent Genomes and optional GenomeSpawner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parents</strong> – A list of parent Genomes given to the operator.</li>
+<li><strong>spawner</strong> – A GeneSpawner that can be used to produce new genes (aka Atoms).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.variation.Cloning">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.variation.</code><code class="descname">Cloning</code><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#Cloning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.Cloning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.variation.VariationOperator</span></code></a></p>
+<p>Clones the parent genome.</p>
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.Cloning.num_parents">
+<code class="descname">num_parents</code><a class="headerlink" href="#pyshgp.gp.variation.Cloning.num_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of parent Genomes the operator needs to produce a child
+Individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.variation.Cloning.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>parents: Sequence[pyshgp.gp.genome.Genome], spawner: pyshgp.gp.genome.GeneSpawner = None</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.genome.Genome<a class="reference internal" href="../_modules/pyshgp/gp/variation.html#Cloning.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.Cloning.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a child Genome from parent Genomes and optional GenomeSpawner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parents</strong> – A list of parent Genomes given to the operator.</li>
+<li><strong>spawner</strong> – A GeneSpawner that can be used to produce new genes (aka Atoms).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.variation.DeletionMutation">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.variation.</code><code class="descname">DeletionMutation</code><span class="sig-paren">(</span><em>deletion_rate: float = 0.01</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#DeletionMutation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.DeletionMutation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.variation.VariationOperator</span></code></a></p>
+<p>Uniformly randomly removes some Atoms from parent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rate</strong> (<em>float</em>) – The probablility of removing any given Atom in the parent Genome.
+Default is 0.01.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.DeletionMutation.rate">
+<code class="descname">rate</code><a class="headerlink" href="#pyshgp.gp.variation.DeletionMutation.rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The probablility of removing any given Atom in the parent Genome.
+Default is 0.01.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.DeletionMutation.num_parents">
+<code class="descname">num_parents</code><a class="headerlink" href="#pyshgp.gp.variation.DeletionMutation.num_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of parent Genomes the operator needs to produce a child
+Individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.variation.DeletionMutation.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>parents: Sequence[pyshgp.gp.genome.Genome], spawner: pyshgp.gp.genome.GeneSpawner</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.genome.Genome<a class="reference internal" href="../_modules/pyshgp/gp/variation.html#DeletionMutation.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.DeletionMutation.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a child Genome from parent Genomes and optional GenomeSpawner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parents</strong> – A list of parent Genomes given to the operator.</li>
+<li><strong>spawner</strong> – A GeneSpawner that can be used to produce new genes (aka Atoms).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.variation.Genesis">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.variation.</code><code class="descname">Genesis</code><span class="sig-paren">(</span><em>*, size: Union[int, Sequence[int]]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#Genesis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.Genesis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.variation.VariationOperator</span></code></a></p>
+<p>Creates an entirely new (and random) genome.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> – The child genome will contain this many Atoms if size is an integer.
+If size is a pair of integers, the genome will be of a random
+size in the range of the two integers.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.Genesis.size">
+<code class="descname">size</code><a class="headerlink" href="#pyshgp.gp.variation.Genesis.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The child genome will contain this many Atoms if size is an integer.
+If size is a pair of integers, the genome will be of a random
+size in the range of the two integers.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.Genesis.num_parents">
+<code class="descname">num_parents</code><a class="headerlink" href="#pyshgp.gp.variation.Genesis.num_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of parent Genomes the operator needs to produce a child
+Individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.variation.Genesis.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>parents: Sequence[pyshgp.gp.genome.Genome], spawner: pyshgp.gp.genome.GeneSpawner</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.genome.Genome<a class="reference internal" href="../_modules/pyshgp/gp/variation.html#Genesis.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.Genesis.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a child Genome from parent Genomes and optional GenomeSpawner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parents</strong> – A list of parent Genomes given to the operator.</li>
+<li><strong>spawner</strong> – A GeneSpawner that can be used to produce new genes (aka Atoms).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.variation.LiteralMutation">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.variation.</code><code class="descname">LiteralMutation</code><span class="sig-paren">(</span><em>push_type: pyshgp.push.types.PushType</em>, <em>rate: float = 0.01</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#LiteralMutation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.LiteralMutation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.variation.VariationOperator</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Base class for mutations of literal Atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>push_type</strong> (<a class="reference internal" href="pyshgp.push.types.html#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType"><em>pyshgp.push.types.PushType</em></a>) – The PushType which the operator can mutate.</li>
+<li><strong>rate</strong> (<em>float</em>) – The probablility of applying the mutation to a given Literal.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.LiteralMutation.push_type">
+<code class="descname">push_type</code><a class="headerlink" href="#pyshgp.gp.variation.LiteralMutation.push_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The PushType which the operator can mutate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pyshgp.push.types.html#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">pyshgp.push.types.PushType</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.LiteralMutation.rate">
+<code class="descname">rate</code><a class="headerlink" href="#pyshgp.gp.variation.LiteralMutation.rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The probablility of applying the mutation to a given Literal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.LiteralMutation.num_parents">
+<code class="descname">num_parents</code><a class="headerlink" href="#pyshgp.gp.variation.LiteralMutation.num_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of parent Genomes the operator needs to produce a child
+Individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.variation.LiteralMutation.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>parents: Sequence[pyshgp.gp.genome.Genome], spawner: pyshgp.gp.genome.GeneSpawner = None</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.genome.Genome<a class="reference internal" href="../_modules/pyshgp/gp/variation.html#LiteralMutation.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.LiteralMutation.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a child Genome from parent Genomes and optional GenomeSpawner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parents</strong> – A list of parent Genomes given to the operator.</li>
+<li><strong>spawner</strong> – A GeneSpawner that can be used to produce new genes (aka Atoms).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.variation.VariationOperator">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.variation.</code><code class="descname">VariationOperator</code><span class="sig-paren">(</span><em>num_parents: int</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#VariationOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.VariationOperator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Base class of all VariationOperators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>num_parents</strong> (<em>int</em>) – Number of parent Genomes the operator needs to produce a child
+Individual.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.VariationOperator.num_parents">
+<code class="descname">num_parents</code><a class="headerlink" href="#pyshgp.gp.variation.VariationOperator.num_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of parent Genomes the operator needs to produce a child
+Individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.variation.VariationOperator.checknum_parents">
+<code class="descname">checknum_parents</code><span class="sig-paren">(</span><em>parents: Sequence[pyshgp.gp.genome.Genome]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#VariationOperator.checknum_parents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.VariationOperator.checknum_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise error if given too few parents.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parents</strong> – A list of parent Genomes given to the operator.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.variation.VariationOperator.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>parents: Sequence[pyshgp.gp.genome.Genome], spawner: pyshgp.gp.genome.GeneSpawner = None</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.genome.Genome<a class="reference internal" href="../_modules/pyshgp/gp/variation.html#VariationOperator.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.VariationOperator.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a child Genome from parent Genomes and optional GenomeSpawner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parents</strong> – A list of parent Genomes given to the operator.</li>
+<li><strong>spawner</strong> – A GeneSpawner that can be used to produce new genes (aka Atoms).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.variation.VariationPipeline">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.variation.</code><code class="descname">VariationPipeline</code><span class="sig-paren">(</span><em>operators: Sequence[pyshgp.gp.variation.VariationOperator]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#VariationPipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.VariationPipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.gp.variation.VariationOperator</span></code></a></p>
+<p>Variation operator that sequencially applies multiple others variation operators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>operators</strong> (<em>list of VariationOperators</em>) – A list of operators to apply in order to produce the child Genome.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.VariationPipeline.operators">
+<code class="descname">operators</code><a class="headerlink" href="#pyshgp.gp.variation.VariationPipeline.operators" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of operators to apply in order to produce the child Genome.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list of VariationOperators</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyshgp.gp.variation.VariationPipeline.num_parents">
+<code class="descname">num_parents</code><a class="headerlink" href="#pyshgp.gp.variation.VariationPipeline.num_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of parent Genomes the operator needs to produce a child
+Individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyshgp.gp.variation.VariationPipeline.produce">
+<code class="descname">produce</code><span class="sig-paren">(</span><em>parents: Sequence[pyshgp.gp.genome.Genome], spawner: pyshgp.gp.genome.GeneSpawner</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.genome.Genome<a class="reference internal" href="../_modules/pyshgp/gp/variation.html#VariationPipeline.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.VariationPipeline.produce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a child Genome from parent Genomes and optional GenomeSpawner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parents</strong> – A list of parent Genomes given to the operator.</li>
+<li><strong>spawner</strong> – A GeneSpawner that can be used to produce new genes (aka Atoms).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyshgp.gp.variation.VariationStrategy">
+<em class="property">class </em><code class="descclassname">pyshgp.gp.variation.</code><code class="descname">VariationStrategy</code><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#VariationStrategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.VariationStrategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib" title="pyshgp.utils.DiscreteProbDistrib"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.utils.DiscreteProbDistrib</span></code></a></p>
+<p>A collection of VariationOperator and how frequently to use them.</p>
+<dl class="method">
+<dt id="pyshgp.gp.variation.VariationStrategy.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>op: pyshgp.gp.variation.VariationOperator</em>, <em>p: float</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/variation.html#VariationStrategy.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.VariationStrategy.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an element with a relative probability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>op</strong> (<a class="reference internal" href="#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator"><em>VariationOperator</em></a>) – The VariationOperator to add to the variaiton strategy.</li>
+<li><strong>p</strong> (<em>float</em>) – The probability of using the given operator relative to the other
+operators that have been added to the VariationStrategy.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.gp.variation.choice">
+<code class="descclassname">pyshgp.gp.variation.</code><code class="descname">choice</code><span class="sig-paren">(</span><em>a</em>, <em>size=None</em>, <em>replace=True</em>, <em>p=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.gp.variation.choice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a random sample from a given 1-D array</p>
+<blockquote>
+<div><div class="versionadded">
+<p><span class="versionmodified">New in version 1.7.0.</span></p>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> (<em>1-D array-like</em><em> or </em><em>int</em>) – If an ndarray, a random sample is generated from its elements.
+If an int, the random sample is generated as if a were np.arange(a)</li>
+<li><strong>size</strong> (<em>int</em><em> or </em><em>tuple of ints</em><em>, </em><em>optional</em>) – Output shape.  If the given shape is, e.g., <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then
+<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn.  Default is None, in which case a
+single value is returned.</li>
+<li><strong>replace</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Whether the sample is with or without replacement</li>
+<li><strong>p</strong> (<em>1-D array-like</em><em>, </em><em>optional</em>) – The probabilities associated with each entry in a.
+If not given the sample assumes a uniform distribution over all
+entries in a.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>samples</strong> – The generated random samples</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">single item or ndarray</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – If a is an int and less than zero, if a or p are not 1-dimensional,
+if a is an array-like of size 0, if p is not a vector of
+probabilities, if a and p have different lengths, or if
+replace=False and the sample size is greater than the population
+size</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-func docutils literal notranslate"><span class="pre">randint()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">shuffle()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">permutation()</span></code></p>
+</div>
+<p class="rubric">Examples</p>
+<p>Generate a uniform random sample from np.arange(5) of size 3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">array([0, 3, 4])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#This is equivalent to np.random.randint(0,5,3)</span>
+</pre></div>
+</div>
+<p>Generate a non-uniform random sample from np.arange(5) of size 3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">array([3, 3, 0])</span>
+</pre></div>
+</div>
+<p>Generate a uniform random sample from np.arange(5) of size 3 without
+replacement:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">array([3,1,0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#This is equivalent to np.random.permutation(np.arange(5))[:3]</span>
+</pre></div>
+</div>
+<p>Generate a non-uniform random sample from np.arange(5) of size
+3 without replacement:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">array([2, 3, 0])</span>
+</pre></div>
+</div>
+<p>Any of the above can be repeated with an arbitrary array-like
+instead of just integers. For instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">aa_milne_arr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pooh&#39;</span><span class="p">,</span> <span class="s1">&#39;rabbit&#39;</span><span class="p">,</span> <span class="s1">&#39;piglet&#39;</span><span class="p">,</span> <span class="s1">&#39;Christopher&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">aa_milne_arr</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="go">array([&#39;pooh&#39;, &#39;pooh&#39;, &#39;pooh&#39;, &#39;Christopher&#39;, &#39;piglet&#39;],</span>
+<span class="go">      dtype=&#39;|S11&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.gp.variation.get_variation_operator">
+<code class="descclassname">pyshgp.gp.variation.</code><code class="descname">get_variation_operator</code><span class="sig-paren">(</span><em>name: str</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; pyshgp.gp.variation.VariationOperator<a class="reference internal" href="../_modules/pyshgp/gp/variation.html#get_variation_operator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.variation.get_variation_operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the variaton operator class with the given name.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.gp.variation.random">
+<code class="descclassname">pyshgp.gp.variation.</code><code class="descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.gp.variation.random" title="Permalink to this definition">¶</a></dt>
+<dd><p>random_sample(size=None)</p>
+<p>Return random floats in the half-open interval [0.0, 1.0).</p>
+<p>Results are from the “continuous uniform” distribution over the
+stated interval.  To sample <span class="math notranslate nohighlight">\(Unif[a, b), b &gt; a\)</span> multiply
+the output of <cite>random_sample</cite> by <cite>(b-a)</cite> and add <cite>a</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">random_sample</span><span class="p">()</span> <span class="o">+</span> <span class="n">a</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> (<em>int</em><em> or </em><em>tuple of ints</em><em>, </em><em>optional</em>) – Output shape.  If the given shape is, e.g., <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then
+<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn.  Default is None, in which case a
+single value is returned.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>out</strong> – Array of random floats of shape <cite>size</cite> (unless <code class="docutils literal notranslate"><span class="pre">size=None</span></code>, in which
+case a single float is returned).</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float or ndarray of floats</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">()</span>
+<span class="go">0.47108547995356098</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">())</span>
+<span class="go">&lt;type &#39;float&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="mi">5</span><span class="p">,))</span>
+<span class="go">array([ 0.30220482,  0.86820401,  0.1654503 ,  0.11659149,  0.54323428])</span>
+</pre></div>
+</div>
+<p>Three-by-two array of random numbers from [-5, 0):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">5</span>
+<span class="go">array([[-3.99149989, -0.52338984],</span>
+<span class="go">       [-2.99091858, -0.79479508],</span>
+<span class="go">       [-1.23204345, -1.75224494]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -89,6 +767,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.push.html" title="pyshgp.push package"
              >next</a> |</li>

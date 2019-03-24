@@ -14,7 +14,7 @@ help:
 api:
 	sphinx-apidoc -f --separate -o source/api/ ../pyshgp ../tests/ ../examples/ ../dev* ../scratch* ../setup*
 
-# @TODO: Instruction Set to rst.
+# @TODO: Move make file stuff to pyshgp_cli.py
 
 .PHONY: help Makefile
 

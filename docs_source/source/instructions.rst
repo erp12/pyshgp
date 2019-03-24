@@ -23,6 +23,7 @@ PyshGP contains a collection of “core” instructions that work with the typic
 .. toctree::
    :maxdepth: 1
 
+   core_instructions/v0_1_4_core_instructions
    core_instructions/v0_1_3_core_instructions
 
 

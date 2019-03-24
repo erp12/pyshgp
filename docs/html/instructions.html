@@ -17,7 +17,7 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="next" title="PyshGP v0.1.4 Instruction Set" href="core_instructions/v0_1_4_core_instructions.html" />
     <link rel="prev" title="pyshgp.validation module" href="api/pyshgp.validation.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="contributing.html" title="Contributing"
+          <a href="core_instructions/v0_1_4_core_instructions.html" title="PyshGP v0.1.4 Instruction Set"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="api/pyshgp.validation.html" title="pyshgp.validation module"
@@ -52,6 +52,16 @@
 <p>Instructions also denote how many code blocks are expected to follow the instructions. This is used during <code class="docutils literal notranslate"><span class="pre">Genome</span></code> to <code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code> translation to provide the nested structure of code blocks. For example, the <code class="docutils literal notranslate"><span class="pre">exec_if</span></code> instruction should be followed by two code blocks: one for the “then” clause, one for the “else” clause.</p>
 <p>With the exception of <code class="docutils literal notranslate"><span class="pre">StateToStateInstruction</span></code> objects, the function passed to the <code class="docutils literal notranslate"><span class="pre">f</span></code> argument of an Instruction must return a collection of values (either <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>). Each element of this collection will be pushed to its respective stack after evaluation of the instruction.</p>
 <p>If an instruction is unable to be evaluated, it can return a <code class="docutils literal notranslate"><span class="pre">Token.revert</span></code> object to indicate the instruction should be skipped and no change should be made to the <code class="docutils literal notranslate"><span class="pre">PushState</span></code>. This ensures each instruction is an atomic transaction.</p>
+<div class="section" id="core-instructions">
+<h2>Core Instructions<a class="headerlink" href="#core-instructions" title="Permalink to this headline">¶</a></h2>
+<p>PyshGP contains a collection of “core” instructions that work with the typical data types. To read about all the core instructions provided by the version of PyshGP you are using, see the following pages.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core_instructions/v0_1_4_core_instructions.html">PyshGP v0.1.4 Instruction Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_instructions/v0_1_3_core_instructions.html">PyshGP v0.1.3 Instruction Set</a></li>
+</ul>
+</div>
+</div>
 <div class="section" id="example-instruction-definitions">
 <h2>Example Instruction Definitions<a class="headerlink" href="#example-instruction-definitions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="simple-instruction">
@@ -132,7 +142,7 @@
 <div class="section" id="preparing-instruction-sets">
 <h2>Preparing Instruction Sets<a class="headerlink" href="#preparing-instruction-sets" title="Permalink to this headline">¶</a></h2>
 <p>To specify which instructions should be used during program synthesis (Specifically during gene spawning, and genome variation), PyshGP utilizes an InstructionSet object. Instructions can be added, or “registered,” into an InsturctionSet as long as the instructions name is unique across the set.</p>
-<p>PyshGp contains a collection of “core” instructions that work with the typical data types. Subsets of the “core” instruction can easily be registered using the methods of the InstructionSet object.</p>
+<p>Subsets of the “core” instruction can easily be registered using the methods of the InstructionSet object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">instruction_set</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">InstructionSet</span><span class="p">()</span>
     <span class="o">.</span><span class="n">register_by_type</span><span class="p">(</span>
@@ -165,6 +175,7 @@
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Push Instructions</a><ul>
+<li><a class="reference internal" href="#core-instructions">Core Instructions</a></li>
 <li><a class="reference internal" href="#example-instruction-definitions">Example Instruction Definitions</a><ul>
 <li><a class="reference internal" href="#simple-instruction">Simple Instruction</a></li>
 <li><a class="reference internal" href="#produces-many-of-type-instruction">Produces Many Of Type Instruction</a></li>
@@ -184,8 +195,8 @@
   <p class="topless"><a href="api/pyshgp.validation.html"
                         title="previous chapter">pyshgp.validation module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="contributing.html"
-                        title="next chapter">Contributing</a></p>
+  <p class="topless"><a href="core_instructions/v0_1_4_core_instructions.html"
+                        title="next chapter">PyshGP v0.1.4 Instruction Set</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -219,7 +230,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="contributing.html" title="Contributing"
+          <a href="core_instructions/v0_1_4_core_instructions.html" title="PyshGP v0.1.4 Instruction Set"
              >next</a> |</li>
         <li class="right" >
           <a href="api/pyshgp.validation.html" title="pyshgp.validation module"
@@ -229,7 +240,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

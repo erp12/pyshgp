@@ -44,7 +44,7 @@
 <span class="sd">values. The PushState is what controls the setup of all stacks before program</span>
 <span class="sd">manipulation, and the producing of outputs after program execution.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Set</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">PushType</span><span class="p">,</span> <span class="n">push_type_by_name</span>
@@ -60,9 +60,9 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">PushType</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_jit_push_types</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jit_push_types</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">push_types</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;exec&quot;</span><span class="p">]):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">push_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -150,9 +150,12 @@
         <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">types</span><span class="p">:</span>
-            <span class="n">ndx</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">typ</span><span class="p">]</span><span class="o">.</span><span class="n">nth</span><span class="p">(</span><span class="n">ndx</span><span class="p">))</span>
-            <span class="n">counts</span><span class="p">[</span><span class="n">typ</span><span class="p">]</span> <span class="o">=</span> <span class="n">ndx</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;stdout&quot;</span><span class="p">:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ndx</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">typ</span><span class="p">]</span><span class="o">.</span><span class="n">nth</span><span class="p">(</span><span class="n">ndx</span><span class="p">))</span>
+                <span class="n">counts</span><span class="p">[</span><span class="n">typ</span><span class="p">]</span> <span class="o">=</span> <span class="n">ndx</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">values</span></div>
 
 <div class="viewcode-block" id="PushState.pop_from_stacks"><a class="viewcode-back" href="../../../api/pyshgp.push.state.html#pyshgp.push.state.PushState.pop_from_stacks">[docs]</a>    <span class="k">def</span> <span class="nf">pop_from_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">Token</span><span class="p">]:</span>
@@ -181,7 +184,7 @@
         <span class="sd">&quot;&quot;&quot;Return the size of the PushState.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PushState.pretty_print"><a class="viewcode-back" href="../../../api/pyshgp.push.state.html#pyshgp.push.state.PushState.pretty_print">[docs]</a>    <span class="k">def</span> <span class="nf">pretty_print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_or_log_func</span><span class="p">:</span> <span class="nb">print</span><span class="p">):</span>
+<div class="viewcode-block" id="PushState.pretty_print"><a class="viewcode-back" href="../../../api/pyshgp.push.state.html#pyshgp.push.state.PushState.pretty_print">[docs]</a>    <span class="k">def</span> <span class="nf">pretty_print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_or_log_func</span><span class="o">=</span><span class="nb">print</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print the state of all stacks in the PushState.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">print_or_log_func</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">k</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)]))</span>
@@ -225,7 +228,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

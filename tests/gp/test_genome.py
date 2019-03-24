@@ -1,4 +1,5 @@
 import pytest
+import json
 
 from pyshgp.gp.genome import Opener, _has_opener, Genome, GenomeSimplifier
 from pyshgp.gp.evaluation import DatasetEvaluator
@@ -46,7 +47,7 @@ class TestGenome:
     def test_genome_write(self, atoms):
         gn = Genome([atoms["true"], atoms["if"], atoms["1.2"], atoms["close"], atoms["5"]])
         s = gn.jsonify()
-        assert s == '[{"a":"lit","t":"bool","v":true},{"a":"instr","n":"exec_if"},{"a":"lit","t":"float","v":1.2},{"a":"close"},{"a":"lit","t":"int","v":5}]'
+        assert json.loads(s) == json.loads('[{"a":"lit","t":"bool","v":true},{"a":"instr","n":"exec_if"},{"a":"lit","t":"float","v":1.2},{"a":"close"},{"a":"lit","t":"int","v":5}]')
 
 
 class TestGeneSpawner:

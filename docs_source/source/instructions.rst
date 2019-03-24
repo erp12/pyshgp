@@ -15,6 +15,17 @@ With the exception of ``StateToStateInstruction`` objects, the function passed t
 If an instruction is unable to be evaluated, it can return a ``Token.revert`` object to indicate the instruction should be skipped and no change should be made to the ``PushState``. This ensures each instruction is an atomic transaction.
 
 
+Core Instructions
+=================
+
+PyshGP contains a collection of “core” instructions that work with the typical data types. To read about all the core instructions provided by the version of PyshGP you are using, see the following pages.
+
+.. toctree::
+   :maxdepth: 1
+
+   core_instructions/v0_1_3_core_instructions
+
+
 Example Instruction Definitions
 ===============================
 
@@ -106,7 +117,7 @@ Preparing Instruction Sets
 
 To specify which instructions should be used during program synthesis (Specifically during gene spawning, and genome variation), PyshGP utilizes an InstructionSet object. Instructions can be added, or “registered,” into an InsturctionSet as long as the instructions name is unique across the set.
 
-PyshGp contains a collection of “core” instructions that work with the typical data types. Subsets of the “core” instruction can easily be registered using the methods of the InstructionSet object.
+Subsets of the “core” instruction can easily be registered using the methods of the InstructionSet object.
 
 .. code-block:: python
 

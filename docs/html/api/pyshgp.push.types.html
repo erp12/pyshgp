@@ -14,7 +14,6 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pyshgp.monitoring module" href="pyshgp.monitoring.html" />
@@ -26,9 +25,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.monitoring.html" title="pyshgp.monitoring module"
              accesskey="N">next</a> |</li>
@@ -48,118 +44,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-pyshgp.push.types">
-<span id="pyshgp-push-types-module"></span><h1>pyshgp.push.types module<a class="headerlink" href="#module-pyshgp.push.types" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">types</span></code> module contains the core PushTypes and functions to reference them.</p>
-<p>A PushType simply is a named collection of Python and Numpy types. A PushType
-can be used to determine if multiple items should be considered the same type
-during Push program execution.</p>
-<dl class="class">
-<dt id="pyshgp.push.types.Char">
-<em class="property">class </em><code class="descclassname">pyshgp.push.types.</code><code class="descname">Char</code><span class="sig-paren">(</span><em>char</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#Char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.Char" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-<p>Holds a string of length 1.</p>
-<p>Used to distinguish between string and char literals in Push program
-interpretation.</p>
-<dl class="attribute">
-<dt id="pyshgp.push.types.Char.char">
-<code class="descname">char</code><a class="headerlink" href="#pyshgp.push.types.Char.char" title="Permalink to this definition">¶</a></dt>
-<dd><p>String of length 1.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyshgp.push.types.PushType">
-<em class="property">class </em><code class="descclassname">pyshgp.push.types.</code><code class="descname">PushType</code><span class="sig-paren">(</span><em>name: str, underlying: Tuple[type]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Type information for values used by Push programs.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> (<em>str</em>) – A name for the type. Used when referencing the PushType in Instruction
-definitions and will be the key in the PushState for the corresponding
-PushStack.</li>
-<li><strong>underlying</strong> (<em>Tuple</em><em>[</em><em>type</em><em>]</em>) – A tuple of python (or numpy) types that correspond to the underlying
-native types which the PushType is representing.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="pyshgp.push.types.PushType.name">
-<code class="descname">name</code><a class="headerlink" href="#pyshgp.push.types.PushType.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>A name for the type. Used when referencing the PushType in Instruction
-definitions and will be the key in the PushState for the corresponding
-PushStack.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyshgp.push.types.PushType.underlying">
-<code class="descname">underlying</code><a class="headerlink" href="#pyshgp.push.types.PushType.underlying" title="Permalink to this definition">¶</a></dt>
-<dd><p>A tuple of python (or numpy) types that correspond to the underlying
-native types which the PushType is representing.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">Tuple[type]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyshgp.push.types.PushType.coerce">
-<code class="descname">coerce</code><span class="sig-paren">(</span><em>thing: Any</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType.coerce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType.coerce" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert thing into PushTypes underlying type.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyshgp.push.types.PushType.is_instance">
-<code class="descname">is_instance</code><span class="sig-paren">(</span><em>thing: Any</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType.is_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType.is_instance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return true if thing is instance of PushTypes underlying type(s).</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.push.types.push_type_by_name">
-<code class="descclassname">pyshgp.push.types.</code><code class="descname">push_type_by_name</code><span class="sig-paren">(</span><em>push_type_name: str</em><span class="sig-paren">)</span> &#x2192; Optional[pyshgp.push.types.PushType]<a class="reference internal" href="../_modules/pyshgp/push/types.html#push_type_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.push_type_by_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the PushType with given name. If not exits, return None.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.push.types.push_type_for_type">
-<code class="descclassname">pyshgp.push.types.</code><code class="descname">push_type_for_type</code><span class="sig-paren">(</span><em>t: type</em><span class="sig-paren">)</span> &#x2192; Optional[pyshgp.push.types.PushType]<a class="reference internal" href="../_modules/pyshgp/push/types.html#push_type_for_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.push_type_for_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the PushType of the given python (or numpy) type.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.push.types.push_type_of">
-<code class="descclassname">pyshgp.push.types.</code><code class="descname">push_type_of</code><span class="sig-paren">(</span><em>thing: Any</em><span class="sig-paren">)</span> &#x2192; Optional[pyshgp.push.types.PushType]<a class="reference internal" href="../_modules/pyshgp/push/types.html#push_type_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.push_type_of" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the PushType of the given thing.</p>
-</dd></dl>
-
+  <div class="section" id="pyshgp-push-types-module">
+<h1>pyshgp.push.types module<a class="headerlink" href="#pyshgp-push-types-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -203,9 +89,6 @@ native types which the PushType is representing.</p>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.monitoring.html" title="pyshgp.monitoring module"
              >next</a> |</li>

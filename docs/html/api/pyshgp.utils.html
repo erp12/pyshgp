@@ -14,7 +14,6 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pyshgp.validation module" href="pyshgp.validation.html" />
@@ -26,9 +25,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.validation.html" title="pyshgp.validation module"
              accesskey="N">next</a> |</li>
@@ -47,206 +43,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-pyshgp.utils">
-<span id="pyshgp-utils-module"></span><h1>pyshgp.utils module<a class="headerlink" href="#module-pyshgp.utils" title="Permalink to this headline">¶</a></h1>
-<p>Utility classes and functions used throughout pyshgp.</p>
-<dl class="class">
-<dt id="pyshgp.utils.DiscreteProbDistrib">
-<em class="property">class </em><code class="descclassname">pyshgp.utils.</code><code class="descname">DiscreteProbDistrib</code><a class="reference internal" href="../_modules/pyshgp/utils.html#DiscreteProbDistrib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Discrete Probability Distribution.</p>
-<dl class="method">
-<dt id="pyshgp.utils.DiscreteProbDistrib.add">
-<code class="descname">add</code><span class="sig-paren">(</span><em>el</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#DiscreteProbDistrib.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add an element with a relative probability.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyshgp.utils.DiscreteProbDistrib.elements">
-<code class="descname">elements</code><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.elements" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyshgp.utils.DiscreteProbDistrib.sample">
-<code class="descname">sample</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#DiscreteProbDistrib.sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.sample" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a sample from the distribution.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyshgp.utils.DiscreteProbDistrib.sample_n">
-<code class="descname">sample_n</code><span class="sig-paren">(</span><em>n: int = 1</em>, <em>replace: bool = True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#DiscreteProbDistrib.sample_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.sample_n" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return n samples from the distribution.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyshgp.utils.DiscreteProbDistrib.size">
-<code class="descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#DiscreteProbDistrib.size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the number of elements in the distribution.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyshgp.utils.JSONable">
-<em class="property">class </em><code class="descclassname">pyshgp.utils.</code><code class="descname">JSONable</code><a class="reference internal" href="../_modules/pyshgp/utils.html#JSONable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.JSONable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>Abstract base class for objects can be transformed into JSON.</p>
-<dl class="method">
-<dt id="pyshgp.utils.JSONable.jsonify">
-<code class="descname">jsonify</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/utils.html#JSONable.jsonify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.JSONable.jsonify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the object as a JSON string.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyshgp.utils.JSONable.to_json">
-<code class="descname">to_json</code><span class="sig-paren">(</span><em>filepath: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; Optional[str]<a class="reference internal" href="../_modules/pyshgp/utils.html#JSONable.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.JSONable.to_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write the object to either a string or a file.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyshgp.utils.Token">
-<em class="property">class </em><code class="descclassname">pyshgp.utils.</code><code class="descname">Token</code><a class="reference internal" href="../_modules/pyshgp/utils.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>Enum class of all Tokens.</p>
-<dl class="attribute">
-<dt id="pyshgp.utils.Token.no_stack_item">
-<code class="descname">no_stack_item</code><em class="property"> = 1</em><a class="headerlink" href="#pyshgp.utils.Token.no_stack_item" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyshgp.utils.Token.revert">
-<code class="descname">revert</code><em class="property"> = 2</em><a class="headerlink" href="#pyshgp.utils.Token.revert" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyshgp.utils.Token.whole_state">
-<code class="descname">whole_state</code><em class="property"> = 3</em><a class="headerlink" href="#pyshgp.utils.Token.whole_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyshgp.utils.Verbosity">
-<em class="property">class </em><code class="descclassname">pyshgp.utils.</code><code class="descname">Verbosity</code><a class="reference internal" href="../_modules/pyshgp/utils.html#Verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Verbosity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>Enum class of all verbosity levels.</p>
-<dl class="attribute">
-<dt id="pyshgp.utils.Verbosity.debug">
-<code class="descname">debug</code><em class="property"> = 2</em><a class="headerlink" href="#pyshgp.utils.Verbosity.debug" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyshgp.utils.Verbosity.off">
-<code class="descname">off</code><em class="property"> = 1</em><a class="headerlink" href="#pyshgp.utils.Verbosity.off" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyshgp.utils.Verbosity.on">
-<code class="descname">on</code><em class="property"> = 3</em><a class="headerlink" href="#pyshgp.utils.Verbosity.on" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.utils.choice">
-<code class="descclassname">pyshgp.utils.</code><code class="descname">choice</code><span class="sig-paren">(</span><em>a</em>, <em>size=None</em>, <em>replace=True</em>, <em>p=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.utils.choice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a random sample from a given 1-D array</p>
-<blockquote>
-<div><div class="versionadded">
-<p><span class="versionmodified">New in version 1.7.0.</span></p>
-</div>
-</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a</strong> (<em>1-D array-like</em><em> or </em><em>int</em>) – If an ndarray, a random sample is generated from its elements.
-If an int, the random sample is generated as if a were np.arange(a)</li>
-<li><strong>size</strong> (<em>int</em><em> or </em><em>tuple of ints</em><em>, </em><em>optional</em>) – Output shape.  If the given shape is, e.g., <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then
-<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn.  Default is None, in which case a
-single value is returned.</li>
-<li><strong>replace</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Whether the sample is with or without replacement</li>
-<li><strong>p</strong> (<em>1-D array-like</em><em>, </em><em>optional</em>) – The probabilities associated with each entry in a.
-If not given the sample assumes a uniform distribution over all
-entries in a.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>samples</strong> – The generated random samples</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">single item or ndarray</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – If a is an int and less than zero, if a or p are not 1-dimensional,
-if a is an array-like of size 0, if p is not a vector of
-probabilities, if a and p have different lengths, or if
-replace=False and the sample size is greater than the population
-size</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-func docutils literal notranslate"><span class="pre">randint()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">shuffle()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">permutation()</span></code></p>
-</div>
-<p class="rubric">Examples</p>
-<p>Generate a uniform random sample from np.arange(5) of size 3:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">array([0, 3, 4])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#This is equivalent to np.random.randint(0,5,3)</span>
-</pre></div>
-</div>
-<p>Generate a non-uniform random sample from np.arange(5) of size 3:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="go">array([3, 3, 0])</span>
-</pre></div>
-</div>
-<p>Generate a uniform random sample from np.arange(5) of size 3 without
-replacement:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="go">array([3,1,0])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#This is equivalent to np.random.permutation(np.arange(5))[:3]</span>
-</pre></div>
-</div>
-<p>Generate a non-uniform random sample from np.arange(5) of size
-3 without replacement:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="go">array([2, 3, 0])</span>
-</pre></div>
-</div>
-<p>Any of the above can be repeated with an arbitrary array-like
-instead of just integers. For instance:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">aa_milne_arr</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pooh&#39;</span><span class="p">,</span> <span class="s1">&#39;rabbit&#39;</span><span class="p">,</span> <span class="s1">&#39;piglet&#39;</span><span class="p">,</span> <span class="s1">&#39;Christopher&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">aa_milne_arr</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
-<span class="go">array([&#39;pooh&#39;, &#39;pooh&#39;, &#39;pooh&#39;, &#39;Christopher&#39;, &#39;piglet&#39;],</span>
-<span class="go">      dtype=&#39;|S11&#39;)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.utils.instantiate_using">
-<code class="descclassname">pyshgp.utils.</code><code class="descname">instantiate_using</code><span class="sig-paren">(</span><em>cls: type</em>, <em>args: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#instantiate_using"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.instantiate_using" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call the given function using only the relevant kwargs present in the args dict.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.utils.jsonify_collection">
-<code class="descclassname">pyshgp.utils.</code><code class="descname">jsonify_collection</code><span class="sig-paren">(</span><em>root: Union[list, dict]</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/utils.html#jsonify_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.jsonify_collection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the given list or dict and all elements as a JSON string.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.utils.list_rindex">
-<code class="descclassname">pyshgp.utils.</code><code class="descname">list_rindex</code><span class="sig-paren">(</span><em>lst</em>, <em>el</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/utils.html#list_rindex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.list_rindex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Index of the last occurrence of an item in a list. Return None is item not found.</p>
-</dd></dl>
-
+  <div class="section" id="pyshgp-utils-module">
+<h1>pyshgp.utils module<a class="headerlink" href="#pyshgp-utils-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -290,9 +88,6 @@ instead of just integers. For instance:</p>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="pyshgp.validation.html" title="pyshgp.validation module"
              >next</a> |</li>

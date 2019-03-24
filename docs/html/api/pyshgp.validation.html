@@ -14,7 +14,6 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Push Instructions" href="../instructions.html" />
@@ -26,9 +25,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="../instructions.html" title="Push Instructions"
              accesskey="N">next</a> |</li>
@@ -47,80 +43,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-pyshgp.validation">
-<span id="pyshgp-validation-module"></span><h1>pyshgp.validation module<a class="headerlink" href="#module-pyshgp.validation" title="Permalink to this headline">¶</a></h1>
-<p>Module for validating data and raising informative errors.</p>
-<dl class="exception">
-<dt id="pyshgp.validation.PushError">
-<em class="property">exception </em><code class="descclassname">pyshgp.validation.</code><code class="descname">PushError</code><a class="reference internal" href="../_modules/pyshgp/validation.html#PushError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Error raised during Push program execution.</p>
-<dl class="classmethod">
-<dt id="pyshgp.validation.PushError.empty_character">
-<em class="property">classmethod </em><code class="descname">empty_character</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/validation.html#PushError.empty_character"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError.empty_character" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise PushError when Character is made from empty string.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="pyshgp.validation.PushError.failed_coerce">
-<em class="property">classmethod </em><code class="descname">failed_coerce</code><span class="sig-paren">(</span><em>thing</em>, <em>push_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/validation.html#PushError.failed_coerce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError.failed_coerce" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise PushError when something fails to coerce to a PushType.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="pyshgp.validation.PushError.long_character">
-<em class="property">classmethod </em><code class="descname">long_character</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/validation.html#PushError.long_character"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError.long_character" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise PushError when Character is made from string length more than 1.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="pyshgp.validation.PushError.no_type">
-<em class="property">classmethod </em><code class="descname">no_type</code><span class="sig-paren">(</span><em>thing</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/validation.html#PushError.no_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError.no_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise PushError when no PushType can be found for something.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.validation.check_1d">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_1d</code><span class="sig-paren">(</span><em>seq: Sequence</em><span class="sig-paren">)</span> &#x2192; Sequence<a class="reference internal" href="../_modules/pyshgp/validation.html#check_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_1d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check given seq is one-dimensional. Raise error if can’t be easily transformed.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.validation.check_2d">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_2d</code><span class="sig-paren">(</span><em>seq: Sequence</em><span class="sig-paren">)</span> &#x2192; Sequence<a class="reference internal" href="../_modules/pyshgp/validation.html#check_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check given seq is two-dimensional. Raise error if can’t be easily transformed.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.validation.check_X_y">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_X_y</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span> &#x2192; Tuple[Sequence, Sequence, int, Sequence]<a class="reference internal" href="../_modules/pyshgp/validation.html#check_X_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_X_y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the given X and y datasets are prepared to be passed to a PushEstimator.</p>
-<p>Inspired by the scikit-learn function with the same name.
-<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.utils.check_X_y.html#sklearn.utils.check_X_y">https://scikit-learn.org/stable/modules/generated/sklearn.utils.check_X_y.html#sklearn.utils.check_X_y</a></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.validation.check_column_types">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_column_types</code><span class="sig-paren">(</span><em>seq: Sequence</em>, <em>certainty_proportion: float = 0.2</em><span class="sig-paren">)</span> &#x2192; Sequence[type]<a class="reference internal" href="../_modules/pyshgp/validation.html#check_column_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_column_types" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check all elements of each column are of the same type.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.validation.check_is_fitted">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_is_fitted</code><span class="sig-paren">(</span><em>estimator</em>, <em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/validation.html#check_is_fitted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_is_fitted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the given estimator has already been fit.</p>
-<p>Inspired by the scikit-learn function with the same name.
-<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted">https://scikit-learn.org/stable/modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted</a></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyshgp.validation.check_num_columns">
-<code class="descclassname">pyshgp.validation.</code><code class="descname">check_num_columns</code><span class="sig-paren">(</span><em>seq: Sequence</em>, <em>certainty_proportion: float = 0.2</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/pyshgp/validation.html#check_num_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_num_columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the number of columns of in the dataset.</p>
-</dd></dl>
-
+  <div class="section" id="pyshgp-validation-module">
+<h1>pyshgp.validation module<a class="headerlink" href="#pyshgp-validation-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -164,9 +88,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="../instructions.html" title="Push Instructions"
              >next</a> |</li>

@@ -15,8 +15,8 @@ DUP_LIMIT = 500
 
 
 def _dup_times(times, item):
-    times = min(times, DUP_LIMIT)
-    return [item] * times
+    x = int(min(times, DUP_LIMIT))
+    return [item] * x
 
 
 # Disabled due to performance issues.

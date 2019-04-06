@@ -1,7 +1,21 @@
 import pytest
+from itertools import chain
 
-from pyshgp.push.instruction_set import InstructionSet, _CORE_INSTRUCTIONS
-from pyshgp.push.types import PushType
+from pyshgp.push.type_library import PushTypeLibrary
+from pyshgp.push.instruction_set import InstructionSet
+from pyshgp.push.instructions import common, numeric, text, code, io, logical
+
+
+@pytest.fixture(scope="function")
+def all_core_instrucitons(core_type_lib):
+    return set(chain(
+        common.instructions(core_type_lib),
+        io.instructions(core_type_lib),
+        code.instructions(),
+        numeric.instructions(),
+        text.instructions(),
+        logical.instructions(),
+    ))
 
 
 class TestInstructionSet:
@@ -16,23 +30,22 @@ class TestInstructionSet:
         i_set.register_list([atoms["add"], atoms["sub"]])
         assert len(i_set) == 2
 
-    def test_register_by_type(self):
+    def test_register_core_by_stack(self, core_type_lib):
         i_set = InstructionSet()
-        i_set.register_by_type(["int"])
+        i_set.register_core_by_stack({"int"})
         for i in i_set.values():
-            assert "int" in i.relevant_types()
+            if len(i.required_stacks()) > 0:
+                assert "int" in i.required_stacks()
 
-    def test_register_by_name(self):
+    def test_register_core_by_name(self, core_type_lib):
         i_set = InstructionSet()
-        i_set.register_by_name(".*_mult")
-        print(i_set)
+        i_set.register_core_by_name(".*_mult")
         assert len(i_set) == 2
         assert set([i.name for i in i_set.values()]) == {"int_mult", "float_mult"}
 
-    def test_register_all(self):
-        i_set = InstructionSet().register_all()
-        # assert len(i_set) == len(_CORE_INSTRUCTIONS)  # If fail, likely duplicated instr names.
-        assert set(i_set.values()) == set(_CORE_INSTRUCTIONS)
+    def test_register_core(self, all_core_instrucitons):
+        i_set = InstructionSet().register_core()
+        assert set(i_set.values()) == all_core_instrucitons
 
     def test_unregister(self, atoms):
         i_set = InstructionSet()
@@ -42,6 +55,8 @@ class TestInstructionSet:
         assert len(i_set) == 1
         assert list(i_set.values())[0].name == "int_sub"
 
-    def test_supported_types(self, instr_set):
-        type_names = set([t.name if isinstance(t, PushType) else t for t in instr_set.supported_types()])
-        assert type_names == {"code", "int", "float", "bool", "str", "exec", "char", "stdout"}
+    def test_required_stacks(self, instr_set):
+        assert instr_set.required_stacks() == {"code", "int", "float", "bool", "str", "char"}
+
+
+# @TODO: Test all instruction set methods with custom type library.

@@ -9,6 +9,7 @@ from typing import Sequence, Union
 import time
 from enum import Enum
 
+# from pyshgp.push.type_library import PushTypeLibrary
 from pyshgp.push.state import PushState
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.atoms import (
@@ -87,6 +88,9 @@ class PushInterpreter:
     instruction_set : Union[InstructionSet, str], optional
         The InstructionSet to use for executing programs. Default is "core"
         which instansiates an InstructionSet using all the core instructions.
+    type_library : PushTypeLibrary, optional
+        The type library that specifies all the PushTypes the interpreter will
+        support. Default is "core" which instansiates all the core PushTypes.
     config : PushInterpreterConfig, optional
         A PushInterpreterConfig specifying limits and early termination
         conditions. Default is None, which creates a config will all default
@@ -110,13 +114,15 @@ class PushInterpreter:
 
     def __init__(self,
                  instruction_set: Union[InstructionSet, str] = "core",
+                 # type_library: Union[PushTypeLibrary, str] = "core",
                  config: PushInterpreterConfig = None):
         # If no instruction set given, create one and register all instructions.
         if instruction_set == "core":
-            self.instruction_set = InstructionSet(register_all=True)
+            self.instruction_set = InstructionSet(register_core=True)
         else:
             self.instruction_set = instruction_set
-        self._supported_types = self.instruction_set.supported_types()
+
+        self.type_library = self.instruction_set.type_library
 
         if config is None:
             self.config = PushInterpreterConfig()
@@ -126,13 +132,32 @@ class PushInterpreter:
         # Initialize the PushState and status
         self.reset()
 
+    def _validate(self):
+        library_type_names = set(self.type_library.keys())
+        required_stacks = self.instruction_set.required_stacks() - {"stdout", "exec", "untyped"}
+        if not required_stacks <= library_type_names:
+            raise ValueError(
+                "PushInterpreter instruction_set and type_library are incompatible. {iset} vs {tlib}. Diff: {d}".format(
+                    iset=required_stacks,
+                    tlib=library_type_names,
+                    d=required_stacks - library_type_names,
+                ))
+
     def reset(self):
         """Reset the interpreter status and PushState."""
-        self.state = PushState(self._supported_types)
+        self.state = PushState(self.type_library)
         self.status = PushInterpreterStatus.normal
+        self._validate()
 
     def _evaluate_instruction(self, instruction: Union[Instruction, JitInstructionRef]):
         self.state = instruction.evaluate(self.state, self.config)
+
+    def untyped_to_typed(self):
+        """Infers PushType of items on state's untyped queue and pushes to corresponding stacks."""
+        while len(self.state.untyped) > 0:
+            el = self.state.untyped.popleft()
+            push_type = self.type_library.push_type_of(el, error_on_not_found=True)
+            self.state[push_type.name].push(el)
 
     def evaluate_atom(self, atom: Atom):
         """Evaluate an Atom.
@@ -158,6 +183,7 @@ class PushInterpreter:
                 raise PushError("Closers should not be in push programs. Only genomes.")
             else:
                 raise PushError("Cannont evaluate {t}, require a subclass of Atom".format(t=type(atom)))
+            self.untyped_to_typed()
         except Exception as e:
             err_type = type(e).__name__
             err_msg = str(e)

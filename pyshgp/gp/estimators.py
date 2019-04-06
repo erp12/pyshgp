@@ -10,7 +10,7 @@ from pyshgp.gp.genome import GeneSpawner
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
 from pyshgp.push.atoms import CodeBlock
-from pyshgp.push.types import push_type_for_type
+# from pyshgp.push.types import push_type_for_type
 from pyshgp.utils import JSONable, list_rindex
 from pyshgp.validation import check_is_fitted, check_X_y
 from pyshgp.monitoring import DEFAULT_VERBOSITY_LEVELS
@@ -176,7 +176,7 @@ class PushEstimator:
         """
         X, y, arity, y_types = check_X_y(X, y)
         self.interpreter.instruction_set.register_n_inputs(arity)
-        output_types = [push_type_for_type(t).name for t in y_types]
+        output_types = [self.interpreter.type_library.push_type_for_type(t).name for t in y_types]
         if self.last_str_from_stdout:
             ndx = list_rindex(output_types, "str")
             if ndx is not None:

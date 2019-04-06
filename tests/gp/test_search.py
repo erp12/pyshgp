@@ -22,3 +22,6 @@ class TestSearchConfiguration:
         )
         assert config.get_selector().tournament_size == 14
         assert config.get_variation_op().alignment_deviation == 5
+
+
+# @TODO: Test with custom PushTypeLibrary and custom instructions.

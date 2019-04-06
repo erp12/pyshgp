@@ -1,4 +1,6 @@
-"""The goal of the Odd problem is to evolve a program that will produce a True if
+"""The Odd problem.
+
+The goal of the Odd problem is to evolve a program that will produce a True if
 the input integer is odd, and a False if its even.
 """
 import logging
@@ -15,7 +17,7 @@ y = [[bool(x % 2)] for x in X]
 
 
 instruction_set = (
-    InstructionSet(register_all=True)
+    InstructionSet(register_core=True)
     .register_n_inputs(X.shape[1])
 )
 

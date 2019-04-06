@@ -1,5 +1,4 @@
-"""The ReLU function is a common activation function used in artifical neural
-netoworks. Its definitnion is as follows.
+"""The ReLU function is a common activation function used in artifical neural netoworks.
 
 ```
 relu(x) = max(0, x)
@@ -14,6 +13,7 @@ leaky_relu(x) = max(0.1x, x)
 
 This problem attempts to synthesize a program that compute the output of both
 the ReLU and LeakyReLU functions.
+
 """
 import logging
 import numpy as np
@@ -27,6 +27,7 @@ from pyshgp.push.instruction_set import InstructionSet
 
 
 def target_function(x: float) -> (float, float):
+    """Generate a training data point."""
     return (max(0.0, x), max(0.1 * x, x))
 
 
@@ -35,7 +36,7 @@ y = np.array([target_function(x[0]) for x in X])
 
 instruction_set = (
     InstructionSet()
-    .register_by_type(["float", "bool"])
+    .register_core_by_stack({"float", "bool"})
     .register_n_inputs(X.shape[1])
 )
 

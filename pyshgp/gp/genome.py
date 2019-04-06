@@ -10,6 +10,7 @@ from copy import copy, deepcopy
 
 import numpy as np
 
+from pyshgp.push.type_library import PushTypeLibrary, infer_literal
 from pyshgp.push.atoms import (
     Atom, Closer, Literal, Instruction, CodeBlock, AtomFactory
 )
@@ -51,9 +52,9 @@ class Genome(list, Atom, JSONable):
         super().append(el)
 
     @staticmethod
-    def from_json_str(json_str: str, instruction_set: InstructionSet):
+    def from_json_str(json_str: str, instruction_set: InstructionSet, type_library: PushTypeLibrary):
         """Create a Genome from a JSON string."""
-        atoms = AtomFactory.json_str_to_atom_list(json_str, instruction_set)
+        atoms = AtomFactory.json_str_to_atom_list(json_str, instruction_set, type_library)
         return Genome(atoms)
 
     def to_code_block(self) -> CodeBlock:
@@ -172,7 +173,8 @@ class GeneSpawner:
                  erc_generators: Sequence[Callable],
                  distribution: DiscreteProbDistrib = "proportional"):
         self.instruction_set = instruction_set
-        self.literals = [lit if isinstance(lit, Literal) else Literal(lit) for lit in literals]
+        self.type_library = instruction_set.type_library
+        self.literals = [lit if isinstance(lit, Literal) else infer_literal(lit, self.type_library) for lit in literals]
         self.erc_generators = erc_generators
 
         if distribution == "proportional":
@@ -206,7 +208,10 @@ class GeneSpawner:
             A randomly selected Literal.
 
         """
-        return np.random.choice(self.literals)
+        lit = np.random.choice(self.literals)
+        if not isinstance(lit, Literal):
+            lit = infer_literal(lit, self.type_library)
+        return lit
 
     def random_erc(self) -> Literal:
         """Materialize a random ERC generator into a Literal and return it.
@@ -218,7 +223,9 @@ class GeneSpawner:
 
         """
         erc_value = np.random.choice(self.erc_generators)()
-        return Literal(erc_value)
+        if not isinstance(erc_value, Literal):
+            erc_value = infer_literal(erc_value, self.type_library)
+        return erc_value
 
     def spawn_atom(self) -> Atom:
         """Return a random Atom based on the GenomeSpawner's distribution.

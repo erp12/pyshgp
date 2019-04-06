@@ -13,13 +13,13 @@ class TestPushState:
         state.load_inputs([1, 2])
         assert state.size() == 3
 
-    def test_from_dict(self, atoms):
+    def test_from_dict(self, atoms, core_type_lib):
         d = {
             "int": [0, 1],
             "stdout": "Hello Push!",
             "exec": [atoms["add"]]
         }
-        state = PushState.from_dict(d)
+        state = PushState.from_dict(d, core_type_lib)
         assert state.size() == 3
         assert state["int"].top() == 1
 

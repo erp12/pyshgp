@@ -110,9 +110,9 @@ class PushError(Exception):
     @classmethod
     def empty_character(cls):
         """Raise PushError when Character is made from empty string."""
-        return cls("Character object cannot be created from empty string.")
+        return cls("Char object cannot be created from empty string.")
 
     @classmethod
     def long_character(cls):
         """Raise PushError when Character is made from string length more than 1."""
-        return cls("Character object cannot be created from string of length > 1.")
+        return cls("Char object cannot be created from string of length > 1.")

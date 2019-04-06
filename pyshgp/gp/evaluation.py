@@ -6,7 +6,6 @@ import numpy as np
 
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
 from pyshgp.push.atoms import CodeBlock
-from pyshgp.push.types import push_type_of
 from pyshgp.utils import Token, list_rindex
 from pyshgp.monitoring import VerbosityConfig
 
@@ -198,7 +197,7 @@ class DatasetEvaluator(Evaluator):
             if not isinstance(expected, (list, np.ndarray)):
                 expected = [expected]
 
-            output_types = [push_type_of(_).name for _ in expected]
+            output_types = [self.interpreter.type_library.push_type_of(_).name for _ in expected]
             if self.last_str_from_stdout:
                 ndx = list_rindex(output_types, "str")
                 if ndx is not None:

@@ -21,6 +21,7 @@ from pyshgp.push.types import Char
 
 
 def target_function(s: str):
+    """Generate a training data point."""
     return [
         s.replace(" ", "\n"),
         len(s) - s.count(' ')
@@ -31,6 +32,7 @@ _possible_chars = string.ascii_letters + string.digits + string.punctuation
 
 
 def synthetic_input():
+    """Generate a string to use as input to a trining data point."""
     size = randint(0, 19) + 2
     s = ""
     for ndx in range(size):
@@ -91,13 +93,13 @@ y_test = [target_function(x[0]) for x in X_test]
 
 instruction_set = (
     InstructionSet()
-    .register_by_type(["int", "bool", "string", "char", "exec", "stdout"])
+    .register_core_by_stack({"int", "bool", "string", "char", "exec", "stdout"})
     .register_n_inputs(1)
 )
 
 spawner = GeneSpawner(
     instruction_set=instruction_set,
-    literals=[Char(" "), Char("\n")],
+    literals=[" ", "\n"],
     erc_generators=[
         lambda: Char(choice(_possible_chars)),
         synthetic_input

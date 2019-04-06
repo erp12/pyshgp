@@ -44,8 +44,8 @@ def instructions():
     i.append(SimpleInstruction(
         "bool_and",
         _and,
-        input_types=["bool", "bool"],
-        output_types=["bool"],
+        input_stacks=["bool", "bool"],
+        output_stacks=["bool"],
         code_blocks=0,
         docstring="Pushes the result of and-ing the top two booleans."
     ))
@@ -53,8 +53,8 @@ def instructions():
     i.append(SimpleInstruction(
         "bool_or",
         _or,
-        input_types=["bool", "bool"],
-        output_types=["bool"],
+        input_stacks=["bool", "bool"],
+        output_stacks=["bool"],
         code_blocks=0,
         docstring="Pushes the result of or-ing the top two booleans."
     ))
@@ -62,8 +62,8 @@ def instructions():
     i.append(SimpleInstruction(
         "bool_not",
         _not,
-        input_types=["bool"],
-        output_types=["bool"],
+        input_stacks=["bool"],
+        output_stacks=["bool"],
         code_blocks=0,
         docstring="Pushes the inverse of the boolean."
     ))
@@ -71,8 +71,8 @@ def instructions():
     i.append(SimpleInstruction(
         "bool_xor",
         _xor,
-        input_types=["bool", "bool"],
-        output_types=["bool"],
+        input_stacks=["bool", "bool"],
+        output_stacks=["bool"],
         code_blocks=0,
         docstring="Pushes the result of xor-ing the top two booleans."
     ))
@@ -80,8 +80,8 @@ def instructions():
     i.append(SimpleInstruction(
         "bool_invert_first_then_and",
         _invert_first_then_and,
-        input_types=["bool", "bool"],
-        output_types=["bool"],
+        input_stacks=["bool", "bool"],
+        output_stacks=["bool"],
         code_blocks=0,
         docstring=""""Pushes the result of and-ing the top two booleans after inverting the
         top boolean."""
@@ -90,8 +90,8 @@ def instructions():
     i.append(SimpleInstruction(
         "bool_second_first_then_and",
         _invert_second_then_and,
-        input_types=["bool", "bool"],
-        output_types=["bool"],
+        input_stacks=["bool", "bool"],
+        output_stacks=["bool"],
         code_blocks=0,
         docstring=""""Pushes the result of and-ing the top two booleans after inverting the
         second boolean."""
@@ -100,8 +100,8 @@ def instructions():
     i.append(SimpleInstruction(
         "bool_from_int",
         _bool_from_int,
-        input_types=["int"],
-        output_types=["bool"],
+        input_stacks=["int"],
+        output_stacks=["bool"],
         code_blocks=0,
         docstring="If the top int is 0, pushes False. Pushes True for any other int value."
     ))
@@ -109,8 +109,8 @@ def instructions():
     i.append(SimpleInstruction(
         "bool_from_float",
         _bool_from_float,
-        input_types=["float"],
-        output_types=["bool"],
+        input_stacks=["float"],
+        output_stacks=["bool"],
         code_blocks=0,
         docstring="If the top float is 0.0, pushes False. Pushes True for any other float value."
     ))

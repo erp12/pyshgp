@@ -20,6 +20,7 @@ from pyshgp.push.types import PushFloat
 
 
 class Point:
+    """A point on a 2D x-y plane."""
 
     def __init__(self, x: float, y: float):
         self.x = x
@@ -34,14 +35,15 @@ class Point:
         return "Point<{x},{y}>".format(x=self.x, y=self.y)
 
 
-# A function that will convert a given thing into a Point if possible.
 def to_point(thing):
+    """Convert thing into a Point if possible."""
     return Point(float(thing[0]), float(thing[1]))
 
 
 # The target funcgtion we would like to sythesize.
 # Also the function used to define of one of our custom instructions.
 def point_distance(p1, p2):
+    """Return the distance between two points."""
     delta_x = p2.x - p1.x
     delta_y = p2.y - p1.y
     return sqrt(pow(delta_x, 2.0) + pow(delta_y, 2.0)),
@@ -49,6 +51,7 @@ def point_distance(p1, p2):
 
 # Another function used to define of one of our custom instructions.
 def point_from_floats(f1, f2):
+    """Return a tuple containint a Point made from two floats."""
     return Point(f1, f2),
 
 

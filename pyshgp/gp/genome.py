@@ -10,7 +10,7 @@ from copy import copy, deepcopy
 
 import numpy as np
 
-from pyshgp.push.type_library import PushTypeLibrary, infer_literal
+from pyshgp.push.type_library import infer_literal
 from pyshgp.push.atoms import (
     Atom, Closer, Literal, Instruction, CodeBlock, AtomFactory
 )

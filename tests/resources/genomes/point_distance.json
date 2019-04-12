@@ -1,0 +1,9 @@
+[
+  {"a": "instr", "n": "input_0"},
+  {"a": "instr", "n": "input_1"},
+  {"a": "instr", "n": "point_from_floats"},
+  {"a": "instr", "n": "input_2"},
+  {"a": "instr", "n": "input_3"},
+  {"a": "instr", "n": "point_from_floats"},
+  {"a": "instr", "n": "point_dist"}
+]

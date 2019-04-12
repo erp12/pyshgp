@@ -3,7 +3,7 @@ import random
 from math import pow, sqrt
 
 from pyshgp.push.type_library import PushTypeLibrary
-from pyshgp.push.types import Char, PushInt, PushBool, PushFloat, PushStr
+from pyshgp.push.types import PushInt, PushBool, PushFloat, PushStr
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.instruction import SimpleInstruction
 from pyshgp.push.atoms import Closer, Literal
@@ -71,6 +71,7 @@ class Point:
             return self.x == other.x and self.y == other.y
         return False
 
+
 @pytest.fixture(scope="session")
 def point_cls():
     return Point
@@ -88,12 +89,34 @@ def to_point_func():
 def point_distance(p1, p2):
     delta_x = p2.x - p1.x
     delta_y = p2.y - p1.y
-    return sqrt(pow(delta_x, 2.0) + pow(delta_y, 2.0))
+    return sqrt(pow(delta_x, 2.0) + pow(delta_y, 2.0)),
+
+
+def point_from_floats(f1, f2):
+    return Point(f1, f2),
 
 
 @pytest.fixture(scope="session")
-def point_distance_insrt():
-    return SimpleInstruction(
-        "point_dist", point_distance,
-        ["point", "point"], ["float"], 0
+def point_instructions():
+    return [
+        SimpleInstruction("point_dist", point_distance, ["point", "point"], ["float"], 0),
+        SimpleInstruction("point_from_floats", point_from_floats, ["float", "float"], ["point"], 0),
+    ]
+
+
+@pytest.fixture(scope="session")
+def point_type_library(to_point_func):
+    return (
+        PushTypeLibrary(register_core=False)
+        .register(PushFloat)
+        .create_and_register("point", (Point, ), coercion_func=to_point_func)
+    )
+
+
+@pytest.fixture(scope="session")
+def point_instr_set(point_type_library, point_instructions):
+    return (
+        InstructionSet(type_library=point_type_library, register_core=True)
+        .register_list(point_instructions)
+        .register_n_inputs(4)
     )

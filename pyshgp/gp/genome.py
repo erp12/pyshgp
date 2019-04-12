@@ -37,7 +37,7 @@ def _has_opener(l: Sequence) -> bool:
     return sum([isinstance(_, Opener) for _ in l]) > 0
 
 
-class Genome(list, Atom, JSONable):
+class Genome(list, JSONable):
     """A flat sequence of Atoms where each Atom is a "gene" in the genome."""
 
     def __init__(self, atoms: Sequence[Atom] = None):
@@ -52,9 +52,9 @@ class Genome(list, Atom, JSONable):
         super().append(el)
 
     @staticmethod
-    def from_json_str(json_str: str, instruction_set: InstructionSet, type_library: PushTypeLibrary):
+    def from_json_str(json_str: str, instruction_set: InstructionSet):
         """Create a Genome from a JSON string."""
-        atoms = AtomFactory.json_str_to_atom_list(json_str, instruction_set, type_library)
+        atoms = AtomFactory.json_str_to_atom_list(json_str, instruction_set)
         return Genome(atoms)
 
     def to_code_block(self) -> CodeBlock:

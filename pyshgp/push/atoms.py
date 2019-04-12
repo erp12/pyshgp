@@ -212,10 +212,10 @@ class CodeBlock(list, Atom):
         return cb
 
     @staticmethod
-    def from_json_str(json_str: str, instruction_set: dict, type_library: dict):
+    def from_json_str(json_str: str, instruction_set: dict):
         """Create a CodeBlock from a JSON string."""
-        # Can't annotate instruction_set or type_library types properly due to circular import.
-        return AtomFactory.json_list_to_code_block(json.loads(json_str), instruction_set, type_library)
+        # Can't annotate instruction_set type properly due to circular import.
+        return AtomFactory.json_list_to_code_block(json.loads(json_str), instruction_set)
 
     def jsonify(self) -> str:
         """Return the object as a JSON string."""
@@ -281,10 +281,11 @@ class AtomFactory:
     Atoms of any kind from these specifications.
     """
 
-    # Can't annotate instruction_set or type_library types properly due to circular import.
+    # Can't annotate instruction_set type properly due to circular import.
     @staticmethod
-    def json_dict_to_atom(json_dict: dict, instruction_set: dict, type_library: dict) -> Atom:
+    def json_dict_to_atom(json_dict: dict, instruction_set: dict) -> Atom:
         """Return the atom specified by the dict produced by JSON decoding."""
+        type_library = instruction_set.type_library
         atom_type = json_dict["a"]
         if atom_type == "close":
             return Closer()
@@ -299,26 +300,26 @@ class AtomFactory:
         else:
             raise ValueError("bad atom spec {s}".format(s=json_dict))
 
-    # Can't annotate instruction_set or type_library types properly due to circular import.
+    # Can't annotate instruction_set type properly due to circular import.
     @staticmethod
-    def json_list_to_code_block(json_list: list, instruction_set: dict, type_library: dict) -> CodeBlock:
+    def json_list_to_code_block(json_list: list, instruction_set: dict) -> CodeBlock:
         """Return a CobdeBlock build from the list produced by JSON decoding."""
         cb = CodeBlock()
         for nested_atom_spec in json_list:
             if isinstance(nested_atom_spec, list):
-                cb.append(AtomFactory.json_list_to_code_block(nested_atom_spec, instruction_set, type_library))
+                cb.append(AtomFactory.json_list_to_code_block(nested_atom_spec, instruction_set))
             else:
-                cb.append(AtomFactory.json_dict_to_atom(nested_atom_spec, instruction_set, type_library))
+                cb.append(AtomFactory.json_dict_to_atom(nested_atom_spec, instruction_set))
         return cb
 
-    # Can't annotate instruction_set or type_library types properly due to circular import.
+    # Can't annotate instruction_set type properly due to circular import.
     @staticmethod
-    def json_str_to_atom_list(json_str: str, instruction_set: dict, type_library: dict) -> Sequence[Atom]:
+    def json_str_to_atom_list(json_str: str, instruction_set: dict) -> Sequence[Atom]:
         """Return a list of Atoms parsed from the json_str."""
         atoms = []
         for atom_spec in json.loads(json_str):
             if isinstance(atom_spec, list):
-                atoms.append(AtomFactory.json_list_to_code_block(atom_spec, instruction_set, type_library))
+                atoms.append(AtomFactory.json_list_to_code_block(atom_spec, instruction_set))
             else:
-                atoms.append(AtomFactory.json_dict_to_atom(atom_spec, instruction_set, type_library))
+                atoms.append(AtomFactory.json_dict_to_atom(atom_spec, instruction_set))
         return atoms

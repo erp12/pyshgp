@@ -114,7 +114,6 @@ class PushInterpreter:
 
     def __init__(self,
                  instruction_set: Union[InstructionSet, str] = "core",
-                 # type_library: Union[PushTypeLibrary, str] = "core",
                  config: PushInterpreterConfig = None):
         # If no instruction set given, create one and register all instructions.
         if instruction_set == "core":

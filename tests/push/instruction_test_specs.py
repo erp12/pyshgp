@@ -3,7 +3,7 @@ import sys
 
 from pyshgp.push.atoms import Literal, CodeBlock, JitInstructionRef
 from pyshgp.push.interpreter import DEFAULT_INTERPRETER
-from pyshgp.push.types import Char
+from pyshgp.push.types import Char, PushInt, PushStr
 
 # Renames for convience
 i_set = DEFAULT_INTERPRETER.instruction_set
@@ -262,173 +262,189 @@ SPECS = [
     },
     {
         "instr": i_set["code_is_code_block"],
-        "in": {"code": [L(5)], "bool": []},
-        "ex": {"code": [],     "bool": [False]}
+        "in": {"code": [L(5, PushInt)], "bool": []},
+        "ex": {"code": [],              "bool": [False]}
     },
     {
         "instr": i_set["code_is_code_block"],
-        "in": {"code": [CB(L(5))], "bool": []},
-        "ex": {"code": [],         "bool": [True]}
+        "in": {"code": [CB(L(5, PushInt))], "bool": []},
+        "ex": {"code": [],                  "bool": [True]}
     },
     {
         "instr": i_set["code_is_singular"],
-        "in": {"code": [L(5)], "bool": []},
-        "ex": {"code": [],     "bool": [True]}
+        "in": {"code": [L(5, PushInt)], "bool": []},
+        "ex": {"code": [],              "bool": [True]}
     },
     {
         "instr": i_set["code_is_singular"],
-        "in": {"code": [CB(L(5))], "bool": []},
-        "ex": {"code": [],         "bool": [False]}
+        "in": {"code": [CB(L(5, PushInt))], "bool": []},
+        "ex": {"code": [],                  "bool": [False]}
     },
     {
         "instr": i_set["code_length"],
-        "in": {"code": [CB(L(5))], "int": []},
-        "ex": {"code": [],         "int": [1]}
+        "in": {"code": [CB(L(5, PushInt))], "int": []},
+        "ex": {"code": [],                  "int": [1]}
     },
     {
         "instr": i_set["code_wrap"],
-        "in": {"code": [L(5)]},
-        "ex": {"code": [CB(L(5))]}
+        "in": {"code": [L(5, PushInt)]},
+        "ex": {"code": [CB(L(5, PushInt))]}
     },
     {
         "instr": i_set["code_list"],
-        "in": {"code": [L(5), L(1)]},
-        "ex": {"code": [CB(L(1), L(5))]}
+        "in": {"code": [L(5, PushInt), L(1, PushInt)]},
+        "ex": {"code": [CB(L(1, PushInt), L(5, PushInt))]}
     },
     {
         "instr": i_set["code_list"],
-        "in": {"code": [L(5), CB(L(1))]},
-        "ex": {"code": [CB(CB(L(1)), L(5))]}
+        "in": {"code": [L(5, PushInt), CB(L(1, PushInt))]},
+        "ex": {"code": [CB(CB(L(1, PushInt)), L(5, PushInt))]}
     },
     {
         "instr": i_set["code_combine"],
-        "in": {"code": [L(5), L(1)]},
-        "ex": {"code": [CB(L(1), L(5))]}
+        "in": {"code": [L(5, PushInt), L(1, PushInt)]},
+        "ex": {"code": [CB(L(1, PushInt), L(5, PushInt))]}
     },
     {
         "instr": i_set["code_combine"],
-        "in": {"code": [L(5), CB(L(1))]},
-        "ex": {"code": [CB(L(1), L(5))]}
+        "in": {"code": [L(5, PushInt), CB(L(1, PushInt))]},
+        "ex": {"code": [CB(L(1, PushInt), L(5, PushInt))]}
     },
     {
         "instr": i_set["code_do"],
-        "in": {"code": [L(5)], "exec": []},
-        "ex": {"code": [],     "exec": [L(5)]},
+        "in": {"code": [L(5, PushInt)], "exec": []},
+        "ex": {"code": [],              "exec": [L(5, PushInt)]},
     },
     {
         "instr": i_set["code_do_dup"],
-        "in": {"code": [L(5)], "exec": []},
-        "ex": {"code": [L(5)], "exec": [L(5)]},
+        "in": {"code": [L(5, PushInt)], "exec": []},
+        "ex": {"code": [L(5, PushInt)], "exec": [L(5, PushInt)]},
     },
     {
         "instr": i_set["code_do_then_pop"],
-        "in": {"code": [L(5)], "exec": []},
-        "ex": {"code": [L(5)], "exec": [jir("code_pop"), L(5)]},
+        "in": {"code": [L(5, PushInt)], "exec": []},
+        "ex": {"code": [L(5, PushInt)], "exec": [jir("code_pop"), L(5, PushInt)]},
     },
     {
         "instr": i_set["code_do_range"],
-        "in": {"code": [L(5)], "int": [13, 10], "exec": []},
-        "ex": {"code": [],     "int": [13],     "exec": [CB(L(12), L(10), jir("code_from_exec"), L(5), jir("code_do_range")), L(5)]}
+        "in": {
+            "code": [L(5, PushInt)],
+            "int": [13, 10],
+            "exec": []
+        },
+        "ex": {
+            "code": [],
+            "int": [13],
+            "exec": [CB(L(12, PushInt), L(10, PushInt), jir("code_from_exec"), L(5, PushInt), jir("code_do_range")), L(5, PushInt)]
+        }
     },
     {
         "instr": i_set["exec_do_range"],
-        "in": {"int": [0, 3], "exec": [L(5)]},
-        "ex": {"int": [0],    "exec": [CB(L(1), L(3), jir("exec_do_range"), L(5)), L(5)]}
+        "in": {"int": [0, 3], "exec": [L(5, PushInt)]},
+        "ex": {"int": [0],    "exec": [CB(L(1, PushInt), L(3, PushInt), jir("exec_do_range"), L(5, PushInt)), L(5, PushInt)]}
     },
     {
         "instr": i_set["code_do_count"],
-        "in": {"code": [L(5)], "int": [3], "exec": []},
-        "ex": {"code": [],     "int": [],  "exec": [CB(L(0), L(2), jir("code_from_exec"), L(5), jir("code_do_range"))]}
+        "in": {"code": [L(5, PushInt)], "int": [3], "exec": []},
+        "ex": {
+            "code": [],
+            "int": [],
+            "exec": [CB(L(0, PushInt), L(2, PushInt), jir("code_from_exec"), L(5, PushInt), jir("code_do_range"))]
+        }
     },
     {
         "instr": i_set["exec_do_count"],
-        "in": {"int": [3], "exec": [L(5)]},
-        "ex": {"int": [],  "exec": [CB(L(0), L(2), jir("exec_do_range"), L(5))]}
+        "in": {"int": [3], "exec": [L(5, PushInt)]},
+        "ex": {"int": [],  "exec": [CB(L(0, PushInt), L(2, PushInt), jir("exec_do_range"), L(5, PushInt))]}
     },
     {
         "instr": i_set["code_do_times"],
-        "in": {"code": [L(5)], "int": [3], "exec": []},
-        "ex": {"code": [],     "int": [],  "exec": [CB(L(0), L(2), jir("code_from_exec"), CB(jir("int_pop"), L(5)), jir("code_do_range"))]}
+        "in": {"code": [L(5, PushInt)], "int": [3], "exec": []},
+        "ex": {
+            "code": [],
+            "int": [],
+            "exec": [CB(L(0, PushInt), L(2, PushInt), jir("code_from_exec"), CB(jir("int_pop"), L(5, PushInt)), jir("code_do_range"))]
+        }
     },
     {
         "instr": i_set["exec_do_times"],
-        "in": {"int": [3], "exec": [L(5)]},
-        "ex": {"int": [],  "exec": [CB(L(0), L(2), jir("exec_do_range"), CB(jir("int_pop"), L(5)))]}
+        "in": {"int": [3], "exec": [L(5, PushInt)]},
+        "ex": {"int": [],  "exec": [CB(L(0, PushInt), L(2, PushInt), jir("exec_do_range"), CB(jir("int_pop"), L(5, PushInt)))]}
     },
     {
         "instr": i_set["exec_while"],
-        "in": {"bool": [False], "exec": [L(5)]},
+        "in": {"bool": [False], "exec": [L(5, PushInt)]},
         "ex": {"bool": [],      "exec": []},
     },
     {
         "instr": i_set["exec_while"],
-        "in": {"bool": [True], "exec": [L(5)]},
-        "ex": {"bool": [],     "exec": [jir("exec_while"), L(5)]},
+        "in": {"bool": [True], "exec": [L(5, PushInt)]},
+        "ex": {"bool": [],     "exec": [L(5, PushInt), jir("exec_while"), L(5, PushInt)]},
     },
     {
         "instr": i_set["exec_do_while"],
-        "in": {"exec": [L(5)]},
-        "ex": {"exec": [jir("exec_while"), L(5)]},
+        "in": {"exec": [L(5, PushInt)]},
+        "ex": {"exec": [L(5, PushInt), jir("exec_while"), L(5, PushInt)]},
     },
     {
         "instr": i_set["code_map"],
-        "in": {"code": [L(5)], "exec": [L(-1)]},
-        "ex": {"code": [],     "exec": [CB(CB(jir("code_from_exec"), L(5), L(-1)), jir("code_wrap"))]},
+        "in": {"code": [L(5, PushInt)], "exec": [L(-1, PushInt)]},
+        "ex": {"code": [],              "exec": [CB(CB(jir("code_from_exec"), L(5, PushInt), L(-1, PushInt)), jir("code_wrap"))]},
     },
     {
         "instr": i_set["code_if"],
-        "in": {"bool": [True], "code": ["C", "B", "A"], "exec": []},
-        "ex": {"bool": [],     "code": ["C"],           "exec": ["A"]}
+        "in": {"bool": [True], "code": [L("C", PushStr), L("B", PushStr), L("A", PushStr)], "exec": []},
+        "ex": {"bool": [],     "code": [L("C", PushStr)],                                   "exec": [L("A", PushStr)]}
     },
     {
         "instr": i_set["code_if"],
-        "in": {"bool": [False], "code": ["C", "B", "A"], "exec": []},
-        "ex": {"bool": [],      "code": ["C"],           "exec": ["B"]}
+        "in": {"bool": [False], "code": [L("C", PushStr), L("B", PushStr), L("A", PushStr)], "exec": []},
+        "ex": {"bool": [],      "code": [L("C", PushStr)],                                   "exec": [L("B", PushStr)]}
     },
     {
         "instr": i_set["exec_if"],
-        "in": {"bool": [True], "exec": ["C", "B", "A"]},
-        "ex": {"bool": [],     "exec": ["C", "A"]}
+        "in": {"bool": [True], "exec": [L("C", PushStr), L("B", PushStr), L("A", PushStr)]},
+        "ex": {"bool": [],     "exec": [L("C", PushStr), L("A", PushStr)]}
     },
     {
         "instr": i_set["exec_if"],
-        "in": {"bool": [False], "exec": ["C", "B", "A"]},
-        "ex": {"bool": [],      "exec": ["C", "B"]}
+        "in": {"bool": [False], "exec": [L("C", PushStr), L("B", PushStr), L("A", PushStr)]},
+        "ex": {"bool": [],      "exec": [L("C", PushStr), L("B", PushStr)]}
     },
     {
         "instr": i_set["code_when"],
-        "in": {"bool": [True], "code": [L("A")], "exec": []},
-        "ex": {"bool": [],     "code": [],       "exec": [L("A")]}
+        "in": {"bool": [True], "code": [L("A", PushStr)], "exec": []},
+        "ex": {"bool": [],     "code": [],                "exec": [L("A", PushStr)]}
     },
     {
         "instr": i_set["code_when"],
-        "in": {"bool": [False], "code": [L("A")], "exec": []},
+        "in": {"bool": [False], "code": [L("A", PushStr)], "exec": []},
         "ex": {"bool": [],      "code": [],       "exec": []}
     },
     {
         "instr": i_set["exec_when"],
-        "in": {"bool": [True], "exec": [L("A")]},
-        "ex": {"bool": [],     "exec": [L("A")]}
+        "in": {"bool": [True], "exec": [L("A", PushStr)]},
+        "ex": {"bool": [],     "exec": [L("A", PushStr)]}
     },
     {
         "instr": i_set["exec_when"],
-        "in": {"bool": [False], "exec": [L("A")]},
+        "in": {"bool": [False], "exec": [L("A", PushStr)]},
         "ex": {"bool": [],      "exec": []}
     },
     {
         "instr": i_set["code_member"],
-        "in": {"code": [L(1), CB(L(1), L(2))], "bool": []},
-        "ex": {"code": [],                     "bool": [True]},
+        "in": {"code": [L(1, PushInt), CB(L(1, PushInt), L(2, PushInt))], "bool": []},
+        "ex": {"code": [],                                                "bool": [True]},
     },
     {
         "instr": i_set["code_member"],
-        "in": {"code": [L("Z"), L(1)], "bool": []},
-        "ex": {"code": [],             "bool": [False]},
+        "in": {"code": [L("Z", PushStr), L(1, PushInt)], "bool": []},
+        "ex": {"code": [],                               "bool": [False]},
     },
     {
         "instr": i_set["code_nth"],
-        "in": {"code": [CB(L(1), L(2))], "int": [1]},
-        "ex": {"code": [L(2)],           "int": []},
+        "in": {"code": [CB(L(1, PushInt), L(2, PushInt))], "int": [1]},
+        "ex": {"code": [L(2, PushInt)],                    "int": []},
     },
     {
         "instr": i_set["make_empty_code_block"],
@@ -437,13 +453,13 @@ SPECS = [
     },
     {
         "instr": i_set["is_empty_code_block"],
-        "in": {"code": [L(1)], "bool": []},
-        "ex": {"code": [],     "bool": [False]},
+        "in": {"code": [L(1, PushInt)], "bool": []},
+        "ex": {"code": [],              "bool": [False]},
     },
     {
         "instr": i_set["is_empty_code_block"],
-        "in": {"code": [CB(L(1))], "bool": []},
-        "ex": {"code": [],         "bool": [False]},
+        "in": {"code": [CB(L(1, PushInt))], "bool": []},
+        "ex": {"code": [],                  "bool": [False]},
     },
     {
         "instr": i_set["is_empty_code_block"],
@@ -457,23 +473,23 @@ SPECS = [
     },
     {
         "instr": i_set["code_size"],
-        "in": {"code": [CB(CB(L("a")), L("a"))], "int": []},
-        "ex": {"code": [],                       "int": [3]},
+        "in": {"code": [CB(CB(L("a", PushStr)), L("a", PushStr))], "int": []},
+        "ex": {"code": [],                                         "int": [3]},
     },
     {
         "instr": i_set["code_extract"],
-        "in": {"code": [CB(CB(L("a")), L("b"))], "int": [0]},
-        "ex": {"code": [CB(CB(L("a")), L("b"))], "int": []},
+        "in": {"code": [CB(CB(L("a", PushStr)), L("b", PushStr))], "int": [0]},
+        "ex": {"code": [CB(CB(L("a", PushStr)), L("b", PushStr))], "int": []},
     },
     {
         "instr": i_set["code_extract"],
-        "in": {"code": [CB(CB(L("a")), L("b"))], "int": [1]},
-        "ex": {"code": [CB(L("a"))],             "int": []},
+        "in": {"code": [CB(CB(L("a", PushStr)), L("b", PushStr))], "int": [1]},
+        "ex": {"code": [CB(L("a", PushStr))],                      "int": []},
     },
     {
         "instr": i_set["code_extract"],
-        "in": {"code": [CB(CB(L("a")), L("b"))], "int": [2]},
-        "ex": {"code": [L("a")],                 "int": []},
+        "in": {"code": [CB(CB(L("a", PushStr)), L("b", PushStr))], "int": [2]},
+        "ex": {"code": [L("a", PushStr)],                          "int": []},
     },
     {
         "instr": i_set["code_extract"],
@@ -482,32 +498,32 @@ SPECS = [
     },
     {
         "instr": i_set["code_insert"],
-        "in": {"code": [L("Z"), CB(CB(L("A")), L("B"))], "int": [0]},
-        "ex": {"code": [CB(L("Z"), CB(L("A")), L("B"))], "int": []},
+        "in": {"code": [L("Z", PushStr), CB(CB(L("A", PushStr)), L("B", PushStr))], "int": [0]},
+        "ex": {"code": [CB(L("Z", PushStr), CB(L("A", PushStr)), L("B", PushStr))], "int": []},
     },
     {
         "instr": i_set["code_insert"],
-        "in": {"code": [L("Z"), CB(CB(L("A")), L("B"))], "int": [1]},
-        "ex": {"code": [CB(CB(L("Z"), L("A")), L("B"))], "int": []},
+        "in": {"code": [L("Z", PushStr), CB(CB(L("A", PushStr)), L("B", PushStr))], "int": [1]},
+        "ex": {"code": [CB(CB(L("Z", PushStr), L("A", PushStr)), L("B", PushStr))], "int": []},
     },
     {
         "instr": i_set["code_insert"],
-        "in": {"code": [L("Z"), CB(CB(L("A")), L("B"))], "int": [2]},
-        "ex": {"code": [CB(CB(L("A")), L("Z"), L("B"))], "int": []},
+        "in": {"code": [L("Z", PushStr), CB(CB(L("A", PushStr)), L("B", PushStr))], "int": [2]},
+        "ex": {"code": [CB(CB(L("A", PushStr)), L("Z", PushStr), L("B", PushStr))], "int": []},
     },
     {
         "instr": i_set["code_first_position"],
-        "in": {"code": [L("B"), CB(L("A"), L("B"))], "int": []},
+        "in": {"code": [L("B", PushStr), CB(L("A", PushStr), L("B", PushStr))], "int": []},
         "ex": {"code": [], "int": [1]},
     },
     {
         "instr": i_set["code_first_position"],
-        "in": {"code": [L("Z"), CB(L("A"), L("B"))], "int": []},
+        "in": {"code": [L("Z", PushStr), CB(L("A", PushStr), L("B", PushStr))], "int": []},
         "ex": {"code": [], "int": [-1]},
     },
     {
         "instr": i_set["code_reverse"],
-        "in": {"code": [CB(L("A"), L("B"))]},
-        "ex": {"code": [CB(L("B"), L("A"))]},
+        "in": {"code": [CB(L("A", PushStr), L("B", PushStr))]},
+        "ex": {"code": [CB(L("B", PushStr), L("A", PushStr))]},
     },
 ]

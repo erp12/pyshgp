@@ -24,6 +24,7 @@ jobs:
                 key: repo-{{ checksum ".circle-sha" }}
                 paths:
                     - ~/pyshgp
+
     unit:
         docker:
             - image: circleci/python:latest
@@ -60,6 +61,25 @@ jobs:
                     python examples/tutorials/string_demo.py
                     python examples/tutorials/string_demo_annealing.py
 
+    style:
+        docker:
+            - image: circleci/python:latest
+        working_directory: ~/pyshgp
+        steps:
+            - run:
+                name: save SHA to a file
+                command: echo $CIRCLE_SHA1 > .circle-sha
+            - restore_cache:
+                keys:
+                    - repo-{{ checksum ".circle-sha" }}
+            - run:
+                name: run flake8
+                command: |
+                  source venv/bin/activate
+                  pip install . -U
+                  python -m flake8 pyshgp/
+                  python -m flake8 examples/
+
 workflows:
     version: 2
     build:
@@ -69,5 +89,8 @@ workflows:
                 requires:
                     - build_setup
             - validation:
+                requires:
+                    - build_setup
+            - style:
                 requires:
                     - build_setup

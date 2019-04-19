@@ -21,6 +21,7 @@ from pyshgp.push.types import Char
 
 
 def target_function(s: str):
+    """Generate a training data point."""
     return [
         s.replace(" ", "\n"),
         len(s) - s.count(' ')
@@ -31,6 +32,7 @@ _possible_chars = string.ascii_letters + string.digits + string.punctuation
 
 
 def synthetic_input():
+    """Generate a string to use as input to a trining data point."""
     size = randint(0, 19) + 2
     s = ""
     for ndx in range(size):
@@ -91,28 +93,17 @@ y_test = [target_function(x[0]) for x in X_test]
 
 instruction_set = (
     InstructionSet()
-    .register_by_type(["int", "bool", "string", "char", "exec", "stdout"])
+    .register_core_by_stack({"int", "bool", "string", "char", "exec", "stdout"})
     .register_n_inputs(1)
 )
 
 spawner = GeneSpawner(
     instruction_set=instruction_set,
-    literals=[Char(" "), Char("\n")],
+    literals=[" ", "\n"],
     erc_generators=[
         lambda: Char(choice(_possible_chars)),
         synthetic_input
     ],
-)
-
-# Estimator
-
-est = PushEstimator(
-    search="GA",
-    population_size=1000,
-    max_generations=100,
-    spawner=spawner,
-    last_str_from_stdout=True,
-    verbose=2
 )
 
 if __name__ == "__main__":
@@ -121,6 +112,16 @@ if __name__ == "__main__":
         format="%(asctime)s %(levelname)s %(message)s",
         stream=sys.stdout
     )
+
+    est = PushEstimator(
+        search="GA",
+        population_size=500,
+        max_generations=10,
+        spawner=spawner,
+        last_str_from_stdout=True,
+        verbose=2
+    )
+
     start = time.time()
     est.fit(X=X_train, y=y_train)
     end = time.time()

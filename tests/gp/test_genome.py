@@ -4,6 +4,7 @@ import json
 from pyshgp.gp.genome import Opener, _has_opener, Genome, GenomeSimplifier
 from pyshgp.gp.evaluation import DatasetEvaluator
 from pyshgp.push.atoms import Atom, Literal, Instruction, CodeBlock
+from pyshgp.push.types import Char, PushInt, PushBool, PushFloat, PushStr
 
 
 def test_opener():
@@ -29,7 +30,7 @@ class TestGenome:
     def test_missing_close_genome_to_codeblock(self, atoms):
         gn = Genome([atoms["true"], atoms["if"], atoms["1.2"], atoms["close"], atoms["5"]])
         cb = gn.to_code_block()
-        assert cb[0] == Literal(True)
+        assert cb[0] == Literal(True, PushBool)
         assert isinstance(cb[1], Instruction)
         assert isinstance(cb[2], CodeBlock)
 
@@ -37,7 +38,7 @@ class TestGenome:
         gn = Genome([atoms["close"], atoms["5"], atoms["close"], atoms["close"]])
         cb = gn.to_code_block()
         assert len(cb) == 1
-        assert cb[0] == Literal(5)
+        assert cb[0] == Literal(5, PushInt)
 
     def test_empty_genome_to_codeblock(self, atoms):
         gn = Genome()

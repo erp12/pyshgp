@@ -11,36 +11,14 @@ from itertools import chain, count
 import json
 from copy import copy, deepcopy
 
-from pyshgp.push.types import PushType, push_type_by_name, push_type_of
+from pyshgp.push.types import PushType
 from pyshgp.utils import JSONable, jsonify_collection
 
 
 class Atom(JSONable):
     """Base class of all Atoms. The fundamental element of Push programs."""
 
-    @classmethod
-    def is_instance(cls, thing: Any) -> bool:
-        """Return True if thing is Atom or subclass. Otherwise return False.
-
-        Needed for when used as JIT PushType.
-
-        Parameters
-        ----------
-        thing
-            Anything.
-
-        Returns
-        -------
-        bools
-            Returns True if thing is an Atom or subclass of Atom. Returns False otherwise.
-
-        """
-        return isinstance(thing, cls)
-
-    @classmethod
-    def coerce(cls, thing: Any):
-        """Convert thing into Atom by wrapping in Literal."""
-        return Literal(thing)
+    ...
 
 
 class Closer(Atom):
@@ -75,8 +53,8 @@ class Literal(Atom):
 
     __slots__ = ["push_type", "value"]
 
-    def __init__(self, value: Any, push_type: PushType = None):
-        self.push_type = push_type_of(value) if push_type is None else push_type
+    def __init__(self, value: Any, push_type: PushType):
+        self.push_type = push_type
         if not self.push_type.is_instance(value):
             value = self.push_type.coerce(value)
         self.value = value
@@ -152,7 +130,7 @@ class Instruction(Atom, ABC):
         pass
 
     @abstractmethod
-    def relevant_types(self) -> Sequence[str]:
+    def required_stacks(self) -> Sequence[str]:
         """Return a list of PushType names relevant to the instruction."""
         pass
 
@@ -307,11 +285,12 @@ class AtomFactory:
     @staticmethod
     def json_dict_to_atom(json_dict: dict, instruction_set: dict) -> Atom:
         """Return the atom specified by the dict produced by JSON decoding."""
+        type_library = instruction_set.type_library
         atom_type = json_dict["a"]
         if atom_type == "close":
             return Closer()
         elif atom_type == "lit":
-            push_type = push_type_by_name(json_dict["t"])
+            push_type = type_library[json_dict["t"]]
             value = push_type.coerce(json_dict["v"])
             return Literal(value, push_type)
         elif atom_type == "instr":

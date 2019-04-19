@@ -4,7 +4,7 @@ from typing import Sequence, Callable
 from pyshgp.push.state import PushState
 from pyshgp.push.atoms import Atom, Literal
 from pyshgp.push.instruction import SimpleInstruction, TakesStateInstruction
-from pyshgp.push.types import PUSH_TYPES
+from pyshgp.push.type_library import PushTypeLibrary
 
 
 def _nth_inputer(ndx: int) -> Callable:
@@ -13,7 +13,7 @@ def _nth_inputer(ndx: int) -> Callable:
         input_value = state.inputs[ndx]
         if isinstance(input_value, Atom):
             return input_value,
-        return Literal(input_value),
+        return input_value,
     return f
 
 
@@ -22,8 +22,8 @@ def make_input_instruction(ndx: int) -> TakesStateInstruction:
     return TakesStateInstruction(
         "input_{i}".format(i=ndx),
         _nth_inputer(ndx),
-        output_types=["exec"],
-        other_types=[],
+        output_stacks=["untyped"],
+        other_stacks=[],
         code_blocks=0,
         docstring="Push a copy of input at index {i}.".format(i=ndx)
     )
@@ -36,17 +36,17 @@ def make_input_instructions(num_inputs: int) -> Sequence[TakesStateInstruction]:
 
 # Printing instructions
 
-def instructions():
+def instructions(type_library: PushTypeLibrary):
     """Return all core printing instructions."""
     i = []
 
-    for push_type in PUSH_TYPES:
+    for push_type in type_library.keys():
         i.append(SimpleInstruction(
-            "print_{t}".format(t=push_type.name),
+            "print_{t}".format(t=push_type),
             lambda x: [str(x)],
-            input_types=[push_type.name],
-            output_types=["stdout"],
+            input_stacks=[push_type],
+            output_stacks=["stdout"],
             code_blocks=0,
-            docstring="Prints the top {t}.".format(t=push_type.name)
+            docstring="Prints the top {t}.".format(t=push_type)
         ))
     return i

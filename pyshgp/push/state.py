@@ -4,11 +4,12 @@ A PushState object holds the PushStacks, stdout string, and collection of input
 values. The PushState is what controls the setup of all stacks before program
 manipulation, and the producing of outputs after program execution.
 """
-from typing import Sequence, Union, Set
+from typing import Sequence, Union
+from collections import deque
 import numpy as np
 
-from pyshgp.push.types import PushType, push_type_by_name
-from pyshgp.push.atoms import Atom, CodeBlock
+from pyshgp.push.type_library import PushTypeLibrary
+from pyshgp.push.atoms import CodeBlock
 from pyshgp.push.stack import PushStack
 from pyshgp.utils import Token
 
@@ -16,36 +17,25 @@ from pyshgp.utils import Token
 class PushState(dict):
     """A collection of PushStacks used during push program execution."""
 
-    __slots__ = ["stdout", "inputs", "_jit_push_types"]
+    __slots__ = ["stdout", "inputs", "untyped", "type_library"]
 
-    def __init__(self, push_types: Set[Union[PushType, str]]):
+    def __init__(self, type_library: PushTypeLibrary):
         super().__init__()
         self.stdout = ""
         self.inputs = []
-        self._jit_push_types = {}
+        self.untyped = deque([])
+        self.type_library = type_library
 
-        for push_type in set(list(push_types) + ["exec"]):
-            if isinstance(push_type, str):
-                push_type_from_name = push_type_by_name(push_type)
-                if push_type_from_name is None:
-                    push_type = PushType(push_type, (Atom,))
-                    push_type.coerce = Atom.coerce
-                    self._jit_push_types[push_type.name] = push_type
-                else:
-                    push_type = push_type_from_name
-            self._register_stack_of_type(push_type)
+        for name, push_type in type_library.items():
+            self[name] = PushStack(push_type)
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, PushState):
             return False
         return super().__eq__(other) and self.inputs == other.inputs and self.stdout == other.stdout
 
-    def _register_stack_of_type(self, push_type: PushType):
-        """Add a new stack."""
-        self[push_type.name] = PushStack(push_type)
-
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d, type_library: PushTypeLibrary):
         """Set the state to match the given dictionary.
 
         .. warning::
@@ -59,18 +49,20 @@ class PushState(dict):
             Dict that is converted into a Push state.
 
         """
-        state = cls(d.keys())
+        state = cls(type_library)
         inputs = []
         stdout = ""
-        for k in d.keys():
+        for k, v in d.items():
             if k == 'inputs':
-                inputs = d[k]
+                inputs = v
             elif k == 'stdout':
-                stdout += d[k]
+                stdout += v
+            elif k == "untyped":
+                for el in v:
+                    state.untyped.append(el)
             else:
-                for v in d[k]:
-                    state[k].push(v)
-
+                for el in v:
+                    state[k].push(el)
         state.load_inputs(inputs)
         state.stdout = stdout
         return state
@@ -137,6 +129,8 @@ class PushState(dict):
             typ = types[ndx]
             if typ == "stdout":
                 self.stdout += str(val)
+            elif typ == "untyped":
+                self.untyped.append(val)
             else:
                 self[typ].push(val)
 
@@ -148,5 +142,6 @@ class PushState(dict):
         """Print the state of all stacks in the PushState."""
         for k, v in self.items():
             print_or_log_func(" ".join([k, ":", str(v)]))
-        print_or_log_func(" ".join(['inputs :', str(self.inputs)]))
-        print_or_log_func(" ".join(['stdout :', str(self.stdout)]))
+        print_or_log_func("untyped :" + str(self.untyped))
+        print_or_log_func("inputs :" + str(self.inputs))
+        print_or_log_func("stdout :" + str(self.stdout))

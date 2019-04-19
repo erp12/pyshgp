@@ -1,12 +1,11 @@
 """The ``types`` module contains the core PushTypes and functions to reference them.
 
-A PushType simply is a named collection of Python and Numpy types. A PushType
+A PushType simply is a named collection of Python types. A PushType
 can be used to determine if multiple items should be considered the same type
 during Push program execution.
 
 """
-
-from typing import Any, Tuple, Optional
+from typing import Any, Tuple, Callable, Optional
 
 import numpy as np
 
@@ -25,6 +24,10 @@ class PushType:
     underlying : Tuple[type]
         A tuple of python (or numpy) types that correspond to the underlying
         native types which the PushType is representing.
+    coercion_func : Callable[[Any], Any], optional
+        A function which takes a single argument and returns argument coerced
+        into the PushTypes canonical type (the first type in ``underlying``).
+        If None, the constructor of the canonical type is used. Default is None.
 
     Attributes
     ----------
@@ -35,12 +38,20 @@ class PushType:
     underlying : Tuple[type]
         A tuple of python (or numpy) types that correspond to the underlying
         native types which the PushType is representing.
+    coercion_func : Callable[[Any], Any], optional
+        A function which takes a single argument and returns argument coerced
+        into the PushTypes canonical type (the first type in ``underlying``).
+        If None, the constructor of the canonical type is used. Default is None.
 
     """
 
-    def __init__(self, name: str, underlying: Tuple[type]):
+    def __init__(self, name: str, underlying: Tuple[type], coercion_func: Optional[Callable[[Any], Any]] = None):
         self.name = name
         self.underlying = underlying
+        if coercion_func is None:
+            self.coercion_func = underlying[0]
+        else:
+            self.coercion_func = coercion_func
 
     def is_instance(self, thing: Any) -> bool:
         """Return true if thing is instance of PushTypes underlying type(s)."""
@@ -49,9 +60,15 @@ class PushType:
     def coerce(self, thing: Any):
         """Convert thing into PushTypes underlying type."""
         try:
-            return self.underlying[0](thing)
-        except ValueError:
-            raise PushError.failed_coerce(thing, self)
+            return self.coercion_func(thing)
+        except Exception as e:
+            err_type = type(e).__name__
+            err_msg = str(e)
+            raise PushError(
+                "{t} while coerceing {x} of {typ1} to {typ2}. Origional mesage: \"{m}\"".format(
+                    t=err_type, x=thing, typ1=type(thing), typ2=self, m=err_msg
+                )
+            )
 
     def __repr__(self):
         return self.name + "<" + ",".join([t.__name__ for t in list(self.underlying)]) + ">"
@@ -63,30 +80,6 @@ class PushType:
 
     def __hash__(self):
         return (self.name + str(self.underlying[0])).__hash__()
-
-
-class _PushIntType(PushType):
-
-    def __init__(self):
-        super().__init__("int", (int, np.int32, np.int64))
-
-
-class _PushFloatType(PushType):
-
-    def __init__(self):
-        super().__init__("float", (float, np.float32, np.float64))
-
-
-class _PushStrType(PushType):
-
-    def __init__(self):
-        super().__init__("str", (str, np.str_))
-
-
-class _PushBoolType(PushType):
-
-    def __init__(self):
-        super().__init__("bool", (bool, np.bool_,))
 
 
 class Char(str):
@@ -112,43 +105,13 @@ class Char(str):
         return isinstance(other, Char) and str(self) == str(other)
 
 
-class _PushCharType(PushType):
-    """The Character PushType."""
-
-    def __init__(self):
-        super().__init__("char", (Char, ))
-
-
 # @TODO: Add vector type(s)
 
 
-PushInt = _PushIntType()
-PushFloat = _PushFloatType()
-PushStr = _PushStrType()
-PushBool = _PushBoolType()
-PushChar = _PushCharType()
+PushInt = PushType("int", (int, np.int64, np.int32, np.int16, np.int8))
+PushFloat = PushType("float", (float, np.float64, np.float32, np.float16))
+PushStr = PushType("str", (str, np.str_))
+PushBool = PushType("bool", (bool, np.bool_))
+PushChar = PushType("char", (Char, ))
 
-PUSH_TYPES = [PushBool, PushInt, PushChar, PushFloat, PushStr]
-
-_type_lookup = dict([(t.name, t) for t in PUSH_TYPES])
-
-
-def push_type_by_name(push_type_name: str) -> Optional[PushType]:
-    """Return the PushType with given name. If not exits, return None."""
-    return _type_lookup.get(push_type_name)
-
-
-def push_type_of(thing: Any) -> Optional[PushType]:
-    """Return the PushType of the given thing."""
-    for push_type in PUSH_TYPES:
-        if push_type.is_instance(thing):
-            return push_type
-    return None
-
-
-def push_type_for_type(t: type) -> Optional[PushType]:
-    """Return the PushType of the given python (or numpy) type."""
-    for push_type in PUSH_TYPES:
-        if t in push_type.underlying:
-            return push_type
-    return None
+CORE_PUSH_TYPES = [PushBool, PushInt, PushChar, PushFloat, PushStr]

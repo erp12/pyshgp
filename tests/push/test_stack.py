@@ -8,7 +8,7 @@ from pyshgp.validation import PushError
 
 @pytest.fixture(scope="function")
 def int_stack(atoms):
-   return PushStack(PushInt)
+    return PushStack(PushInt)
 
 
 @pytest.fixture(scope="function")
@@ -56,7 +56,6 @@ class TestPushStack:
     def test_set_nth(self, str_stack: PushStack):
         str_stack.push("a").push("b").push("c").push("d").set_nth(1, "z")
         assert len(str_stack) == 4
-        print(str_stack)
         assert str_stack.nth(1) == "z"
 
     def test_set_nth_oob(self, str_stack: PushStack):

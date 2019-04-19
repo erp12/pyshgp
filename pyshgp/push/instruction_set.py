@@ -4,22 +4,11 @@ An InstructionSet is a collection of Instruction objects, stored by name. The
 InstructionSet has methods to help define and register additional instructions.
 """
 from typing import Sequence, Set
-from itertools import chain
 import re
 
+from pyshgp.push.type_library import PushTypeLibrary, RESERVED_PSEUDO_STACKS
 from pyshgp.push.atoms import Instruction
-from pyshgp.push.types import PushType
-from pyshgp.push.instructions import common, numeric, text, code, io, logical
-
-
-_CORE_INSTRUCTIONS = list(chain(
-    common.instructions(),
-    code.instructions(),
-    numeric.instructions(),
-    text.instructions(),
-    io.instructions(),
-    logical.instructions(),
-))
+from pyshgp.push.instructions import core_instructions, io
 
 
 class InstructionSet(dict):
@@ -27,6 +16,9 @@ class InstructionSet(dict):
 
     Parameters
     ----------
+    type_library : PushTypeLibrary, optional
+        The PushTypeLibrary which denote the PushTypes (and thus stacks)
+        are supported. Default is None, which corresponds to the core set of types.
     register_all : bool, optional
         If True, all instructions in the core instruction set will be registered
         upon instanciation. Default is False.
@@ -36,6 +28,9 @@ class InstructionSet(dict):
 
     Attributes
     ----------
+    type_library : PushTypeLibrary, optional
+        The PushTypeLibrary which denote the PushTypes (and thus stacks)
+        are supported. Default is None, which corresponds to the core set of types.
     register_all : bool, optional
         If True, all instructions in the core instruction set will be registered
         upon instanciation. Default is False.
@@ -45,10 +40,32 @@ class InstructionSet(dict):
 
     """
 
-    def __init__(self, *, register_all: bool = False, strip_docstrings: bool = True):
+    def __init__(self, type_library: PushTypeLibrary = None, register_core: bool = False, strip_docstrings: bool = True):
         self.strip_docstrings = strip_docstrings
-        if register_all:
-            self.register_all()
+
+        if type_library is None:
+            type_library = PushTypeLibrary()
+        self.type_library = type_library
+
+        if register_core:
+            self.register_core()
+
+    def set_type_library(self, type_library: PushTypeLibrary):
+        """Set the type library attribute and return self.
+
+        Parameters
+        ----------
+        type_library
+            PushTypeLibrary to set.
+
+        Returns
+        -------
+        InstructionSet
+            A reference to the InstructionSet.
+
+        """
+        self.type_library = type_library
+        return self
 
     def register(self, instr: Instruction):
         """Register an Instruction object.
@@ -66,7 +83,8 @@ class InstructionSet(dict):
         """
         if self.strip_docstrings and hasattr(instr, "docstring"):
             del instr.docstring
-        self[instr.name] = instr
+        if instr.required_stacks() <= self.type_library.supported_stacks():
+            self[instr.name] = instr
         return self
 
     def register_list(self, instrs: Sequence[Instruction]):
@@ -87,7 +105,12 @@ class InstructionSet(dict):
             self.register(i)
         return self
 
-    def register_by_type(self, type_names: Sequence[str], *, exclude: Sequence[str] = None):
+    def register_core_by_stack(
+        self,
+        include_stacks: Set[str],
+        *,
+        exclude_stacks: Set[str] = None
+    ):
         """Register all instructions that make use of the given type name.
 
         Parameters
@@ -101,21 +124,15 @@ class InstructionSet(dict):
             A reference to the InstructionSet.
 
         """
-        for i in _CORE_INSTRUCTIONS:
-            for type_name in type_names:
-                i_types = i.relevant_types()
-                if type_name in i_types:
-                    include = True
-                    if exclude is not None:
-                        for i_type in i_types:
-                            if i_type in exclude:
-                                include = False
-                    if include:
-                        self.register(i)
+        for i in core_instructions(self.type_library):
+            req_stacks = i.required_stacks()
+            if req_stacks <= include_stacks:
+                if exclude_stacks is not None and len(req_stacks & exclude_stacks) > 0:
                     break
+                self.register(i)
         return self
 
-    def register_by_name(self, name_pattern: str):
+    def register_core_by_name(self, name_pattern: str):
         """Register all instructions whose name match the given pattern.
 
         Parameters
@@ -130,12 +147,12 @@ class InstructionSet(dict):
 
         """
         re_pat = re.compile(name_pattern)
-        for i in _CORE_INSTRUCTIONS:
+        for i in core_instructions(self.type_library):
             if re.match(re_pat, i.name) is not None:
                 self.register(i)
         return self
 
-    def register_all(self):
+    def register_core(self):
         """Register all core instructions defined in pyshgp.
 
         Returns
@@ -144,7 +161,7 @@ class InstructionSet(dict):
             A reference to the InstructionSet.
 
         """
-        self.register_list(_CORE_INSTRUCTIONS)
+        self.register_list(core_instructions(self.type_library))
         return self
 
     def register_n_inputs(self, n: int):
@@ -182,16 +199,16 @@ class InstructionSet(dict):
         self.pop(instruction_name, None)
         return self
 
-    def supported_types(self) -> Set[PushType]:
-        """Return all PushTypes used through the registered instructions.
+    def required_stacks(self) -> Set[str]:
+        """Return all stack names used throughout the registered instructions.
 
         Returns
         -------
-        Set[PushType]
-            The set of PushTypes that are used by the registered instructions.
+        Set[str]
+            The set of stack names that are used by the registered instructions.
 
         """
         all_types = set()
         for instr in self.values():
-            all_types.update(instr.relevant_types())
-        return all_types
+            all_types.update(instr.required_stacks())
+        return all_types - RESERVED_PSEUDO_STACKS

@@ -15,12 +15,12 @@ class PushStack(list):
     Parameters
     ----------
     push_type : PushType
-        The PushType all items of the stack should conform to, or be coerced into.
+        The PushType all items of the stack should conform to.
 
     Attributes
     ----------
     push_type : PushType
-        The PushType all items of the stack should conform to, or be coerced into.
+        The PushType all items of the stack should conform to.
 
     """
 
@@ -32,6 +32,11 @@ class PushStack(list):
     def is_empty(self) -> bool:
         """Return True if the stack is empty. Return False otherwise."""
         return len(self) == 0
+
+    def _coerce(self, value):
+        if not self.push_type.is_instance(value):
+            value = self.push_type.coerce(value)
+        return value
 
     def push(self, value):
         """Pushes a value to the top of the stack.
@@ -45,9 +50,7 @@ class PushStack(list):
             Value to push onto stack.
 
         """
-        if not self.push_type.is_instance(value):
-            value = self.push_type.coerce(value)
-        self.append(value)
+        self.append(self._coerce(value))
         return self
 
     def pop(self, index: Optional[int] = None):
@@ -135,8 +138,7 @@ class PushStack(list):
             Value to insert into stack.
 
         """
-        if not self.push_type.is_instance(value):
-            value = self.push_type.coerce(value)
+        value = self._coerce(value)
         super().insert(len(self) - position, value)
         return self
 
@@ -151,8 +153,7 @@ class PushStack(list):
             Value to insert into stack.
 
         """
-        if not self.push_type.is_instance(value):
-            value = self.push_type.coerce(value)
+        value = self._coerce(value)
         self[len(self) - 1 - position] = value
         return self
 

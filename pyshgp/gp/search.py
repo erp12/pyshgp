@@ -13,7 +13,7 @@ from pyshgp.gp.population import Population
 from pyshgp.gp.selection import Selector, get_selector
 from pyshgp.gp.variation import VariationOperator, get_variation_operator
 from pyshgp.utils import instantiate_using
-from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS
+from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log
 
 
 # @TODO: Should SearchConfiguration be JSON serializable?
@@ -94,6 +94,7 @@ class SearchConfiguration:
             self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
         else:
             self.verbosity_config = verbosity_config
+        self.verbosity_config._update_log_level()
 
     def get_selector(self):
         """Return a Selector."""
@@ -161,7 +162,7 @@ class SearchAlgorithm(ABC):
             if self.best_seen.total_error <= self.config.error_threshold:
                 return False
 
-        if self.config.verbosity_config.generation and \
+        if self.config.verbosity_config.generation >= self.config.verbosity_config.log_level and \
            self.generation % self.config.verbosity_config.every_n_generations == 0:
             stat_logs = []
             stat_logs.append("GENERATION: {g}".format(
@@ -176,7 +177,8 @@ class SearchAlgorithm(ABC):
             #     p_s=len(self.population),
             #     g_d=self.population.genome_diversity()
             # ))
-            self.config.verbosity_config.generation(" | ".join(stat_logs))
+
+            log(self.config.verbosity_config.generation, " | ".join(stat_logs))
 
         self.step()
         return True
@@ -191,11 +193,11 @@ class SearchAlgorithm(ABC):
                 break
 
         verbose_solution = self.config.verbosity_config.solution_found
-        if verbose_solution:
+        if verbose_solution >= self.config.verbosity_config.log_level:
             if self._is_solved():
-                verbose_solution("Unsimplified solution found.")
+                log(verbose_solution, "Unsimplified solution found.")
             else:
-                verbose_solution("No unsimplified solution found.")
+                log(verbose_solution, "No unsimplified solution found.")
 
         # Simplify the best individual for a better generalization and interpreteation.
         simplifier = GenomeSimplifier(self.config.evaluator, self.config.verbosity_config)
@@ -207,11 +209,11 @@ class SearchAlgorithm(ABC):
         simplified_best = Individual(simp_genome)
         simplified_best.error_vector = simp_error_vector
 
-        if verbose_solution:
+        if verbose_solution >= self.config.verbosity_config.log_level:
             if self._is_solved():
-                verbose_solution("Simplified solution found.")
+                log(verbose_solution, "Simplified solution found.")
             else:
-                verbose_solution("No simplified solution found.")
+                log(verbose_solution, "No simplified solution found.")
 
         return simplified_best
 

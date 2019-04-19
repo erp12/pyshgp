@@ -32,7 +32,11 @@ def test_check_2d_on_3d():
 
 
 def test_check_column_types_on_int_ndarray():
-    assert check_column_types(np.arange(30).reshape(-1, 3)) == [np.int64, np.int64, np.int64]
+    assert (
+        check_column_types(np.arange(30).reshape(-1, 3)) == [np.int64, np.int64, np.int64] or
+        check_column_types(np.arange(30).reshape(-1, 3)) == [np.int32, np.int32, np.int32] or
+        check_column_types(np.arange(30).reshape(-1, 3)) == [np.int16, np.int16, np.int16]
+    )
 
 
 def test_check_column_types_on_nested_list():

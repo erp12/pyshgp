@@ -16,7 +16,9 @@ from pyshgp.push.atoms import (
     Atom, Closer, Literal, Instruction, JitInstructionRef, CodeBlock
 )
 from pyshgp.validation import PushError
-from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS
+from pyshgp.monitoring import (
+    VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log_function
+)
 
 
 class PushInterpreterConfig:
@@ -88,13 +90,13 @@ class PushInterpreter:
     instruction_set : Union[InstructionSet, str], optional
         The InstructionSet to use for executing programs. Default is "core"
         which instansiates an InstructionSet using all the core instructions.
-    type_library : PushTypeLibrary, optional
-        The type library that specifies all the PushTypes the interpreter will
-        support. Default is "core" which instansiates all the core PushTypes.
     config : PushInterpreterConfig, optional
         A PushInterpreterConfig specifying limits and early termination
         conditions. Default is None, which creates a config will all default
         values.
+    verbosity_config : VerbosityConfig, optional
+        A VerbosityConfig controling what is logged during the execution
+        of the program. Default is no verbosity.
 
     Attributes
     ----------
@@ -103,6 +105,9 @@ class PushInterpreter:
     config : PushInterpreterConfig
         A PushInterpreterConfig specifying limits and early termination
         conditions.
+    verbosity_config : VerbosityConfig, optional
+        A VerbosityConfig controling what is logged during the execution
+        of the program. Default is no verbosity.
     state : PushState
         The current PushState. Contains one stack for each PushType utilized
         mentioned by the instructions in the instruction set.
@@ -114,7 +119,8 @@ class PushInterpreter:
 
     def __init__(self,
                  instruction_set: Union[InstructionSet, str] = "core",
-                 config: PushInterpreterConfig = None):
+                 config: PushInterpreterConfig = None,
+                 verbosity_config: VerbosityConfig = "default"):
         # If no instruction set given, create one and register all instructions.
         if instruction_set == "core":
             self.instruction_set = InstructionSet(register_core=True)
@@ -128,7 +134,13 @@ class PushInterpreter:
         else:
             self.config = config
 
+        if verbosity_config == "default":
+            self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
+        else:
+            self.verbosity_config = verbosity_config
+
         # Initialize the PushState and status
+        self._validate()
         self.reset()
 
     def _validate(self):
@@ -146,7 +158,14 @@ class PushInterpreter:
         """Reset the interpreter status and PushState."""
         self.state = PushState(self.type_library)
         self.status = PushInterpreterStatus.normal
-        self._validate()
+        self._verbose_trace = self.verbosity_config.program_trace
+        self._log_fn_for_trace = log_function(self._verbose_trace)
+
+    def _log_trace(self, msg=None, log_state=False):
+        if msg is not None:
+            self._log_fn_for_trace(msg)
+        if log_state:
+            self.state.pretty_print(self._log_fn_for_trace)
 
     def _evaluate_instruction(self, instruction: Union[Instruction, JitInstructionRef]):
         self.state = instruction.evaluate(self.state, self.config)
@@ -191,14 +210,12 @@ class PushInterpreter:
                     t=err_type,
                     atom=atom,
                     m=err_msg
-                )
-            )
+                ))
 
     def run(self,
             program: CodeBlock,
             inputs: Sequence,
-            output_types: Sequence[str],
-            verbosity_config: VerbosityConfig = None):
+            output_types: Sequence[str]):
         """Run a Push program given some inputs and desired output PushTypes.
 
         The general flow of this method is:
@@ -217,9 +234,6 @@ class PushInterpreter:
         output_types
             A secence of values that denote the Pushtypes of the expected
             outputs of the push program.
-        verbosity_config : VerbosityConfig, optional
-            A VerbosityConfig controling what is logged during the execution
-            of the program. Default is no verbosity.
 
         Returns
         -------
@@ -231,20 +245,18 @@ class PushInterpreter:
         if self.config.reset_on_run:
             self.reset()
 
+        # Setup
         self.state.load_program(program)
         self.state.load_inputs(inputs)
         stop_time = time.time() + self.config.runtime_limit
         steps = 0
 
-        if verbosity_config is None:
-            verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
-        verbose_trace = verbosity_config.program_trace
+        if self._verbose_trace >= self.verbosity_config.log_level:
+            self._log_trace("Initial State:", True)
 
-        if verbose_trace:
-            verbose_trace("Initial State:")
-            self.state.pretty_print(verbose_trace)
-
+        # Iterate atom evaluation until entire program is evaluated.
         while len(self.state["exec"]) > 0:
+            # Stopping conditions
             if steps > self.config.atom_limit:
                 self.status = PushInterpreterStatus.atom_limit_exceeded
                 break
@@ -252,24 +264,25 @@ class PushInterpreter:
                 self.status = PushInterpreterStatus.runtime_limit_exceeded
                 break
 
+            # Next atom in the program to evaluate.
             next_atom = self.state["exec"].pop()
 
-            if verbose_trace:
-                verbose_trace("Current Atom: " + str(next_atom))
+            if self._verbose_trace >= self.verbosity_config.log_level:
+                self._log_trace("Current Atom: " + str(next_atom))
 
+            # Evaluate atom.
             old_size = len(self.state)
             self.evaluate_atom(next_atom)
             if len(self.state) > old_size + self.config.growth_cap:
                 self.status = PushInterpreterStatus.growth_cap_exceeded
                 break
 
-            if verbose_trace:
-                verbose_trace("Current State:")
-                self.state.pretty_print(verbose_trace)
+            if self._verbose_trace >= self.verbosity_config.log_level:
+                self._log_trace("Current State:", True)
             steps += 1
 
-        if verbose_trace:
-            verbose_trace("Finished program evaluation.")
+        if self._verbose_trace >= self.verbosity_config.log_level:
+            self._log_trace("Finished program evaluation.")
 
         return self.state.observe_stacks(output_types)
 

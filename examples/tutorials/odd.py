@@ -27,13 +27,6 @@ spawner = GeneSpawner(
     erc_generators=[lambda: random.randint(0, 10)]
 )
 
-est = PushEstimator(
-    spawner=spawner,
-    population_size=500,
-    max_generations=200,
-    verbose=2
-)
-
 
 if __name__ == "__main__":
     logging.basicConfig(
@@ -41,6 +34,14 @@ if __name__ == "__main__":
         format="%(asctime)s %(levelname)s %(message)s",
         stream=sys.stdout
     )
+
+    est = PushEstimator(
+        spawner=spawner,
+        population_size=500,
+        max_generations=200,
+        verbose=2
+    )
+
     est.fit(X, y)
     print(est._result.program)
     print(est.predict(X))

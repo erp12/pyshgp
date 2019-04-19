@@ -67,8 +67,8 @@ point_from_floats_instr = SimpleInstruction(
 
 
 # Training data
-X = np.random.rand(20, 4)
-y = [[point_distance(Point(x[0], x[1]), Point(x[2], x[3]))] for x in X]
+X = [[Point(row[0], row[1]), Point(row[2], row[3])] for row in np.random.rand(20, 4)]
+y = [[point_distance(x[0], x[1])] for x in X]
 
 
 # Custom type library that specifies we will be sythesizing programs that
@@ -91,7 +91,7 @@ instruction_set = (
     InstructionSet(type_library=type_library, register_core=True)
     .register(point_distance_insrt)
     .register(point_from_floats_instr)
-    .register_n_inputs(X.shape[1])
+    .register_n_inputs(2)
 )
 
 print(instruction_set.keys())
@@ -107,7 +107,7 @@ spawner = GeneSpawner(
 est = PushEstimator(
     spawner=spawner,
     population_size=500,
-    max_generations=200,
+    max_generations=20,
     simplification_steps=1000,
     interpreter=PushInterpreter(instruction_set),
     verbose=2

@@ -17,7 +17,7 @@ from pyshgp.push.atoms import (
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.gp.evaluation import Evaluator
 from pyshgp.utils import DiscreteProbDistrib, JSONable, jsonify_collection
-from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS
+from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log
 
 
 class Opener:
@@ -328,8 +328,9 @@ class GenomeSimplifier:
         new_gn = self._remove_rand_genes(genome)
         new_errs = self._errors_of_genome(new_gn)
         if np.sum(new_errs) <= np.sum(errors_to_beat):
-            if self.verbosity_config.simplification_step:
-                self.verbosity_config.simplification_step(
+            if self.verbosity_config.simplification_step >= self.verbosity_config.log_level:
+                log(
+                    self.verbosity_config.simplification_step,
                     "Simplified to length {ln}.".format(ln=len(new_gn))
                 )
             return new_gn, new_errs
@@ -358,11 +359,11 @@ class GenomeSimplifier:
         """
         if self.verbosity_config is None:
             self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
-        if self.verbosity_config.simplification:
-            self.verbosity_config.simplification(
+        if self.verbosity_config.simplification_step >= self.verbosity_config.log_level:
+            log(
+                self.verbosity_config.simplification,
                 "Simplifying genome of length {ln}.".format(ln=len(genome))
             )
-
         gn = genome
         errs = origional_errors
         for step in range(steps):
@@ -370,11 +371,13 @@ class GenomeSimplifier:
             if len(gn) == 1:
                 break
 
-        if self.verbosity_config.simplification:
-            self.verbosity_config.simplification(
+        if self.verbosity_config.simplification_step >= self.verbosity_config.log_level:
+            log(
+                self.verbosity_config.simplification,
                 "Simplified genome length {ln}.".format(ln=len(gn))
             )
-            self.verbosity_config.simplification(
+            log(
+                self.verbosity_config.simplification,
                 "Simplified genome total error {te}.".format(te=np.sum(errs))
             )
 

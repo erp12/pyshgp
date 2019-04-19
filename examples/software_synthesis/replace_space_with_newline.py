@@ -106,23 +106,22 @@ spawner = GeneSpawner(
     ],
 )
 
-# Estimator
-
-est = PushEstimator(
-    search="GA",
-    population_size=1000,
-    max_generations=100,
-    spawner=spawner,
-    last_str_from_stdout=True,
-    verbose=2
-)
-
 if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(message)s",
         stream=sys.stdout
     )
+
+    est = PushEstimator(
+        search="GA",
+        population_size=500,
+        max_generations=10,
+        spawner=spawner,
+        last_str_from_stdout=True,
+        verbose=2
+    )
+
     start = time.time()
     est.fit(X=X_train, y=y_train)
     end = time.time()

@@ -37,20 +37,21 @@ spawner = GeneSpawner(
 ep_lex_sel = Lexicase(epsilon=True)
 
 
-est = PushEstimator(
-    population_size=200,
-    max_generations=50,
-    spawner=spawner,
-    selector=ep_lex_sel,
-    verbose=2
-)
-
 if __name__ == '__main__':
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(message)s",
         stream=sys.stdout
     )
+
+    est = PushEstimator(
+        population_size=200,
+        max_generations=50,
+        spawner=spawner,
+        selector=ep_lex_sel,
+        verbose=2
+    )
+
     est.fit(X=X, y=y)
     print(est._result.program)
     print(est.predict(X))

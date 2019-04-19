@@ -131,13 +131,16 @@ class PushEstimator:
         self.simplification_steps = simplification_steps
         self.last_str_from_stdout = last_str_from_stdout
         self.verbose = verbose
+        self.ext = kwargs
+
+        self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[self.verbose]
+        self.verbosity_config._update_log_level()
 
         if interpreter == "default":
             self.interpreter = DEFAULT_INTERPRETER
         else:
             self.interpreter = interpreter
-
-        self.ext = kwargs
+        self.interpreter.verbosity_config = self.verbosity_config
 
     def _build_search_algo(self):
         if isinstance(self.variation_strategy, dict):
@@ -158,7 +161,7 @@ class PushEstimator:
             max_generations=self.max_generations,
             initial_genome_size=self.initial_genome_size,
             simplification_steps=self.simplification_steps,
-            verbosity_config=DEFAULT_VERBOSITY_LEVELS[self.verbose]
+            verbosity_config=self.verbosity_config
         )
         self.search = sr.get_search_algo(self._search_name, config=search_config, **self.ext)
 
@@ -184,8 +187,7 @@ class PushEstimator:
         self.evaluator = DatasetEvaluator(
             X, y,
             interpreter=self.interpreter,
-            last_str_from_stdout=self.last_str_from_stdout,
-            verbosity_config=DEFAULT_VERBOSITY_LEVELS[self.verbose]
+            last_str_from_stdout=self.last_str_from_stdout
         )
         self._build_search_algo()
         best_seen = self.search.run()
@@ -212,8 +214,7 @@ class PushEstimator:
             self.interpreter.run(
                 self._result.program,
                 inputs,
-                self._result.output_types,
-                verbosity_config=self.search.config.verbosity_config
+                self._result.output_types
             ) for inputs in X
         ]
 
@@ -232,7 +233,7 @@ class PushEstimator:
         """
         check_is_fitted(self, "_result")
         X, y, arity, y_types = check_X_y(X, y)
-        self.evaluator = DatasetEvaluator(X, y, )
+        self.evaluator = DatasetEvaluator(X, y, interpreter=self.interpreter)
         return self.evaluator.evaluate(self._result.program)
 
     def save(self, filepath: str):

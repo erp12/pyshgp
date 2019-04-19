@@ -52,20 +52,21 @@ spawner = GeneSpawner(
 )
 
 
-est = PushEstimator(
-    search="SA",
-    spawner=spawner,
-    max_generations=500,
-    initial_genome_size=(10, 50),
-    verbose=2
-)
-
 if __name__ == "__main__":
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(message)s",
         stream=sys.stdout
     )
+
+    est = PushEstimator(
+        search="SA",
+        spawner=spawner,
+        max_generations=500,
+        initial_genome_size=(10, 50),
+        verbose=2
+    )
+
     est.fit(X=X, y=y)
     print(est._result.program)
     print(est.predict(X))

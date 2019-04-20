@@ -2,11 +2,11 @@
 Push Instructions
 *****************
 
-A Push instruction is object that can manipulate the typed Stacks of a ``PushState``. Typically, an instruction is defined by some function. When evaluated, the arguments to the instruction’s function are taken from the stacks of the ``PushInterpreter``’s PushState and the returned values are pushed to back to the stacks.
+A Push instruction is object that can manipulate the typed stacks of a ``PushState``. Typically, an instruction is defined by some function. When evaluated, the arguments to the instruction’s function are taken from the stacks of the ``PushInterpreter``’s PushState and the returned values are pushed to back to the stacks.
 
-In PyshGP, there are a variety of classes that concretely implement the concept of an Instruction. These definitions capture all the required information about an instruction. For example, the ``SimpleInstruction`` class automatically handles the popping of arguments and pushing of returned values for functions that only require access to the top items of some stacks. Meanwhile, the more flexible ``StateToStateInstruction`` only requires a function which takes the entire PushState and returns a PushState.
+In PyshGP, there are a variety of classes that concretely implement the concept of an instruction. These definitions capture all the required information about an instruction. For example, the ``SimpleInstruction`` class automatically handles the popping of arguments and pushing of returned values for functions that only require access to the top items of some stacks. Meanwhile, the more flexible ``StateToStateInstruction`` only requires a function which takes the entire PushState and returns a PushState.
 
-Every instruction must contain information on which ``PushTypes`` it manipulates. This is so that the ``PushInterpreter`` will know which stacks to create given a collection of Instruction that will be used. It also aids in filtering collections of instructions based on what types they manipulate.
+Every instruction must contain information on which stacks it manipulates. This is so that the ``PushInterpreter`` will know which stacks are required to ensure a given collection of Instruction will be supportable. It also aids in filtering collections of instructions based on what types they manipulate.
 
 Instructions also denote how many code blocks are expected to follow the instructions. This is used during ``Genome`` to ``CodeBlock`` translation to provide the nested structure of code blocks. For example, the ``exec_if`` instruction should be followed by two code blocks: one for the "then" clause, one for the "else" clause.
 
@@ -18,11 +18,14 @@ If an instruction is unable to be evaluated, it can return a ``Token.revert`` ob
 Core Instructions
 =================
 
-PyshGP contains a collection of “core” instructions that work with the typical data types. To read about all the core instructions provided by the version of PyshGP you are using, see the following pages.
+PyshGP contains a collection of “core” instructions that work with the typical data types. These instructions include implementations of control structures such as ``if`` and ``while``. The inclusion of these control structures is a key feature that makes PushGP unique compared to many other genetic programming systems.
+
+To read about all the core instructions provided by the version of PyshGP you are using, see the following pages.
 
 .. toctree::
    :maxdepth: 1
 
+   core_instructions/v0_1_5_core_instructions
    core_instructions/v0_1_4_core_instructions
    core_instructions/v0_1_3_core_instructions
 
@@ -55,7 +58,7 @@ Used when the exact function is known. In other words, how many argument are nee
 Produces Many Of Type Instruction
 ---------------------------------
 
-Same as ``SimpleInstruction`` except that a variable number of returned values will be produced. All returned values will be of the same type.
+Same as ``SimpleInstruction`` except that a variable number of returned values will be produced. All returned values will be of the same type, and thus are placed on the same stack.
 
 .. code-block:: python
 
@@ -65,8 +68,8 @@ Same as ``SimpleInstruction`` except that a variable number of returned values w
     str_split_instr = ProducesManyOfTypeInstruction(
         "str_split_on_comma",
         split_on_comma,
-        input_types=["str"],
-        output_type="str",
+        input_stacks=["str"],
+        output_stack="str",
         code_blocks=0,
         docstring="Pushes multiple strs produced by splitting the top str on all commas.".format(t=push_type)
     )
@@ -84,8 +87,8 @@ Same as ``SimpleInstruction`` except that the argument to the function is the en
     bool_depth_instr = TakesStateInstruction(
         "bool_stack_depth",
         bool_stack_depth,
-        output_types=["int"],
-        other_types=["bool"],
+        output_stacks=["int"],
+        other_stacks=["bool"],
         code_blocks=0,
         docstring="Pushes the size of the bool stack to the int stack."
     )
@@ -107,7 +110,7 @@ An Instruction that takes entire ``PushState`` and returns entire ``PushState``.
     exec_when_instr = StateToStateInstruction(
         "exec_when",
         exec_when,
-        types_used=["exec"],
+        stacks_used=["exec"],
         code_blocks=1,
         docstring="""Pops the next item on the exec stack without evaluating it
         if the top bool is False. Otherwise, has no effect."""
@@ -116,30 +119,36 @@ An Instruction that takes entire ``PushState`` and returns entire ``PushState``.
 Preparing Instruction Sets
 ==========================
 
-To specify which instructions should be used during program synthesis (Specifically during gene spawning, and genome variation), PyshGP utilizes an InstructionSet object. Instructions can be added, or “registered,” into an InsturctionSet as long as the instructions name is unique across the set.
+To specify which instructions should be used during program synthesis (specifically during gene spawning, and genome variation), PyshGP utilizes an InstructionSet object. Instructions can be added, or “registered,” into an ``InsturctionSet`` as long as the instructions name is unique across the set.
 
-Subsets of the “core” instruction can easily be registered using the methods of the InstructionSet object.
+Subsets of the “core” instructions can easily be registered using the methods of the InstructionSet object.
 
 .. code-block:: python
 
     instruction_set = (
         InstructionSet()
-        .register_by_type(
-          ["int", "bool", "stdout"], # All core instructions that manipulate any of these types...
-          exclude=["str"]            # ... but remove any instructions that any of these types.
+        .register_core_by_stack(
+          {"int", "bool", "stdout"}, # All core instructions that manipulate any of these types...
+          exclude={"str"}            # ... but remove any instructions that use any of these types.
         )
-        .register_by_name(".*_add")  # All core instructions with name matching regex.
+        .register_core_by_name(".*_add")  # All core instructions with name matching regex.
         .register_n_inputs(2)        # Register 2 input instructions when arity 2 programs are synthesized.
     )
 
-If custom instructions are instantiated (either via a provided class or by extending the Instruction abstract base class) they can also be registered in an InstructionSet.
-
-Defining Instructions which manipulate custom PushTypes or custom PushStacks is not currently supported, however it will be future versions.
 
 Registering Custom Instructions
 -------------------------------
+
+If custom instructions are instantiated (either via a provided class or by extending the Instruction abstract base class) they can also be registered in an ``InstructionSet`` via the ``.register()`` and ``.register_list()`` methods.
 
 .. code-block:: python
 
     instruction_set.register(int_div_instr)
     instruction_set.register_list([str_split_instr, bool_depth_instr, exec_when_instr])
+
+To create instructions that manipulate custom stacks that hold values of a custom ``PushType`` you will have to first define a ``PushTypeLibrary`` that holds all PushTypes that will be used. Documentation of the ``PushTypeLibrary`` can be found on its dedicated documentation page linked below.
+
+.. toctree::
+   :maxdepth: 1
+
+   push_types

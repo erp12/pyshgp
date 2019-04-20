@@ -50,16 +50,17 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="kn">from</span> <span class="nn">pyshgp.push.type_library</span> <span class="k">import</span> <span class="n">infer_literal</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">Atom</span><span class="p">,</span> <span class="n">Closer</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Instruction</span><span class="p">,</span> <span class="n">CodeBlock</span><span class="p">,</span> <span class="n">AtomFactory</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.instruction_set</span> <span class="k">import</span> <span class="n">InstructionSet</span>
 <span class="kn">from</span> <span class="nn">pyshgp.gp.evaluation</span> <span class="k">import</span> <span class="n">Evaluator</span>
 <span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">DiscreteProbDistrib</span><span class="p">,</span> <span class="n">JSONable</span><span class="p">,</span> <span class="n">jsonify_collection</span>
-<span class="kn">from</span> <span class="nn">pyshgp.monitoring</span> <span class="k">import</span> <span class="n">VerbosityConfig</span><span class="p">,</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span>
+<span class="kn">from</span> <span class="nn">pyshgp.monitoring</span> <span class="k">import</span> <span class="n">VerbosityConfig</span><span class="p">,</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span><span class="p">,</span> <span class="n">log</span>
 
 
-<div class="viewcode-block" id="Opener"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Opener">[docs]</a><span class="k">class</span> <span class="nc">Opener</span><span class="p">:</span>
+<div class="viewcode-block" id="Opener"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.Opener">[docs]</a><span class="k">class</span> <span class="nc">Opener</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Marks the start of one or more CodeBlock.&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span>
@@ -67,7 +68,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">count</span>
 
-<div class="viewcode-block" id="Opener.dec"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Opener.dec">[docs]</a>    <span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Opener.dec"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.Opener.dec">[docs]</a>    <span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Decrements the count by 1.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">-=</span> <span class="mi">1</span></div></div>
 
@@ -76,7 +77,7 @@
     <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">Opener</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">l</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
 
-<div class="viewcode-block" id="Genome"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Genome">[docs]</a><span class="k">class</span> <span class="nc">Genome</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">JSONable</span><span class="p">):</span>
+<div class="viewcode-block" id="Genome"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.Genome">[docs]</a><span class="k">class</span> <span class="nc">Genome</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">JSONable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A flat sequence of Atoms where each Atom is a &quot;gene&quot; in the genome.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Atom</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -84,19 +85,19 @@
             <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Genome.append"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Genome.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">Atom</span><span class="p">):</span>
+<div class="viewcode-block" id="Genome.append"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.Genome.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">:</span> <span class="n">Atom</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Append Atom to end of Genome.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">CodeBlock</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot add CodeBlock to genomes. Genomes must be kept flat.&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Genome.from_json_str"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Genome.from_json_str">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Genome.from_json_str"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.Genome.from_json_str">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_json_str</span><span class="p">(</span><span class="n">json_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">instruction_set</span><span class="p">:</span> <span class="n">InstructionSet</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a Genome from a JSON string.&quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomFactory</span><span class="o">.</span><span class="n">json_str_to_atom_list</span><span class="p">(</span><span class="n">json_str</span><span class="p">,</span> <span class="n">instruction_set</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Genome</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Genome.to_code_block"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Genome.to_code_block">[docs]</a>    <span class="k">def</span> <span class="nf">to_code_block</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CodeBlock</span><span class="p">:</span>
+<div class="viewcode-block" id="Genome.to_code_block"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.Genome.to_code_block">[docs]</a>    <span class="k">def</span> <span class="nf">to_code_block</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CodeBlock</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Translate into nested CodeBlocks.</span>
 
 <span class="sd">        These CodeBlocks can be considered the Push program representation of</span>
@@ -135,7 +136,7 @@
                     <span class="n">push_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
                 <span class="k">del</span> <span class="n">plushy_buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Genome.simplify"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Genome.simplify">[docs]</a>    <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="Genome.simplify"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.Genome.simplify">[docs]</a>    <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">evaluator</span><span class="p">:</span> <span class="n">Evaluator</span><span class="p">,</span>
                  <span class="n">origional_error</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                  <span class="n">steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -145,18 +146,18 @@
         <span class="n">gn</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">simplifier</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origional_error</span><span class="p">,</span> <span class="n">steps</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">gn</span></div>
 
-<div class="viewcode-block" id="Genome.copy"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Genome.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">deep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Genome.copy"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.Genome.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">deep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a copy of the Genome.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Genome.jsonify"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.Genome.jsonify">[docs]</a>    <span class="k">def</span> <span class="nf">jsonify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="Genome.jsonify"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.Genome.jsonify">[docs]</a>    <span class="k">def</span> <span class="nf">jsonify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return the object as a JSON string.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">jsonify_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="GeneSpawner"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.GeneSpawner">[docs]</a><span class="k">class</span> <span class="nc">GeneSpawner</span><span class="p">:</span>
+<div class="viewcode-block" id="GeneSpawner"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.GeneSpawner">[docs]</a><span class="k">class</span> <span class="nc">GeneSpawner</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A factory of random Genes (Atoms) and Genomes.</span>
 
 <span class="sd">    When  spawning a random gene, the result can be one of three types of Atoms.</span>
@@ -212,7 +213,8 @@
                  <span class="n">erc_generators</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Callable</span><span class="p">],</span>
                  <span class="n">distribution</span><span class="p">:</span> <span class="n">DiscreteProbDistrib</span> <span class="o">=</span> <span class="s2">&quot;proportional&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">instruction_set</span> <span class="o">=</span> <span class="n">instruction_set</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">literals</span> <span class="o">=</span> <span class="p">[</span><span class="n">lit</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lit</span><span class="p">,</span> <span class="n">Literal</span><span class="p">)</span> <span class="k">else</span> <span class="n">Literal</span><span class="p">(</span><span class="n">lit</span><span class="p">)</span> <span class="k">for</span> <span class="n">lit</span> <span class="ow">in</span> <span class="n">literals</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type_library</span> <span class="o">=</span> <span class="n">instruction_set</span><span class="o">.</span><span class="n">type_library</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">literals</span> <span class="o">=</span> <span class="p">[</span><span class="n">lit</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lit</span><span class="p">,</span> <span class="n">Literal</span><span class="p">)</span> <span class="k">else</span> <span class="n">infer_literal</span><span class="p">(</span><span class="n">lit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_library</span><span class="p">)</span> <span class="k">for</span> <span class="n">lit</span> <span class="ow">in</span> <span class="n">literals</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">erc_generators</span> <span class="o">=</span> <span class="n">erc_generators</span>
 
         <span class="k">if</span> <span class="n">distribution</span> <span class="o">==</span> <span class="s2">&quot;proportional&quot;</span><span class="p">:</span>
@@ -226,7 +228,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">=</span> <span class="n">distribution</span>
 
-<div class="viewcode-block" id="GeneSpawner.random_instruction"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.GeneSpawner.random_instruction">[docs]</a>    <span class="k">def</span> <span class="nf">random_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Instruction</span><span class="p">:</span>
+<div class="viewcode-block" id="GeneSpawner.random_instruction"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.GeneSpawner.random_instruction">[docs]</a>    <span class="k">def</span> <span class="nf">random_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Instruction</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return a random Instruction from the InstructionSet.</span>
 
 <span class="sd">        Returns</span>
@@ -237,7 +239,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_set</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span></div>
 
-<div class="viewcode-block" id="GeneSpawner.random_literal"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.GeneSpawner.random_literal">[docs]</a>    <span class="k">def</span> <span class="nf">random_literal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">:</span>
+<div class="viewcode-block" id="GeneSpawner.random_literal"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.GeneSpawner.random_literal">[docs]</a>    <span class="k">def</span> <span class="nf">random_literal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return a random Literal from the set of Literals.</span>
 
 <span class="sd">        Returns</span>
@@ -246,9 +248,12 @@
 <span class="sd">            A randomly selected Literal.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">)</span></div>
+        <span class="n">lit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">literals</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lit</span><span class="p">,</span> <span class="n">Literal</span><span class="p">):</span>
+            <span class="n">lit</span> <span class="o">=</span> <span class="n">infer_literal</span><span class="p">(</span><span class="n">lit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_library</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lit</span></div>
 
-<div class="viewcode-block" id="GeneSpawner.random_erc"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.GeneSpawner.random_erc">[docs]</a>    <span class="k">def</span> <span class="nf">random_erc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">:</span>
+<div class="viewcode-block" id="GeneSpawner.random_erc"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.GeneSpawner.random_erc">[docs]</a>    <span class="k">def</span> <span class="nf">random_erc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Materialize a random ERC generator into a Literal and return it.</span>
 
 <span class="sd">        Returns</span>
@@ -258,9 +263,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">erc_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">erc_generators</span><span class="p">)()</span>
-        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">erc_value</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">erc_value</span><span class="p">,</span> <span class="n">Literal</span><span class="p">):</span>
+            <span class="n">erc_value</span> <span class="o">=</span> <span class="n">infer_literal</span><span class="p">(</span><span class="n">erc_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_library</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">erc_value</span></div>
 
-<div class="viewcode-block" id="GeneSpawner.spawn_atom"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.GeneSpawner.spawn_atom">[docs]</a>    <span class="k">def</span> <span class="nf">spawn_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atom</span><span class="p">:</span>
+<div class="viewcode-block" id="GeneSpawner.spawn_atom"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.GeneSpawner.spawn_atom">[docs]</a>    <span class="k">def</span> <span class="nf">spawn_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Atom</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return a random Atom based on the GenomeSpawner&#39;s distribution.</span>
 
 <span class="sd">        Returns</span>
@@ -281,7 +288,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;GenomeSpawner distribution bad atom type </span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">atom_type</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="GeneSpawner.spawn_genome"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.GeneSpawner.spawn_genome">[docs]</a>    <span class="k">def</span> <span class="nf">spawn_genome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
+<div class="viewcode-block" id="GeneSpawner.spawn_genome"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.GeneSpawner.spawn_genome">[docs]</a>    <span class="k">def</span> <span class="nf">spawn_genome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return a random Genome based on the GenomeSpawner&#39;s distribution.</span>
 
 <span class="sd">        The genome will contain the specified number of Atoms if size is an</span>
@@ -311,7 +318,7 @@
         <span class="k">return</span> <span class="n">gn</span></div></div>
 
 
-<div class="viewcode-block" id="GenomeSimplifier"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.GenomeSimplifier">[docs]</a><span class="k">class</span> <span class="nc">GenomeSimplifier</span><span class="p">:</span>
+<div class="viewcode-block" id="GenomeSimplifier"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.GenomeSimplifier">[docs]</a><span class="k">class</span> <span class="nc">GenomeSimplifier</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Simplifies a genome while preserving, or improving, its error.</span>
 
 <span class="sd">    Genomes, and Push programs, can contain superfluous Push code. This extra</span>
@@ -361,14 +368,15 @@
         <span class="n">new_gn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_rand_genes</span><span class="p">(</span><span class="n">genome</span><span class="p">)</span>
         <span class="n">new_errs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors_of_genome</span><span class="p">(</span><span class="n">new_gn</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">new_errs</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">errors_to_beat</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification_step</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification_step</span><span class="p">(</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification_step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">log_level</span><span class="p">:</span>
+                <span class="n">log</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification_step</span><span class="p">,</span>
                     <span class="s2">&quot;Simplified to length </span><span class="si">{ln}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">new_gn</span><span class="p">))</span>
                 <span class="p">)</span>
             <span class="k">return</span> <span class="n">new_gn</span><span class="p">,</span> <span class="n">new_errs</span>
         <span class="k">return</span> <span class="n">genome</span><span class="p">,</span> <span class="n">errors_to_beat</span>
 
-<div class="viewcode-block" id="GenomeSimplifier.simplify"><a class="viewcode-back" href="../../../api/pyshgp.gp.genome.html#pyshgp.gp.genome.GenomeSimplifier.simplify">[docs]</a>    <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="GenomeSimplifier.simplify"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.genome.GenomeSimplifier.simplify">[docs]</a>    <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">genome</span><span class="p">:</span> <span class="n">Genome</span><span class="p">,</span>
                  <span class="n">origional_errors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                  <span class="n">steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Genome</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
@@ -391,11 +399,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span> <span class="o">=</span> <span class="n">DEFAULT_VERBOSITY_LEVELS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">(</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification_step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">log_level</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">,</span>
                 <span class="s2">&quot;Simplifying genome of length </span><span class="si">{ln}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">genome</span><span class="p">))</span>
             <span class="p">)</span>
-
         <span class="n">gn</span> <span class="o">=</span> <span class="n">genome</span>
         <span class="n">errs</span> <span class="o">=</span> <span class="n">origional_errors</span>
         <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
@@ -403,11 +411,13 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gn</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">break</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">(</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification_step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">log_level</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">,</span>
                 <span class="s2">&quot;Simplified genome length </span><span class="si">{ln}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">gn</span><span class="p">))</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">(</span>
+            <span class="n">log</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">verbosity_config</span><span class="o">.</span><span class="n">simplification</span><span class="p">,</span>
                 <span class="s2">&quot;Simplified genome total error </span><span class="si">{te}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">te</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">errs</span><span class="p">))</span>
             <span class="p">)</span>
 

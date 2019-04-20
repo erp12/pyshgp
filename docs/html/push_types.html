@@ -1,0 +1,194 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Push Types &#8212; PyshGP  documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Release Notes" href="release_notes.html" />
+    <link rel="prev" title="PyshGP v0.1.3 Instruction Set" href="core_instructions/v0_1_3_core_instructions.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="release_notes.html" title="Release Notes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core_instructions/v0_1_3_core_instructions.html" title="PyshGP v0.1.3 Instruction Set"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="instructions.html" accesskey="U">Push Instructions</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="push-types">
+<h1>Push Types<a class="headerlink" href="#push-types" title="Permalink to this headline">¶</a></h1>
+<p>A <code class="docutils literal notranslate"><span class="pre">PushType</span></code> is a named collection of Python types which is used to determine if multiple items should be considered the same type during Push program execution. For example, the provided <code class="docutils literal notranslate"><span class="pre">PushType</span></code> that denotes which values should be considered integers is the <code class="docutils literal notranslate"><span class="pre">PushInt</span></code>. It is named <code class="docutils literal notranslate"><span class="pre">&quot;int&quot;</span></code> and has the underlying types of <code class="docutils literal notranslate"><span class="pre">(int,</span> <span class="pre">numpy.int64,</span> <span class="pre">numpy.int32,</span> <span class="pre">numpy.int16,</span> <span class="pre">numpy.int8)</span></code>.</p>
+<p>Instructions which pull values from the integer stack will expect all elements to be of one of the underlying types.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">PushType</span></code> can test if a value is an instance of one of the underlying types with the <code class="docutils literal notranslate"><span class="pre">is_instance()</span></code> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="kn">import</span> <span class="n">PushInt</span><span class="p">,</span> <span class="n">PushStr</span>
+
+<span class="n">PushInt</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>               <span class="c1"># True</span>
+<span class="n">PushInt</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>   <span class="c1"># True</span>
+<span class="n">PushInt</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="s2">&quot;Foo&quot;</span><span class="p">)</span>           <span class="c1"># False</span>
+<span class="n">PushInt</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">(</span><span class="s2">&quot;Bar&quot;</span><span class="p">))</span>  <span class="c1"># False</span>
+
+<span class="n">PushStr</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>               <span class="c1"># False</span>
+<span class="n">PushStr</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>   <span class="c1"># False</span>
+<span class="n">PushStr</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="s2">&quot;Foo&quot;</span><span class="p">)</span>           <span class="c1"># True</span>
+<span class="n">PushStr</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">(</span><span class="s2">&quot;Bar&quot;</span><span class="p">))</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+<p>The core set of <code class="docutils literal notranslate"><span class="pre">PushTypes</span></code> include <code class="docutils literal notranslate"><span class="pre">PushInt</span></code>, <code class="docutils literal notranslate"><span class="pre">PushFloat</span></code>, <code class="docutils literal notranslate"><span class="pre">PushStr</span></code>, <code class="docutils literal notranslate"><span class="pre">PushBool</span></code>, and <code class="docutils literal notranslate"><span class="pre">PushChar</span></code>. Custom push types can be defined by instantiating new instances of the <code class="docutils literal notranslate"><span class="pre">PushType</span></code> class.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Point</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="s2">&quot;Point&lt;{x},{y}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+<span class="n">PushPoint</span> <span class="o">=</span> <span class="n">PushType</span><span class="p">(</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="p">))</span>
+</pre></div>
+</div>
+<div class="section" id="push-type-coercion">
+<h2>Push Type Coercion<a class="headerlink" href="#push-type-coercion" title="Permalink to this headline">¶</a></h2>
+<p>The first type listed in the underlying types is considered the canonical type of the <code class="docutils literal notranslate"><span class="pre">PushType</span></code>. During Push program execution, type conversions will result in instances of the canonical type.</p>
+<p>Push types can take an optional argument called a “coercion function.” This function must take a single input of any type and attempt to coerce it into the canonical type. Coercion functions can (and probably should) throw errors if the input value cannot be coerced into the canonical type.</p>
+<p>The coercion function is used in the <code class="docutils literal notranslate"><span class="pre">coerce</span></code> method of the <code class="docutils literal notranslate"><span class="pre">PushType</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">to_point</span><span class="p">(</span><span class="n">thing</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Point</span><span class="p">:</span>
+  <span class="k">return</span> <span class="n">Point</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">thing</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">thing</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+<span class="n">PushPoint</span> <span class="o">=</span> <span class="n">PushType</span><span class="p">(</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="p">),</span> <span class="n">coercion_func</span><span class="o">=</span><span class="n">to_point</span><span class="p">)</span>
+
+<span class="n">PushPoint</span><span class="o">.</span><span class="n">coerce</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># Point&lt;5.0,-1.0&gt;</span>
+</pre></div>
+</div>
+<p>The constructor of the canonical type is used as the coercion function if no coercion function is provided.</p>
+</div>
+<div class="section" id="push-type-libraries">
+<h2>Push Type Libraries<a class="headerlink" href="#push-type-libraries" title="Permalink to this headline">¶</a></h2>
+<p>The Push language operates using one stack per defined <code class="docutils literal notranslate"><span class="pre">PushType</span></code>. All literal values evaluated by the Push interpreter, or produced by a Push instruction, are placed on their corresponding stack for use by other instructions.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">PushTypeLibrary</span></code> is a collection of <code class="docutils literal notranslate"><span class="pre">PushType</span></code> objects that is used to produce the correct stacks before program evaluation and validate that the instructions specified in the <code class="docutils literal notranslate"><span class="pre">InstructionSet</span></code> will supported.</p>
+<p>If you want to use a PushGP Estimator or Search Algorithm that synthesizes program which manipulate custom data types (using custom instructions) you will have to provide the system with a <code class="docutils literal notranslate"><span class="pre">InstructionSet</span></code> which holds a custom``PushTypeLibrary``.</p>
+<p>By default, all the core types are registered into a <code class="docutils literal notranslate"><span class="pre">PushTypeLibrary</span></code> but that can be disable using <code class="docutils literal notranslate"><span class="pre">register_core=False</span></code> which will result in only the exec and code stacks getting registered.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyshgp.push.type_library</span> <span class="kn">import</span> <span class="n">PushTypeLibrary</span>
+
+<span class="n">lib</span> <span class="o">=</span> <span class="n">PushTypeLibrary</span><span class="p">()</span>
+<span class="n">lib</span><span class="o">.</span><span class="n">supported_stacks</span><span class="p">()</span>  <span class="c1"># {&#39;bool&#39;, &#39;char&#39;, &#39;code&#39;, &#39;exec&#39;, &#39;float&#39;, &#39;int&#39;, &#39;str&#39;}</span>
+
+<span class="n">lib2</span> <span class="o">=</span> <span class="n">PushTypeLibrary</span><span class="p">(</span><span class="n">register_core</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">lib2</span><span class="o">.</span><span class="n">supported_stacks</span><span class="p">()</span>  <span class="c1"># {&#39;code&#39;, &#39;exec&#39;}</span>
+</pre></div>
+</div>
+<p>User defined <code class="docutils literal notranslate"><span class="pre">PushType</span></code> objects (such as <code class="docutils literal notranslate"><span class="pre">PushPoint</span></code> from above) can be registered using the <code class="docutils literal notranslate"><span class="pre">register()</span></code> and <code class="docutils literal notranslate"><span class="pre">register_list()</span></code> methods.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lib</span> <span class="o">=</span> <span class="n">PushTypeLibrary</span><span class="p">()</span>
+<span class="n">lib</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">PushPoint</span><span class="p">)</span> <span class="c1"># Returns reference to the library for chaining calls to register.</span>
+<span class="n">lib</span><span class="o">.</span><span class="n">supported_stacks</span><span class="p">()</span>  <span class="c1"># {&#39;bool&#39;, &#39;char&#39;, &#39;code&#39;, &#39;exec&#39;, &#39;float&#39;, &#39;int&#39;, &#39;point&#39;, &#39;str&#39;}</span>
+</pre></div>
+</div>
+<p>As a shorthand, you can use the <code class="docutils literal notranslate"><span class="pre">create_and_register</span></code> method of the <code class="docutils literal notranslate"><span class="pre">PushTypeLibrary</span></code> to create and new <code class="docutils literal notranslate"><span class="pre">PushType</span></code> and immediately register it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lib</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="n">PushTypeLibrary</span><span class="p">(</span><span class="n">register_core</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+  <span class="o">.</span><span class="n">create_and_register</span><span class="p">(</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="p">),</span> <span class="n">coercion_func</span><span class="o">=</span><span class="n">to_point</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">lib</span><span class="o">.</span><span class="n">supported_stacks</span><span class="p">()</span>  <span class="c1"># {&#39;code&#39;, &#39;exec&#39;, &#39;point&#39;}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Push Types</a><ul>
+<li><a class="reference internal" href="#push-type-coercion">Push Type Coercion</a></li>
+<li><a class="reference internal" href="#push-type-libraries">Push Type Libraries</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core_instructions/v0_1_3_core_instructions.html"
+                        title="previous chapter">PyshGP v0.1.3 Instruction Set</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="release_notes.html"
+                        title="next chapter">Release Notes</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/push_types.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="release_notes.html" title="Release Notes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core_instructions/v0_1_3_core_instructions.html" title="PyshGP v0.1.3 Instruction Set"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="instructions.html" >Push Instructions</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

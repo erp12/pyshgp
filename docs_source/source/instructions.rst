@@ -25,6 +25,7 @@ To read about all the core instructions provided by the version of PyshGP you ar
 .. toctree::
    :maxdepth: 1
 
+   core_instructions/v0_1_5_core_instructions
    core_instructions/v0_1_4_core_instructions
    core_instructions/v0_1_3_core_instructions
 

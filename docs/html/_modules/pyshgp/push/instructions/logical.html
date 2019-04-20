@@ -28,7 +28,8 @@
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../instructions.html" accesskey="U">pyshgp.push.instructions</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -77,15 +78,15 @@
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
 
 
-<div class="viewcode-block" id="instructions"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.logical.html#pyshgp.push.instructions.logical.instructions">[docs]</a><span class="k">def</span> <span class="nf">instructions</span><span class="p">():</span>
+<div class="viewcode-block" id="instructions"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.html#pyshgp.push.instructions.logical.instructions">[docs]</a><span class="k">def</span> <span class="nf">instructions</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Return all core numeric instructions.&quot;&quot;&quot;</span>
     <span class="n">i</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;bool_and&quot;</span><span class="p">,</span>
         <span class="n">_and</span><span class="p">,</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the result of and-ing the top two booleans.&quot;</span>
     <span class="p">))</span>
@@ -93,8 +94,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;bool_or&quot;</span><span class="p">,</span>
         <span class="n">_or</span><span class="p">,</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the result of or-ing the top two booleans.&quot;</span>
     <span class="p">))</span>
@@ -102,8 +103,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;bool_not&quot;</span><span class="p">,</span>
         <span class="n">_not</span><span class="p">,</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the inverse of the boolean.&quot;</span>
     <span class="p">))</span>
@@ -111,8 +112,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;bool_xor&quot;</span><span class="p">,</span>
         <span class="n">_xor</span><span class="p">,</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the result of xor-ing the top two booleans.&quot;</span>
     <span class="p">))</span>
@@ -120,8 +121,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;bool_invert_first_then_and&quot;</span><span class="p">,</span>
         <span class="n">_invert_first_then_and</span><span class="p">,</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;&quot;Pushes the result of and-ing the top two booleans after inverting the</span>
 <span class="s2">        top boolean.&quot;&quot;&quot;</span>
@@ -130,8 +131,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;bool_second_first_then_and&quot;</span><span class="p">,</span>
         <span class="n">_invert_second_then_and</span><span class="p">,</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;&quot;Pushes the result of and-ing the top two booleans after inverting the</span>
 <span class="s2">        second boolean.&quot;&quot;&quot;</span>
@@ -140,8 +141,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;bool_from_int&quot;</span><span class="p">,</span>
         <span class="n">_bool_from_int</span><span class="p">,</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;If the top int is 0, pushes False. Pushes True for any other int value.&quot;</span>
     <span class="p">))</span>
@@ -149,8 +150,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;bool_from_float&quot;</span><span class="p">,</span>
         <span class="n">_bool_from_float</span><span class="p">,</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;If the top float is 0.0, pushes False. Pushes True for any other float value.&quot;</span>
     <span class="p">))</span>
@@ -189,7 +190,8 @@
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../instructions.html" >pyshgp.push.instructions</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

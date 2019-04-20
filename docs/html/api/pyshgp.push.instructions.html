@@ -17,7 +17,7 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pyshgp.push.instructions.code module" href="pyshgp.push.instructions.code.html" />
+    <link rel="next" title="Push Instructions" href="../instructions.html" />
     <link rel="prev" title="pyshgp.push package" href="pyshgp.push.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +30,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyshgp.push.instructions.code.html" title="pyshgp.push.instructions.code module"
+          <a href="../instructions.html" title="Push Instructions"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="pyshgp.push.html" title="pyshgp.push package"
@@ -52,20 +52,94 @@
 <h1>pyshgp.push.instructions package<a class="headerlink" href="#pyshgp-push-instructions-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="pyshgp.push.instructions.code.html">pyshgp.push.instructions.code module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyshgp.push.instructions.common.html">pyshgp.push.instructions.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyshgp.push.instructions.io.html">pyshgp.push.instructions.io module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyshgp.push.instructions.logical.html">pyshgp.push.instructions.logical module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyshgp.push.instructions.numeric.html">pyshgp.push.instructions.numeric module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyshgp.push.instructions.text.html">pyshgp.push.instructions.text module</a></li>
-</ul>
 </div>
+<div class="section" id="module-pyshgp.push.instructions.code">
+<span id="pyshgp-push-instructions-code-module"></span><h2>pyshgp.push.instructions.code module<a class="headerlink" href="#module-pyshgp.push.instructions.code" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core code instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.code.instructions">
+<code class="descclassname">pyshgp.push.instructions.code.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instructions/code.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.code.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core code SimpleInstructions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.common">
+<span id="pyshgp-push-instructions-common-module"></span><h2>pyshgp.push.instructions.common module<a class="headerlink" href="#module-pyshgp.push.instructions.common" title="Permalink to this headline">¶</a></h2>
+<p>Instructions common to all <code class="docutils literal notranslate"><span class="pre">PushTypes</span></code> and <code class="docutils literal notranslate"><span class="pre">PushStacks</span></code>.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.common.instructions">
+<code class="descclassname">pyshgp.push.instructions.common.</code><code class="descname">instructions</code><span class="sig-paren">(</span><em>type_library: pyshgp.push.type_library.PushTypeLibrary</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instructions/common.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.common.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core numeric instructions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.io">
+<span id="pyshgp-push-instructions-io-module"></span><h2>pyshgp.push.instructions.io module<a class="headerlink" href="#module-pyshgp.push.instructions.io" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core I/O instructions, including input instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.io.instructions">
+<code class="descclassname">pyshgp.push.instructions.io.</code><code class="descname">instructions</code><span class="sig-paren">(</span><em>type_library: pyshgp.push.type_library.PushTypeLibrary</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instructions/io.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.io.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core printing instructions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.instructions.io.make_input_instruction">
+<code class="descclassname">pyshgp.push.instructions.io.</code><code class="descname">make_input_instruction</code><span class="sig-paren">(</span><em>ndx: int</em><span class="sig-paren">)</span> &#x2192; pyshgp.push.instruction.TakesStateInstruction<a class="reference internal" href="../_modules/pyshgp/push/instructions/io.html#make_input_instruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.io.make_input_instruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return insctuction to push a copy of the input value at the given index.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.instructions.io.make_input_instructions">
+<code class="descclassname">pyshgp.push.instructions.io.</code><code class="descname">make_input_instructions</code><span class="sig-paren">(</span><em>num_inputs: int</em><span class="sig-paren">)</span> &#x2192; Sequence[pyshgp.push.instruction.TakesStateInstruction]<a class="reference internal" href="../_modules/pyshgp/push/instructions/io.html#make_input_instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.io.make_input_instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return insctuctions to push a copy of the input value at the given index.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.logical">
+<span id="pyshgp-push-instructions-logical-module"></span><h2>pyshgp.push.instructions.logical module<a class="headerlink" href="#module-pyshgp.push.instructions.logical" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core logical instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.logical.instructions">
+<code class="descclassname">pyshgp.push.instructions.logical.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instructions/logical.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.logical.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core numeric instructions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.numeric">
+<span id="pyshgp-push-instructions-numeric-module"></span><h2>pyshgp.push.instructions.numeric module<a class="headerlink" href="#module-pyshgp.push.instructions.numeric" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core numeric instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.numeric.instructions">
+<code class="descclassname">pyshgp.push.instructions.numeric.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instructions/numeric.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.numeric.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core numeric instructions.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instructions.text">
+<span id="pyshgp-push-instructions-text-module"></span><h2>pyshgp.push.instructions.text module<a class="headerlink" href="#module-pyshgp.push.instructions.text" title="Permalink to this headline">¶</a></h2>
+<p>Definitions for all core text instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.text.instructions">
+<code class="descclassname">pyshgp.push.instructions.text.</code><code class="descname">instructions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instructions/text.html#instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.text.instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all core text instructions.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-pyshgp.push.instructions">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyshgp.push.instructions" title="Permalink to this headline">¶</a></h2>
 <p>pyshgp.push.instructions.</p>
+<dl class="function">
+<dt id="pyshgp.push.instructions.core_instructions">
+<code class="descclassname">pyshgp.push.instructions.</code><code class="descname">core_instructions</code><span class="sig-paren">(</span><em>type_library: pyshgp.push.type_library.PushTypeLibrary</em><span class="sig-paren">)</span> &#x2192; Sequence[pyshgp.push.atoms.Instruction]<a class="reference internal" href="../_modules/pyshgp/push/instructions.html#core_instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.core_instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>All instructions definied by pyshgp for the given type library.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyshgp.push.instructions.generic_instructions">
+<code class="descclassname">pyshgp.push.instructions.</code><code class="descname">generic_instructions</code><span class="sig-paren">(</span><em>type_library: pyshgp.push.type_library.PushTypeLibrary</em><span class="sig-paren">)</span> &#x2192; Sequence[pyshgp.push.atoms.Instruction]<a class="reference internal" href="../_modules/pyshgp/push/instructions.html#generic_instructions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instructions.generic_instructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>All instructions that can be applied to any stack, regardless of PushType.</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -79,6 +153,12 @@
   <ul>
 <li><a class="reference internal" href="#">pyshgp.push.instructions package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.instructions.code">pyshgp.push.instructions.code module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.instructions.common">pyshgp.push.instructions.common module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.instructions.io">pyshgp.push.instructions.io module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.instructions.logical">pyshgp.push.instructions.logical module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.instructions.numeric">pyshgp.push.instructions.numeric module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.instructions.text">pyshgp.push.instructions.text module</a></li>
 <li><a class="reference internal" href="#module-pyshgp.push.instructions">Module contents</a></li>
 </ul>
 </li>
@@ -88,8 +168,8 @@
   <p class="topless"><a href="pyshgp.push.html"
                         title="previous chapter">pyshgp.push package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pyshgp.push.instructions.code.html"
-                        title="next chapter">pyshgp.push.instructions.code module</a></p>
+  <p class="topless"><a href="../instructions.html"
+                        title="next chapter">Push Instructions</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -123,7 +203,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyshgp.push.instructions.code.html" title="pyshgp.push.instructions.code module"
+          <a href="../instructions.html" title="Push Instructions"
              >next</a> |</li>
         <li class="right" >
           <a href="pyshgp.push.html" title="pyshgp.push package"

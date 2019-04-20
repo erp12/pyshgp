@@ -28,7 +28,8 @@
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../instructions.html" accesskey="U">pyshgp.push.instructions</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -39,8 +40,11 @@
             
   <h1>Source code for pyshgp.push.instructions.common</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Instructions common to all ``PushTypes`` and ``PushStacks``.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
 
+<span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">PushType</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.type_library</span> <span class="k">import</span> <span class="n">PushTypeLibrary</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.instruction</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">SimpleInstruction</span><span class="p">,</span>
     <span class="n">TakesStateInstruction</span><span class="p">,</span>
@@ -48,6 +52,7 @@
     <span class="n">ProducesManyOfTypeInstruction</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.state</span> <span class="k">import</span> <span class="n">PushState</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Literal</span>
 <span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">Token</span>
 
 
@@ -146,16 +151,23 @@
     <span class="k">return</span> <span class="n">f</span>
 
 
-<div class="viewcode-block" id="instructions"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.common.html#pyshgp.push.instructions.common.instructions">[docs]</a><span class="k">def</span> <span class="nf">instructions</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">_make_code</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">push_type</span><span class="p">:</span> <span class="n">PushType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Atom</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Atom</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">push_type</span><span class="p">),</span>
+
+
+<div class="viewcode-block" id="instructions"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.html#pyshgp.push.instructions.common.instructions">[docs]</a><span class="k">def</span> <span class="nf">instructions</span><span class="p">(</span><span class="n">type_library</span><span class="p">:</span> <span class="n">PushTypeLibrary</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return all core numeric instructions.&quot;&quot;&quot;</span>
     <span class="n">i</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">for</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;char&quot;</span><span class="p">,</span> <span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="s2">&quot;exec&quot;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="n">type_library</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_pop&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">push_type</span> <span class="o">==</span> <span class="s2">&quot;exec&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pops the top </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -163,8 +175,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_dup&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">push_type</span> <span class="o">==</span> <span class="s2">&quot;exec&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Duplicates the top </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -172,8 +184,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ProducesManyOfTypeInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_dup_times&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_dup_times</span><span class="p">,</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_type</span><span class="o">=</span><span class="n">push_type</span><span class="p">,</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stack</span><span class="o">=</span><span class="n">push_type</span><span class="p">,</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">push_type</span> <span class="o">==</span> <span class="s2">&quot;exec&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Duplicates the top </span><span class="si">{t}</span><span class="s2"> `n` times where `n` is from the int stack.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -182,7 +194,7 @@
         <span class="c1"># i.append(StateToStateInstruction(</span>
         <span class="c1">#     &quot;{t}_dup_top_n&quot;.format(t=push_type),</span>
         <span class="c1">#     _dup_top_n_factory(push_type),</span>
-        <span class="c1">#     types_used=[push_type, &quot;int&quot;],</span>
+        <span class="c1">#     stacks_used=[push_type, &quot;int&quot;],</span>
         <span class="c1">#     code_blocks=0,</span>
         <span class="c1">#     docstring=&quot;Duplicates the top n items on the {t} stack.&quot;.format(t=push_type)</span>
         <span class="c1"># ))</span>
@@ -190,8 +202,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_swap&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="n">push_type</span> <span class="o">==</span> <span class="s2">&quot;exec&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Swaps the top two </span><span class="si">{t}</span><span class="s2">s.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -199,8 +211,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_rot&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span> <span class="k">if</span> <span class="n">push_type</span> <span class="o">==</span> <span class="s2">&quot;exec&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Rotates the top three </span><span class="si">{t}</span><span class="s2">s.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -208,7 +220,7 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StateToStateInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_flush&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_flusher</span><span class="p">(</span><span class="n">push_type</span><span class="p">),</span>
-            <span class="n">types_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">stacks_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Empties the </span><span class="si">{t}</span><span class="s2"> stack.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -216,8 +228,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_eq&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes True if the top two </span><span class="si">{t}</span><span class="s2"> are equal. Otherwise pushes False.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -225,8 +237,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TakesStateInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_stack_depth&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_stack_depther</span><span class="p">(</span><span class="n">push_type</span><span class="p">),</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
-            <span class="n">other_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">other_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the size of the </span><span class="si">{t}</span><span class="s2"> stack to the int stack.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -234,7 +246,7 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StateToStateInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_yank&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_yanker</span><span class="p">(</span><span class="n">push_type</span><span class="p">),</span>
-            <span class="n">types_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">stacks_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Yanks a </span><span class="si">{t}</span><span class="s2"> from deep in the stack based on an index from the int stack and puts it on top.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -242,7 +254,7 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StateToStateInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_yank_dup&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_yank_duper</span><span class="p">(</span><span class="n">push_type</span><span class="p">),</span>
-            <span class="n">types_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">stacks_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Yanks a copy of a </span><span class="si">{t}</span><span class="s2"> deep in the stack based on an index from the int stack and puts it on top.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -250,7 +262,7 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StateToStateInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_shove&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_shover</span><span class="p">(</span><span class="n">push_type</span><span class="p">),</span>
-            <span class="n">types_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">stacks_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">push_type</span> <span class="o">==</span> <span class="s2">&quot;exec&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Shoves the top </span><span class="si">{t}</span><span class="s2"> deep in the stack based on an index from the int stack.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -258,7 +270,7 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">StateToStateInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_shove_dup&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_shove_duper</span><span class="p">(</span><span class="n">push_type</span><span class="p">),</span>
-            <span class="n">types_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
+            <span class="n">stacks_used</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">push_type</span> <span class="o">==</span> <span class="s2">&quot;exec&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Shoves a copy of the top </span><span class="si">{t}</span><span class="s2"> deep in the stack based on an index from the int stack.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -266,10 +278,22 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TakesStateInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_is_empty&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_is_emptyer</span><span class="p">(</span><span class="n">push_type</span><span class="p">),</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
-            <span class="n">other_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+            <span class="n">other_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes True if the </span><span class="si">{t}</span><span class="s2"> stack is empty. Pushes False otherwise.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
+        <span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">push_type_name</span><span class="p">,</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="n">type_library</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">push_type_name</span> <span class="o">==</span> <span class="s2">&quot;code&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
+            <span class="s2">&quot;code_from_</span><span class="si">{t}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type_name</span><span class="p">),</span>
+            <span class="n">partial</span><span class="p">(</span><span class="n">_make_code</span><span class="p">,</span> <span class="n">push_type</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type_name</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
+            <span class="n">code_blocks</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">push_type_name</span> <span class="o">==</span> <span class="s2">&quot;exec&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Moves the top </span><span class="si">{t}</span><span class="s2"> to the code stack.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type_name</span><span class="p">)</span>
         <span class="p">))</span>
 
     <span class="k">return</span> <span class="n">i</span></div>
@@ -306,7 +330,8 @@
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../instructions.html" >pyshgp.push.instructions</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

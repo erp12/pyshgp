@@ -18,6 +18,11 @@ def str_stack(atoms):
 
 class TestPushStack:
 
+    def test_init_values(self):
+        stack = PushStack(PushStr, ["bottom", "middle", "top"])
+        assert stack.top() == "top"
+        assert list(stack) == ["bottom", "middle", "top"]
+
     def test_push(self, int_stack: PushStack):
         int_stack.push(5)
         assert len(int_stack) == 1

@@ -1,0 +1,7 @@
+pyshgp\_cli module
+==================
+
+.. automodule:: pyshgp_cli
+    :members:
+    :undoc-members:
+    :show-inheritance:

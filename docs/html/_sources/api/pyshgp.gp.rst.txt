@@ -4,16 +4,70 @@ pyshgp.gp package
 Submodules
 ----------
 
-.. toctree::
+pyshgp.gp.estimators module
+---------------------------
 
-   pyshgp.gp.estimators
-   pyshgp.gp.evaluation
-   pyshgp.gp.genome
-   pyshgp.gp.individual
-   pyshgp.gp.population
-   pyshgp.gp.search
-   pyshgp.gp.selection
-   pyshgp.gp.variation
+.. automodule:: pyshgp.gp.estimators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyshgp.gp.evaluation module
+---------------------------
+
+.. automodule:: pyshgp.gp.evaluation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyshgp.gp.genome module
+-----------------------
+
+.. automodule:: pyshgp.gp.genome
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyshgp.gp.individual module
+---------------------------
+
+.. automodule:: pyshgp.gp.individual
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyshgp.gp.population module
+---------------------------
+
+.. automodule:: pyshgp.gp.population
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyshgp.gp.search module
+-----------------------
+
+.. automodule:: pyshgp.gp.search
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyshgp.gp.selection module
+--------------------------
+
+.. automodule:: pyshgp.gp.selection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyshgp.gp.variation module
+--------------------------
+
+.. automodule:: pyshgp.gp.variation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

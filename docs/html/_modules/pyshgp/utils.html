@@ -48,7 +48,7 @@
 <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">choice</span>
 
 
-<div class="viewcode-block" id="instantiate_using"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.instantiate_using">[docs]</a><span class="k">def</span> <span class="nf">instantiate_using</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<div class="viewcode-block" id="instantiate_using"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.instantiate_using">[docs]</a><span class="k">def</span> <span class="nf">instantiate_using</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Call the given function using only the relevant kwargs present in the args dict.&quot;&quot;&quot;</span>
     <span class="n">arg_names</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">cls</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -58,7 +58,7 @@
     <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="list_rindex"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.list_rindex">[docs]</a><span class="k">def</span> <span class="nf">list_rindex</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">el</span><span class="p">):</span>
+<div class="viewcode-block" id="list_rindex"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.list_rindex">[docs]</a><span class="k">def</span> <span class="nf">list_rindex</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">el</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Index of the last occurrence of an item in a list. Return None is item not found.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">))):</span>
         <span class="k">if</span> <span class="n">lst</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">el</span><span class="p">:</span>
@@ -66,7 +66,7 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="DiscreteProbDistrib"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib">[docs]</a><span class="k">class</span> <span class="nc">DiscreteProbDistrib</span><span class="p">:</span>
+<div class="viewcode-block" id="DiscreteProbDistrib"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.DiscreteProbDistrib">[docs]</a><span class="k">class</span> <span class="nc">DiscreteProbDistrib</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Discrete Probability Distribution.&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="s2">&quot;_total&quot;</span><span class="p">,</span> <span class="s2">&quot;_raw_probabilities&quot;</span><span class="p">,</span> <span class="s2">&quot;_normalized_probabilities&quot;</span><span class="p">]</span>
@@ -80,7 +80,7 @@
     <span class="k">def</span> <span class="nf">_normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_probabilities</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total</span>
 
-<div class="viewcode-block" id="DiscreteProbDistrib.add"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="DiscreteProbDistrib.add"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.DiscreteProbDistrib.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add an element with a relative probability.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_total</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
@@ -88,24 +88,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_normalize</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="DiscreteProbDistrib.size"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib.size">[docs]</a>    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DiscreteProbDistrib.size"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.DiscreteProbDistrib.size">[docs]</a>    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the number of elements in the distribution.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DiscreteProbDistrib.sample"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DiscreteProbDistrib.sample"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.DiscreteProbDistrib.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a sample from the distribution.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalized_probabilities</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DiscreteProbDistrib.sample_n"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.DiscreteProbDistrib.sample_n">[docs]</a>    <span class="k">def</span> <span class="nf">sample_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DiscreteProbDistrib.sample_n"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.DiscreteProbDistrib.sample_n">[docs]</a>    <span class="k">def</span> <span class="nf">sample_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return n samples from the distribution.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">replace</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">n</span>
         <span class="k">return</span> <span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">replace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_probabilities</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="Token"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.Token">[docs]</a><span class="k">class</span> <span class="nc">Token</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="Token"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.Token">[docs]</a><span class="k">class</span> <span class="nc">Token</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enum class of all Tokens.&quot;&quot;&quot;</span>
 
     <span class="n">no_stack_item</span> <span class="o">=</span> <span class="mi">1</span>
@@ -113,7 +113,7 @@
     <span class="n">whole_state</span> <span class="o">=</span> <span class="mi">3</span></div>
 
 
-<div class="viewcode-block" id="Verbosity"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.Verbosity">[docs]</a><span class="k">class</span> <span class="nc">Verbosity</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="Verbosity"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.Verbosity">[docs]</a><span class="k">class</span> <span class="nc">Verbosity</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enum class of all verbosity levels.&quot;&quot;&quot;</span>
 
     <span class="n">off</span> <span class="o">=</span> <span class="mi">1</span>
@@ -121,15 +121,15 @@
     <span class="n">on</span> <span class="o">=</span> <span class="mi">3</span></div>
 
 
-<div class="viewcode-block" id="JSONable"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.JSONable">[docs]</a><span class="k">class</span> <span class="nc">JSONable</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="JSONable"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.JSONable">[docs]</a><span class="k">class</span> <span class="nc">JSONable</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Abstract base class for objects can be transformed into JSON.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="JSONable.jsonify"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.JSONable.jsonify">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="JSONable.jsonify"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.JSONable.jsonify">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">jsonify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return the object as a JSON string.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="JSONable.to_json"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.JSONable.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="JSONable.to_json"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.JSONable.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Write the object to either a string or a file.&quot;&quot;&quot;</span>
         <span class="n">json_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jsonify</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -139,7 +139,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="jsonify_collection"><a class="viewcode-back" href="../../api/pyshgp.utils.html#pyshgp.utils.jsonify_collection">[docs]</a><span class="k">def</span> <span class="nf">jsonify_collection</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="jsonify_collection"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.utils.jsonify_collection">[docs]</a><span class="k">def</span> <span class="nf">jsonify_collection</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return the given list or dict and all elements as a JSON string.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_helper</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>

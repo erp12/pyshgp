@@ -168,11 +168,7 @@ class PushTypeLibrary(dict):
             The corresponding PushType of the thing. If no corresponding type, returns None.
 
         """
-        for push_type in self.values():
-            if push_type.is_instance(thing):
-                return push_type
-        if error_on_not_found:
-            raise PushError.no_type(thing)
+        return self.push_type_for_type(type(thing), error_on_not_found)
 
     def push_type_for_type(self, typ: type, error_on_not_found: bool = False) -> Optional[PushType]:
         """Return the PushType of the given python (or numpy) type.

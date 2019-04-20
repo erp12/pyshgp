@@ -20,12 +20,12 @@ from pyshgp.push.instruction import (
     TakesStateInstruction,
     ProducesManyOfTypeInstruction,
 )
-from pyshgp.push.instruction_set import _CORE_INSTRUCTIONS
-
+from pyshgp.push.instructions import core_instructions
+from pyshgp.push.type_library import PushTypeLibrary
 
 # @TODO: Create a way to prepare a release from pyshgp_cli.py
 
-
+CORE_INSTRUCTIONS = core_instructions(PushTypeLibrary())
 DOC_DIR = "build/doc/"
 
 
@@ -37,20 +37,20 @@ def _generate_instruction_rst(instr: Instruction) -> str:
     signature_template = "*Takes: {i} - Produces: {o}*"
     if isinstance(instr, SimpleInstruction):
         signature_line = signature_line = signature_template.format(
-            i="[" + ", ".join(instr.input_types) + "]",
-            o="[" + ", ".join(instr.output_types) + "]"
+            i="[" + ", ".join(instr.input_stacks) + "]",
+            o="[" + ", ".join(instr.output_stacks) + "]"
         )
     elif isinstance(instr, StateToStateInstruction):
         signature_line = signature_template.format(i="PushState", o="PushState")
     elif isinstance(instr, TakesStateInstruction):
         signature_line = signature_template.format(
             i="PushState",
-            o="[" + ", ".join(instr.output_types) + "]"
+            o="[" + ", ".join(instr.output_stacks) + "]"
         )
     elif isinstance(instr, ProducesManyOfTypeInstruction):
         signature_line = signature_template.format(
-            i="[" + ", ".join(instr.input_types) + "]",
-            o="Arbitrary number of {t} values.".format(t=instr.output_type)
+            i="[" + ", ".join(instr.input_stacks) + "]",
+            o="Arbitrary number of {t} values.".format(t=instr.output_stack)
         )
 
     if instr.code_blocks > 0:
@@ -68,20 +68,20 @@ def _generate_instruction_markdown(instr: Instruction) -> str:
     signature_template = "_Takes: {i} - Produces: {o}_"
     if isinstance(instr, SimpleInstruction):
         signature_line = signature_line = signature_template.format(
-            i="[" + ", ".join(instr.input_types) + "]",
-            o="[" + ", ".join(instr.output_types) + "]"
+            i="[" + ", ".join(instr.input_stacks) + "]",
+            o="[" + ", ".join(instr.output_stacks) + "]"
         )
     elif isinstance(instr, StateToStateInstruction):
         signature_line = signature_template.format(i="PushState", o="PushState")
     elif isinstance(instr, TakesStateInstruction):
         signature_line = signature_template.format(
             i="PushState",
-            o="[" + ", ".join(instr.output_types) + "]"
+            o="[" + ", ".join(instr.output_stacks) + "]"
         )
     elif isinstance(instr, ProducesManyOfTypeInstruction):
         signature_line = signature_template.format(
-            i="[" + ", ".join(instr.input_types) + "]",
-            o="Arbitrary number of {t} values.".format(t=instr.output_type)
+            i="[" + ", ".join(instr.input_stacks) + "]",
+            o="Arbitrary number of {t} values.".format(t=instr.output_stack)
         )
 
     if instr.code_blocks > 0:
@@ -99,20 +99,20 @@ def _generate_instruction_html(instr: Instruction) -> str:
     signature_template = "Takes: {i} - Produces: {o}"
     if isinstance(instr, SimpleInstruction):
         signature_line = signature_line = signature_template.format(
-            i="[" + ", ".join(instr.input_types) + "]",
-            o="[" + ", ".join(instr.output_types) + "]"
+            i="[" + ", ".join(instr.input_stacks) + "]",
+            o="[" + ", ".join(instr.output_stacks) + "]"
         )
     elif isinstance(instr, StateToStateInstruction):
         signature_line = signature_template.format(i="PushState", o="PushState")
     elif isinstance(instr, TakesStateInstruction):
         signature_line = signature_template.format(
             i="PushState",
-            o="[" + ", ".join(instr.output_types) + "]"
+            o="[" + ", ".join(instr.output_stacks) + "]"
         )
     elif isinstance(instr, ProducesManyOfTypeInstruction):
         signature_line = signature_template.format(
-            i="[" + ", ".join(instr.input_types) + "]",
-            o="Arbitrary number of {t} values.".format(t=instr.output_type)
+            i="[" + ", ".join(instr.input_stacks) + "]",
+            o="Arbitrary number of {t} values.".format(t=instr.output_stack)
         )
 
     if instr.code_blocks > 0:
@@ -143,7 +143,7 @@ def _generate_instruction_set_documentation(frmt: str):
                 t=title
             ))
 
-        for instr in _CORE_INSTRUCTIONS:
+        for instr in CORE_INSTRUCTIONS:
             if frmt == "rst":
                 f.write(_generate_instruction_rst(instr) + "\n\n")
             elif frmt == "md":

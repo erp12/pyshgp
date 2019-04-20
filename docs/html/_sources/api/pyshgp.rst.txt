@@ -12,11 +12,30 @@ Subpackages
 Submodules
 ----------
 
-.. toctree::
+pyshgp.monitoring module
+------------------------
 
-   pyshgp.monitoring
-   pyshgp.utils
-   pyshgp.validation
+.. automodule:: pyshgp.monitoring
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyshgp.utils module
+-------------------
+
+.. automodule:: pyshgp.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pyshgp.validation module
+------------------------
+
+.. automodule:: pyshgp.validation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

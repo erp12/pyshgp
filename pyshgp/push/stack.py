@@ -3,7 +3,7 @@
 
 A PushStack is used to hold values of a certain PushType in a PushState object.
 """
-from typing import Optional
+from typing import Optional, Sequence
 
 from pyshgp.push.types import PushType
 from pyshgp.utils import Token
@@ -16,6 +16,10 @@ class PushStack(list):
     ----------
     push_type : PushType
         The PushType all items of the stack should conform to.
+    values: Sequence, optional
+        A collection of values to push onto the stack. Values will be pushed in
+        order resulting in the first item being at the bottom of the stack and the
+        last item being on top.
 
     Attributes
     ----------
@@ -26,8 +30,11 @@ class PushStack(list):
 
     __slots__ = ["push_type"]
 
-    def __init__(self, push_type: PushType):
+    def __init__(self, push_type: PushType, values: Optional[Sequence] = None):
         self.push_type = push_type
+        if values is not None:
+            for val in values:
+                self.push(val)
 
     def is_empty(self) -> bool:
         """Return True if the stack is empty. Return False otherwise."""
@@ -41,8 +48,8 @@ class PushStack(list):
     def push(self, value):
         """Pushes a value to the top of the stack.
 
-        An alias for `append` which makes the definition of push instructions
-        more clear.
+        A type safe alias for `append` which makes the definition of push
+        instructions more clear.
 
         Parameters
         ----------
@@ -54,7 +61,7 @@ class PushStack(list):
         return self
 
     def pop(self, index: Optional[int] = None):
-        """Pop the top item off the stack.
+        """Pop the top item off the stack, or pop the item at some index.
 
         Parameters
         ----------

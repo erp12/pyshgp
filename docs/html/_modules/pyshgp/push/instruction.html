@@ -41,12 +41,13 @@
 <span></span><span class="sd">&quot;&quot;&quot;Concrete implementations of the Instruction Atom type.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Sequence</span>
 
+<span class="kn">from</span> <span class="nn">pyshgp.push.type_library</span> <span class="k">import</span> <span class="n">RESERVED_PSEUDO_STACKS</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.state</span> <span class="k">import</span> <span class="n">PushState</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">Instruction</span>
 <span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">Token</span>
 
 
-<div class="viewcode-block" id="SimpleInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.SimpleInstruction">[docs]</a><span class="k">class</span> <span class="nc">SimpleInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
+<div class="viewcode-block" id="SimpleInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.SimpleInstruction">[docs]</a><span class="k">class</span> <span class="nc">SimpleInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A simple instruction implementation.</span>
 
 <span class="sd">    A SimpleInstruction uses a standardized way of manipulating PushStates. In</span>
@@ -54,8 +55,8 @@
 <span class="sd">    function return values.</span>
 
 <span class="sd">    The first step of evaluating a SimpleInstruction is to pop the arguments</span>
-<span class="sd">    from the stacks corresponding the instrution&#39;s ``input_types`` list.</span>
-<span class="sd">    If multiple occurences of the same type are in ``input_types``, items are</span>
+<span class="sd">    from the stacks corresponding the instrution&#39;s ``input_stacks`` list.</span>
+<span class="sd">    If multiple occurences of the same type are in ``input_stacks``, items are</span>
 <span class="sd">    taken from progressively deeper in that stack. If the stacks of the</span>
 <span class="sd">    PushState do not contain a sufficent number of items, the instruction does</span>
 <span class="sd">    not modify the PushState.</span>
@@ -64,17 +65,17 @@
 <span class="sd">    a tuple of outputs. It is crucial that the instruction&#39;s function produce a</span>
 <span class="sd">    tuple of outputs, even if it only conains a single element. The elements of</span>
 <span class="sd">    the tuple are then routed to the corresponding stacks specified in the</span>
-<span class="sd">    instruction&#39;s ``output_types``.</span>
+<span class="sd">    instruction&#39;s ``output_stacks``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    name : str,</span>
 <span class="sd">        A unique name for the instruction.</span>
 <span class="sd">    f : Callable</span>
-<span class="sd">        A function whose signature matches input_types and output_types.</span>
-<span class="sd">    input_types : Sequence[str]</span>
+<span class="sd">        A function whose signature matches input_stacks and output_stacks.</span>
+<span class="sd">    input_stacks : Sequence[str]</span>
 <span class="sd">        A list of PushType names to use when popping arguments from the PushState.</span>
-<span class="sd">    output_types : Sequence[str]</span>
+<span class="sd">    output_stacks : Sequence[str]</span>
 <span class="sd">        A list of PushType names to use when pushing function results to the PushState.</span>
 <span class="sd">    code_blocks : int</span>
 <span class="sd">        The number of CodeBlocks to open following the instruction in a Genome.</span>
@@ -83,25 +84,25 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;input_types&quot;</span><span class="p">,</span> <span class="s2">&quot;output_types&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;input_stacks&quot;</span><span class="p">,</span> <span class="s2">&quot;output_stacks&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-                 <span class="n">input_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-                 <span class="n">output_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">input_stacks</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">output_stacks</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
                  <span class="n">code_blocks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                  <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Write me!&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">code_blocks</span><span class="p">,</span> <span class="n">docstring</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_types</span> <span class="o">=</span> <span class="n">input_types</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span> <span class="o">=</span> <span class="n">output_types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_stacks</span> <span class="o">=</span> <span class="n">input_stacks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_stacks</span> <span class="o">=</span> <span class="n">output_stacks</span>
 
-<div class="viewcode-block" id="SimpleInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.SimpleInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
+<div class="viewcode-block" id="SimpleInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.SimpleInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Evaluate the instruction on the given PushState. Return mutated State.</span>
 
 <span class="sd">        A SimpleInstruction infers which values to pop and push from the stack</span>
-<span class="sd">        based on its `input_types` and `output_types`.</span>
+<span class="sd">        based on its `input_stacks` and `output_stacks`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -117,7 +118,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Pull args, if present.</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="n">push_state</span><span class="o">.</span><span class="n">observe_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">push_state</span><span class="o">.</span><span class="n">observe_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_stacks</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">no_stack_item</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">push_state</span>
 
@@ -132,38 +133,38 @@
             <span class="p">))</span>
 
         <span class="c1"># Remove arguments, push results.</span>
-        <span class="n">push_state</span><span class="o">.</span><span class="n">pop_from_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span><span class="p">)</span>
-        <span class="n">push_state</span><span class="o">.</span><span class="n">push_to_stacks</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span><span class="p">)</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">pop_from_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_stacks</span><span class="p">)</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">push_to_stacks</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_stacks</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">push_state</span></div>
 
-<div class="viewcode-block" id="SimpleInstruction.relevant_types"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.SimpleInstruction.relevant_types">[docs]</a>    <span class="k">def</span> <span class="nf">relevant_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="SimpleInstruction.required_stacks"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.SimpleInstruction.required_stacks">[docs]</a>    <span class="k">def</span> <span class="nf">required_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return a list of PushType names relevant to the instruction.</span>
 
 <span class="sd">        Based on the the instructions input and output types.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_stacks</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_stacks</span><span class="p">)</span> <span class="o">-</span> <span class="n">RESERVED_PSEUDO_STACKS</span></div></div>
 
 
-<div class="viewcode-block" id="StateToStateInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.StateToStateInstruction">[docs]</a><span class="k">class</span> <span class="nc">StateToStateInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
+<div class="viewcode-block" id="StateToStateInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.StateToStateInstruction">[docs]</a><span class="k">class</span> <span class="nc">StateToStateInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Instruction that takes entire PushState and returns entire PushState.&quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;types_used&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;stacks_used&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-                 <span class="n">types_used</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">stacks_used</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
                  <span class="n">code_blocks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                  <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Write me!&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">code_blocks</span><span class="p">,</span> <span class="n">docstring</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">types_used</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">types_used</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stacks_used</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">stacks_used</span><span class="p">)</span>
 
-<div class="viewcode-block" id="StateToStateInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.StateToStateInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
+<div class="viewcode-block" id="StateToStateInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.StateToStateInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Evaluate the instruction on the given PushState. Return mutated State.</span>
 
 <span class="sd">        A SimpleInstruction infers which values to pop and push from the stack</span>
-<span class="sd">        based on its `input_types` and `output_types`.</span>
+<span class="sd">        based on its `input_stacks` and `output_stacks`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -184,12 +185,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="StateToStateInstruction.relevant_types"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.StateToStateInstruction.relevant_types">[docs]</a>    <span class="k">def</span> <span class="nf">relevant_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="StateToStateInstruction.required_stacks"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.StateToStateInstruction.required_stacks">[docs]</a>    <span class="k">def</span> <span class="nf">required_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return a list of PushType names relevant to the instruction.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">types_used</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stacks_used</span> <span class="o">-</span> <span class="n">RESERVED_PSEUDO_STACKS</span></div></div>
 
 
-<div class="viewcode-block" id="TakesStateInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.TakesStateInstruction">[docs]</a><span class="k">class</span> <span class="nc">TakesStateInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
+<div class="viewcode-block" id="TakesStateInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.TakesStateInstruction">[docs]</a><span class="k">class</span> <span class="nc">TakesStateInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Instruction that takes entire PushState and returns particular values.</span>
 
 <span class="sd">    The function of a TakesStateInstruction accepts an entire PushState as input</span>
@@ -198,19 +199,19 @@
 <span class="sd">    it only conains a single element.</span>
 
 <span class="sd">    The elements of the tuple are then routed to the corresponding stacks</span>
-<span class="sd">    specified in the instruction&#39;s ``output_types``.</span>
+<span class="sd">    specified in the instruction&#39;s ``output_stacks``.</span>
 
-<span class="sd">    Additional PushTypes utilized by the instruction are denoted in ``other_types``.</span>
+<span class="sd">    Additional PushTypes utilized by the instruction are denoted in ``other_stacks``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    name : str,</span>
 <span class="sd">        A unique name for the instruction.</span>
 <span class="sd">    f : Callable</span>
-<span class="sd">        A function that takes a PushState as input and produces values corresponding to ``output_types.``</span>
-<span class="sd">    output_types : Sequence[str]</span>
+<span class="sd">        A function that takes a PushState as input and produces values corresponding to ``output_stacks.``</span>
+<span class="sd">    output_stacks : Sequence[str]</span>
 <span class="sd">        A list of PushType names to use when pushing function results to the PushState.</span>
-<span class="sd">    other_types : Sequence[str]</span>
+<span class="sd">    other_stacks : Sequence[str]</span>
 <span class="sd">        A list of additional PushType names used by the Insturction&#39;s function.</span>
 <span class="sd">    code_blocks : int</span>
 <span class="sd">        The number of CodeBlocks to open following the instruction in a Genome.</span>
@@ -219,25 +220,25 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;output_types&quot;</span><span class="p">,</span> <span class="s2">&quot;other_types&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;output_stacks&quot;</span><span class="p">,</span> <span class="s2">&quot;other_stacks&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-                 <span class="n">output_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-                 <span class="n">other_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">output_stacks</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">other_stacks</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
                  <span class="n">code_blocks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                  <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Write me!&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">code_blocks</span><span class="p">,</span> <span class="n">docstring</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span> <span class="o">=</span> <span class="n">output_types</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">other_types</span> <span class="o">=</span> <span class="n">other_types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_stacks</span> <span class="o">=</span> <span class="n">output_stacks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_stacks</span> <span class="o">=</span> <span class="n">other_stacks</span>
 
-<div class="viewcode-block" id="TakesStateInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.TakesStateInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
+<div class="viewcode-block" id="TakesStateInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.TakesStateInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Evaluate the instruction on the given PushState. Return mutated State.</span>
 
 <span class="sd">        A SimpleInstruction infers which values to pop and push from the stack</span>
-<span class="sd">        based on its `input_types` and `output_types`.</span>
+<span class="sd">        based on its `input_stacks` and `output_stacks`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -265,38 +266,38 @@
             <span class="p">))</span>
 
         <span class="c1"># Push results.</span>
-        <span class="n">push_state</span><span class="o">.</span><span class="n">push_to_stacks</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span><span class="p">)</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">push_to_stacks</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_stacks</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">push_state</span></div>
 
-<div class="viewcode-block" id="TakesStateInstruction.relevant_types"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.TakesStateInstruction.relevant_types">[docs]</a>    <span class="k">def</span> <span class="nf">relevant_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="TakesStateInstruction.required_stacks"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.TakesStateInstruction.required_stacks">[docs]</a>    <span class="k">def</span> <span class="nf">required_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return a list of PushType names relevant to the instruction.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_types</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_types</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_stacks</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_stacks</span><span class="p">)</span> <span class="o">-</span> <span class="n">RESERVED_PSEUDO_STACKS</span></div></div>
 
 
-<div class="viewcode-block" id="ProducesManyOfTypeInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.ProducesManyOfTypeInstruction">[docs]</a><span class="k">class</span> <span class="nc">ProducesManyOfTypeInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
+<div class="viewcode-block" id="ProducesManyOfTypeInstruction"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.ProducesManyOfTypeInstruction">[docs]</a><span class="k">class</span> <span class="nc">ProducesManyOfTypeInstruction</span><span class="p">(</span><span class="n">Instruction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Instruction that produces arbitarily many values of a given PushType.</span>
 
 <span class="sd">    ProducesManyOfTypeInstructions pop their arguments in the same was as</span>
 <span class="sd">    SimpleInstructions. Items are popped from the stacks corresponding the</span>
-<span class="sd">    types denoted in the ``input_types`` list. If multiple occurences of the</span>
-<span class="sd">    same type are in ``input_types``, items are taken from progressively deeper</span>
+<span class="sd">    types denoted in the ``input_stacks`` list. If multiple occurences of the</span>
+<span class="sd">    same type are in ``input_stacks``, items are taken from progressively deeper</span>
 <span class="sd">    in that stack. If the stacks of the PushState do not contain a sufficent</span>
 <span class="sd">    number of items, the instruction does not modify the PushState.</span>
 
 <span class="sd">    The popped arguments are then passed to the instruction&#39;s function to produce</span>
 <span class="sd">    a tuple of outputs. It is crucial that the instruction&#39;s function produce a</span>
 <span class="sd">    tuple of outputs, even if it only conains a single element. All elements of</span>
-<span class="sd">    the tuple are pushed individually to the stack denoted in ``output_type``.</span>
+<span class="sd">    the tuple are pushed individually to the stack denoted in ``output_stack``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    name : str,</span>
 <span class="sd">        A unique name for the instruction.</span>
 <span class="sd">    f : Callable</span>
-<span class="sd">        A function whose signature matches input_types and output_types.</span>
-<span class="sd">    input_types : Sequence[str]</span>
+<span class="sd">        A function whose signature matches input_stacks and output_stacks.</span>
+<span class="sd">    input_stacks : Sequence[str]</span>
 <span class="sd">        A list of PushType names to use when popping arguments from the PushState.</span>
-<span class="sd">    output_type : str</span>
+<span class="sd">    output_stack : str</span>
 <span class="sd">        The name of a PushType to use when pushing function results to the PushState.</span>
 <span class="sd">        All values returned by the function go to the stack for this type.</span>
 <span class="sd">    code_blocks : int</span>
@@ -306,26 +307,26 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;input_types&quot;</span><span class="p">,</span> <span class="s2">&quot;output_type&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;input_stacks&quot;</span><span class="p">,</span> <span class="s2">&quot;output_stack&quot;</span><span class="p">,</span> <span class="s2">&quot;code_blocks&quot;</span><span class="p">,</span> <span class="s2">&quot;docstring&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-                 <span class="n">input_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-                 <span class="n">output_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">input_stacks</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">output_stack</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">code_blocks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                  <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Write me!&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">code_blocks</span><span class="p">,</span> <span class="n">docstring</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_types</span> <span class="o">=</span> <span class="n">input_types</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_type</span> <span class="o">=</span> <span class="n">output_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_stacks</span> <span class="o">=</span> <span class="n">input_stacks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_stack</span> <span class="o">=</span> <span class="n">output_stack</span>
 
-<div class="viewcode-block" id="ProducesManyOfTypeInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.ProducesManyOfTypeInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
+<div class="viewcode-block" id="ProducesManyOfTypeInstruction.evaluate"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.ProducesManyOfTypeInstruction.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_state</span><span class="p">:</span> <span class="n">PushState</span><span class="p">,</span> <span class="n">interpreter_config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Evaluate the instruction on the given PushState. Return mutated State.</span>
 
 <span class="sd">        A ProducesManyOfTypeInstruction infers which values to pop from the stack</span>
-<span class="sd">        based on `input_types` and pushes each output to the same stack</span>
-<span class="sd">        based on `output_type`.</span>
+<span class="sd">        based on `input_stacks` and pushes each output to the same stack</span>
+<span class="sd">        based on `output_stack`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -341,7 +342,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Pull args, if present.</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="n">push_state</span><span class="o">.</span><span class="n">observe_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">push_state</span><span class="o">.</span><span class="n">observe_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_stacks</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Token</span><span class="o">.</span><span class="n">no_stack_item</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">push_state</span>
 
@@ -356,16 +357,16 @@
             <span class="p">))</span>
 
         <span class="c1"># Remove arguments, push results.</span>
-        <span class="n">push_state</span><span class="o">.</span><span class="n">pop_from_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span><span class="p">)</span>
-        <span class="n">push_state</span><span class="o">.</span><span class="n">push_to_stacks</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_type</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">pop_from_stacks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_stacks</span><span class="p">)</span>
+        <span class="n">push_state</span><span class="o">.</span><span class="n">push_to_stacks</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_stack</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">push_state</span></div>
 
-<div class="viewcode-block" id="ProducesManyOfTypeInstruction.relevant_types"><a class="viewcode-back" href="../../../api/pyshgp.push.instruction.html#pyshgp.push.instruction.ProducesManyOfTypeInstruction.relevant_types">[docs]</a>    <span class="k">def</span> <span class="nf">relevant_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="ProducesManyOfTypeInstruction.required_stacks"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.instruction.ProducesManyOfTypeInstruction.required_stacks">[docs]</a>    <span class="k">def</span> <span class="nf">required_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return a list of PushType names relevant to the instruction.</span>
 
 <span class="sd">        Based on the the instructions input types and output type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_types</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_type</span><span class="p">])</span></div></div>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_stacks</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_stack</span><span class="p">])</span> <span class="o">-</span> <span class="n">RESERVED_PSEUDO_STACKS</span></div></div>
 </pre></div>
 
           </div>

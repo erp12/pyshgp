@@ -57,7 +57,7 @@
 <span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="k">import</span> <span class="n">DiscreteProbDistrib</span><span class="p">,</span> <span class="n">instantiate_using</span>
 
 
-<div class="viewcode-block" id="VariationOperator"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.VariationOperator">[docs]</a><span class="k">class</span> <span class="nc">VariationOperator</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="VariationOperator"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.VariationOperator">[docs]</a><span class="k">class</span> <span class="nc">VariationOperator</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class of all VariationOperators.</span>
 
 <span class="sd">    Parameters</span>
@@ -77,7 +77,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_parents</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_parents</span> <span class="o">=</span> <span class="n">num_parents</span>
 
-<div class="viewcode-block" id="VariationOperator.checknum_parents"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.VariationOperator.checknum_parents">[docs]</a>    <span class="k">def</span> <span class="nf">checknum_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">]):</span>
+<div class="viewcode-block" id="VariationOperator.checknum_parents"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.VariationOperator.checknum_parents">[docs]</a>    <span class="k">def</span> <span class="nf">checknum_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Raise error if given too few parents.</span>
 
 <span class="sd">        Parameters</span>
@@ -92,7 +92,7 @@
                 <span class="n">e</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_parents</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="VariationOperator.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.VariationOperator.produce">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="VariationOperator.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.VariationOperator.produce">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Produce a child Genome from parent Genomes and optional GenomeSpawner.</span>
 
@@ -107,10 +107,10 @@
         <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="VariationStrategy"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.VariationStrategy">[docs]</a><span class="k">class</span> <span class="nc">VariationStrategy</span><span class="p">(</span><span class="n">DiscreteProbDistrib</span><span class="p">):</span>
+<div class="viewcode-block" id="VariationStrategy"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.VariationStrategy">[docs]</a><span class="k">class</span> <span class="nc">VariationStrategy</span><span class="p">(</span><span class="n">DiscreteProbDistrib</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A collection of VariationOperator and how frequently to use them.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="VariationStrategy.add"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.VariationStrategy.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">VariationOperator</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<div class="viewcode-block" id="VariationStrategy.add"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.VariationStrategy.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">VariationOperator</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add an element with a relative probability.</span>
 
 <span class="sd">        Parameters</span>
@@ -125,7 +125,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="VariationPipeline"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.VariationPipeline">[docs]</a><span class="k">class</span> <span class="nc">VariationPipeline</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
+<div class="viewcode-block" id="VariationPipeline"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.VariationPipeline">[docs]</a><span class="k">class</span> <span class="nc">VariationPipeline</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Variation operator that sequencially applies multiple others variation operators.</span>
 
 <span class="sd">    Parameters</span>
@@ -148,7 +148,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">num_parents_needed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">operators</span> <span class="o">=</span> <span class="n">operators</span>
 
-<div class="viewcode-block" id="VariationPipeline.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.VariationPipeline.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
+<div class="viewcode-block" id="VariationPipeline.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.VariationPipeline.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Produce a child Genome from parent Genomes and optional GenomeSpawner.</span>
 
 <span class="sd">        Parameters</span>
@@ -189,7 +189,7 @@
 <span class="c1"># Mutations</span>
 
 <span class="c1"># @TODO: Implement all the common literal mutations.</span>
-<div class="viewcode-block" id="LiteralMutation"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.LiteralMutation">[docs]</a><span class="k">class</span> <span class="nc">LiteralMutation</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="LiteralMutation"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.LiteralMutation">[docs]</a><span class="k">class</span> <span class="nc">LiteralMutation</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for mutations of literal Atoms.</span>
 
 <span class="sd">    Parameters</span>
@@ -220,7 +220,7 @@
     <span class="k">def</span> <span class="nf">_mutate_literal</span><span class="p">(</span><span class="n">literal</span><span class="p">:</span> <span class="n">Literal</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">:</span>
         <span class="o">...</span>
 
-<div class="viewcode-block" id="LiteralMutation.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.LiteralMutation.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
+<div class="viewcode-block" id="LiteralMutation.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.LiteralMutation.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Produce a child Genome from parent Genomes and optional GenomeSpawner.</span>
 
 <span class="sd">        Parameters</span>
@@ -242,7 +242,7 @@
         <span class="k">return</span> <span class="n">new_genome</span></div></div>
 
 
-<div class="viewcode-block" id="DeletionMutation"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.DeletionMutation">[docs]</a><span class="k">class</span> <span class="nc">DeletionMutation</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
+<div class="viewcode-block" id="DeletionMutation"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.DeletionMutation">[docs]</a><span class="k">class</span> <span class="nc">DeletionMutation</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Uniformly randomly removes some Atoms from parent.</span>
 
 <span class="sd">    Parameters</span>
@@ -266,7 +266,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">deletion_rate</span>
 
-<div class="viewcode-block" id="DeletionMutation.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.DeletionMutation.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
+<div class="viewcode-block" id="DeletionMutation.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.DeletionMutation.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Produce a child Genome from parent Genomes and optional GenomeSpawner.</span>
 
 <span class="sd">        Parameters</span>
@@ -286,7 +286,7 @@
         <span class="k">return</span> <span class="n">new_genome</span></div></div>
 
 
-<div class="viewcode-block" id="AdditionMutation"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.AdditionMutation">[docs]</a><span class="k">class</span> <span class="nc">AdditionMutation</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
+<div class="viewcode-block" id="AdditionMutation"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.AdditionMutation">[docs]</a><span class="k">class</span> <span class="nc">AdditionMutation</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Uniformly randomly adds some Atoms to parent.</span>
 
 <span class="sd">    Parameters</span>
@@ -310,7 +310,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">addition_rate</span>
 
-<div class="viewcode-block" id="AdditionMutation.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.AdditionMutation.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
+<div class="viewcode-block" id="AdditionMutation.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.AdditionMutation.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Produce a child Genome from parent Genomes and optional GenomeSpawner.</span>
 
 <span class="sd">        Parameters</span>
@@ -332,7 +332,7 @@
 
 <span class="c1"># Recombinations</span>
 
-<div class="viewcode-block" id="Alternation"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.Alternation">[docs]</a><span class="k">class</span> <span class="nc">Alternation</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
+<div class="viewcode-block" id="Alternation"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.Alternation">[docs]</a><span class="k">class</span> <span class="nc">Alternation</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Uniformly alternates between the two parent genomes.</span>
 
 <span class="sd">    Parameters</span>
@@ -363,7 +363,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">alternation_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alignment_deviation</span> <span class="o">=</span> <span class="n">alignment_deviation</span>
 
-<div class="viewcode-block" id="Alternation.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.Alternation.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
+<div class="viewcode-block" id="Alternation.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.Alternation.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Produce a child Genome from parent Genomes and optional GenomeSpawner.</span>
 
 <span class="sd">        Parameters</span>
@@ -406,7 +406,7 @@
 
 <span class="c1"># Other</span>
 
-<div class="viewcode-block" id="Genesis"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.Genesis">[docs]</a><span class="k">class</span> <span class="nc">Genesis</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
+<div class="viewcode-block" id="Genesis"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.Genesis">[docs]</a><span class="k">class</span> <span class="nc">Genesis</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Creates an entirely new (and random) genome.</span>
 
 <span class="sd">    Parameters</span>
@@ -432,7 +432,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
 
-<div class="viewcode-block" id="Genesis.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.Genesis.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
+<div class="viewcode-block" id="Genesis.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.Genesis.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Produce a child Genome from parent Genomes and optional GenomeSpawner.</span>
 
 <span class="sd">        Parameters</span>
@@ -446,7 +446,7 @@
         <span class="k">return</span> <span class="n">spawner</span><span class="o">.</span><span class="n">spawn_genome</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="Cloning"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.Cloning">[docs]</a><span class="k">class</span> <span class="nc">Cloning</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
+<div class="viewcode-block" id="Cloning"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.Cloning">[docs]</a><span class="k">class</span> <span class="nc">Cloning</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Clones the parent genome.</span>
 
 <span class="sd">    Attributes</span>
@@ -460,7 +460,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Cloning.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.Cloning.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
+<div class="viewcode-block" id="Cloning.produce"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.Cloning.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Produce a child Genome from parent Genomes and optional GenomeSpawner.</span>
 
 <span class="sd">        Parameters</span>
@@ -474,7 +474,7 @@
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
 
 
-<div class="viewcode-block" id="get_variation_operator"><a class="viewcode-back" href="../../../api/pyshgp.gp.variation.html#pyshgp.gp.variation.get_variation_operator">[docs]</a><span class="k">def</span> <span class="nf">get_variation_operator</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VariationOperator</span><span class="p">:</span>
+<div class="viewcode-block" id="get_variation_operator"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.variation.get_variation_operator">[docs]</a><span class="k">def</span> <span class="nf">get_variation_operator</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VariationOperator</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get the variaton operator class with the given name.&quot;&quot;&quot;</span>
     <span class="n">name_to_cls</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;deletion&quot;</span><span class="p">:</span> <span class="n">DeletionMutation</span><span class="p">,</span>

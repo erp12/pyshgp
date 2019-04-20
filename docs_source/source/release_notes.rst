@@ -4,6 +4,64 @@ Release Notes
 
 A summary of changes made between each PyshGP release.
 
+
+
+v0.1.5 - April 19, 2019
+===============================
+
+API changes
+-------------------------------
+
+- Separated "types" and "stacks" in a more logical way. Various arguments have been renamed.
+- Made verbosity config easier to configure and use.
+- Add optional argument to ``PushStack`` for pushing initial values. Useful for custom fitness functions.
+- Added the ``PushTypeLibrary`` abstraction. Read more at link below.
+
+.. toctree::
+   :maxdepth: 1
+
+   push_types
+
+Internals
+-------------------------------
+
+- Changed how core instructions can be added to instruction sets.
+- Added support for smaller numpy ints than int64.
+- Improved performance with respect to monitoring/verbosity.
+- Fixed rarely occurring non-deterministic type matching.
+
+
+Development / Repository
+-------------------------------
+
+- Added ``tutorials/point_distance.py`` example to demonstrate custom types.
+- Added documentation article push types.
+- Moved style checking from tests to CI
+
+
+Known Issues
+-------------------------------
+
+- Programs that have literal values of custom types are not be serializable to JSON.
+
+Report issues on `the Github <https://github.com/erp12/pyshgp/issues>`_.
+
+Credits
+-------------------------------
+
+This release would not have been possible without the following contributors:
+
+- Blossom Metevier.
+
+  - Reported lack of support for smaller numpy int types.
+  - Demonstrated the annoyance of style checking in tests.
+
+- Julian Oks
+
+  - Demonstrated a need for ``PushState`` initial values argument.
+
+
+
 v0.1.4 - March 23, 2019
 ===============================
 
@@ -43,11 +101,17 @@ Credits
 This release would not have been possible without the following contributors:
 
 - Blossom Metevier.
+
   - Reported the incompatibility with Python 3.5 due to variable annotations.
+
 - Lee Spector
+
   - Feedback on README file.
+
 - Michael Garcia
+
   - Reporting the lack of documentation on defining and registering custom instructions.
+
 
 
 v0.1.3 - March 12, 2019

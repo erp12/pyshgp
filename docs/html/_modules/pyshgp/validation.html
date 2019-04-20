@@ -44,7 +44,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="check_1d"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.check_1d">[docs]</a><span class="k">def</span> <span class="nf">check_1d</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+<div class="viewcode-block" id="check_1d"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.check_1d">[docs]</a><span class="k">def</span> <span class="nf">check_1d</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Check given seq is one-dimensional. Raise error if can&#39;t be easily transformed.&quot;&quot;&quot;</span>
     <span class="n">e</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too many dimensions.&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ndx</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
@@ -62,7 +62,7 @@
     <span class="k">return</span> <span class="n">seq</span></div>
 
 
-<div class="viewcode-block" id="check_2d"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.check_2d">[docs]</a><span class="k">def</span> <span class="nf">check_2d</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+<div class="viewcode-block" id="check_2d"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.check_2d">[docs]</a><span class="k">def</span> <span class="nf">check_2d</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Check given seq is two-dimensional. Raise error if can&#39;t be easily transformed.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">ndx</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)):</span>
@@ -71,7 +71,7 @@
     <span class="k">return</span> <span class="n">seq</span></div>
 
 
-<div class="viewcode-block" id="check_column_types"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.check_column_types">[docs]</a><span class="k">def</span> <span class="nf">check_column_types</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">certainty_proportion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">type</span><span class="p">]:</span>
+<div class="viewcode-block" id="check_column_types"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.check_column_types">[docs]</a><span class="k">def</span> <span class="nf">check_column_types</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">certainty_proportion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">type</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Check all elements of each column are of the same type.&quot;&quot;&quot;</span>
     <span class="n">output_types</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">ndx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">*</span> <span class="n">certainty_proportion</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
@@ -88,7 +88,7 @@
     <span class="k">return</span> <span class="n">output_types</span></div>
 
 
-<div class="viewcode-block" id="check_num_columns"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.check_num_columns">[docs]</a><span class="k">def</span> <span class="nf">check_num_columns</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">certainty_proportion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="check_num_columns"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.check_num_columns">[docs]</a><span class="k">def</span> <span class="nf">check_num_columns</span><span class="p">(</span><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">certainty_proportion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return the number of columns of in the dataset.&quot;&quot;&quot;</span>
     <span class="n">num_columns</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">ndx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">*</span> <span class="n">certainty_proportion</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
@@ -101,7 +101,7 @@
     <span class="k">return</span> <span class="n">num_columns</span></div>
 
 
-<div class="viewcode-block" id="check_X_y"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.check_X_y">[docs]</a><span class="k">def</span> <span class="nf">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">]:</span>
+<div class="viewcode-block" id="check_X_y"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.check_X_y">[docs]</a><span class="k">def</span> <span class="nf">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Check the given X and y datasets are prepared to be passed to a PushEstimator.</span>
 
 <span class="sd">    Inspired by the scikit-learn function with the same name.</span>
@@ -115,7 +115,7 @@
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">X_column_count</span><span class="p">,</span> <span class="n">y_dim_types</span></div>
 
 
-<div class="viewcode-block" id="check_is_fitted"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.check_is_fitted">[docs]</a><span class="k">def</span> <span class="nf">check_is_fitted</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+<div class="viewcode-block" id="check_is_fitted"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.check_is_fitted">[docs]</a><span class="k">def</span> <span class="nf">check_is_fitted</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check the given estimator has already been fit.</span>
 
 <span class="sd">    Inspired by the scikit-learn function with the same name.</span>
@@ -130,15 +130,15 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="PushError"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.PushError">[docs]</a><span class="k">class</span> <span class="nc">PushError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="PushError"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.PushError">[docs]</a><span class="k">class</span> <span class="nc">PushError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Error raised during Push program execution.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="PushError.no_type"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.PushError.no_type">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PushError.no_type"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.PushError.no_type">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">no_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">thing</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Raise PushError when no PushType can be found for something.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Unkown PushType for </span><span class="si">{th}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">=</span><span class="n">thing</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="PushError.failed_coerce"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.PushError.failed_coerce">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PushError.failed_coerce"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.PushError.failed_coerce">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">failed_coerce</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">thing</span><span class="p">,</span> <span class="n">push_type</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Raise PushError when something fails to coerce to a PushType.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Could not convert </span><span class="si">{typ1}</span><span class="s2"> </span><span class="si">{th}</span><span class="s2"> to </span><span class="si">{typ2}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -147,15 +147,15 @@
             <span class="n">typ2</span><span class="o">=</span><span class="n">push_type</span>
         <span class="p">))</span></div>
 
-<div class="viewcode-block" id="PushError.empty_character"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.PushError.empty_character">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PushError.empty_character"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.PushError.empty_character">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">empty_character</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Raise PushError when Character is made from empty string.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Character object cannot be created from empty string.&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Char object cannot be created from empty string.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PushError.long_character"><a class="viewcode-back" href="../../api/pyshgp.validation.html#pyshgp.validation.PushError.long_character">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PushError.long_character"><a class="viewcode-back" href="../../api/pyshgp.html#pyshgp.validation.PushError.long_character">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">long_character</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Raise PushError when Character is made from string length more than 1.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Character object cannot be created from string of length &gt; 1.&quot;</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;Char object cannot be created from string of length &gt; 1.&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

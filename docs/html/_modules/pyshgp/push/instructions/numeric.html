@@ -28,7 +28,8 @@
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../instructions.html" accesskey="U">pyshgp.push.instructions</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -77,7 +78,7 @@
     <span class="k">return</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
 
 
-<div class="viewcode-block" id="instructions"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.numeric.html#pyshgp.push.instructions.numeric.instructions">[docs]</a><span class="k">def</span> <span class="nf">instructions</span><span class="p">():</span>
+<div class="viewcode-block" id="instructions"><a class="viewcode-back" href="../../../../api/pyshgp.push.instructions.html#pyshgp.push.instructions.numeric.instructions">[docs]</a><span class="k">def</span> <span class="nf">instructions</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Return all core numeric instructions.&quot;&quot;&quot;</span>
     <span class="n">i</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -85,8 +86,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_add&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_add</span><span class="p">,</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Adds the top two </span><span class="si">{t}</span><span class="s2">s and pushes the result.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -94,8 +95,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_sub&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_sub</span><span class="p">,</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Subtracts the top two </span><span class="si">{t}</span><span class="s2">s and pushes the result.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -103,8 +104,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_mult&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_mult</span><span class="p">,</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Multiplies the top two </span><span class="si">{t}</span><span class="s2">s and pushes the result.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -112,8 +113,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_div&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_p_div</span><span class="p">,</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Divides the top two </span><span class="si">{t}</span><span class="s2">s and pushes the result.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -121,8 +122,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_mod&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_p_mod</span><span class="p">,</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Computes the modulous of the top two </span><span class="si">{t}</span><span class="s2">s and pushes the result.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -130,8 +131,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_min&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the minimum of two </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -139,8 +140,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_max&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the maximum of two </span><span class="si">{t}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -148,8 +149,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_inc&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_inc</span><span class="p">,</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Increments the top </span><span class="si">{t}</span><span class="s2"> by 1.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -157,8 +158,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_dec&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="n">_dec</span><span class="p">,</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Decrements the top </span><span class="si">{t}</span><span class="s2"> by 1.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -166,8 +167,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_lt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes true if the top </span><span class="si">{t}</span><span class="s2"> is less than the second. Pushes false otherwise.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -175,8 +176,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_lte&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="n">a</span><span class="p">],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes true if the top </span><span class="si">{t}</span><span class="s2"> is less than, or equal to, the second. Pushes false otherwise.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -184,8 +185,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_gt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes true if the top </span><span class="si">{t}</span><span class="s2"> is greater than the second.. Pushes false otherwise.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -193,8 +194,8 @@
         <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2">_gte&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">),</span>
             <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span> <span class="o">&gt;=</span> <span class="n">a</span><span class="p">],</span>
-            <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
-            <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+            <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="n">push_type</span><span class="p">,</span> <span class="n">push_type</span><span class="p">],</span>
+            <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
             <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes true if the top </span><span class="si">{t}</span><span class="s2"> is greater than, or equal to, the second. Pushes false otherwise.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">push_type</span><span class="p">)</span>
         <span class="p">))</span>
@@ -204,8 +205,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;float_sin&quot;</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the sin of the top float.&quot;</span>
     <span class="p">))</span>
@@ -213,8 +214,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;float_cos&quot;</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the cos of the top float.&quot;</span>
     <span class="p">))</span>
@@ -222,8 +223,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;float_tan&quot;</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes the tan of the top float.&quot;</span>
     <span class="p">))</span>
@@ -233,8 +234,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;int_from_bool&quot;</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">)],</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes 1 in the top boolean is true. Pushes 0 if the top boolean is false.&quot;</span>
     <span class="p">))</span>
@@ -242,8 +243,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;float_from_bool&quot;</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">b</span><span class="p">)],</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bool&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Pushes 1.0 in the top boolean is true. Pushes 0.0 if the top boolean is false.&quot;</span>
     <span class="p">))</span>
@@ -251,8 +252,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;int_from_float&quot;</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">)],</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Casts the top float to an integer and pushes the result.&quot;</span>
     <span class="p">))</span>
@@ -260,8 +261,8 @@
     <span class="n">i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleInstruction</span><span class="p">(</span>
         <span class="s2">&quot;float_from_int&quot;</span><span class="p">,</span>
         <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)],</span>
-        <span class="n">input_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
-        <span class="n">output_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
+        <span class="n">input_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;int&quot;</span><span class="p">],</span>
+        <span class="n">output_stacks</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;float&quot;</span><span class="p">],</span>
         <span class="n">code_blocks</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Casts the top integer to a float and pushes the result.&quot;</span>
     <span class="p">))</span>
@@ -300,7 +301,8 @@
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../../index.html">PyshGP  documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../instructions.html" >pyshgp.push.instructions</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

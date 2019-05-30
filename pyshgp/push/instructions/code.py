@@ -6,13 +6,10 @@ from pyshgp.push.instruction import (
     SimpleInstruction,
     StateToStateInstruction
 )
+from pyshgp.push.instructions.common import _revert, _wrap_tuple, _dup
 from pyshgp.push.atoms import Atom, JitInstructionRef, CodeBlock, Literal
 from pyshgp.push.state import PushState
 from pyshgp.utils import Token
-
-
-def _revert():
-    return Token.revert
 
 
 def _is_code_block(x) -> Tuple[bool]:
@@ -43,19 +40,24 @@ def _code_last(x) -> Tuple[Atom]:
 
 def _code_rest(x) -> Tuple[Atom]:
     if isinstance(x, CodeBlock) and len(x) > 1:
-        return CodeBlock.from_list(x[1:]),
+        return CodeBlock(*x[1:]),
     return Token.revert
 
 
 def _code_but_last(x) -> Tuple[Atom]:
     if isinstance(x, CodeBlock) and len(x) > 1:
-        return CodeBlock.from_list(x[:-1]),
+        return CodeBlock(*x[:-1]),
     return Token.revert
+
+
+def _wrap_code_block(*args):
+    return CodeBlock(*args),
 
 
 def _code_combine(a: Atom, b: Atom) -> Tuple[CodeBlock]:
     if isinstance(a, CodeBlock) and isinstance(b, CodeBlock):
-        return CodeBlock.from_list(list(b.copy()) + list(a.copy())),
+        contents = list(b.copy()) + list(a.copy())
+        return CodeBlock(*contents),
     elif isinstance(b, CodeBlock):
         result = b.copy()
         result.append(a)
@@ -235,7 +237,8 @@ def _code_map(state: PushState) -> PushState:
         c = c.copy()
     l1 = [CodeBlock(JitInstructionRef("code_from_exec"), item, e) for item in c]
     l2 = [JitInstructionRef("code_combine") for _ in c[1:]]
-    state["exec"].push(CodeBlock.from_list(l1 + [JitInstructionRef("code_wrap")] + l2))
+    contents = l1 + [JitInstructionRef("code_wrap")] + l2
+    state["exec"].push(CodeBlock(*contents))
     return state
 
 
@@ -328,7 +331,7 @@ def _code_first_position(code1, code2) -> Union[Token, Tuple[Atom]]:
 def _code_reverse(code):
     if not isinstance(code, CodeBlock):
         return code,
-    return CodeBlock.from_list(list(code[::-1])),
+    return CodeBlock(*code[::-1]),
 
 
 def instructions():
@@ -418,7 +421,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "code_wrap",
-        lambda c: [CodeBlock(c)],
+        _wrap_code_block,
         input_stacks=["code"],
         output_stacks=["code"],
         code_blocks=0,
@@ -427,7 +430,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "code_list",
-        lambda a, b: [CodeBlock(a, b)],
+        _wrap_code_block,
         input_stacks=["code", "code"],
         output_stacks=["code"],
         code_blocks=0,
@@ -447,7 +450,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "code_do",
-        lambda c: [c],
+        _wrap_tuple,
         input_stacks=["code"],
         output_stacks=["exec"],
         code_blocks=0,
@@ -456,7 +459,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "code_do_dup",
-        lambda c: [c, c],
+        _dup,
         input_stacks=["code"],
         output_stacks=["exec", "code"],
         code_blocks=0,

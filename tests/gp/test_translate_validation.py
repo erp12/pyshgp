@@ -1,21 +1,44 @@
-from pyshgp.push.atoms import CodeBlock
+import json
+
+from pyshgp.push.atoms import CodeBlock, Closer, Literal, JitInstructionRef
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.gp.genome import Genome
 
 
-# Not using fixture in order to spot unintentional updates during execution.
-i_set = InstructionSet(register_core=True).register_n_inputs(10)
-
-
-def load_genome(name, interpreter) -> Genome:
-    with open("tests/resources/genomes/" + name + ".json") as f:
-        return Genome.from_json_str(f.read(), interpreter.instruction_set)
+def _pysh_collection_from_list(lst, cls, instr_set: InstructionSet) -> CodeBlock:
+    type_lib = instr_set.type_library
+    gn = Genome()
+    for atom_spec in lst:
+        atom = None
+        if isinstance(atom_spec, list):
+            atom = _pysh_collection_from_list(atom_spec, cls, instr_set)
+        else:
+            atom_type = atom_spec["a"]
+            if atom_type == "close":
+                atom = Closer()
+            elif atom_type == "lit":
+                push_type = type_lib[atom_spec["t"]]
+                value = push_type.coerce(atom_spec["v"])
+                atom = Literal(value, push_type)
+            elif atom_type == "instr":
+                atom = instr_set[atom_spec["n"]]
+            elif atom_type == "jit-instr":
+                atom = JitInstructionRef(atom_spec["n"])
+            else:
+                raise ValueError("bad atom spec {s}".format(s=atom_spec))
+        gn.append(atom)
+    return gn
 
 
 def load_program(name, interpreter) -> CodeBlock:
     with open("tests/resources/programs/" + name + ".json") as f:
-        return CodeBlock.from_json_str(f.read(), interpreter.instruction_set)
+        return _pysh_collection_from_list(json.load(f), CodeBlock, interpreter.instruction_set)
+
+
+def load_genome(name, interpreter) -> Genome:
+    with open("tests/resources/genomes/" + name + ".json") as f:
+        return _pysh_collection_from_list(json.load(f), Genome, interpreter.instruction_set)
 
 
 def test_genome_relu_1():

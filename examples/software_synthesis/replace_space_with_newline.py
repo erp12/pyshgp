@@ -97,11 +97,17 @@ instruction_set = (
     .register_n_inputs(1)
 )
 
+
+def random_char():
+    """Return a random character."""
+    return Char(choice(_possible_chars))
+
+
 spawner = GeneSpawner(
     instruction_set=instruction_set,
     literals=[" ", "\n"],
     erc_generators=[
-        lambda: Char(choice(_possible_chars)),
+        random_char,
         synthetic_input
     ],
 )
@@ -116,9 +122,11 @@ if __name__ == "__main__":
     est = PushEstimator(
         search="GA",
         population_size=500,
-        max_generations=10,
+        max_generations=30,
         spawner=spawner,
+        simplification_steps=100,
         last_str_from_stdout=True,
+        parallelism=False,
         verbose=2
     )
 
@@ -129,4 +137,4 @@ if __name__ == "__main__":
     print("test_error: ", np.sum(est.score(X_test, y_test)))
     print("runtime: ", end - start)
     print("final_generation: ", est.search.generation)
-    print("best_genome_json: ", est.search.best_seen.genome.jsonify())
+    print("best_genome: ", est.search.best_seen.genome.make_str())

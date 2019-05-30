@@ -3,8 +3,8 @@ from typing import Union, Callable
 
 import logging
 
-# @TODO: Add verbosity of serach config
-# @TODO: Add verbosity of start time, end time, and runtime.
+# @TODO: Add logging of serach config to verbosity
+# @TODO: Add logging of start time, end time, and runtime to verbosity
 
 
 class VerbosityConfig:

@@ -1,10 +1,9 @@
 import pytest
-import json
 
 from pyshgp.gp.genome import Opener, _has_opener, Genome, GenomeSimplifier
 from pyshgp.gp.evaluation import DatasetEvaluator
 from pyshgp.push.atoms import Atom, Literal, Instruction, CodeBlock
-from pyshgp.push.types import Char, PushInt, PushBool, PushFloat, PushStr
+from pyshgp.push.types import PushInt, PushBool
 
 
 def test_opener():
@@ -25,7 +24,7 @@ class TestGenome:
 
     def test_genome_bad_init(self, atoms):
         with pytest.raises(ValueError):
-            Genome(CodeBlock.from_list([atoms["5"], [atoms["5"], atoms["add"]]]))
+            Genome(CodeBlock(*[atoms["5"], [atoms["5"], atoms["add"]]]))
 
     def test_missing_close_genome_to_codeblock(self, atoms):
         gn = Genome([atoms["true"], atoms["if"], atoms["1.2"], atoms["close"], atoms["5"]])
@@ -44,11 +43,6 @@ class TestGenome:
         gn = Genome()
         cb = gn.to_code_block()
         assert len(cb) == 0
-
-    def test_genome_write(self, atoms):
-        gn = Genome([atoms["true"], atoms["if"], atoms["1.2"], atoms["close"], atoms["5"]])
-        s = gn.jsonify()
-        assert json.loads(s) == json.loads('[{"a":"lit","t":"bool","v":true},{"a":"instr","n":"exec_if"},{"a":"lit","t":"float","v":1.2},{"a":"close"},{"a":"lit","t":"int","v":5}]')
 
 
 class TestGeneSpawner:

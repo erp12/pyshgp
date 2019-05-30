@@ -1,11 +1,18 @@
 """The :mod:`population` module defines an evolutionary population of Individuals."""
 from collections.abc import Sequence
 from bisect import insort_left
-
 import numpy as np
+import pickle
+from multiprocessing import Pool
+from functools import partial
 
 from pyshgp.gp.individual import Individual
 from pyshgp.gp.evaluation import Evaluator
+
+
+def _eval_indiv(indiv, evalr):
+    indiv.error_vector = evalr.evaluate(indiv.program)
+    return indiv
 
 
 class Population(Sequence):
@@ -45,10 +52,17 @@ class Population(Sequence):
         """Return the best n individuals in the population."""
         return self.evaluated[:n]
 
+    def p_evaluate(self, evaluator_proxy, pool: Pool):
+        """Evaluate all unevaluated individuals in the population in parallel."""
+        func = partial(_eval_indiv, evalr=evaluator_proxy)
+        for individual in pool.imap_unordered(func, self.unevaluated):
+            insort_left(self.evaluated, individual)
+        self.unevaluated = []
+
     def evaluate(self, evaluator: Evaluator):
         """Evaluate all unevaluated individuals in the population."""
         for individual in self.unevaluated:
-            individual.error_vector = evaluator.evaluate(individual.program)
+            individual = _eval_indiv(individual, evaluator)
             insort_left(self.evaluated, individual)
         self.unevaluated = []
 
@@ -70,5 +84,10 @@ class Population(Sequence):
 
     def genome_diversity(self):
         """Proportion of unique genomes."""
-        unq = set([i.genome.jsonify() for i in self])
+        unq = set([pickle.dumps(i.genome) for i in self])
+        return len(unq) / float(len(self))
+
+    def program_diversity(self):
+        """Proportion of unique programs."""
+        unq = set([pickle.dumps(i.program) for i in self])
         return len(unq) / float(len(self))

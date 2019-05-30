@@ -59,7 +59,6 @@ class PushInterpreterConfig:
 
     """
 
-    # @TODO: Should PushInterpreterConfig be JSON serializable?
     # @TODO: Refactor atom_limit to step_limit
 
     def __init__(self, *,

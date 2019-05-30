@@ -10,7 +10,7 @@ from pyshgp.utils import Token
 
 @pytest.fixture(scope="function")
 def simple_program(atoms):
-    return CodeBlock.from_list([atoms["5"], atoms["5"], atoms["add"]])
+    return CodeBlock(*[atoms["5"], atoms["5"], atoms["add"]])
 
 
 def test_levenshtein_distance_str():

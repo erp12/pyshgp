@@ -1,5 +1,5 @@
 """Instructions common to all ``PushTypes`` and ``PushStacks``."""
-from typing import Any, Union, Callable, Tuple
+from typing import Any, Tuple
 from functools import partial
 
 from pyshgp.push.types import PushType
@@ -16,6 +16,22 @@ from pyshgp.utils import Token
 
 
 DUP_LIMIT = 500
+
+
+def _revert():
+    return Token.revert
+
+
+def _wrap_tuple(*args):
+    return tuple(args)
+
+
+def _noop(x=None):
+    return tuple()
+
+
+def _dup(x):
+    return x, x
 
 
 def _dup_times(times, item):
@@ -35,79 +51,77 @@ def _dup_times(times, item):
 #     return f
 
 
-def _flusher(type_name: str) -> Callable:
-    def f(state: PushState) -> PushState:
-        state[type_name].flush()
-        return state
-    return f
+def _swap(a, b):
+    return (a, b)
 
 
-def _stack_depther(type_name: str) -> Callable:
-    def f(state: PushState) -> int:
-        return [len(state[type_name])]
-    return f
+def _rot(a, b, c):
+    return (b, a, c)
 
 
-def _yanker(type_name: str) -> Callable:
-    def f(state: PushState) -> Union[PushState, Token]:
-        if state["int"].is_empty() or state[type_name].is_empty():
-            return Token.revert
-        if type_name == "int" and len(state[type_name]) < 2:
-            return Token.revert
-        raw_ndx = state["int"].pop()
-        ndx = max(0, min(raw_ndx, len(state[type_name]) - 1))
-        item = state[type_name].pop(ndx)
-        state[type_name].push(item)
-        return state
-    return f
+def _eq(a, b):
+    return (a == b),
 
 
-def _yank_duper(type_name: str) -> Callable:
-    def f(state: PushState) -> Union[PushState, Token]:
-        if state["int"].is_empty() or state[type_name].is_empty():
-            return Token.revert
-        if type_name == "int" and len(state[type_name]) < 2:
-            return Token.revert
-        raw_ndx = state["int"].pop()
-        ndx = max(0, min(raw_ndx, len(state[type_name]) - 1))
-        item = state[type_name].nth(ndx)
-        state[type_name].push(item)
-        return state
-    return f
+def _flush(state: PushState, type_name: str):
+    state[type_name].flush()
+    return state
 
 
-def _shover(type_name: str) -> Callable:
-    def f(state: PushState) -> Union[PushState, Token]:
-        if state["int"].is_empty() or state[type_name].is_empty():
-            return Token.revert
-        if type_name == "int" and len(state[type_name]) < 2:
-            return Token.revert
-        raw_ndx = state["int"].pop()
-        ndx = max(0, min(raw_ndx, len(state[type_name]) - 1))
-        item = state[type_name].pop()
-        state[type_name].insert(ndx, item)
-        return state
-    return f
+def _stack_depth(state: PushState, type_name: str):
+    return [len(state[type_name])]
 
 
-def _shove_duper(type_name: str) -> Callable:
-    def f(state: PushState) -> Union[PushState, Token]:
-        if state["int"].is_empty() or state[type_name].is_empty():
-            return Token.revert
-        if type_name == "int" and len(state[type_name]) < 2:
-            return Token.revert
-        raw_ndx = state["int"].pop()
-        ndx = max(0, min(raw_ndx, len(state[type_name])))
-        item = state[type_name].top()
-        state[type_name].insert(ndx, item)
-        return state
-    return f
+def _yank(state: PushState, type_name: str) -> PushState:
+    if state["int"].is_empty() or state[type_name].is_empty():
+        return Token.revert
+    if type_name == "int" and len(state[type_name]) < 2:
+        return Token.revert
+    raw_ndx = state["int"].pop()
+    ndx = max(0, min(raw_ndx, len(state[type_name]) - 1))
+    item = state[type_name].pop(ndx)
+    state[type_name].push(item)
+    return state
 
 
-def _is_emptyer(type_name: str) -> Callable:
-    def f(state: PushState) -> bool:
-        return [state[type_name].is_empty()]
-    return f
+def _yank_dup(state: PushState, type_name: str):
+    if state["int"].is_empty() or state[type_name].is_empty():
+        return Token.revert
+    if type_name == "int" and len(state[type_name]) < 2:
+        return Token.revert
+    raw_ndx = state["int"].pop()
+    ndx = max(0, min(raw_ndx, len(state[type_name]) - 1))
+    item = state[type_name].nth(ndx)
+    state[type_name].push(item)
+    return state
+
+
+def _shove(state: PushState, type_name: str):
+    if state["int"].is_empty() or state[type_name].is_empty():
+        return Token.revert
+    if type_name == "int" and len(state[type_name]) < 2:
+        return Token.revert
+    raw_ndx = state["int"].pop()
+    ndx = max(0, min(raw_ndx, len(state[type_name]) - 1))
+    item = state[type_name].pop()
+    state[type_name].insert(ndx, item)
+    return state
+
+
+def _shove_dup(state: PushState, type_name: str):
+    if state["int"].is_empty() or state[type_name].is_empty():
+        return Token.revert
+    if type_name == "int" and len(state[type_name]) < 2:
+        return Token.revert
+    raw_ndx = state["int"].pop()
+    ndx = max(0, min(raw_ndx, len(state[type_name])))
+    item = state[type_name].top()
+    state[type_name].insert(ndx, item)
+    return state
+
+
+def _is_empty(state: PushState, type_name: str):
+    return state[type_name].is_empty(),
 
 
 def _make_code(x: Any, push_type: PushType) -> Tuple[Atom]:
@@ -124,7 +138,7 @@ def instructions(type_library: PushTypeLibrary):
     for push_type in type_library.keys():
         i.append(SimpleInstruction(
             "{t}_pop".format(t=push_type),
-            lambda x: [],
+            _noop,
             input_stacks=[push_type],
             output_stacks=[],
             code_blocks=(1 if push_type == "exec" else 0),
@@ -133,7 +147,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(SimpleInstruction(
             "{t}_dup".format(t=push_type),
-            lambda x: [x, x],
+            _dup,
             input_stacks=[push_type],
             output_stacks=[push_type, push_type],
             code_blocks=(1 if push_type == "exec" else 0),
@@ -160,7 +174,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(SimpleInstruction(
             "{t}_swap".format(t=push_type),
-            lambda a, b: [a, b],
+            _swap,
             input_stacks=[push_type, push_type],
             output_stacks=[push_type, push_type],
             code_blocks=(2 if push_type == "exec" else 0),
@@ -169,7 +183,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(SimpleInstruction(
             "{t}_rot".format(t=push_type),
-            lambda a, b, c: [b, a, c],
+            _rot,
             input_stacks=[push_type] * 3,
             output_stacks=[push_type] * 3,
             code_blocks=(3 if push_type == "exec" else 0),
@@ -178,7 +192,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(StateToStateInstruction(
             "{t}_flush".format(t=push_type),
-            _flusher(push_type),
+            partial(_flush, type_name=push_type),
             stacks_used=[push_type],
             code_blocks=0,
             docstring="Empties the {t} stack.".format(t=push_type)
@@ -186,7 +200,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(SimpleInstruction(
             "{t}_eq".format(t=push_type),
-            lambda a, b: [a == b],
+            _eq,
             input_stacks=[push_type, push_type],
             output_stacks=["bool"],
             code_blocks=0,
@@ -195,7 +209,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(TakesStateInstruction(
             "{t}_stack_depth".format(t=push_type),
-            _stack_depther(push_type),
+            partial(_stack_depth, type_name=push_type),
             output_stacks=["int"],
             other_stacks=[push_type],
             code_blocks=0,
@@ -204,7 +218,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(StateToStateInstruction(
             "{t}_yank".format(t=push_type),
-            _yanker(push_type),
+            partial(_yank, type_name=push_type),
             stacks_used=[push_type, "int"],
             code_blocks=0,
             docstring="Yanks a {t} from deep in the stack based on an index from the int stack and puts it on top.".format(t=push_type)
@@ -212,7 +226,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(StateToStateInstruction(
             "{t}_yank_dup".format(t=push_type),
-            _yank_duper(push_type),
+            partial(_yank_dup, type_name=push_type),
             stacks_used=[push_type, "int"],
             code_blocks=0,
             docstring="Yanks a copy of a {t} deep in the stack based on an index from the int stack and puts it on top.".format(t=push_type)
@@ -220,7 +234,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(StateToStateInstruction(
             "{t}_shove".format(t=push_type),
-            _shover(push_type),
+            partial(_shove, type_name=push_type),
             stacks_used=[push_type, "int"],
             code_blocks=(1 if push_type == "exec" else 0),
             docstring="Shoves the top {t} deep in the stack based on an index from the int stack.".format(t=push_type)
@@ -228,7 +242,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(StateToStateInstruction(
             "{t}_shove_dup".format(t=push_type),
-            _shove_duper(push_type),
+            partial(_shove_dup, type_name=push_type),
             stacks_used=[push_type, "int"],
             code_blocks=(1 if push_type == "exec" else 0),
             docstring="Shoves a copy of the top {t} deep in the stack based on an index from the int stack.".format(t=push_type)
@@ -236,7 +250,7 @@ def instructions(type_library: PushTypeLibrary):
 
         i.append(TakesStateInstruction(
             "{t}_is_empty".format(t=push_type),
-            _is_emptyer(push_type),
+            partial(_is_empty, type_name=push_type),
             output_stacks=["bool"],
             other_stacks=[push_type],
             code_blocks=0,

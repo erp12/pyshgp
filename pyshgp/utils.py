@@ -3,6 +3,8 @@ from typing import Optional, Union
 from abc import ABC, abstractmethod
 from enum import Enum
 import inspect
+import pickle
+import os
 
 import numpy as np
 from numpy.random import choice
@@ -73,12 +75,21 @@ class Token(Enum):
     whole_state = 3
 
 
-class Verbosity(Enum):
-    """Enum class of all verbosity levels."""
+class Saveable:
+    """Allows a pickle-able class to be written and loaded from a file."""
 
-    off = 1
-    debug = 2
-    on = 3
+    def save(self, path: str):
+        """Save the CodeBlock to a binary file."""
+        loc, filename = os.path.split(path)
+        os.makedirs(loc, exist_ok=True)
+        with open(path, "w+") as f:
+            pickle.dump(self, f, path)
+
+    @staticmethod
+    def load(path: str):
+        """Load a CodeBlock from a binary file.."""
+        with open(path, "r+") as f:
+            return pickle.load(f)
 
 
 class JSONable(ABC):

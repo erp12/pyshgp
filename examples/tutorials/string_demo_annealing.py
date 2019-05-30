@@ -64,6 +64,7 @@ if __name__ == "__main__":
         spawner=spawner,
         max_generations=500,
         initial_genome_size=(10, 50),
+        parallelism=False,
         verbose=2
     )
 

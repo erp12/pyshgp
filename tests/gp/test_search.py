@@ -24,4 +24,4 @@ class TestSearchConfiguration:
         assert config.get_variation_op().alignment_deviation == 5
 
 
-# @TODO: Test with custom PushTypeLibrary and custom instructions.
+# @TODO: TEST - Test with custom PushTypeLibrary and custom instructions.

@@ -1,11 +1,38 @@
-from pyshgp.push.atoms import CodeBlock
+import json
+
+from pyshgp.push.atoms import CodeBlock, Closer, Literal, JitInstructionRef
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.instruction_set import InstructionSet
 
 
+def _code_block_from_list(lst: list, instr_set: InstructionSet) -> CodeBlock:
+    type_lib = instr_set.type_library
+    cb = CodeBlock()
+    for atom_spec in lst:
+        atom = None
+        if isinstance(atom_spec, list):
+            atom = _code_block_from_list(atom_spec, instr_set)
+        else:
+            atom_type = atom_spec["a"]
+            if atom_type == "close":
+                atom = Closer()
+            elif atom_type == "lit":
+                push_type = type_lib[atom_spec["t"]]
+                value = push_type.coerce(atom_spec["v"])
+                atom = Literal(value, push_type)
+            elif atom_type == "instr":
+                atom = instr_set[atom_spec["n"]]
+            elif atom_type == "jit-instr":
+                atom = JitInstructionRef(atom_spec["n"])
+            else:
+                raise ValueError("bad atom spec {s}".format(s=atom_spec))
+        cb.append(atom)
+    return cb
+
+
 def load_program(name, interpreter) -> CodeBlock:
     with open("tests/resources/programs/" + name + ".json") as f:
-        return CodeBlock.from_json_str(f.read(), interpreter.instruction_set)
+        return _code_block_from_list(json.load(f), interpreter.instruction_set)
 
 
 def test_program_relu_1():

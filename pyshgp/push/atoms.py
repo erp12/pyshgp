@@ -8,14 +8,13 @@ of other Atoms is used to express nested expressions of code.
 from abc import ABC, abstractmethod
 from typing import Any, Sequence
 from itertools import chain, count
-import json
 from copy import copy, deepcopy
 
 from pyshgp.push.types import PushType
-from pyshgp.utils import JSONable, jsonify_collection
+from pyshgp.utils import Saveable
 
 
-class Atom(JSONable):
+class Atom:
     """Base class of all Atoms. The fundamental element of Push programs."""
 
     ...
@@ -23,10 +22,6 @@ class Atom(JSONable):
 
 class Closer(Atom):
     """An Atom dedicated to denoting the close of a CodeBlock in its flat representsion."""
-
-    def jsonify(self) -> str:
-        """Return the object as a JSON string."""
-        return json.dumps({"a": "close"}, separators=(',', ':'))
 
     def __eq__(self, other):
         return isinstance(other, Closer)
@@ -58,13 +53,6 @@ class Literal(Atom):
         if not self.push_type.is_instance(value):
             value = self.push_type.coerce(value)
         self.value = value
-
-    def jsonify(self) -> str:
-        """Return the object as a JSON string."""
-        return json.dumps(
-            {"a": "lit", "t": self.push_type.name, "v": self.value},
-            separators=(',', ':')
-        )
 
     def __eq__(self, other):
         if isinstance(other, Literal) and self.push_type == other.push_type:
@@ -134,10 +122,6 @@ class Instruction(Atom, ABC):
         """Return a list of PushType names relevant to the instruction."""
         pass
 
-    def jsonify(self) -> str:
-        """Return the object as a JSON string."""
-        return json.dumps({"a": "instr", "n": self.name}, separators=(',', ':'))
-
     def __eq__(self, other):
         if type(self) == type(other):
             return self.name == other.name
@@ -173,10 +157,6 @@ class JitInstructionRef(Atom):
     def __init__(self, name: str):
         self.name = name
 
-    def jsonify(self) -> str:
-        """Return the object as a JSON string."""
-        return json.dumps({"a": "jit-instr", "n": self.name}, separators=(',', ':'))
-
     def __eq__(self, other):
         if isinstance(other, JitInstructionRef):
             return self.name == other.name
@@ -186,7 +166,7 @@ class JitInstructionRef(Atom):
         return "JitInstructionRef<{n}>".format(n=self.name)
 
 
-class CodeBlock(list, Atom):
+class CodeBlock(list, Atom, Saveable):
     """An Atom which holds a sequence of other Atoms."""
 
     def __init__(self, *args):
@@ -199,27 +179,9 @@ class CodeBlock(list, Atom):
         elif isinstance(el, Atom):
             self.append(el)
         elif isinstance(el, list):
-            self.append(CodeBlock.from_list(el))
+            self.append(CodeBlock(*el))
         else:
             raise ValueError("Only Atoms can be added to CodeBlocks. Got {el}".format(el=el))
-
-    @staticmethod
-    def from_list(l: Sequence[Atom]):
-        """Return a CodeBlock from a list of Atoms."""
-        cb = CodeBlock()
-        for el in l:
-            cb._add(el)
-        return cb
-
-    @staticmethod
-    def from_json_str(json_str: str, instruction_set: dict):
-        """Create a CodeBlock from a JSON string."""
-        # Can't annotate instruction_set type properly due to circular import.
-        return AtomFactory.json_list_to_code_block(json.loads(json_str), instruction_set)
-
-    def jsonify(self) -> str:
-        """Return the object as a JSON string."""
-        return jsonify_collection(self)
 
     def size(self, depth: int = 1) -> int:
         """Return the size of the block and the size of all the nested blocks."""
@@ -272,54 +234,54 @@ class CodeBlock(list, Atom):
         return deepcopy(self) if deep else copy(self)
 
 
-class AtomFactory:
-    """Produces specific types of Atoms from various sources.
-
-    Any kinds of Atoms except CodeBlocks can be described in a dict. CodeBlocks
-    can be described as lists of other Atom specifications. These representations
-    are used for serialization and deserialization (JSON). The AtomFactory builds
-    Atoms of any kind from these specifications.
-    """
-
-    # Can't annotate instruction_set type properly due to circular import.
-    @staticmethod
-    def json_dict_to_atom(json_dict: dict, instruction_set: dict) -> Atom:
-        """Return the atom specified by the dict produced by JSON decoding."""
-        type_library = instruction_set.type_library
-        atom_type = json_dict["a"]
-        if atom_type == "close":
-            return Closer()
-        elif atom_type == "lit":
-            push_type = type_library[json_dict["t"]]
-            value = push_type.coerce(json_dict["v"])
-            return Literal(value, push_type)
-        elif atom_type == "instr":
-            return instruction_set[json_dict["n"]]
-        elif atom_type == "jit-instr":
-            return JitInstructionRef(json_dict["n"])
-        else:
-            raise ValueError("bad atom spec {s}".format(s=json_dict))
-
-    # Can't annotate instruction_set type properly due to circular import.
-    @staticmethod
-    def json_list_to_code_block(json_list: list, instruction_set: dict) -> CodeBlock:
-        """Return a CobdeBlock build from the list produced by JSON decoding."""
-        cb = CodeBlock()
-        for nested_atom_spec in json_list:
-            if isinstance(nested_atom_spec, list):
-                cb.append(AtomFactory.json_list_to_code_block(nested_atom_spec, instruction_set))
-            else:
-                cb.append(AtomFactory.json_dict_to_atom(nested_atom_spec, instruction_set))
-        return cb
-
-    # Can't annotate instruction_set type properly due to circular import.
-    @staticmethod
-    def json_str_to_atom_list(json_str: str, instruction_set: dict) -> Sequence[Atom]:
-        """Return a list of Atoms parsed from the json_str."""
-        atoms = []
-        for atom_spec in json.loads(json_str):
-            if isinstance(atom_spec, list):
-                atoms.append(AtomFactory.json_list_to_code_block(atom_spec, instruction_set))
-            else:
-                atoms.append(AtomFactory.json_dict_to_atom(atom_spec, instruction_set))
-        return atoms
+# class AtomFactory:
+#     """Produces specific types of Atoms from various sources.
+#
+#     Any kinds of Atoms except CodeBlocks can be described in a dict. CodeBlocks
+#     can be described as lists of other Atom specifications. These representations
+#     are used for serialization and deserialization (JSON). The AtomFactory builds
+#     Atoms of any kind from these specifications.
+#     """
+#
+#     # Can't annotate instruction_set type properly due to circular import.
+#     @staticmethod
+#     def json_dict_to_atom(json_dict: dict, instruction_set: dict) -> Atom:
+#         """Return the atom specified by the dict produced by JSON decoding."""
+#         type_library = instruction_set.type_library
+#         atom_type = json_dict["a"]
+#         if atom_type == "close":
+#             return Closer()
+#         elif atom_type == "lit":
+#             push_type = type_library[json_dict["t"]]
+#             value = push_type.coerce(json_dict["v"])
+#             return Literal(value, push_type)
+#         elif atom_type == "instr":
+#             return instruction_set[json_dict["n"]]
+#         elif atom_type == "jit-instr":
+#             return JitInstructionRef(json_dict["n"])
+#         else:
+#             raise ValueError("bad atom spec {s}".format(s=json_dict))
+#
+#     # Can't annotate instruction_set type properly due to circular import.
+#     @staticmethod
+#     def json_list_to_code_block(json_list: list, instruction_set: dict) -> CodeBlock:
+#         """Return a CobdeBlock build from the list produced by JSON decoding."""
+#         cb = CodeBlock()
+#         for nested_atom_spec in json_list:
+#             if isinstance(nested_atom_spec, list):
+#                 cb.append(AtomFactory.json_list_to_code_block(nested_atom_spec, instruction_set))
+#             else:
+#                 cb.append(AtomFactory.json_dict_to_atom(nested_atom_spec, instruction_set))
+#         return cb
+#
+#     # Can't annotate instruction_set type properly due to circular import.
+#     @staticmethod
+#     def json_str_to_atom_list(json_str: str, instruction_set: dict) -> Sequence[Atom]:
+#         """Return a list of Atoms parsed from the json_str."""
+#         atoms = []
+#         for atom_spec in json.loads(json_str):
+#             if isinstance(atom_spec, list):
+#                 atoms.append(AtomFactory.json_list_to_code_block(atom_spec, instruction_set))
+#             else:
+#                 atoms.append(AtomFactory.json_dict_to_atom(atom_spec, instruction_set))
+#         return atoms

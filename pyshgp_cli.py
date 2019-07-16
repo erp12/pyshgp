@@ -23,7 +23,7 @@ from pyshgp.push.instruction import (
 from pyshgp.push.instructions import core_instructions
 from pyshgp.push.type_library import PushTypeLibrary
 
-# @TODO: Create a way to prepare a release from pyshgp_cli.py
+# @TODO: CLI - Create a way to prepare a release from pyshgp_cli.py
 
 CORE_INSTRUCTIONS = core_instructions(PushTypeLibrary())
 DOC_DIR = "build/doc/"
@@ -172,7 +172,7 @@ def _get_cli_args():
         ],
         default="markdown"
     )
-    # TODO: Core instructions doc file output dir
+    # TODO: CLI - Core instructions doc file output dir
     parser.add_argument("--debug", action="store_true")
     return parser.parse_args()
 

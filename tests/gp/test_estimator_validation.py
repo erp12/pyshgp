@@ -1,17 +1,16 @@
 import numpy as np
 import random
 from math import pow, sqrt
+from functools import partial
 
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.atoms import CodeBlock
-from pyshgp.push.type_library import PushTypeLibrary
-from pyshgp.push.types import PushFloat
 
 
-def test_ga_on_odd():
+def run_ga_on_odd_test(parallelism):
     X = np.arange(-10, 10).reshape(-1, 1)
     y = [[bool(x[0] % 2)] for x in X]
 
@@ -25,7 +24,7 @@ def test_ga_on_odd():
         instruction_set=instruction_set,
         literals=[],
         erc_generators=[
-            lambda: random.randint(0, 10),
+            partial(random.randint, 0, 10),
         ]
     )
 
@@ -33,11 +32,18 @@ def test_ga_on_odd():
         spawner=spawner,
         population_size=40,
         max_generations=10,
-        simplification_steps=2)
+        simplification_steps=2,
+        parallelism=parallelism)
     est.fit(X, y)
 
     assert isinstance(est._result.program, CodeBlock)
     assert len(est._result.program) > 0
+
+
+def test_ga():
+    run_ga_on_odd_test(False)
+    run_ga_on_odd_test(True)
+    run_ga_on_odd_test(2)
 
 
 def point_distance(p1, p2):

@@ -10,7 +10,6 @@ from pyshgp.gp.genome import GeneSpawner
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
 from pyshgp.push.atoms import CodeBlock
-# from pyshgp.push.types import push_type_for_type
 from pyshgp.utils import JSONable, list_rindex
 from pyshgp.validation import check_is_fitted, check_X_y
 from pyshgp.monitoring import DEFAULT_VERBOSITY_LEVELS
@@ -98,6 +97,10 @@ class PushEstimator:
     interpreter : PushInterpreter, optional
         The PushInterpreter to use when making predictions. Also holds the instruction
         set to use
+    parallelism : Union[Int, bool], optional
+        Set the number of processes to spawn for use when performing embarrassingly
+        parallel tasks. If false, no processes will spawn and compuation will be
+        serial. Default is true, which spawns one process per available cpu.
     verbose : int, optional
         Indicates if verbose printing should be used during searching.
         Default is 0. Options are 0, 1, or 2.
@@ -119,6 +122,7 @@ class PushEstimator:
                  simplification_steps: int = 2000,
                  last_str_from_stdout: bool = False,
                  interpreter: PushInterpreter = "default",
+                 parallelism: Union[int, bool] = False,
                  verbose: int = 0,
                  **kwargs):
         self._search_name = search
@@ -130,6 +134,7 @@ class PushEstimator:
         self.initial_genome_size = initial_genome_size
         self.simplification_steps = simplification_steps
         self.last_str_from_stdout = last_str_from_stdout
+        self.parallelism = parallelism
         self.verbose = verbose
         self.ext = kwargs
 
@@ -161,6 +166,7 @@ class PushEstimator:
             max_generations=self.max_generations,
             initial_genome_size=self.initial_genome_size,
             simplification_steps=self.simplification_steps,
+            parallelism=self.parallelism,
             verbosity_config=self.verbosity_config
         )
         self.search = sr.get_search_algo(self._search_name, config=search_config, **self.ext)

@@ -59,4 +59,4 @@ class TestInstructionSet:
         assert instr_set.required_stacks() == {"code", "int", "float", "bool", "str", "char"}
 
 
-# @TODO: Test all instruction set methods with custom type library.
+# @TODO: TEST - Test all instruction set methods with custom type library.

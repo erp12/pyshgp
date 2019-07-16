@@ -24,7 +24,7 @@ class TestIndividual:
 
     def test_set_program(self, unevaluated_individual):
         with pytest.raises(AttributeError):
-            unevaluated_individual.program = CodeBlock.from_list([])
+            unevaluated_individual.program = CodeBlock()
 
     def test_set_error_vector(self, unevaluated_individual):
         assert unevaluated_individual.total_error is None

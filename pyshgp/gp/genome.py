@@ -11,12 +11,10 @@ from copy import copy, deepcopy
 import numpy as np
 
 from pyshgp.push.type_library import infer_literal
-from pyshgp.push.atoms import (
-    Atom, Closer, Literal, Instruction, CodeBlock, AtomFactory
-)
+from pyshgp.push.atoms import Atom, Closer, Literal, Instruction, CodeBlock
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.gp.evaluation import Evaluator
-from pyshgp.utils import DiscreteProbDistrib, JSONable, jsonify_collection
+from pyshgp.utils import DiscreteProbDistrib, Saveable
 from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log
 
 
@@ -37,7 +35,7 @@ def _has_opener(l: Sequence) -> bool:
     return sum([isinstance(_, Opener) for _ in l]) > 0
 
 
-class Genome(list, JSONable):
+class Genome(list, Saveable):
     """A flat sequence of Atoms where each Atom is a "gene" in the genome."""
 
     def __init__(self, atoms: Sequence[Atom] = None):
@@ -50,12 +48,6 @@ class Genome(list, JSONable):
         if isinstance(el, CodeBlock):
             raise ValueError("Cannot add CodeBlock to genomes. Genomes must be kept flat.")
         super().append(el)
-
-    @staticmethod
-    def from_json_str(json_str: str, instruction_set: InstructionSet):
-        """Create a Genome from a JSON string."""
-        atoms = AtomFactory.json_str_to_atom_list(json_str, instruction_set)
-        return Genome(atoms)
 
     def to_code_block(self) -> CodeBlock:
         """Translate into nested CodeBlocks.
@@ -78,7 +70,7 @@ class Genome(list, JSONable):
                 plushy_buffer.append(Closer())
             # If done with plush and all opens closed, return push.
             elif len(plushy_buffer) == 0:
-                return CodeBlock.from_list(push_buffer)
+                return CodeBlock(*push_buffer)
             else:
                 atom = plushy_buffer[0]
                 # If next instruction is a close, and there is an open.
@@ -112,9 +104,9 @@ class Genome(list, JSONable):
             return deepcopy(self)
         return copy(self)
 
-    def jsonify(self) -> str:
-        """Return the object as a JSON string."""
-        return jsonify_collection(self)
+    def make_str(self) -> str:
+        """Create one simple str representsion of the Genome."""
+        return " ".join([str(gene) for gene in self])
 
 
 class GeneSpawner:

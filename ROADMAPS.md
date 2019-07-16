@@ -20,25 +20,11 @@
   - Put the optimized genome in the next generation.
   - Repeat until population is full and resume evolution for another `n` generations.
 
-## Strategy For Parallelism
-
-### Goals
-
-- Abstractly, evaluation is embarrassingly parallel. PyshGP should attempt to approach this in practice.
-- External tooling (libraries and infrastructure) should be kept to minimum.
-- Minimize the amount of serialization
-
-### To Do
-
-- [ ] Remove all lambdas and nested functions from the instruction definitions.
-  - This will likely require the use of partials
-- [ ] Ensure no lambdas and nested functions exist in classes involved in evaluation.
-- [ ] Add multiprocessing pool to search algorithm configuration.
-- [ ] Broadcast data and population once.
-- [ ] Perform evaluation, and collect results.
-
-
 ## Logging
+
+- [ ] Create a monitoring.LogConfig class
+- [ ] Create a monitoring.Loggable interface that specs a `.log(config: LogConfig)` method.
+- [ ] Each implementation of Loggable should use a "key" to determine where logs are written.
 
 ### Goals
 
@@ -60,11 +46,3 @@
 - Create an `ancestry.csv` pipe delimited log file
   - `parent_id`, `child_id`, `generation`, `selection_method`, `variation_method`
   - Edge list of evolutionary lineage.
-
-
-## User Defined Types/Stacks
-
-### Goals
-
-- Users should be able to define their own PushTypes which get associated Stacks.
-- This is meant to aid in domain-specific applications (ie. NeuroEvolution, Quantum Algorithms, etc)

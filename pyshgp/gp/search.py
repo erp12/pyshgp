@@ -1,9 +1,11 @@
 """The :mod:`search` module defines algorithms to search for Push programs."""
 from abc import ABC, abstractmethod
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 import numpy as np
 import math
+from functools import partial
+from multiprocessing import Pool, Manager
 
 from pyshgp.utils import DiscreteProbDistrib
 from pyshgp.gp.evaluation import Evaluator
@@ -16,7 +18,23 @@ from pyshgp.utils import instantiate_using
 from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log
 
 
-# @TODO: Should SearchConfiguration be JSON serializable?
+class ParallelContext:
+    """Holds the objects needed to coordinate parallelism."""
+
+    def __init__(self,
+                 spawner: GeneSpawner,
+                 evaluator: Evaluator,
+                 n_proc: Optional[int] = None):
+        self.manager = Manager()
+        self.ns = self.manager.Namespace()
+        self.ns.spawner = spawner
+        self.ns.evaluator = evaluator
+        if n_proc is None:
+            self.pool = Pool()
+        else:
+            self.pool = Pool(n_proc)
+
+
 class SearchConfiguration:
     """Configuration of an search algorithm.
 
@@ -47,6 +65,10 @@ class SearchConfiguration:
     simplification_steps : int, optional
         The number of simplification iterations to apply to the best Push program
         produced by the search algorithm. Default is 2000.
+    parallelism : Union[Int, bool], optional
+        Set the number of processes to spawn for use when performing embarrassingly
+        parallel tasks. If false, no processes will spawn and compuation will be
+        serial. Default is true, which spawns one process per available cpu.
     verbosity_config :  Union[VerbosityConfig, str], optional
         A VerbosityConfig controling what is logged during the search. Default
         is no verbosity.
@@ -63,6 +85,7 @@ class SearchConfiguration:
                  error_threshold: float = 0.0,
                  initial_genome_size: Tuple[int, int] = (10, 50),
                  simplification_steps: int = 2000,
+                 parallelism: Union[int, bool] = True,
                  verbosity_config: Union[VerbosityConfig, str] = "default",
                  **kwargs):
         self.evaluator = evaluator
@@ -73,6 +96,13 @@ class SearchConfiguration:
         self.initial_genome_size = initial_genome_size
         self.simplification_steps = simplification_steps
         self.ext = kwargs
+
+        self.parallel_context = None
+        if isinstance(parallelism, bool):
+            if parallelism:
+                self.parallel_context = ParallelContext(spawner, evaluator)
+        elif parallelism > 1:
+            self.parallel_context = ParallelContext(spawner, evaluator)
 
         if isinstance(selection, Selector):
             self._selection = DiscreteProbDistrib().add(selection, 1.0)
@@ -105,6 +135,10 @@ class SearchConfiguration:
         return self._variation.sample()
 
 
+def _spawn_individual(spawner, genome_size, *args):
+    return Individual(spawner.spawn_genome(genome_size))
+
+
 class SearchAlgorithm(ABC):
     """Base class for all search algorithms.
 
@@ -128,17 +162,24 @@ class SearchAlgorithm(ABC):
 
     def __init__(self, config: SearchConfiguration):
         self.config = config
+        self._p_context = config.parallel_context
         self.generation = 0
         self.best_seen = None
         self.init_population()
 
     def init_population(self):
         """Initialize the population."""
+        spawner = self.config.spawner
+        init_gn_size = self.config.initial_genome_size
+        pop_size = self.config.population_size
         self.population = Population()
-        for i in range(self.config.population_size):
-            spawner = self.config.spawner
-            genome = spawner.spawn_genome(self.config.initial_genome_size)
-            self.population.add(Individual(genome))
+        if self._p_context is not None:
+            gen_func = partial(_spawn_individual, self._p_context.ns.spawner, init_gn_size)
+            for indiv in self._p_context.pool.imap_unordered(gen_func, range(pop_size)):
+                self.population.add(indiv)
+        else:
+            for i in range(pop_size):
+                self.population.add(_spawn_individual(spawner, init_gn_size))
 
     @abstractmethod
     def step(self) -> bool:
@@ -154,7 +195,10 @@ class SearchAlgorithm(ABC):
 
     def _full_step(self) -> bool:
         self.generation += 1
-        self.population.evaluate(self.config.evaluator)
+        if self._p_context is not None:
+            self.population.p_evaluate(self._p_context.ns.evaluator, self._p_context.pool)
+        else:
+            self.population.evaluate(self.config.evaluator)
 
         best_this_gen = self.population.best()
         if self.best_seen is None or best_this_gen.total_error < self.best_seen.total_error:
@@ -173,9 +217,9 @@ class SearchAlgorithm(ABC):
                 m=self.population.median_error(),
                 e_d=self.population.error_diversity()
             ))
-            # stat_logs.append("Population: size={p_s}, genome_diversity={g_d}".format(
+            # stat_logs.append("Population: size={p_s}, program_diversity={p_d}".format(
             #     p_s=len(self.population),
-            #     g_d=self.population.genome_diversity()
+            #     p_d=self.population.program_diversity()
             # ))
 
             log(self.config.verbosity_config.generation, " | ".join(stat_logs))

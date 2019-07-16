@@ -24,7 +24,7 @@ class TestPushState:
         assert state["int"].top() == 1
 
     def test_load_program(self, state: PushState, atoms):
-        prog = CodeBlock.from_list([atoms["5"], atoms["5"], atoms["add"]])
+        prog = CodeBlock(*[atoms["5"], atoms["5"], atoms["add"]])
         state.load_program(prog)
         assert state.size() == 1
         assert len(state["exec"].top()) == 3

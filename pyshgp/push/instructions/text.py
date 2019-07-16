@@ -244,7 +244,7 @@ def instructions():
 
         # Splitting
 
-        # @TODO: srt_split_on_space
+        # @TODO: srt_split_on_space instruction
 
         i.append(ProducesManyOfTypeInstruction(
             "str_split_on_{t}".format(t=push_type),

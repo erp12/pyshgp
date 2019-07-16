@@ -29,12 +29,56 @@ def _p_mod(a, b):
     return b % a,
 
 
+def _min(a, b):
+    return min(a, b),
+
+
+def _max(a, b):
+    return max(a, b),
+
+
 def _inc(x):
     return x + 1,
 
 
 def _dec(x):
     return x - 1,
+
+
+def _lt(a, b):
+    return b < a,
+
+
+def _gt(a, b):
+    return b > a,
+
+
+def _lte(a, b):
+    return b <= a,
+
+
+def _gte(a, b):
+    return b >= a,
+
+
+def _sin(x):
+    return math.sin(x),
+
+
+def _cos(x):
+    return math.cos(x),
+
+
+def _tan(x):
+    return math.tan(x),
+
+
+def _to_int(x):
+    return int(x),
+
+
+def _to_float(x):
+    return float(x),
 
 
 def instructions():
@@ -89,7 +133,7 @@ def instructions():
 
         i.append(SimpleInstruction(
             "{t}_min".format(t=push_type),
-            lambda a, b: [min(b, a)],
+            _min,
             input_stacks=[push_type, push_type],
             output_stacks=[push_type],
             code_blocks=0,
@@ -98,7 +142,7 @@ def instructions():
 
         i.append(SimpleInstruction(
             "{t}_max".format(t=push_type),
-            lambda a, b: [max(b, a)],
+            _max,
             input_stacks=[push_type, push_type],
             output_stacks=[push_type],
             code_blocks=0,
@@ -125,7 +169,7 @@ def instructions():
 
         i.append(SimpleInstruction(
             "{t}_lt".format(t=push_type),
-            lambda a, b: [b < a],
+            _lt,
             input_stacks=[push_type, push_type],
             output_stacks=["bool"],
             code_blocks=0,
@@ -134,7 +178,7 @@ def instructions():
 
         i.append(SimpleInstruction(
             "{t}_lte".format(t=push_type),
-            lambda a, b: [b <= a],
+            _lte,
             input_stacks=[push_type, push_type],
             output_stacks=["bool"],
             code_blocks=0,
@@ -143,7 +187,7 @@ def instructions():
 
         i.append(SimpleInstruction(
             "{t}_gt".format(t=push_type),
-            lambda a, b: [b > a],
+            _gt,
             input_stacks=[push_type, push_type],
             output_stacks=["bool"],
             code_blocks=0,
@@ -152,7 +196,7 @@ def instructions():
 
         i.append(SimpleInstruction(
             "{t}_gte".format(t=push_type),
-            lambda a, b: [b >= a],
+            _gte,
             input_stacks=[push_type, push_type],
             output_stacks=["bool"],
             code_blocks=0,
@@ -163,7 +207,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "float_sin",
-        lambda x: [math.sin(x)],
+        _sin,
         input_stacks=["float"],
         output_stacks=["float"],
         code_blocks=0,
@@ -172,7 +216,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "float_cos",
-        lambda x: [math.cos(x)],
+        _cos,
         input_stacks=["float"],
         output_stacks=["float"],
         code_blocks=0,
@@ -181,7 +225,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "float_tan",
-        lambda x: [math.tan(x)],
+        _tan,
         input_stacks=["float"],
         output_stacks=["float"],
         code_blocks=0,
@@ -192,7 +236,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "int_from_bool",
-        lambda b: [int(b)],
+        _to_int,
         input_stacks=["bool"],
         output_stacks=["int"],
         code_blocks=0,
@@ -201,7 +245,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "float_from_bool",
-        lambda b: [float(b)],
+        _to_float,
         input_stacks=["bool"],
         output_stacks=["float"],
         code_blocks=0,
@@ -210,7 +254,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "int_from_float",
-        lambda f: [int(f)],
+        _to_int,
         input_stacks=["float"],
         output_stacks=["int"],
         code_blocks=0,
@@ -219,7 +263,7 @@ def instructions():
 
     i.append(SimpleInstruction(
         "float_from_int",
-        lambda i: [float(i)],
+        _to_float,
         input_stacks=["int"],
         output_stacks=["float"],
         code_blocks=0,

@@ -4,14 +4,14 @@
 relu(x) = max(0, x)
 ```
 
-The Leaky ReLU function is a varient of the ReLU function designed to avoid
+The Leaky ReLU function is a variant of the ReLU function designed to avoid
 having nodes "die". Its definition is as follows.
 
 ```
 leaky_relu(x) = max(0.1x, x)
 ```
 
-This problem attempts to synthesize a program that compute the output of both
+This problem attempts to synthesize a program that computes the output of both
 the ReLU and LeakyReLU functions.
 
 """

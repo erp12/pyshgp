@@ -70,7 +70,7 @@ class PushTypeLibrary(dict):
             A name for the type. Used when referencing the PushType in Instruction
             definitions and will be the key in the PushState for the corresponding
             PushStack.
-        underlying : Tuple[type]
+        underlying_types : Tuple[type]
             A tuple of python types that correspond to the underlying
             native types which the PushType is representing.
         coercion_func : Callable[[Any], Any], optional

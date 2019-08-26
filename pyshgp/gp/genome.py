@@ -5,16 +5,17 @@ programs. The ``GenomeSpawner`` class is a factory of random genes (``Atoms``)
 and random ``Genomes``.
 
 """
-from typing import Callable, Sequence, Union, Tuple, Any, Optional
-from copy import copy, deepcopy
+from collections import MutableSequence
+from typing import Callable, Sequence, Union, Tuple, Optional, Any
 
 import numpy as np
 
+from pyshgp.push.interpreter import ProgramSignature, Program
 from pyshgp.push.type_library import infer_literal
 from pyshgp.push.atoms import Atom, Closer, Literal, Instruction, CodeBlock
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.gp.evaluation import Evaluator
-from pyshgp.utils import DiscreteProbDistrib, Saveable
+from pyshgp.utils import DiscreteProbDistrib, Saveable, Copyable
 from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log
 
 
@@ -35,19 +36,46 @@ def _has_opener(l: Sequence) -> bool:
     return sum([isinstance(_, Opener) for _ in l]) > 0
 
 
-class Genome(list, Saveable):
+class Genome(MutableSequence, Saveable, Copyable):
     """A flat sequence of Atoms where each Atom is a "gene" in the genome."""
 
     def __init__(self, atoms: Sequence[Atom] = None):
+        self.list = []
         if atoms is not None:
             for el in atoms:
                 self.append(el)
 
-    def append(self, el: Atom):
-        """Append Atom to end of Genome."""
+    def __getitem__(self, i: int) -> Any:
+        return self.list.__getitem__(i)
+
+    def __setitem__(self, i: int, o: Any) -> None:
+        self.list.__setitem__(i, Genome._conform_element(o))
+
+    def __delitem__(self, i: int) -> None:
+        self.list.__delitem__(i)
+
+    def __len__(self) -> int:
+        return self.list.__len__()
+
+    def __eq__(self, other):
+        return isinstance(other, Genome) and self.list == other.list
+
+    def __repr__(self):
+        return "Genome" + self.list.__repr__()
+
+    def append(self, atom: Atom) -> None:
+        """Append a non-CodeBlock Atom to the end of the Genome."""
+        self.list.append(Genome._conform_element(atom))
+
+    def insert(self, index: int, atom: Atom) -> None:
+        """Insert Atom before index."""
+        self.list.insert(Genome._conform_element(atom))
+
+    @staticmethod
+    def _conform_element(el: Any) -> Atom:
         if isinstance(el, CodeBlock):
             raise ValueError("Cannot add CodeBlock to genomes. Genomes must be kept flat.")
-        super().append(el)
+        return el
 
     def to_code_block(self) -> CodeBlock:
         """Translate into nested CodeBlocks.
@@ -88,24 +116,8 @@ class Genome(list, Saveable):
                     push_buffer.append(atom)
                 del plushy_buffer[0]
 
-    def simplify(self,
-                 evaluator: Evaluator,
-                 origional_error: float,
-                 steps: int,
-                 verbosity_config: VerbosityConfig = None):
-        """Simplify genome while preserving or improving error."""
-        simplifier = GenomeSimplifier(evaluator, verbosity_config)
-        gn, _ = simplifier.simplify(self, origional_error, steps)
-        return gn
-
-    def copy(self, *, deep: bool = False):
-        """Return a copy of the Genome."""
-        if deep:
-            return deepcopy(self)
-        return copy(self)
-
     def make_str(self) -> str:
-        """Create one simple str representsion of the Genome."""
+        """Create one simple str representation of the Genome."""
         return " ".join([str(gene) for gene in self])
 
 
@@ -299,12 +311,16 @@ class GenomeSimplifier:
 
     # @TODO: Add noop swaps to simplification.
 
-    def __init__(self, evaluator: Evaluator, verbosity_config: Optional[VerbosityConfig] = None):
+    def __init__(self,
+                 evaluator: Evaluator,
+                 program_signature: ProgramSignature,
+                 verbosity_config: Optional[VerbosityConfig] = None):
         self.evaluator = evaluator
+        self.program_signature = program_signature
         self.verbosity_config = verbosity_config
 
     def _remove_rand_genes(self, genome: Genome) -> Genome:
-        gn = genome.copy()
+        gn = genome.copy(deep=True)
         n_genes_to_remove = min(np.random.randint(1, 4), len(genome) - 1)
         ndx_of_genes_to_remove = np.random.choice(np.arange(len(gn)), n_genes_to_remove, replace=False)
         ndx_of_genes_to_remove[::-1].sort()
@@ -312,11 +328,12 @@ class GenomeSimplifier:
             del gn[ndx]
         return gn
 
-    def _errors_of_genome(self, genome: Genome) -> float:
-        program = genome.to_code_block()
+    def _errors_of_genome(self, genome: Genome) -> np.ndarray:
+        cb = genome.to_code_block()
+        program = Program(cb, self.program_signature)
         return self.evaluator.evaluate(program)
 
-    def _step(self, genome: Genome, errors_to_beat: np.ndarray) -> Tuple[Genome, float]:
+    def _step(self, genome: Genome, errors_to_beat: np.ndarray) -> Tuple[Genome, np.ndarray]:
         new_gn = self._remove_rand_genes(genome)
         new_errs = self._errors_of_genome(new_gn)
         if np.sum(new_errs) <= np.sum(errors_to_beat):
@@ -330,7 +347,7 @@ class GenomeSimplifier:
 
     def simplify(self,
                  genome: Genome,
-                 origional_errors: np.ndarray,
+                 original_errors: np.ndarray,
                  steps: int = 2000) -> Tuple[Genome, np.ndarray]:
         """Simplify the given geome while maintaining error.
 
@@ -338,7 +355,7 @@ class GenomeSimplifier:
         ----------
         genome
             The Genome to simplifiy.
-        origional_errors
+        original_errors
             Error vector of the genome to simplify.
         steps
             Number of simplification iterations to perform. Default is 2000.
@@ -357,7 +374,7 @@ class GenomeSimplifier:
                 "Simplifying genome of length {ln}.".format(ln=len(genome))
             )
         gn = genome
-        errs = origional_errors
+        errs = original_errors
         for step in range(steps):
             gn, errs = self._step(gn, errs)
             if len(gn) == 1:

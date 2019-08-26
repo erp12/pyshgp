@@ -47,6 +47,8 @@ class PushState(dict):
         ----------
         d : dict
             Dict that is converted into a Push state.
+        type_library : PushTypeLibrary
+            A Push type library.
 
         """
         state = cls(type_library)
@@ -67,7 +69,7 @@ class PushState(dict):
         state.stdout = stdout
         return state
 
-    def load_program(self, program: CodeBlock):
+    def load_code(self, program: CodeBlock):
         """Push the given CodeBlock to the execution stack."""
         self["exec"].push(program)
 

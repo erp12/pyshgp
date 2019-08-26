@@ -17,7 +17,8 @@ class VerbosityConfig:
                  simplification: Union[bool, int] = False,
                  simplification_step: Union[bool, int] = False,
                  program_trace: Union[bool, int] = False):
-        self.log_level = self._update_log_level()
+        self.log_level = logging.getLogger().getEffectiveLevel()
+        self.update_log_level()
         self.solution_found = solution_found
         self.generation = generation
         self.every_n_generations = every_n_generations
@@ -25,7 +26,8 @@ class VerbosityConfig:
         self.simplification_step = simplification_step
         self.program_trace = program_trace
 
-    def _update_log_level(self):
+    def update_log_level(self):
+        """Store the log level set by the user."""
         self.log_level = logging.getLogger().getEffectiveLevel()
 
 

@@ -8,7 +8,7 @@
 - Fitting ERC Literals to their optimal value is difficult via evolution.
 - If some sort of stochastic optimization periodically applied to Literals might help.
 
-### To Do
+#### To Do
 
 - [ ] Add a Literal subclass for `ErcLiteral`.
 - [ ] Add a search config param for `literal_optimization_interval`.
@@ -20,17 +20,17 @@
   - Put the optimized genome in the next generation.
   - Repeat until population is full and resume evolution for another `n` generations.
 
-## Logging
+### Logging
 
 - [ ] Create a monitoring.LogConfig class
 - [ ] Create a monitoring.Loggable interface that specs a `.log(config: LogConfig)` method.
 - [ ] Each implementation of Loggable should use a "key" to determine where logs are written.
 
-### Goals
+#### Goals
 
 - Implement system which produces log files for analysis
 
-### To Do
+#### To Do
 
 - [ ] Add optional log directory to search config
 - [ ] Create a directory for logs at start of each run.

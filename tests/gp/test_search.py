@@ -2,6 +2,7 @@ import pytest
 
 from pyshgp.gp.search import SearchConfiguration
 from pyshgp.gp.evaluation import DatasetEvaluator
+from pyshgp.push.interpreter import ProgramSignature
 
 
 @pytest.fixture(scope="session")
@@ -11,8 +12,9 @@ def empty_evaluator():
 
 class TestSearchConfiguration:
 
-    def test_create_config_strs(self, empty_evaluator, simple_gene_spawner):
+    def test_create_config_strs(self, empty_evaluator, simple_gene_spawner, simple_program_signature):
         config = SearchConfiguration(
+            simple_program_signature,
             empty_evaluator,
             simple_gene_spawner,
             "tournament",

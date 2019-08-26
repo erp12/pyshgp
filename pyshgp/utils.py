@@ -1,6 +1,5 @@
 """Utility classes and functions used throughout pyshgp."""
-from typing import Optional, Union
-from abc import ABC, abstractmethod
+from copy import deepcopy, copy
 from enum import Enum
 import inspect
 import pickle
@@ -81,48 +80,21 @@ class Saveable:
     def save(self, path: str):
         """Save the CodeBlock to a binary file."""
         loc, filename = os.path.split(path)
-        os.makedirs(loc, exist_ok=True)
-        with open(path, "w+") as f:
-            pickle.dump(self, f, path)
+        if loc != "":
+            os.makedirs(loc, exist_ok=True)
+        with open(path, "wb") as f:
+            pickle.dump(self, f)
 
     @staticmethod
     def load(path: str):
         """Load a CodeBlock from a binary file.."""
-        with open(path, "r+") as f:
+        with open(path, "rb") as f:
             return pickle.load(f)
 
 
-class JSONable(ABC):
-    """Abstract base class for objects can be transformed into JSON."""
+class Copyable:
+    """Allows an object to be copied via a method."""
 
-    @abstractmethod
-    def jsonify(self) -> str:
-        """Return the object as a JSON string."""
-        pass
-
-    def to_json(self, filepath: Optional[str] = None) -> Optional[str]:
-        """Write the object to either a string or a file."""
-        json_str = self.jsonify()
-        if filepath is None:
-            return json_str
-        else:
-            with open(filepath, "w+") as f:
-                f.write(json_str)
-
-
-def jsonify_collection(root: Union[list, dict]) -> str:
-    """Return the given list or dict and all elements as a JSON string."""
-    def _helper(thing) -> str:
-        if isinstance(thing, list):
-            return "[" + ",".join([_helper(el) for el in thing]) + "]"
-        elif isinstance(thing, dict):
-            return "{" + ",".join([str(k) + ":" + _helper(v) for k, v in thing.items()]) + "}"
-        elif isinstance(thing, JSONable):
-            return thing.jsonify()
-        else:
-            return str(thing)
-
-    if isinstance(root, (list, dict)):
-        return _helper(root)
-    else:
-        raise ValueError("Can jsonify_collection lists and dicts. Got {t}.".format(t=type(root)))
+    def copy(self, deep: bool = False):
+        """Copy the CodeBlock."""
+        return deepcopy(self) if deep else copy(self)

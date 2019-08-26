@@ -128,7 +128,7 @@ def instructions():
             input_stacks=[push_type, push_type],
             output_stacks=[push_type],
             code_blocks=0,
-            docstring="Computes the modulous of the top two {t}s and pushes the result.".format(t=push_type)
+            docstring="Computes the modulus of the top two {t}s and pushes the result.".format(t=push_type)
         ))
 
         i.append(SimpleInstruction(

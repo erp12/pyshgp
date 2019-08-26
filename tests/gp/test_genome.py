@@ -73,22 +73,24 @@ class TestGeneSpawner:
 
 class TestGenomeSimplifier:
 
-    def test_simplify_no_change(self, simple_genome):
+    def test_simplify_no_change(self, simple_individual):
         evaluator = DatasetEvaluator([[]], [10])
-        err = evaluator.evaluate(simple_genome.to_code_block())
+        genome = simple_individual.genome
+        err = evaluator.evaluate(simple_individual.get_program())
 
-        gs = GenomeSimplifier(evaluator)
-        new_genome, new_err = gs.simplify(simple_genome, err, 100)
+        gs = GenomeSimplifier(evaluator, simple_individual.signature)
+        new_genome, new_err = gs.simplify(genome, err, 100)
 
-        assert simple_genome == new_genome
+        assert genome == new_genome
         assert new_err == [0.0]
 
-    def test_simplify_no_change(self, simple_genome, atoms):
+    def test_simplify(self, simple_individual, atoms):
         evaluator = DatasetEvaluator([[]], [5])
-        err = evaluator.evaluate(simple_genome.to_code_block())
+        genome = simple_individual.genome
+        err = evaluator.evaluate(simple_individual.get_program())
 
-        gs = GenomeSimplifier(evaluator)
-        new_genome, new_err = gs.simplify(simple_genome, err, 100)
+        gs = GenomeSimplifier(evaluator, simple_individual.signature)
+        new_genome, new_err = gs.simplify(genome, err, 1000)
 
         assert new_genome == Genome([atoms["5"]])
         assert new_err == [0.0]

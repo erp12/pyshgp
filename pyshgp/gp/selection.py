@@ -36,8 +36,10 @@ class Selector(ABC):
 
         Parameters
         ----------
-        population
+        population : Population
             A Population of Individuals.
+        n : int
+            The number of parents to select from the population. Default is 1.
 
         Returns
         -------
@@ -49,9 +51,6 @@ class Selector(ABC):
         for i in range(n):
             selected.append(self.select_one(population))
         return selected
-
-
-# @TODO: class SelectorPipeline(Selector)
 
 
 class FitnessProportionate(Selector):
@@ -83,6 +82,8 @@ class FitnessProportionate(Selector):
         ----------
         population
             A Population of Individuals.
+        n : int
+            The number of parents to select from the population. Default is 1.
 
         Returns
         -------
@@ -92,8 +93,8 @@ class FitnessProportionate(Selector):
         """
         population_total_errors = np.array([i.total_error for i in population])
         sum_of_total_errors = np.sum(population_total_errors)
-        probablilities = 1.0 - (population_total_errors / sum_of_total_errors)
-        selected_ndxs = np.searchsorted(np.cumsum(probablilities), random(n))
+        probabilities = 1.0 - (population_total_errors / sum_of_total_errors)
+        selected_ndxs = np.searchsorted(np.cumsum(probabilities), random(n))
         return [population[ndx] for ndx in selected_ndxs]
 
 
@@ -142,7 +143,7 @@ def median_absolute_deviation(x: np.ndarray) -> np.float64:
 
     Parameters
     ----------
-    a : array-like, shape = (n,)
+    x : array-like, shape = (n,)
 
     Returns
     -------
@@ -177,12 +178,12 @@ class Lexicase(Selector):
         population_list = list(population)
         shuffle(population_list)
         preselected = []
-        error_vector_hashes = []
+        error_vector_hashes = set()
         for individual in population_list:
             error_vector_hash = hash(individual.error_vector_bytes)
             if error_vector_hash not in error_vector_hashes:
                 preselected.append(individual)
-                error_vector_hashes.append(error_vector_hash)
+                error_vector_hashes.add(error_vector_hash)
         return preselected
 
     def select_one(self, population: Population) -> Individual:
@@ -210,7 +211,7 @@ class Lexicase(Selector):
 
         while len(cases) > 0 and len(candidates) > 1:
             case = cases[0]
-            errors_this_case = [i._error_vector[case] for i in candidates]
+            errors_this_case = [i.error_vector[case] for i in candidates]
             best_val_for_case = min(errors_this_case)
 
             if isinstance(self.epsilon, np.ndarray):
@@ -220,7 +221,7 @@ class Lexicase(Selector):
             else:
                 max_error = best_val_for_case
 
-            candidates = [i for i in candidates if i._error_vector[case] <= max_error]
+            candidates = [i for i in candidates if i.error_vector[case] <= max_error]
             cases = cases[1:]
         return choice(candidates)
 
@@ -251,6 +252,8 @@ class Elite(Selector):
         ----------
         population
             A Population of Individuals.
+        n : int
+            The number of parents to select from the population. Default is 1.
 
         Returns
         -------

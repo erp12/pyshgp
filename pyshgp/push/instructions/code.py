@@ -183,7 +183,7 @@ def _code_do_times(state: PushState) -> PushState:
     return state
 
 
-def _exec_do_times(state: PushState) -> PushState:
+def _exec_do_times(state: PushState) -> Union[Token, PushState]:
     if state["exec"].is_empty() or state["int"].is_empty():
         return Token.revert
     if state["int"].top() < 1:
@@ -202,7 +202,7 @@ def _exec_do_times(state: PushState) -> PushState:
     return state
 
 
-def _exec_while(state: PushState) -> PushState:
+def _exec_while(state: PushState) -> Union[Token, PushState]:
     if state["exec"].is_empty():
         return Token.revert
     if state["bool"].is_empty():

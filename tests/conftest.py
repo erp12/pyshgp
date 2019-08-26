@@ -2,14 +2,21 @@ import pytest
 import random
 from math import pow, sqrt
 
+from pyshgp.gp.individual import Individual
+
 from pyshgp.push.type_library import PushTypeLibrary
 from pyshgp.push.types import PushInt, PushBool, PushFloat, PushStr
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.instruction import SimpleInstruction
 from pyshgp.push.atoms import Closer, Literal
-from pyshgp.push.interpreter import PushInterpreter
+from pyshgp.push.interpreter import PushInterpreter, PushConfig, ProgramSignature, Program
 from pyshgp.push.state import PushState
 from pyshgp.gp.genome import Genome, GeneSpawner
+
+
+@pytest.fixture(scope="session")
+def push_config():
+    return PushConfig()
 
 
 @pytest.fixture(scope="session")
@@ -48,6 +55,22 @@ def interpreter():
 @pytest.fixture(scope="function")
 def simple_genome(atoms):
     return Genome([atoms["5"], atoms["5"], atoms["add"]])
+
+
+@pytest.fixture(scope="function")
+def simple_program_signature(push_config):
+    return ProgramSignature(1, ["int"], push_config)
+
+
+@pytest.fixture(scope="function")
+def simple_program(simple_genome, simple_program_signature):
+    return Program(simple_genome.to_code_block(), simple_program_signature)
+
+
+@pytest.fixture(scope="function")
+def simple_individual(simple_genome, push_config):
+    sig = ProgramSignature(1, ["int"], push_config)
+    return Individual(simple_genome, sig)
 
 
 @pytest.fixture(scope="function")

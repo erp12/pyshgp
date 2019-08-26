@@ -5,7 +5,7 @@ can be used to determine if multiple items should be considered the same type
 during Push program execution.
 
 """
-from typing import Any, Tuple, Callable, Optional
+from typing import Any, Callable, Optional, Sequence
 
 import numpy as np
 
@@ -21,7 +21,7 @@ class PushType:
         A name for the type. Used when referencing the PushType in Instruction
         definitions and will be the key in the PushState for the corresponding
         PushStack.
-    underlying : Tuple[type]
+    underlying : Sequence[type]
         A tuple of python (or numpy) types that correspond to the underlying
         native types which the PushType is representing.
     coercion_func : Callable[[Any], Any], optional
@@ -35,7 +35,7 @@ class PushType:
         A name for the type. Used when referencing the PushType in Instruction
         definitions and will be the key in the PushState for the corresponding
         PushStack.
-    underlying : Tuple[type]
+    underlying : Sequence[type]
         A tuple of python (or numpy) types that correspond to the underlying
         native types which the PushType is representing.
     coercion_func : Callable[[Any], Any], optional
@@ -45,7 +45,7 @@ class PushType:
 
     """
 
-    def __init__(self, name: str, underlying: Tuple[type], coercion_func: Optional[Callable[[Any], Any]] = None):
+    def __init__(self, name: str, underlying: Sequence[type], coercion_func: Optional[Callable[[Any], Any]] = None):
         self.name = name
         self.underlying = underlying
         if coercion_func is None:

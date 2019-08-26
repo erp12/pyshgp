@@ -4,13 +4,7 @@ import numpy as np
 from pyshgp.gp.evaluation import (
     damerau_levenshtein_distance, DatasetEvaluator, FunctionEvaluator
 )
-from pyshgp.push.atoms import CodeBlock
 from pyshgp.utils import Token
-
-
-@pytest.fixture(scope="function")
-def simple_program(atoms):
-    return CodeBlock(*[atoms["5"], atoms["5"], atoms["add"]])
 
 
 def test_levenshtein_distance_str():

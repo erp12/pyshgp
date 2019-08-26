@@ -5,15 +5,17 @@ from pyshgp.gp.population import Population
 from pyshgp.gp.individual import Individual
 from pyshgp.gp.genome import Genome
 from pyshgp.gp.evaluation import DatasetEvaluator
+from pyshgp.push.interpreter import ProgramSignature
 
 
 @pytest.fixture(scope="function")
-def simple_individuals(atoms):
+def simple_individuals(atoms, push_config):
+    sig = ProgramSignature(0, ["int"], push_config)
     return [
-        Individual(Genome([])),
-        Individual(Genome([atoms["5"]])),
-        Individual(Genome([atoms["5"], atoms["close"]])),
-        Individual(Genome([atoms["5"]])),
+        Individual(Genome([]), sig),
+        Individual(Genome([atoms["5"]]), sig),
+        Individual(Genome([atoms["5"], atoms["close"]]), sig),
+        Individual(Genome([atoms["5"]]), sig),
     ]
 
 
@@ -56,20 +58,20 @@ class TestPopulation:
         assert partially_evaluated_pop[2].total_error is None
         assert partially_evaluated_pop[3].total_error is None
 
-    def test_add_unevaluated(self, partially_evaluated_pop):
-        partially_evaluated_pop.add(Individual(Genome([])))
+    def test_add_unevaluated(self, partially_evaluated_pop, simple_program_signature):
+        partially_evaluated_pop.add(Individual(Genome([]), simple_program_signature))
         assert len(partially_evaluated_pop) == 5
         assert len(partially_evaluated_pop.unevaluated) == 3
 
-    def test_add_evaluated(self, partially_evaluated_pop):
-        i = Individual(Genome([]))
+    def test_add_evaluated(self, partially_evaluated_pop, simple_program_signature):
+        i = Individual(Genome([]), simple_program_signature)
         i.error_vector = np.array([0, 1, 0])
         partially_evaluated_pop.add(i)
         assert len(partially_evaluated_pop) == 5
         assert len(partially_evaluated_pop.evaluated) == 3
 
-    def test_best(self, partially_evaluated_pop):
-        i = Individual(Genome([]))
+    def test_best(self, partially_evaluated_pop, simple_program_signature):
+        i = Individual(Genome([]), simple_program_signature)
         i.error_vector = np.array([0, 1, 0])
         partially_evaluated_pop.add(i)
         assert partially_evaluated_pop.best().total_error == 0.0

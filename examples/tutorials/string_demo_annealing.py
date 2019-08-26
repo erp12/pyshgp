@@ -69,6 +69,6 @@ if __name__ == "__main__":
     )
 
     est.fit(X=X, y=y)
-    print(est._result.program)
+    print(est.solution.get_program().code)
     print(est.predict(X))
     print(est.score(X, y))

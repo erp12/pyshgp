@@ -1,67 +1,17 @@
 """The :mod:`estimator` module defines a ``PushEstimator`` class."""
-import json
-from typing import Union, Tuple, Sequence
+from typing import Union, Tuple
+
+from pyshgp.gp.individual import Individual
 
 import pyshgp.gp.search as sr
 import pyshgp.gp.selection as sl
 import pyshgp.gp.variation as vr
 from pyshgp.gp.evaluation import DatasetEvaluator
 from pyshgp.gp.genome import GeneSpawner
-from pyshgp.push.instruction_set import InstructionSet
-from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
-from pyshgp.push.atoms import CodeBlock
-from pyshgp.utils import JSONable, list_rindex
+from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER, PushConfig, ProgramSignature
+from pyshgp.utils import list_rindex
 from pyshgp.validation import check_is_fitted, check_X_y
 from pyshgp.monitoring import DEFAULT_VERBOSITY_LEVELS
-
-
-class SearchResult(JSONable):
-    """The best program found by a search algorithm and the types it outputs.
-
-    Parameters
-    ----------
-    program : CodeBlock
-        The Push program found by a SearchAlgorithm.
-    output_types : Sequence[str]
-        The types output by the program.
-
-    Attributes
-    ----------
-    program : CodeBlock
-        The Push program found by a SearchAlgorithm.
-    output_types : Sequence[str]
-        The types output by the program.
-
-    """
-
-    def __init__(self, program: CodeBlock, output_types: Sequence[str]):
-        self.program = program
-        self.output_types = output_types
-
-    @classmethod
-    def from_json_str(cls, json_str: str, instruction_set: InstructionSet):
-        """Create a PushSolution from a JSON string."""
-        solution_dict = json.loads(json_str)
-        return cls(
-            CodeBlock.from_json_str(
-                json.dumps(solution_dict["program"], separators=(',', ':')),
-                instruction_set
-            ),
-            solution_dict["output_types"]
-        )
-
-    @classmethod
-    def from_json_file(cls, filepath: str, instruction_set: InstructionSet):
-        """Create a PushSolution from a JSON string."""
-        with open(filepath, "r") as f:
-            return cls.from_json_str(f.read(), instruction_set)
-
-    def jsonify(self):
-        """Return the object as a JSON string."""
-        return '{{"program":{p},"output_types":{o}}}'.format(
-            p=self.program.to_json(),
-            o="[" + ",".join(['"' + t + '"' for t in self.output_types]) + "]"
-        )
 
 
 class PushEstimator:
@@ -123,6 +73,7 @@ class PushEstimator:
                  last_str_from_stdout: bool = False,
                  interpreter: PushInterpreter = "default",
                  parallelism: Union[int, bool] = False,
+                 push_config: PushConfig = "default",
                  verbose: int = 0,
                  **kwargs):
         self._search_name = search
@@ -139,13 +90,18 @@ class PushEstimator:
         self.ext = kwargs
 
         self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[self.verbose]
-        self.verbosity_config._update_log_level()
+        self.verbosity_config.update_log_level()
 
         if interpreter == "default":
             self.interpreter = DEFAULT_INTERPRETER
         else:
             self.interpreter = interpreter
         self.interpreter.verbosity_config = self.verbosity_config
+
+        if push_config == "default":
+            self.push_config = PushConfig()
+        else:
+            self.push_config = push_config
 
     def _build_search_algo(self):
         if isinstance(self.variation_strategy, dict):
@@ -158,6 +114,7 @@ class PushEstimator:
             self.variation_strategy = var_strat
 
         search_config = sr.SearchConfiguration(
+            signature=self.signature,
             spawner=self.spawner,
             evaluator=self.evaluator,
             selection=self.selector,
@@ -167,6 +124,7 @@ class PushEstimator:
             initial_genome_size=self.initial_genome_size,
             simplification_steps=self.simplification_steps,
             parallelism=self.parallelism,
+            push_config=self.push_config,
             verbosity_config=self.verbosity_config
         )
         self.search = sr.get_search_algo(self._search_name, config=search_config, **self.ext)
@@ -190,14 +148,10 @@ class PushEstimator:
             ndx = list_rindex(output_types, "str")
             if ndx is not None:
                 output_types[ndx] = "stdout"
-        self.evaluator = DatasetEvaluator(
-            X, y,
-            interpreter=self.interpreter,
-            last_str_from_stdout=self.last_str_from_stdout
-        )
+        self.signature = ProgramSignature(arity, output_types, self.push_config)
+        self.evaluator = DatasetEvaluator(X, y, interpreter=self.interpreter)
         self._build_search_algo()
-        best_seen = self.search.run()
-        self._result = SearchResult(best_seen.program, output_types)
+        self.solution = self.search.run()
 
     def predict(self, X):
         """Execute the synthesized push program on a dataset.
@@ -215,12 +169,11 @@ class PushEstimator:
         y_hat : pandas dataframe of shape = [n_samples, n_outputs]
 
         """
-        check_is_fitted(self, "_result")
+        check_is_fitted(self, "solution")
         return [
             self.interpreter.run(
-                self._result.program,
-                inputs,
-                self._result.output_types
+                self.solution.get_program(),
+                inputs
             ) for inputs in X
         ]
 
@@ -237,10 +190,10 @@ class PushEstimator:
             regression). Shape = [n_samples] or [n_samples, n_outputs]
 
         """
-        check_is_fitted(self, "_result")
+        check_is_fitted(self, "solution")
         X, y, arity, y_types = check_X_y(X, y)
         self.evaluator = DatasetEvaluator(X, y, interpreter=self.interpreter)
-        return self.evaluator.evaluate(self._result.program)
+        return self.evaluator.evaluate(self.solution.get_program())
 
     def save(self, filepath: str):
         """Load the found solution to a JSON file.
@@ -251,8 +204,8 @@ class PushEstimator:
             Filepath to write the serialized search result to.
 
         """
-        check_is_fitted(self, "_result")
-        self._result.to_json(filepath)
+        check_is_fitted(self, "solution")
+        self.solution.save(filepath)
 
     def load(self, filepath: str):
         """Load a found solution from a JSON file.
@@ -263,4 +216,4 @@ class PushEstimator:
             Filepath to read the serialized search result from.
 
         """
-        self._result = SearchResult.from_json_file(filepath, self.interpreter.instruction_set)
+        self.solution = Individual.load(filepath)

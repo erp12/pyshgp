@@ -64,6 +64,7 @@ if __name__ == "__main__":
         population_size=200,
         max_generations=30,
         initial_genome_size=(10, 50),
+        simplification_steps=500,
         parallelism=False,
         verbose=2
     )

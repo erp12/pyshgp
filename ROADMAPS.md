@@ -1,6 +1,6 @@
 ## Fitting Literals
 
-### Goals
+#### Goals
 
 - GeneSpawners can spawn two types of literals Literals.
   - Some Literals are provided by users and don't require fitting.
@@ -20,7 +20,7 @@
   - Put the optimized genome in the next generation.
   - Repeat until population is full and resume evolution for another `n` generations.
 
-### Logging
+## Logging
 
 - [ ] Create a monitoring.LogConfig class
 - [ ] Create a monitoring.Loggable interface that specs a `.log(config: LogConfig)` method.

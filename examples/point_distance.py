@@ -80,10 +80,10 @@ type_library = (
 )
 
 
-# An instruction set which will regiser all core instructions that can be supported
+# An instruction set which will register all core instructions that can be supported
 # using only exec, code, stdout, float, and point types.
 #
-# For example, the instruction int_from_float will NOT be registerd because
+# For example, the instruction int_from_float will NOT be registered because
 # our type library does not define a type that would support the "int" stack.
 #
 # Our two custom instructions as well as the input instructions are also defined.
@@ -108,7 +108,7 @@ est = PushEstimator(
     spawner=spawner,
     population_size=500,
     max_generations=20,
-    simplification_steps=1000,
+    simplification_steps=500,
     interpreter=PushInterpreter(instruction_set),
     verbose=2
 )

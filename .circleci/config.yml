@@ -1,96 +1,59 @@
 version: 2.0
-
+workflows:
+    version: 2
+    test:
+        jobs:
+            - unit-3.5
+            - unit-3.6
+            - unit-3.7
+            - style-check
 jobs:
-    build_setup:
+    unit-3.5: &test-template
         docker:
-            - image: circleci/python:latest
+            - image: circleci/python:3.5
         working_directory: ~/pyshgp
         steps:
-            - add_ssh_keys:
-                fingerprints:
-                  - "58:3e:5a:a5:e8:2f:48:9a:df:54:a8:b0:be:66:02:fe"
             - checkout
             - run:
-                name: save SHA to a file
-                command: echo $CIRCLE_SHA1 > .circle-sha
+                  name: Create venv
+                  command: |
+                      python3 -m venv venv
+                      source venv/bin/activate
+                      pip install -U pip
+                      pip install -U setuptools
+                      pip install -e .
             - run:
-                name: create venv
-                command: |
-                    python3 -m venv venv
-                    source venv/bin/activate
-                    pip install -U pip
-                    pip install -r requirements-with-dev.txt
-            - save_cache:
-                key: repo-{{ checksum ".circle-sha" }}
-                paths:
-                    - ~/pyshgp
-
-    unit:
-        docker:
-            - image: circleci/python:latest
-        working_directory: ~/pyshgp
-        steps:
-            - run:
-                name: save SHA to a file
-                command: echo $CIRCLE_SHA1 > .circle-sha
-            - restore_cache:
-                keys:
-                    - repo-{{ checksum ".circle-sha" }}
-            - run:
-                name: run tests
+                name: Run unit tests
                 command: |
                     source venv/bin/activate
                     python setup.py test
-
-    validation:
+    unit-3.6:
+        <<: *test-template
+        docker:
+            - image: circleci/python:3.6
+    unit-3.7:
+        <<: *test-template
+        docker:
+            - image: circleci/python:3.7
+    style-check:
         docker:
             - image: circleci/python:latest
         working_directory: ~/pyshgp
         steps:
+            - checkout
             - run:
-                name: save SHA to a file
-                command: echo $CIRCLE_SHA1 > .circle-sha
-            - restore_cache:
-                keys:
-                    - repo-{{ checksum ".circle-sha" }}
+                  name: Create venv
+                  command: |
+                      python3 -m venv venv
+                      source venv/bin/activate
+                      pip install -U pip
+                      pip install flake8
+                      pip install flake8-docstrings
             - run:
-                name: run tests
-                command: |
-                    source venv/bin/activate
-                    pip install . -U
-                    python examples/tutorials/string_demo.py
-                    python examples/tutorials/string_demo_annealing.py
+                  name: Run style checker
+                  command: |
+                      source venv/bin/activate
+                      python -m flake8 pyshgp/
+                      python -m flake8 examples/
 
-    style:
-        docker:
-            - image: circleci/python:latest
-        working_directory: ~/pyshgp
-        steps:
-            - run:
-                name: save SHA to a file
-                command: echo $CIRCLE_SHA1 > .circle-sha
-            - restore_cache:
-                keys:
-                    - repo-{{ checksum ".circle-sha" }}
-            - run:
-                name: run flake8
-                command: |
-                  source venv/bin/activate
-                  pip install . -U
-                  python -m flake8 pyshgp/
-                  python -m flake8 examples/
 
-workflows:
-    version: 2
-    build:
-        jobs:
-            - build_setup
-            - unit:
-                requires:
-                    - build_setup
-            - validation:
-                requires:
-                    - build_setup
-            - style:
-                requires:
-                    - build_setup

@@ -73,6 +73,13 @@ class Program(Saveable):
         self.code = code
         self.signature = signature
 
+    def __repr__(self):
+        return "Program[{arity}][{code}]{outputs}".format(
+            arity=self.signature.arity,
+            code=self.code,
+            outputs=self.signature.output_stacks
+        )
+
 
 class PushInterpreterStatus(Enum):
     """Enum class of all potential statuses of a PushInterpreter."""

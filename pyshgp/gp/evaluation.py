@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Union, Callable
 from collections import defaultdict
 import numpy as np
+import pandas as pd
 
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER, Program
 from pyshgp.utils import Token
@@ -163,10 +164,10 @@ class DatasetEvaluator(Evaluator):
 
         """
         super().__init__(interpreter, penalty)
-        self.X = X
-        self.y = y
+        self.X = pd.DataFrame(X)
+        self.y = pd.DataFrame(y)
 
-    def evaluate(self, program: Program) -> np.ndarray:
+    def evaluate(self, program: Program) -> np.array:
         """Evaluate the program and return the error vector.
 
         Parameters
@@ -180,15 +181,13 @@ class DatasetEvaluator(Evaluator):
             The error vector of the program.
 
         """
-        errors_on_cases = []
-        for ndx, case in enumerate(self.X):
-            expected = self.y[ndx]
-            if not isinstance(expected, (list, np.ndarray)):
-                expected = [expected]
-
-            actual = self.interpreter.run(program, case)
-            errors_on_cases.append(self.default_error_function(actual, expected))
-        return np.array(errors_on_cases).flatten()
+        errors = []
+        for ndx in range(self.X.shape[0]):
+            inputs = self.X.iloc[ndx].to_list()
+            expected = self.y.iloc[ndx].to_list()
+            actual = self.interpreter.run(program, inputs)
+            errors.append(self.default_error_function(actual, expected))
+        return np.array(errors).flatten()
 
 
 class FunctionEvaluator(Evaluator):

@@ -12,6 +12,7 @@ from enum import Enum
 from pyshgp.push.state import PushState
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.atoms import Atom, Closer, Literal, Instruction, JitInstructionRef, CodeBlock
+from pyshgp.push.types import PushStr
 from pyshgp.utils import Saveable
 from pyshgp.validation import PushError
 from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log_function
@@ -25,36 +26,43 @@ class PushConfig:
     step_limit : int, optional
         Max number of atoms to process before terminating the execution of a
         given program. Default is 500
+    runtime_limit : int, optional
+        Max number of milliseconds to run a push program before forcing
+        termination. Default is 5000.
     growth_cap : int, optional
         Max number of elements that can be added to a PushState at any given
         step of program execution. If exceeded, program terminates. Default is
         500.
-    runtime_limit : int, optional
-        Max number of milliseconds to run a push program before forcing
-        termination. Default is 2e10.
+    collection_size_cap : int, optional
+        Max size of any collection (code blocks, vectors, strings, etc). Default is 1000.
+
 
     Attributes
     ----------
     step_limit : int
         Max number of atoms to process before terminating the execution of a
         given program. Default is 500
+    runtime_limit : int
+        Max number of milliseconds to run a push program before forcing
+        termination. Default is 5000.
     growth_cap : int
         Max number of elements that can be added to a PushState at any given
         step of program execution. If exceeded, program terminates. Default is
         500.
-    runtime_limit : int
-        Max number of milliseconds to run a push program before forcing
-        termination. Default is 2e10.
+    collection_size_cap : int, optional
+        Max size of any collection (code blocks, vectors, strings, etc). Default is 1000.
 
     """
 
     def __init__(self, *,
                  step_limit=500,
+                 runtime_limit=5000,
                  growth_cap=500,
-                 runtime_limit=2e10):
+                 collection_size_cap=1000):
         self.step_limit = step_limit
-        self.growth_cap = growth_cap
         self.runtime_limit = runtime_limit
+        self.growth_cap = growth_cap
+        self.collection_size_cap = collection_size_cap
 
 
 class ProgramSignature:
@@ -74,10 +82,10 @@ class Program(Saveable):
         self.signature = signature
 
     def __repr__(self):
-        return "Program[{arity}][{code}]{outputs}".format(
+        return "Program[{arity}][{outputs}]({code})".format(
             arity=self.signature.arity,
-            code=self.code,
-            outputs=self.signature.output_stacks
+            outputs=self.signature.output_stacks,
+            code=self.code
         )
 
 
@@ -195,17 +203,20 @@ class PushInterpreter:
                 for a in atom[::-1]:
                     self.state["exec"].push(a)
             elif isinstance(atom, Literal):
+                if atom.push_type.is_collection or atom.push_type == PushStr:
+                    if len(atom.value) > config.collection_size_cap:
+                        return
                 self.state[atom.push_type.name].push(atom.value)
             elif isinstance(atom, Closer):
                 raise PushError("Closers should not be in push programs. Only genomes.")
             else:
-                raise PushError("Cannont evaluate {t}, require a subclass of Atom".format(t=type(atom)))
+                raise PushError("Cannot evaluate {t}, require a subclass of Atom".format(t=type(atom)))
             self.untyped_to_typed()
         except Exception as e:
             err_type = type(e).__name__
             err_msg = str(e)
             raise PushError(
-                "{t} raised while evaluating {atom}. Origional mesage: \"{m}\"".format(
+                "{t} raised while evaluating {atom}. Original message: \"{m}\"".format(
                     t=err_type,
                     atom=atom,
                     m=err_msg
@@ -268,9 +279,9 @@ class PushInterpreter:
                 self._log_trace("Current Atom: " + str(next_atom))
 
             # Evaluate atom.
-            old_size = len(self.state)
+            old_size = self.state.size()
             self.evaluate_atom(next_atom, push_config)
-            if len(self.state) > old_size + push_config.growth_cap:
+            if self.state.size() > old_size + push_config.growth_cap:
                 self.status = PushInterpreterStatus.growth_cap_exceeded
                 break
 

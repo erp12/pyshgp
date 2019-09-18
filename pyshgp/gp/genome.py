@@ -349,7 +349,7 @@ class GenomeSimplifier:
                  genome: Genome,
                  original_errors: np.ndarray,
                  steps: int = 2000) -> Tuple[Genome, np.ndarray]:
-        """Simplify the given geome while maintaining error.
+        """Simplify the given genome while maintaining error.
 
         Parameters
         ----------

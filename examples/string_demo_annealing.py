@@ -64,11 +64,12 @@ if __name__ == "__main__":
         spawner=spawner,
         max_generations=500,
         initial_genome_size=(10, 50),
+        simplification_steps=500,
         parallelism=False,
         verbose=2
     )
 
     est.fit(X=X, y=y)
-    print(est._result.program)
+    print(est.solution.get_program().code)
     print(est.predict(X))
     print(est.score(X, y))

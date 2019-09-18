@@ -7,6 +7,7 @@ import math
 from functools import partial
 from multiprocessing import Pool, Manager
 
+from pyshgp.push.interpreter import ProgramSignature
 from pyshgp.utils import DiscreteProbDistrib
 from pyshgp.gp.evaluation import Evaluator
 from pyshgp.gp.genome import GeneSpawner, GenomeSimplifier
@@ -70,12 +71,13 @@ class SearchConfiguration:
         parallel tasks. If false, no processes will spawn and compuation will be
         serial. Default is true, which spawns one process per available cpu.
     verbosity_config :  Union[VerbosityConfig, str], optional
-        A VerbosityConfig controling what is logged during the search. Default
+        A VerbosityConfig controlling what is logged during the search. Default
         is no verbosity.
 
     """
 
     def __init__(self,
+                 signature: ProgramSignature,
                  evaluator: Evaluator,
                  spawner: GeneSpawner,
                  selection: Union[Selector, DiscreteProbDistrib, str] = "lexicase",
@@ -88,6 +90,7 @@ class SearchConfiguration:
                  parallelism: Union[int, bool] = True,
                  verbosity_config: Union[VerbosityConfig, str] = "default",
                  **kwargs):
+        self.signature = signature
         self.evaluator = evaluator
         self.spawner = spawner
         self.population_size = population_size
@@ -117,14 +120,13 @@ class SearchConfiguration:
         elif isinstance(variation, DiscreteProbDistrib):
             self._variation = variation
         else:
-            variationOp = get_variation_operator(variation, **self.ext)
-            self._variation = DiscreteProbDistrib().add(variationOp, 1.0)
+            variation_op = get_variation_operator(variation, **self.ext)
+            self._variation = DiscreteProbDistrib().add(variation_op, 1.0)
 
         if verbosity_config == "default":
             self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
         else:
             self.verbosity_config = verbosity_config
-        self.verbosity_config._update_log_level()
 
     def get_selector(self):
         """Return a Selector."""
@@ -135,8 +137,8 @@ class SearchConfiguration:
         return self._variation.sample()
 
 
-def _spawn_individual(spawner, genome_size, *args):
-    return Individual(spawner.spawn_genome(genome_size))
+def _spawn_individual(spawner, genome_size, program_signature: ProgramSignature, *args):
+    return Individual(spawner.spawn_genome(genome_size), program_signature)
 
 
 class SearchAlgorithm(ABC):
@@ -165,6 +167,7 @@ class SearchAlgorithm(ABC):
         self._p_context = config.parallel_context
         self.generation = 0
         self.best_seen = None
+        self.population = None
         self.init_population()
 
     def init_population(self):
@@ -172,14 +175,15 @@ class SearchAlgorithm(ABC):
         spawner = self.config.spawner
         init_gn_size = self.config.initial_genome_size
         pop_size = self.config.population_size
+        signature = self.config.signature
         self.population = Population()
         if self._p_context is not None:
-            gen_func = partial(_spawn_individual, self._p_context.ns.spawner, init_gn_size)
+            gen_func = partial(_spawn_individual, self._p_context.ns.spawner, init_gn_size, signature)
             for indiv in self._p_context.pool.imap_unordered(gen_func, range(pop_size)):
                 self.population.add(indiv)
         else:
             for i in range(pop_size):
-                self.population.add(_spawn_individual(spawner, init_gn_size))
+                self.population.add(_spawn_individual(spawner, init_gn_size, signature))
 
     @abstractmethod
     def step(self) -> bool:
@@ -208,20 +212,20 @@ class SearchAlgorithm(ABC):
 
         if self.config.verbosity_config.generation >= self.config.verbosity_config.log_level and \
            self.generation % self.config.verbosity_config.every_n_generations == 0:
-            stat_logs = []
-            stat_logs.append("GENERATION: {g}".format(
-                g=self.generation
-            ))
-            stat_logs.append("ERRORS: best={b}, median={m}, diversity={e_d}".format(
-                b=self.population.best().total_error,
-                m=self.population.median_error(),
-                e_d=self.population.error_diversity()
-            ))
-            # stat_logs.append("Population: size={p_s}, program_diversity={p_d}".format(
-            #     p_s=len(self.population),
-            #     p_d=self.population.program_diversity()
-            # ))
-
+            stat_logs = [
+                "GENERATION: {g}".format(
+                    g=self.generation
+                ),
+                "ERRORS: best={b}, median={m}, diversity={e_d}".format(
+                    b=self.population.best().total_error,
+                    m=self.population.median_error(),
+                    e_d=self.population.error_diversity()
+                ),
+                # stat_logs.append("Population: size={p_s}, program_diversity={p_d}".format(
+                #     p_s=len(self.population),
+                #     p_d=self.population.program_diversity()
+                # ))
+            ]
             log(self.config.verbosity_config.generation, " | ".join(stat_logs))
 
         self.step()
@@ -230,7 +234,7 @@ class SearchAlgorithm(ABC):
     def _is_solved(self):
         return self.best_seen.total_error <= self.config.error_threshold
 
-    def run(self):
+    def run(self) -> Individual:
         """Run the algorithm until termination."""
         while self._full_step():
             if self.generation >= self.config.max_generations:
@@ -244,13 +248,17 @@ class SearchAlgorithm(ABC):
                 log(verbose_solution, "No unsimplified solution found.")
 
         # Simplify the best individual for a better generalization and interpreteation.
-        simplifier = GenomeSimplifier(self.config.evaluator, self.config.verbosity_config)
+        simplifier = GenomeSimplifier(
+            self.config.evaluator,
+            self.config.signature,
+            self.config.verbosity_config
+        )
         simp_genome, simp_error_vector = simplifier.simplify(
             self.best_seen.genome,
             self.best_seen.error_vector,
             self.config.simplification_steps
         )
-        simplified_best = Individual(simp_genome)
+        simplified_best = Individual(simp_genome, self.config.signature)
         simplified_best.error_vector = simp_error_vector
 
         if verbose_solution >= self.config.verbosity_config.log_level:
@@ -280,7 +288,7 @@ class GeneticAlgorithm(SearchAlgorithm):
         selector = self.config.get_selector()
         parent_genomes = [p.genome for p in selector.select(self.population, n=op.num_parents)]
         child_genome = op.produce(parent_genomes, self.config.spawner)
-        return Individual(child_genome)
+        return Individual(child_genome, self.config.signature)
 
     def step(self):
         """Perform one generation (step) of the genetic algorithm.
@@ -342,9 +350,10 @@ class SimulatedAnnealing(SearchAlgorithm):
             self.config.get_variation_op().produce(
                 [self.population.best().genome],
                 self.config.spawner
-            )
+            ),
+            self.config.signature
         )
-        candidate.error_vector = self.config.evaluator.evaluate(candidate.program)
+        candidate.error_vector = self.config.evaluator.evaluate(candidate.get_program())
 
         acceptance_probability = self._acceptance(candidate.total_error)
         if np.random.random() < acceptance_probability:

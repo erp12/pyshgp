@@ -6,12 +6,12 @@ function that can be used to manipulate a PushState. A CodeBlock is a sequence
 of other Atoms is used to express nested expressions of code.
 """
 from abc import ABC, abstractmethod
+from collections import MutableSequence
 from typing import Any, Sequence
 from itertools import chain, count
-from copy import copy, deepcopy
 
 from pyshgp.push.types import PushType
-from pyshgp.utils import Saveable
+from pyshgp.utils import Saveable, Copyable
 
 
 class Atom:
@@ -51,6 +51,7 @@ class Literal(Atom):
     def __init__(self, value: Any, push_type: PushType):
         self.push_type = push_type
         if not self.push_type.is_instance(value):
+            print("THIS?")
             value = self.push_type.coerce(value)
         self.value = value
 
@@ -98,15 +99,15 @@ class Instruction(Atom, ABC):
         self.docstring = docstring
 
     @abstractmethod
-    def evaluate(self, push_state, interpreter_config=None):
+    def evaluate(self, push_state, push_config=None):
         """Evaluate the instruction on the given PushState.
 
         Parameters
         ----------
         push_state: pyshgp.push.state.PushState
-            The PushState to run the instrution on.
-        interpreter_config: pyshgp.push.interpreter.PushInterpreterConfig
-            The configuration of the Interpreter.
+            The PushState to run the instruction on.
+        push_config: pyshgp.push.interpreter.PushConfig
+            The configuration of the Push language.
 
         Returns
         -------
@@ -166,20 +167,49 @@ class JitInstructionRef(Atom):
         return "JitInstructionRef<{n}>".format(n=self.name)
 
 
-class CodeBlock(list, Atom, Saveable):
+class CodeBlock(MutableSequence, Atom, Saveable, Copyable):
     """An Atom which holds a sequence of other Atoms."""
 
     def __init__(self, *args):
+        self.list = []
         for el in args:
-            self._add(el)
-
-    def _add(self, el):
-        if isinstance(el, CodeBlock):
-            self.append(el.copy())
-        elif isinstance(el, Atom):
             self.append(el)
+
+    def __getitem__(self, i: int) -> Any:
+        return self.list.__getitem__(i)
+
+    def __setitem__(self, i: int, o: Any) -> None:
+        atom = CodeBlock._conform_element(o)
+        self.__setitem__(i, atom)
+
+    def __delitem__(self, i: int) -> None:
+        self.list.__delitem__(i)
+
+    def __len__(self) -> int:
+        return self.list.__len__()
+
+    def __eq__(self, other):
+        return isinstance(other, CodeBlock) and self.list == other.list
+
+    def __repr__(self):
+        return "CodeBlock" + self.list.__repr__()
+
+    def append(self, atom: Atom) -> None:
+        """Append an Atom to the end of the CodeBlock."""
+        self.list.append(CodeBlock._conform_element(atom))
+
+    def insert(self, index: int, atom: Atom) -> None:
+        """Insert Atom before index."""
+        self.list.insert(index, CodeBlock._conform_element(atom))
+
+    @staticmethod
+    def _conform_element(el: Any) -> Atom:
+        if isinstance(el, CodeBlock):
+            return el.copy()
+        elif isinstance(el, Atom):
+            return el
         elif isinstance(el, list):
-            self.append(CodeBlock(*el))
+            return CodeBlock(*el)
         else:
             raise ValueError("Only Atoms can be added to CodeBlocks. Got {el}".format(el=el))
 
@@ -228,60 +258,3 @@ class CodeBlock(list, Atom, Saveable):
                 if next_depth is not None:
                     return self
                 i = i - el.size()
-
-    def copy(self, deep: bool = False):
-        """Copy the CodeBlock."""
-        return deepcopy(self) if deep else copy(self)
-
-
-# class AtomFactory:
-#     """Produces specific types of Atoms from various sources.
-#
-#     Any kinds of Atoms except CodeBlocks can be described in a dict. CodeBlocks
-#     can be described as lists of other Atom specifications. These representations
-#     are used for serialization and deserialization (JSON). The AtomFactory builds
-#     Atoms of any kind from these specifications.
-#     """
-#
-#     # Can't annotate instruction_set type properly due to circular import.
-#     @staticmethod
-#     def json_dict_to_atom(json_dict: dict, instruction_set: dict) -> Atom:
-#         """Return the atom specified by the dict produced by JSON decoding."""
-#         type_library = instruction_set.type_library
-#         atom_type = json_dict["a"]
-#         if atom_type == "close":
-#             return Closer()
-#         elif atom_type == "lit":
-#             push_type = type_library[json_dict["t"]]
-#             value = push_type.coerce(json_dict["v"])
-#             return Literal(value, push_type)
-#         elif atom_type == "instr":
-#             return instruction_set[json_dict["n"]]
-#         elif atom_type == "jit-instr":
-#             return JitInstructionRef(json_dict["n"])
-#         else:
-#             raise ValueError("bad atom spec {s}".format(s=json_dict))
-#
-#     # Can't annotate instruction_set type properly due to circular import.
-#     @staticmethod
-#     def json_list_to_code_block(json_list: list, instruction_set: dict) -> CodeBlock:
-#         """Return a CobdeBlock build from the list produced by JSON decoding."""
-#         cb = CodeBlock()
-#         for nested_atom_spec in json_list:
-#             if isinstance(nested_atom_spec, list):
-#                 cb.append(AtomFactory.json_list_to_code_block(nested_atom_spec, instruction_set))
-#             else:
-#                 cb.append(AtomFactory.json_dict_to_atom(nested_atom_spec, instruction_set))
-#         return cb
-#
-#     # Can't annotate instruction_set type properly due to circular import.
-#     @staticmethod
-#     def json_str_to_atom_list(json_str: str, instruction_set: dict) -> Sequence[Atom]:
-#         """Return a list of Atoms parsed from the json_str."""
-#         atoms = []
-#         for atom_spec in json.loads(json_str):
-#             if isinstance(atom_spec, list):
-#                 atoms.append(AtomFactory.json_list_to_code_block(atom_spec, instruction_set))
-#             else:
-#                 atoms.append(AtomFactory.json_dict_to_atom(atom_spec, instruction_set))
-#         return atoms

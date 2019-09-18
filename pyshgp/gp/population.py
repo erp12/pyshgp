@@ -10,8 +10,8 @@ from pyshgp.gp.individual import Individual
 from pyshgp.gp.evaluation import Evaluator
 
 
-def _eval_indiv(indiv, evalr):
-    indiv.error_vector = evalr.evaluate(indiv.program)
+def _eval_indiv(indiv: Individual, evalr: Evaluator, ):
+    indiv.error_vector = evalr.evaluate(indiv.get_program())
     return indiv
 
 
@@ -89,5 +89,5 @@ class Population(Sequence):
 
     def program_diversity(self):
         """Proportion of unique programs."""
-        unq = set([pickle.dumps(i.program) for i in self])
+        unq = set([pickle.dumps(i.get_program().code) for i in self])
         return len(unq) / float(len(self))

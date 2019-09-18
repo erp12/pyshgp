@@ -63,12 +63,13 @@ if __name__ == "__main__":
     est = PushEstimator(
         population_size=500,
         max_generations=50,
+        simplification_steps=500,
         spawner=spawner,
         selector=ep_lex_sel,
         verbose=2
     )
 
     est.fit(X=X, y=y)
-    print(est._result.program)
+    print(est.solution.get_program())
     print(est.predict(X))
     print(est.score(X, y))

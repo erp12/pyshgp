@@ -1,16 +1,11 @@
+import pandas as pd
 import pytest
 import numpy as np
 
 from pyshgp.gp.evaluation import (
     damerau_levenshtein_distance, DatasetEvaluator, FunctionEvaluator
 )
-from pyshgp.push.atoms import CodeBlock
 from pyshgp.utils import Token
-
-
-@pytest.fixture(scope="function")
-def simple_program(atoms):
-    return CodeBlock(*[atoms["5"], atoms["5"], atoms["add"]])
 
 
 def test_levenshtein_distance_str():
@@ -32,11 +27,20 @@ class TestDatasetEvaluator:
             np.array([np.inf, 1, 2, 4.0, 3, 2, 3])
         ))
 
-    def test_dataset_evaluate(self, simple_program):
+    def test_dataset_evaluate_simple(self, simple_program):
         evaluator = DatasetEvaluator(
             [[1], [2], [3]],
             [10, 5, 10]
         )
+        assert np.all(np.equal(
+            evaluator.evaluate(simple_program),
+            np.array([0, 5, 0])
+        ))
+
+    def test_data_evaluator_simple_pandas(self, simple_program):
+        df_x = pd.DataFrame({"x": [1, 2, 3]})
+        df_y = pd.DataFrame({"y": [10, 5, 10]})
+        evaluator = DatasetEvaluator(df_x, df_y)
         assert np.all(np.equal(
             evaluator.evaluate(simple_program),
             np.array([0, 5, 0])

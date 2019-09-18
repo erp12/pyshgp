@@ -29,6 +29,7 @@ class PushTypeLibrary(dict):
     """
 
     def __init__(self, register_core: bool = True, *args):
+        super().__init__()
         if register_core:
             self.register_core()
         self.register_list(args)
@@ -55,13 +56,12 @@ class PushTypeLibrary(dict):
         self[name] = push_type
         return self
 
-    def create_and_register(
-        self,
-        name: str,
-        underlying_types: Tuple[type],
-        coercion_func: Optional[Callable[[Any], Any]] = None,
-        force=False
-    ):
+    def create_and_register(self,
+                            name: str,
+                            underlying_types: Tuple[type],
+                            is_collection: bool = False,
+                            coercion_func: Optional[Callable[[Any], Any]] = None,
+                            force=False):
         """Create a PushType and register it into the library.
 
         Parameters
@@ -70,9 +70,11 @@ class PushTypeLibrary(dict):
             A name for the type. Used when referencing the PushType in Instruction
             definitions and will be the key in the PushState for the corresponding
             PushStack.
-        underlying : Tuple[type]
+        underlying_types : Tuple[type]
             A tuple of python types that correspond to the underlying
             native types which the PushType is representing.
+        is_collection : bool, optional
+            Indicates if the PushType is a collection. Default is False.
         coercion_func : Callable[[Any], Any], optional
             A function which takes a single argument and returns argument coerced
             into the PushTypes canonical type (the first type in ``underlying``).
@@ -89,7 +91,7 @@ class PushTypeLibrary(dict):
             A reference to the PushTypeLibrary.
 
         """
-        self.register(PushType(name, underlying_types, coercion_func), force)
+        self.register(PushType(name, underlying_types, is_collection, coercion_func), force)
         return self
 
     def unregister(self, push_type_name: str):

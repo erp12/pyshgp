@@ -5,6 +5,46 @@ Release Notes
 A summary of changes made between each PyshGP release.
 
 
+v0.1.6 - , 2019
+===============================
+
+API changes
+-------------------------------
+
+- Added a ``Program`` abstraction to better encapsulate (almost) everything needed to run a Push program consistently.
+- Added parallelism controls to ``PushEstimator`` and ``SearchAlgorithm``.
+- Added collection size cap to PushConfig to prevent programs from taking up huge amounts of memory.
+
+
+Internals
+-------------------------------
+
+- Fixed DatasetEvaluator support for pandas data structures.
+
+
+Development / Repository
+-------------------------------
+
+- Fixed multiple doc typos.
+- Added some utility scripts for making deployment of new releases easier.
+- Updated CI to include multiple python versions.
+
+
+Known Issues
+-------------------------------
+
+None yet.
+
+Report issues on `the Github <https://github.com/erp12/pyshgp/issues>`_.
+
+Credits
+-------------------------------
+
+This release would not have been possible without the following contributors:
+
+- Github user `epicfaace <https://github.com/https://github.com/epicfaace>`_.
+  - Reporting and fixing typos.
+
 
 v0.1.5 - April 19, 2019
 ===============================

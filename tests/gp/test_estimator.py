@@ -1,13 +1,16 @@
+import os
+
 import numpy as np
 import random
 from math import pow, sqrt
 from functools import partial
 
+from pyshgp.gp.individual import Individual
+
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.instruction_set import InstructionSet
-from pyshgp.push.atoms import CodeBlock
 
 
 def run_ga_on_odd_test(parallelism):
@@ -30,14 +33,21 @@ def run_ga_on_odd_test(parallelism):
 
     est = PushEstimator(
         spawner=spawner,
-        population_size=40,
-        max_generations=10,
-        simplification_steps=2,
+        population_size=30,
+        max_generations=5,
+        simplification_steps=10,
         parallelism=parallelism)
     est.fit(X, y)
 
-    assert isinstance(est._result.program, CodeBlock)
-    assert len(est._result.program) > 0
+    assert isinstance(est.solution, Individual)
+    assert len(est.solution.get_program().code) > 0
+
+    path = "tmp.push"
+    solution = est.solution.copy(deep=True)
+    est.save(path)
+    est.load(path)
+    assert solution == est.solution
+    os.remove(path)
 
 
 def test_ga():
@@ -71,5 +81,5 @@ def test_estimator_with_custom_types(point_cls, point_instr_set):
     )
     est.fit(X, y)
 
-    assert isinstance(est._result.program, CodeBlock)
-    assert len(est._result.program) > 0
+    assert isinstance(est.solution, Individual)
+    assert len(est.solution.get_program().code) > 0

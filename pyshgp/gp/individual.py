@@ -8,19 +8,18 @@ from typing import Union
 
 import numpy as np
 
-from pyshgp.push.atoms import CodeBlock
 from pyshgp.gp.genome import Genome
+from pyshgp.push.interpreter import Program, ProgramSignature
+from pyshgp.utils import Saveable, Copyable
 
 
-class Individual:
+class Individual(Saveable, Copyable):
     """An individual in an evolutionary population.
 
     Attributes
     ----------
     genome : Genome
         The Genome of the Individual.
-    program : CodeBlock
-        The CodeBlock produced by translating the Individual's genome.
     error_vector : np.array
         An array of error values produced by evaluating the Individual's program.
     total_error : float
@@ -30,34 +29,25 @@ class Individual:
 
     """
 
-    __slots__ = ["_genome", "_program", "_error_vector", "_total_error", "_error_vector_bytes"]
+    __slots__ = [
+        "genome", "signature", "push_config",
+        "_program", "_error_vector", "_total_error", "_error_vector_bytes"
+    ]
 
-    def __init__(self, genome: Genome = Genome):
-        self._genome = genome
+    def __init__(self, genome: Genome, signature: ProgramSignature):
+        self.genome = genome
+        self.signature = signature
         self._program = None
         self._error_vector = None
         self._total_error = None
         self._error_vector_bytes = None
 
-    @property
-    def genome(self) -> Genome:
-        """Plush Genome of individual."""
-        return self._genome
-
-    @genome.setter
-    def genome(self, value: Genome):
-        self._genome = value
-
-    @property
-    def program(self) -> CodeBlock:
+    def get_program(self) -> Program:
         """Push program of individual. Taken from Plush genome."""
         if self._program is None:
-            self._program = self.genome.to_code_block()
+            cb = self.genome.to_code_block()
+            self._program = Program(cb, self.signature)
         return self._program
-
-    @program.setter
-    def program(self, value: CodeBlock):
-        raise AttributeError("Cannot set program directly. Must set genome.")
 
     @property
     def error_vector(self) -> np.ndarray:
@@ -95,3 +85,6 @@ class Individual:
 
     def __lt__(self, other):
         return self.total_error < other.total_error
+
+    def __eq__(self, other):
+        return isinstance(other, Individual) and self.genome == other.genome

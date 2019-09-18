@@ -108,7 +108,6 @@ spawner = GeneSpawner(
     literals=[" ", "\n"],
     erc_generators=[
         random_char,
-        synthetic_input
     ],
 )
 
@@ -122,7 +121,7 @@ if __name__ == "__main__":
     est = PushEstimator(
         search="GA",
         population_size=500,
-        max_generations=30,
+        max_generations=20,
         spawner=spawner,
         simplification_steps=100,
         last_str_from_stdout=True,
@@ -133,8 +132,8 @@ if __name__ == "__main__":
     start = time.time()
     est.fit(X=X_train, y=y_train)
     end = time.time()
-    print("train_error: ", est.search.best_seen.total_error)
+    print("train_error: ", est.solution.total_error)
     print("test_error: ", np.sum(est.score(X_test, y_test)))
     print("runtime: ", end - start)
     print("final_generation: ", est.search.generation)
-    print("best_genome: ", est.search.best_seen.genome.make_str())
+    print("best_genome: ", est.solution.genome.make_str())

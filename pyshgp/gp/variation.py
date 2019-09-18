@@ -53,7 +53,7 @@ class VariationOperator(ABC):
             )
 
     @abstractmethod
-    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner = None) -> Genome:
+    def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
         """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
         Parameters
@@ -177,7 +177,7 @@ class LiteralMutation(VariationOperator, ABC):
         self.push_type = push_type
 
     @abstractmethod
-    def _mutate_literal(literal: Literal) -> Literal:
+    def _mutate_literal(self, literal: Literal) -> Literal:
         ...
 
     def produce(self, parents: Sequence[Genome], spawner: GeneSpawner = None) -> Genome:

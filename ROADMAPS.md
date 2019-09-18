@@ -1,6 +1,6 @@
 ## Fitting Literals
 
-### Goals
+#### Goals
 
 - GeneSpawners can spawn two types of literals Literals.
   - Some Literals are provided by users and don't require fitting.
@@ -8,7 +8,7 @@
 - Fitting ERC Literals to their optimal value is difficult via evolution.
 - If some sort of stochastic optimization periodically applied to Literals might help.
 
-### To Do
+#### To Do
 
 - [ ] Add a Literal subclass for `ErcLiteral`.
 - [ ] Add a search config param for `literal_optimization_interval`.
@@ -26,11 +26,11 @@
 - [ ] Create a monitoring.Loggable interface that specs a `.log(config: LogConfig)` method.
 - [ ] Each implementation of Loggable should use a "key" to determine where logs are written.
 
-### Goals
+#### Goals
 
 - Implement system which produces log files for analysis
 
-### To Do
+#### To Do
 
 - [ ] Add optional log directory to search config
 - [ ] Create a directory for logs at start of each run.

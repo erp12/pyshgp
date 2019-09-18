@@ -27,7 +27,7 @@ Additional references on the successes of PushGP:
 - [General Program Synthesis Benchmark Suite](https://dl.acm.org/citation.cfm?id=2754769)
 - [The Push3 execution stack and the evolution of control](https://dl.acm.org/citation.cfm?id=1068292)
 
-### Goals of `pyshgp`.
+### Goals of PyshGP
 
 Previous PushGP frameworks have focused on supporting genetic programming and software synthesis research. One of the leading PushGP projects is [Clojush](https://github.com/lspector/Clojush), which is written in Clojure and heavily focused on the experimentation needed to further the research field.
 
@@ -59,6 +59,12 @@ Run the following command from project root directory. Make sure all the package
 ```
 python -m pytest
 ```
+
+Or run tests continuously (on save) during development using [pytest-watch](https://github.com/joeyespo/pytest-watch).
+
+```
+ptw 
+``` 
 
 ## Documentation
 

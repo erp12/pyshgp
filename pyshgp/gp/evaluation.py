@@ -3,10 +3,10 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Union, Callable
 from collections import defaultdict
 import numpy as np
+import pandas as pd
 
-from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
-from pyshgp.push.atoms import CodeBlock
-from pyshgp.utils import Token, list_rindex
+from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER, Program
+from pyshgp.utils import Token
 
 
 def damerau_levenshtein_distance(a: Union[str, Sequence], b: Union[str, Sequence]) -> int:
@@ -121,7 +121,7 @@ class Evaluator(ABC):
         return np.array(errors)
 
     @abstractmethod
-    def evaluate(self, program: CodeBlock) -> np.ndarray:
+    def evaluate(self, program: Program) -> np.ndarray:
         """Evaluate the program and return the error vector.
 
         Parameters
@@ -144,8 +144,7 @@ class DatasetEvaluator(Evaluator):
     def __init__(self,
                  X, y,
                  interpreter: PushInterpreter = "default",
-                 penalty: float = np.inf,
-                 last_str_from_stdout: bool = False):
+                 penalty: float = np.inf):
         """Create Evaluator based on a labeled dataset. Inspired by sklearn.
 
         Parameters
@@ -163,17 +162,12 @@ class DatasetEvaluator(Evaluator):
             If no response is given by the program on a given input, assign this
             error as the error.
 
-        verbosity_config : Optional[VerbosityConfig] (default = None)
-            A VerbosityConfig controling what is logged during evaluation.
-            Default is no verbosity.
-
         """
         super().__init__(interpreter, penalty)
-        self.X = X
-        self.y = y
-        self.last_str_from_stdout = last_str_from_stdout
+        self.X = pd.DataFrame(X)
+        self.y = pd.DataFrame(y)
 
-    def evaluate(self, program: CodeBlock) -> np.ndarray:
+    def evaluate(self, program: Program) -> np.array:
         """Evaluate the program and return the error vector.
 
         Parameters
@@ -187,21 +181,13 @@ class DatasetEvaluator(Evaluator):
             The error vector of the program.
 
         """
-        errors_on_cases = []
-        for ndx, case in enumerate(self.X):
-            expected = self.y[ndx]
-            if not isinstance(expected, (list, np.ndarray)):
-                expected = [expected]
-
-            output_types = [self.interpreter.type_library.push_type_of(_).name for _ in expected]
-            if self.last_str_from_stdout:
-                ndx = list_rindex(output_types, "str")
-                if ndx is not None:
-                    output_types[ndx] = "stdout"
-
-            actual = self.interpreter.run(program, case, output_types)
-            errors_on_cases.append(self.default_error_function(actual, expected))
-        return np.array(errors_on_cases).flatten()
+        errors = []
+        for ndx in range(self.X.shape[0]):
+            inputs = self.X.iloc[ndx].to_list()
+            expected = self.y.iloc[ndx].to_list()
+            actual = self.interpreter.run(program, inputs)
+            errors.append(self.default_error_function(actual, expected))
+        return np.array(errors).flatten()
 
 
 class FunctionEvaluator(Evaluator):
@@ -227,7 +213,7 @@ class FunctionEvaluator(Evaluator):
         super().__init__()
         self.error_function = error_function
 
-    def evaluate(self, program: CodeBlock) -> np.ndarray:
+    def evaluate(self, program: Program) -> np.ndarray:
         """Evaluate the program and return the error vector.
 
         Parameters

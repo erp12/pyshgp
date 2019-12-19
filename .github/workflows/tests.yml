@@ -1,4 +1,4 @@
-name: PyshGP Unit Tests
+name: PyshGP Tests
 
 on: [push]
 
@@ -7,9 +7,9 @@ jobs:
 
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 4
+      max-parallel: 3
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@v1
@@ -36,3 +36,12 @@ jobs:
       run: |
         pip install pytest
         pytest
+    - name: Test Examples
+      run: |
+        pip pinstall . -U
+        python examples/odd.py
+        python examples/string_demo.py
+        python examples/string_demo_annealing.py
+        python examples/integer_regression.py
+        python examples/point_distance.py
+        python examples/leaky_relu.py

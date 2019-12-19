@@ -37,9 +37,9 @@ if __name__ == "__main__":
 
     est = PushEstimator(
         spawner=spawner,
-        population_size=500,
-        max_generations=200,
-        verbose=2
+        population_size=300,
+        max_generations=100,
+        verbose=1
     )
 
     est.fit(X, y)

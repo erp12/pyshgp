@@ -39,26 +39,16 @@ make api
 make
 popd
 
-read -p "Would you like to push the documentation to GitHub? (Uses current branch) " yesno
+read -p "Would you like to commit the documentation? (Uses current branch) " yesno
 
 if [ "$yesno" == "y" ]; then
     git add docs_source/
     git add docs/
     git commit -m "Update documentation site for next release."
-    git push
 fi
 
+# Final Push
+read -p "Would you like to push the current branch? " yesno
 
-# Build the Wheel
-python3 setup.py sdist bdist_wheel
-
-deactivate
-
-cat << EOF
-
-REMAINING TO-DOS BEFORE RELEASE IS FINAL
-========================================
-- Merge in any relevant outstanding Pull Requests to master.
-- Create a new release on GitHub.
-- Publish the wheel with "python3 -m twine upload".
-EOF
+if [ "$yesno" == "y" ]; then
+    git push

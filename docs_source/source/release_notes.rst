@@ -5,7 +5,7 @@ Release Notes
 A summary of changes made between each PyshGP release.
 
 
-v0.1.6 - , 2019
+v0.1.6 - December 19, 2019
 ===============================
 
 API changes
@@ -28,6 +28,7 @@ Development / Repository
 - Fixed multiple doc typos.
 - Added some utility scripts for making deployment of new releases easier.
 - Updated CI to include multiple python versions.
+- Migrated CI/CD to GitHub actions.
 
 
 Known Issues

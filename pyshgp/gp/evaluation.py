@@ -73,7 +73,7 @@ class Evaluator(ABC):
 
     def __init__(self,
                  interpreter: PushInterpreter = "default",
-                 penalty: float = np.inf):
+                 penalty: float = 1e6):
         self.penalty = penalty
         if interpreter == "default":
             self.interpreter = DEFAULT_INTERPRETER
@@ -144,7 +144,7 @@ class DatasetEvaluator(Evaluator):
     def __init__(self,
                  X, y,
                  interpreter: PushInterpreter = "default",
-                 penalty: float = np.inf):
+                 penalty: float = 1e6):
         """Create Evaluator based on a labeled dataset. Inspired by sklearn.
 
         Parameters

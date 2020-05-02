@@ -76,7 +76,7 @@ class VariationStrategy(DiscreteProbDistrib):
         Parameters
         ----------
         op : VariationOperator
-            The VariationOperator to add to the variaiton strategy.
+            The VariationOperator to add to the variation strategy.
         p : float
             The probability of using the given operator relative to the other
             operators that have been added to the VariationStrategy.
@@ -86,7 +86,7 @@ class VariationStrategy(DiscreteProbDistrib):
 
 
 class VariationPipeline(VariationOperator):
-    """Variation operator that sequencially applies multiple others variation operators.
+    """Variation operator that sequentially applies multiple others variation operators.
 
     Parameters
     ----------

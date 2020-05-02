@@ -105,7 +105,7 @@ class SearchConfiguration:
             if parallelism:
                 self.parallel_context = ParallelContext(spawner, evaluator)
         elif parallelism > 1:
-            self.parallel_context = ParallelContext(spawner, evaluator)
+            self.parallel_context = ParallelContext(spawner, evaluator, parallelism)
 
         if isinstance(selection, Selector):
             self._selection = DiscreteProbDistrib().add(selection, 1.0)

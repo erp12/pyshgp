@@ -30,10 +30,9 @@ DOC_DIR = "build/doc/"
 
 
 def _generate_instruction_rst(instr: Instruction) -> str:
-    lines = []
-    lines.append(instr.name)
-    lines.append("=" * len(instr.name))
+    lines = [instr.name, "=" * len(instr.name)]
 
+    signature_line = None
     signature_template = "*Takes: {i} - Produces: {o}*"
     if isinstance(instr, SimpleInstruction):
         signature_line = signature_line = signature_template.format(
@@ -65,6 +64,7 @@ def _generate_instruction_markdown(instr: Instruction) -> str:
     lines = []
     lines.append("### {n}".format(n=instr.name))
 
+    signature_line = None
     signature_template = "_Takes: {i} - Produces: {o}_"
     if isinstance(instr, SimpleInstruction):
         signature_line = signature_line = signature_template.format(
@@ -93,9 +93,9 @@ def _generate_instruction_markdown(instr: Instruction) -> str:
 
 
 def _generate_instruction_html(instr: Instruction) -> str:
-    lines = ["<li>"]
-    lines.append('<h3 class="instr-name">{n}</h3>'.format(n=instr.name))
+    lines = ["<li>", '<h3 class="instr-name">{n}</h3>'.format(n=instr.name)]
 
+    signature_line = None
     signature_template = "Takes: {i} - Produces: {o}"
     if isinstance(instr, SimpleInstruction):
         signature_line = signature_line = signature_template.format(

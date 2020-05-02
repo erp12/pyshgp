@@ -8,7 +8,9 @@ import pyshgp.gp.selection as sl
 import pyshgp.gp.variation as vr
 from pyshgp.gp.evaluation import DatasetEvaluator
 from pyshgp.gp.genome import GeneSpawner
-from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER, PushConfig, ProgramSignature
+from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
+from pyshgp.push.config import PushConfig
+from pyshgp.push.program import ProgramSignature
 from pyshgp.utils import list_rindex
 from pyshgp.validation import check_is_fitted, check_X_y
 from pyshgp.monitoring import DEFAULT_VERBOSITY_LEVELS
@@ -89,6 +91,12 @@ class PushEstimator:
         self.verbose = verbose
         self.ext = kwargs
 
+        # Initialize attributes that will be set later.
+        self.evaluator = None
+        self.signature = None
+        self.search = None
+        self.solution = None
+
         self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[self.verbose]
         self.verbosity_config.update_log_level()
 
@@ -108,8 +116,6 @@ class PushEstimator:
             var_strat = vr.VariationStrategy()
             for op_name, prob in self.variation_strategy.items():
                 var_op = vr.get_variation_operator(op_name)
-                if not isinstance(var_op, vr.VariationOperator):
-                    var_op = self._build_component(var_op)
                 var_strat.add(var_op, prob)
             self.variation_strategy = var_strat
 
@@ -128,6 +134,9 @@ class PushEstimator:
             verbosity_config=self.verbosity_config
         )
         self.search = sr.get_search_algo(self._search_name, config=search_config, **self.ext)
+
+    def is_initialized(self) -> bool:
+        return self.search is not None
 
     def fit(self, X, y):
         """Run the search algorithm to synthesize a push program.

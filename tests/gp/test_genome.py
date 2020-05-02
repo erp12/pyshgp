@@ -1,47 +1,48 @@
 import pytest
+from pyrsistent import InvariantException
 
-from pyshgp.gp.genome import Opener, _has_opener, Genome, GenomeSimplifier
+from pyshgp.gp.genome import Opener, _has_opener, genome_to_code, Genome, GenomeSimplifier
 from pyshgp.gp.evaluation import DatasetEvaluator
 from pyshgp.push.atoms import Atom, Literal, Instruction, CodeBlock
 from pyshgp.push.types import PushInt, PushBool
 
 
 def test_opener():
-    o = Opener(2)
+    o = Opener(count=2)
     assert o.count == 2
-    o.dec()
+    o = o.dec()
     assert o.count == 1
 
 
 def test__has_opener():
     lst = ["_" for x in range(5)]
     assert not _has_opener(lst)
-    lst[2] = Opener(1)
+    lst[2] = Opener(count=1)
     assert _has_opener(lst)
 
 
 class TestGenome:
 
     def test_genome_bad_init(self, atoms):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvariantException):
             Genome(CodeBlock(*[atoms["5"], [atoms["5"], atoms["add"]]]))
 
     def test_missing_close_genome_to_codeblock(self, atoms):
         gn = Genome([atoms["true"], atoms["if"], atoms["1.2"], atoms["close"], atoms["5"]])
-        cb = gn.to_code_block()
+        cb = genome_to_code(gn)
         assert cb[0] == Literal(True, PushBool)
         assert isinstance(cb[1], Instruction)
         assert isinstance(cb[2], CodeBlock)
 
     def test_extra_close_genome_to_codeblock(self, atoms):
         gn = Genome([atoms["close"], atoms["5"], atoms["close"], atoms["close"]])
-        cb = gn.to_code_block()
+        cb = genome_to_code(gn)
         assert len(cb) == 1
         assert cb[0] == Literal(5, PushInt)
 
     def test_empty_genome_to_codeblock(self, atoms):
         gn = Genome()
-        cb = gn.to_code_block()
+        cb = genome_to_code(gn)
         assert len(cb) == 0
 
 
@@ -56,8 +57,8 @@ class TestGeneSpawner:
     def test_random_erc(self, simple_gene_spawner):
         assert isinstance(simple_gene_spawner.random_erc(), Literal)
 
-    def test_spawn_atom(self, simple_gene_spawner):
-        assert isinstance(simple_gene_spawner.spawn_atom(), Atom)
+    def test_random_gene(self, simple_gene_spawner):
+        assert isinstance(simple_gene_spawner.random_gene(), Atom)
 
     def test_spawn_genome(self, simple_gene_spawner):
         gn = simple_gene_spawner.spawn_genome(10)

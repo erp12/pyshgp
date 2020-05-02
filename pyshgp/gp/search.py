@@ -7,7 +7,7 @@ import math
 from functools import partial
 from multiprocessing import Pool, Manager
 
-from pyshgp.push.interpreter import ProgramSignature
+from pyshgp.push.program import ProgramSignature
 from pyshgp.utils import DiscreteProbDistrib
 from pyshgp.gp.evaluation import Evaluator
 from pyshgp.gp.genome import GeneSpawner, GenomeSimplifier
@@ -152,7 +152,7 @@ class SearchAlgorithm(ABC):
     Attributes
     ----------
     config : SearchConfiguration
-        The configuation of the search algorithm.
+        The configuration of the search algorithm.
     generation : int
         The current generation, or iteration, of the search.
     best_seen : Individual

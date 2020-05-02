@@ -10,24 +10,20 @@ from collections import MutableSequence
 from typing import Any, Sequence
 from itertools import chain, count
 
+from pyrsistent import PRecord
+
 from pyshgp.push.types import PushType
 from pyshgp.utils import Saveable, Copyable
 
 
 class Atom:
     """Base class of all Atoms. The fundamental element of Push programs."""
-
     ...
 
 
-class Closer(Atom):
+class Closer(Atom, PRecord):
     """An Atom dedicated to denoting the close of a CodeBlock in its flat representsion."""
-
-    def __eq__(self, other):
-        return isinstance(other, Closer)
-
-    def __repr__(self) -> str:
-        return "CLOSER"
+    ...
 
 
 class Literal(Atom):

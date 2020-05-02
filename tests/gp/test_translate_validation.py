@@ -3,16 +3,16 @@ import json
 from pyshgp.push.atoms import CodeBlock, Closer, Literal, JitInstructionRef
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.instruction_set import InstructionSet
-from pyshgp.gp.genome import Genome
+from pyshgp.gp.genome import Genome, genome_to_code
 
 
-def _pysh_collection_from_list(lst, cls, instr_set: InstructionSet):
+def _deserialize_atoms(lst, instr_set: InstructionSet):
     type_lib = instr_set.type_library
-    coll = cls()
+    atoms = []
     for atom_spec in lst:
         atom = None
         if isinstance(atom_spec, list):
-            atom = _pysh_collection_from_list(atom_spec, cls, instr_set)
+            atom = CodeBlock(*_deserialize_atoms(atom_spec, instr_set))
         else:
             atom_type = atom_spec["a"]
             if atom_type == "close":
@@ -27,56 +27,48 @@ def _pysh_collection_from_list(lst, cls, instr_set: InstructionSet):
                 atom = JitInstructionRef(atom_spec["n"])
             else:
                 raise ValueError("bad atom spec {s}".format(s=atom_spec))
-        coll.append(atom)
-    return coll
+        atoms.append(atom)
+    return atoms
 
 
 def load_code(name, interpreter) -> CodeBlock:
     with open("tests/resources/programs/" + name + ".json") as f:
-        return _pysh_collection_from_list(json.load(f), CodeBlock, interpreter.instruction_set)
+        atoms = _deserialize_atoms(json.load(f), interpreter.instruction_set)
+        return CodeBlock(*atoms)
 
 
 def load_genome(name, interpreter) -> Genome:
     with open("tests/resources/genomes/" + name + ".json") as f:
-        return _pysh_collection_from_list(json.load(f), Genome, interpreter.instruction_set)
+        atoms = _deserialize_atoms(json.load(f), interpreter.instruction_set)
+        return Genome.create(atoms)
+
+
+def check_translation(program_name: str, interpreter: PushInterpreter):
+    genome = load_genome(program_name, interpreter)
+    prog = load_code(program_name, interpreter)
+    assert genome_to_code(genome) == prog
+
+
+def check_unary_fn_translation(program_name: str):
+    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
+    check_translation(program_name, interpreter)
 
 
 def test_genome_relu_1():
-    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
-    name = "relu_via_max"
-    genome = load_genome(name, interpreter)
-    prog = load_code(name, interpreter)
-    assert genome.to_code_block() == prog
+    check_unary_fn_translation("relu_via_max")
 
 
 def test_genome_relu_2():
-    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
-    name = "relu_via_if"
-    genome = load_genome(name, interpreter)
-    prog = load_code(name, interpreter)
-    assert genome.to_code_block() == prog
+    check_unary_fn_translation("relu_via_if")
 
 
 def test_genome_fibonacci():
-    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
-    name = "fibonacci"
-    genome = load_genome(name, interpreter)
-    prog = load_code(name, interpreter)
-    print(type(genome.to_code_block()), type(prog))
-    assert genome.to_code_block() == prog
+    check_unary_fn_translation("fibonacci")
 
 
 def test_genome_rswn():
-    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
-    name = "replace_space_with_newline"
-    genome = load_genome(name, interpreter)
-    prog = load_code(name, interpreter)
-    assert genome.to_code_block() == prog
+    check_unary_fn_translation("replace_space_with_newline")
 
 
 def test_genome_point_dist(point_instr_set):
-    interpreter = PushInterpreter(point_instr_set)
-    name = "point_distance"
-    genome = load_genome(name, interpreter)
-    prog = load_code(name, interpreter)
-    assert genome.to_code_block() == prog
+    check_translation("point_distance", PushInterpreter(point_instr_set))

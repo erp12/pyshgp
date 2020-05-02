@@ -1,7 +1,9 @@
 import json
 
 from pyshgp.push.atoms import CodeBlock, Closer, Literal, JitInstructionRef
-from pyshgp.push.interpreter import PushInterpreter, ProgramSignature, Program, PushConfig
+from pyshgp.push.interpreter import PushInterpreter
+from pyshgp.push.config import PushConfig
+from pyshgp.push.program import ProgramSignature, Program
 from pyshgp.push.instruction_set import InstructionSet
 
 

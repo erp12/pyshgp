@@ -8,8 +8,8 @@ from typing import Union
 
 import numpy as np
 
-from pyshgp.gp.genome import Genome
-from pyshgp.push.interpreter import Program, ProgramSignature
+from pyshgp.gp.genome import Genome, genome_to_code
+from pyshgp.push.program import Program, ProgramSignature
 from pyshgp.utils import Saveable, Copyable
 
 
@@ -30,7 +30,7 @@ class Individual(Saveable, Copyable):
     """
 
     __slots__ = [
-        "genome", "signature", "push_config",
+        "genome", "signature",
         "_program", "_error_vector", "_total_error", "_error_vector_bytes"
     ]
 
@@ -45,7 +45,7 @@ class Individual(Saveable, Copyable):
     def get_program(self) -> Program:
         """Push program of individual. Taken from Plush genome."""
         if self._program is None:
-            cb = self.genome.to_code_block()
+            cb = genome_to_code(self.genome)
             self._program = Program(cb, self.signature)
         return self._program
 

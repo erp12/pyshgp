@@ -3,13 +3,13 @@
 
 A PushStack is used to hold values of a certain PushType in a PushState object.
 """
-from typing import Optional, Sequence
+from typing import Optional, Sequence, List
 
 from pyshgp.push.types import PushType
 from pyshgp.utils import Token
 
 
-class PushStack(list):
+class PushStack(List):
     """Stack that holds elements of a sinlge PushType.
 
     Parameters
@@ -31,6 +31,7 @@ class PushStack(list):
     __slots__ = ["push_type"]
 
     def __init__(self, push_type: PushType, values: Optional[Sequence] = None):
+        super().__init__()
         self.push_type = push_type
         if values is not None:
             for val in values:
@@ -177,3 +178,4 @@ class PushStack(list):
         if not isinstance(other, PushStack):
             return False
         return self.push_type == other.push_type and list(self) == list(other)
+

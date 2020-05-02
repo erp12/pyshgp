@@ -5,6 +5,8 @@
 
 Push Genetic Programming in Python
 
+> WARNING: The public API of this package may see breaking changes until the 1.0 version. 
+
 ## Motivation
 
 ### What is PushGP?

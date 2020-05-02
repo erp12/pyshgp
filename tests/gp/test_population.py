@@ -5,7 +5,7 @@ from pyshgp.gp.population import Population
 from pyshgp.gp.individual import Individual
 from pyshgp.gp.genome import Genome
 from pyshgp.gp.evaluation import DatasetEvaluator
-from pyshgp.push.interpreter import ProgramSignature
+from pyshgp.push.program import ProgramSignature
 
 
 @pytest.fixture(scope="function")
@@ -92,7 +92,7 @@ class TestPopulation:
             [5, 0, 5],
             [5, 0, 5],
             [5, 0, 5],
-            [np.inf, np.inf, np.inf],
+            [evaluator.penalty, evaluator.penalty, evaluator.penalty],
         ])
         assert np.all(np.equal(a, e))
 

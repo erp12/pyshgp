@@ -9,38 +9,14 @@ from typing import Sequence, Union
 import time
 from enum import Enum
 
+from pyshgp.push.program import Program
 from pyshgp.push.state import PushState
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.atoms import Atom, Closer, Literal, Instruction, JitInstructionRef, CodeBlock
 from pyshgp.push.types import PushStr
 from pyshgp.push.config import PushConfig
-from pyshgp.utils import Saveable
 from pyshgp.validation import PushError
 from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log_function
-
-
-class ProgramSignature:
-    """A collection of values required to get consistent behavior from Push code."""
-
-    def __init__(self, arity: int, output_stacks: Sequence[str], push_config: PushConfig):
-        self.arity = arity
-        self.output_stacks = output_stacks
-        self.push_config = push_config
-
-
-class Program(Saveable):
-    """A Push program composed of some Push code and a ProgramSignature."""
-
-    def __init__(self, code: CodeBlock, signature: ProgramSignature):
-        self.code = code
-        self.signature = signature
-
-    def __repr__(self):
-        return "Program[{arity}][{outputs}]({code})".format(
-            arity=self.signature.arity,
-            outputs=self.signature.output_stacks,
-            code=self.code
-        )
 
 
 class PushInterpreterStatus(Enum):
@@ -99,6 +75,10 @@ class PushInterpreter:
             self.verbosity_config = verbosity_config
 
         # Initialize the PushState and status
+        self.state = None
+        self.status = None
+        self._verbose_trace = None
+        self._log_fn_for_trace = None
         self._validate()
         self.reset()
 

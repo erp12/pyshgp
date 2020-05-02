@@ -1,124 +1,84 @@
-"""The :mod:`genome` module defines classes related to Genomesself.
+from __future__ import annotations
 
-The ``Genome`` class defines Genomes as flat, linear representations of Push
-programs. The ``GenomeSpawner`` class is a factory of random genes (``Atoms``)
-and random ``Genomes``.
-
-"""
-from collections import MutableSequence
-from typing import Callable, Sequence, Union, Tuple, Optional, Any
+from enum import Enum
+from typing import Sequence, Union, Any, Callable, Optional, Tuple
 
 import numpy as np
+from pyrsistent import PRecord, field, CheckedPVector
 
-from pyshgp.push.interpreter import ProgramSignature, Program
-from pyshgp.push.type_library import infer_literal
-from pyshgp.push.atoms import Atom, Closer, Literal, Instruction, CodeBlock
-from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.gp.evaluation import Evaluator
-from pyshgp.utils import DiscreteProbDistrib, Saveable, Copyable
 from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log
+from pyshgp.push import InstructionSet, ProgramSignature, Program
+from pyshgp.push.atoms import Atom, CodeBlock, Instruction, Closer, Literal
+from pyshgp.push.type_library import infer_literal
+from pyshgp.utils import DiscreteProbDistrib
 
 
-class Opener:
+class Opener(PRecord):
     """Marks the start of one or more CodeBlock."""
+    count = field(type=int, mandatory=True)
 
-    __slots__ = ["count"]
-
-    def __init__(self, count: int):
-        self.count = count
-
-    def dec(self):
-        """Decrements the count by 1."""
-        self.count -= 1
+    def dec(self) -> Opener:
+        return Opener(count=self.count - 1)
 
 
-def _has_opener(l: Sequence) -> bool:
-    return sum([isinstance(_, Opener) for _ in l]) > 0
+def _has_opener(seq: Sequence) -> bool:
+    for el in seq:
+        if isinstance(el, Opener):
+            return True
+    return False
 
 
-class Genome(MutableSequence, Saveable, Copyable):
-    """A flat sequence of Atoms where each Atom is a "gene" in the genome."""
+class Genome(CheckedPVector):
+    __type__ = Atom
+    __invariant__ = lambda a: (not isinstance(a, CodeBlock), 'CodeBlock')
 
-    def __init__(self, atoms: Sequence[Atom] = None):
-        self.list = []
-        if atoms is not None:
-            for el in atoms:
-                self.append(el)
 
-    def __getitem__(self, i: int) -> Any:
-        return self.list.__getitem__(i)
+def genome_to_code(genome: Genome) -> CodeBlock:
+    """Translate into nested CodeBlocks.
 
-    def __setitem__(self, i: int, o: Any) -> None:
-        self.list.__setitem__(i, Genome._conform_element(o))
+    These CodeBlocks can be considered the Push program representation of
+    the Genome which can be executed by a PushInterpreter and evaluated
+    by an Evaluator.
 
-    def __delitem__(self, i: int) -> None:
-        self.list.__delitem__(i)
+    """
+    plushy_buffer = []
+    for atom in genome:
+        plushy_buffer.append(atom)
+        if isinstance(atom, Instruction) and atom.code_blocks > 0:
+            plushy_buffer.append(Opener(count=atom.code_blocks))
 
-    def __len__(self) -> int:
-        return self.list.__len__()
+    push_buffer = []
+    while True:
+        # If done with plush but unclosed opens, recur with one more close.
+        if len(plushy_buffer) == 0 and _has_opener(push_buffer):
+            plushy_buffer.append(Closer())
+        # If done with plush and all opens closed, return push.
+        elif len(plushy_buffer) == 0:
+            return CodeBlock(*push_buffer)
+        else:
+            atom = plushy_buffer[0]
+            # If next instruction is a close, and there is an open.
+            if isinstance(atom, Closer) and _has_opener(push_buffer):
+                ndx, opener = [(ndx, el) for ndx, el in enumerate(push_buffer) if isinstance(el, Opener)][-1]
+                post_open = push_buffer[ndx + 1:]
+                pre_open = push_buffer[:ndx]
+                if opener.count == 1:
+                    push_buffer = pre_open + [post_open]
+                else:
+                    opener = opener.dec()
+                    push_buffer = pre_open + [post_open, opener]
+            # If next instruction is a close, and there is no open.
+            elif not isinstance(atom, Closer):
+                push_buffer.append(atom)
+            del plushy_buffer[0]
 
-    def __eq__(self, other):
-        return isinstance(other, Genome) and self.list == other.list
 
-    def __repr__(self):
-        return "Genome" + self.list.__repr__()
-
-    def append(self, atom: Atom) -> None:
-        """Append a non-CodeBlock Atom to the end of the Genome."""
-        self.list.append(Genome._conform_element(atom))
-
-    def insert(self, index: int, atom: Atom) -> None:
-        """Insert Atom before index."""
-        self.list.insert(Genome._conform_element(atom))
-
-    @staticmethod
-    def _conform_element(el: Any) -> Atom:
-        if isinstance(el, CodeBlock):
-            raise ValueError("Cannot add CodeBlock to genomes. Genomes must be kept flat.")
-        return el
-
-    def to_code_block(self) -> CodeBlock:
-        """Translate into nested CodeBlocks.
-
-        These CodeBlocks can be considered the Push program representation of
-        the Genome which can be executed by a PushInterpreter and evaluated
-        by an Evaluator.
-
-        """
-        plushy_buffer = []
-        for atom in self:
-            plushy_buffer.append(atom)
-            if isinstance(atom, Instruction) and atom.code_blocks > 0:
-                plushy_buffer.append(Opener(atom.code_blocks))
-
-        push_buffer = []
-        while True:
-            # If done with plush but unclosed opens, recur with one more close.
-            if len(plushy_buffer) == 0 and _has_opener(push_buffer):
-                plushy_buffer.append(Closer())
-            # If done with plush and all opens closed, return push.
-            elif len(plushy_buffer) == 0:
-                return CodeBlock(*push_buffer)
-            else:
-                atom = plushy_buffer[0]
-                # If next instruction is a close, and there is an open.
-                if isinstance(atom, Closer) and _has_opener(push_buffer):
-                    ndx, opener = [(ndx, el) for ndx, el in enumerate(push_buffer) if isinstance(el, Opener)][-1]
-                    post_open = push_buffer[ndx + 1:]
-                    pre_open = push_buffer[:ndx]
-                    if opener.count == 1:
-                        push_buffer = pre_open + [post_open]
-                    else:
-                        opener.dec()
-                        push_buffer = pre_open + [post_open, opener]
-                # If next instruction is a close, and there is no open.
-                elif not isinstance(atom, Closer):
-                    push_buffer.append(atom)
-                del plushy_buffer[0]
-
-    def make_str(self) -> str:
-        """Create one simple str representation of the Genome."""
-        return " ".join([str(gene) for gene in self])
+class GeneTypes(Enum):
+    INSTRUCTION = 1
+    CLOSE = 2
+    LITERAL = 3
+    ERC = 4
 
 
 class GeneSpawner:
@@ -173,7 +133,7 @@ class GeneSpawner:
 
     def __init__(self,
                  instruction_set: InstructionSet,
-                 literals: Sequence[Union[Literal, Any]],
+                 literals: Sequence[Any],
                  erc_generators: Sequence[Callable],
                  distribution: DiscreteProbDistrib = "proportional"):
         self.instruction_set = instruction_set
@@ -184,10 +144,10 @@ class GeneSpawner:
         if distribution == "proportional":
             self.distribution = (
                 DiscreteProbDistrib()
-                .add("instruction", len(instruction_set))
-                .add("close", sum([i.code_blocks for i in instruction_set.values()]))
-                .add("literal", len(literals))
-                .add("erc", len(erc_generators))
+                .add(GeneTypes.INSTRUCTION, len(instruction_set))
+                .add(GeneTypes.CLOSE, sum([i.code_blocks for i in instruction_set.values()]))
+                .add(GeneTypes.LITERAL, len(literals))
+                .add(GeneTypes.ERC, len(erc_generators))
             )
         else:
             self.distribution = distribution
@@ -231,7 +191,7 @@ class GeneSpawner:
             erc_value = infer_literal(erc_value, self.type_library)
         return erc_value
 
-    def spawn_atom(self) -> Atom:
+    def random_gene(self) -> Atom:
         """Return a random Atom based on the GenomeSpawner's distribution.
 
         Returns
@@ -241,13 +201,13 @@ class GeneSpawner:
 
         """
         atom_type = self.distribution.sample()
-        if atom_type == "instruction":
+        if atom_type is GeneTypes.INSTRUCTION:
             return self.random_instruction()
-        elif atom_type == "close":
+        elif atom_type is GeneTypes.CLOSE:
             return Closer()
-        elif atom_type == "literal":
+        elif atom_type is GeneTypes.LITERAL:
             return self.random_literal()
-        elif atom_type == "erc":
+        elif atom_type is GeneTypes.ERC:
             return self.random_erc()
         else:
             raise ValueError("GenomeSpawner distribution bad atom type {t}".format(t=str(atom_type)))
@@ -275,11 +235,8 @@ class GeneSpawner:
         if isinstance(size, Sequence):
             size = np.random.randint(size[0], size[1]) + 1
 
-        gn = Genome()
-        for ndx in range(size):
-            gn.append(self.spawn_atom())
-
-        return gn
+        genes = [self.random_gene() for _ in range(size)]
+        return Genome.create(genes)
 
 
 class GenomeSimplifier:
@@ -290,9 +247,9 @@ class GenomeSimplifier:
     introduce subtle errors or behaviors that is not covered by the training
     cases. Removing the superfluous code makes genomes (and thus programs)
     smaller and easier to understand. More importantly, simplification can
-    imporve the generalization of the given genome/program.
+    improve the generalization of the given genome/program.
 
-    The process of geneome simplification is iterative and closely resembles
+    The process of genome simplification is iterative and closely resembles
     simple hill climbing. For each iteration, the simplifier will randomly
     select a small number of random genes to remove. The Genome is re-evaluated
     and if its error gets worse, the change is reverted. After repeating this
@@ -320,16 +277,16 @@ class GenomeSimplifier:
         self.verbosity_config = verbosity_config
 
     def _remove_rand_genes(self, genome: Genome) -> Genome:
-        gn = genome.copy(deep=True)
+        gn = genome
         n_genes_to_remove = min(np.random.randint(1, 4), len(genome) - 1)
         ndx_of_genes_to_remove = np.random.choice(np.arange(len(gn)), n_genes_to_remove, replace=False)
         ndx_of_genes_to_remove[::-1].sort()
         for ndx in ndx_of_genes_to_remove:
-            del gn[ndx]
+            gn = gn.delete(ndx)
         return gn
 
     def _errors_of_genome(self, genome: Genome) -> np.ndarray:
-        cb = genome.to_code_block()
+        cb = genome_to_code(genome)
         program = Program(cb, self.program_signature)
         return self.evaluator.evaluate(program)
 
@@ -354,7 +311,7 @@ class GenomeSimplifier:
         Parameters
         ----------
         genome
-            The Genome to simplifiy.
+            The Genome to simplify.
         original_errors
             Error vector of the genome to simplify.
         steps
@@ -363,7 +320,7 @@ class GenomeSimplifier:
         Returns
         -------
         pushgp.gp.genome.Genome
-            A Genome with random contents of a given size.
+            The shorter Genome that expresses the same computation.
 
         """
         if self.verbosity_config is None:

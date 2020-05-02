@@ -7,7 +7,6 @@ algorithms to create "child" genomes from "parent" genomes.
 from abc import ABC, abstractmethod
 from typing import Sequence, Union
 import math
-from copy import copy
 
 from numpy.random import random, choice
 
@@ -120,7 +119,7 @@ class VariationPipeline(VariationOperator):
 
         """
         self.checknum_parents(parents)
-        child = parents[0].copy()
+        child = parents[0]
         for op in self.operators:
             child = op.produce([child] + parents[1:], spawner)
         return child
@@ -157,14 +156,14 @@ class LiteralMutation(VariationOperator, ABC):
     push_type : pyshgp.push.types.PushType
         The PushType which the operator can mutate.
     rate : float
-        The probablility of applying the mutation to a given Literal.
+        The probability of applying the mutation to a given Literal.
 
     Attributes
     ----------
     push_type : pyshgp.push.types.PushType
         The PushType which the operator can mutate.
     rate : float
-        The probablility of applying the mutation to a given Literal.
+        The probability of applying the mutation to a given Literal.
     num_parents : int
         Number of parent Genomes the operator needs to produce a child
         Individual.
@@ -198,7 +197,7 @@ class LiteralMutation(VariationOperator, ABC):
                 new_atom = self._mutate_literal(atom)
             else:
                 new_atom = atom
-            new_genome.append(new_atom)
+            new_genome = new_genome.append(new_atom)
         return new_genome
 
 
@@ -208,13 +207,13 @@ class DeletionMutation(VariationOperator):
     Parameters
     ----------
     rate : float
-        The probablility of removing any given Atom in the parent Genome.
+        The probability of removing any given Atom in the parent Genome.
         Default is 0.01.
 
     Attributes
     ----------
     rate : float
-        The probablility of removing any given Atom in the parent Genome.
+        The probability of removing any given Atom in the parent Genome.
         Default is 0.01.
     num_parents : int
         Number of parent Genomes the operator needs to produce a child
@@ -242,7 +241,7 @@ class DeletionMutation(VariationOperator):
         for gene in parents[0]:
             if random() < self.rate:
                 continue
-            new_genome.append(gene)
+            new_genome = new_genome.append(gene)
         return new_genome
 
 
@@ -252,13 +251,13 @@ class AdditionMutation(VariationOperator):
     Parameters
     ----------
     rate : float
-        The probablility of adding a new Atom at any given point in the parent
+        The probability of adding a new Atom at any given point in the parent
         Genome. Default is 0.01.
 
     Attributes
     ----------
     rate : float
-        The probablility of adding a new Atom at any given point in the parent
+        The probability of adding a new Atom at any given point in the parent
         Genome. Default is 0.01.
     num_parents : int
         Number of parent Genomes the operator needs to produce a child
@@ -285,8 +284,8 @@ class AdditionMutation(VariationOperator):
         new_genome = Genome()
         for gene in parents[0]:
             if random() < self.rate:
-                new_genome.append(spawner.spawn_atom())
-            new_genome.append(gene)
+                new_genome = new_genome.append(spawner.random_gene())
+            new_genome = new_genome.append(gene)
         return new_genome
 
 
@@ -298,7 +297,7 @@ class Alternation(VariationOperator):
     Parameters
     ----------
     rate : float, optional (default=0.01)
-        The probablility of switching which parent program elements are being
+        The probability of switching which parent program elements are being
         copied from. Must be 0 <= rate <= 1. Defaults to 0.1.
     alignment_deviation : int, optional (default=10)
         The standard deviation of how far alternation may jump between indices
@@ -307,7 +306,7 @@ class Alternation(VariationOperator):
     Attributes
     ----------
     rate : float, optional (default=0.01)
-        The probablility of switching which parent program elements are being
+        The probability of switching which parent program elements are being
         copied from. Must be 0 <= rate <= 1. Defaults to 0.1.
     alignment_deviation : int, optional (default=10)
         The standard deviation of how far alternation may jump between indices
@@ -335,8 +334,8 @@ class Alternation(VariationOperator):
 
         """
         self.checknum_parents(parents)
-        gn1 = parents[0].copy()
-        gn2 = parents[1].copy()
+        gn1 = parents[0]
+        gn2 = parents[1]
         new_genome = Genome()
         # Random pick which parent to start from
         use_parent_1 = choice([True, False])
@@ -353,9 +352,9 @@ class Alternation(VariationOperator):
             else:
                 # Pull gene from parent
                 if use_parent_1:
-                    new_genome.append(gn1[i])
+                    new_genome = new_genome.append(gn1[i])
                 else:
-                    new_genome.append(gn2[i])
+                    new_genome = new_genome.append(gn2[i])
                 i = int(i + 1)
             # Change loop stop condition
             loop_times = len(gn1)
@@ -431,7 +430,7 @@ class Cloning(VariationOperator):
             A GeneSpawner that can be used to produce new genes (aka Atoms).
 
         """
-        return copy.copy(parents[0])
+        return parents[0]
 
 
 def get_variation_operator(name: str, **kwargs) -> VariationOperator:

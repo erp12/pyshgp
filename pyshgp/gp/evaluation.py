@@ -66,7 +66,7 @@ class Evaluator(ABC):
         When a program's output cannot be evaluated on a particular case, the
         penalty error is assigned. Default is 5e5.
     verbosity_config : Optional[VerbosityConfig] (default = None)
-        A VerbosityConfig controling what is logged during evaluation.
+        A VerbosityConfig controlling what is logged during evaluation.
         Default is no verbosity.
 
     """
@@ -83,7 +83,7 @@ class Evaluator(ABC):
     def default_error_function(self, actuals, expecteds) -> np.array:
         """Produce errors of actual program output given expected program output.
 
-        The default error function is intented to be a universal error function
+        The default error function is intended to be a universal error function
         for Push programs which only output a subset of the standard data types.
 
         Parameters

@@ -24,7 +24,7 @@ class TestDatasetEvaluator:
             evaluator.default_error_function(
                 [Token.no_stack_item, True, 1, 2.3, "456", [7, 8]],
                 ["a stack item", False, 3, 6.3, "abc", [5, 11]]),
-            np.array([np.inf, 1, 2, 4.0, 3, 2, 3])
+            np.array([evaluator.penalty, 1, 2, 4.0, 3, 2, 3])
         ))
 
     def test_dataset_evaluate_simple(self, simple_program):

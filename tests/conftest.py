@@ -4,14 +4,16 @@ from math import pow, sqrt
 
 from pyshgp.gp.individual import Individual
 
+from pyshgp.push.config import PushConfig
 from pyshgp.push.type_library import PushTypeLibrary
 from pyshgp.push.types import PushInt, PushBool, PushFloat, PushStr
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.instruction import SimpleInstruction
 from pyshgp.push.atoms import Closer, Literal
-from pyshgp.push.interpreter import PushInterpreter, PushConfig, ProgramSignature, Program
+from pyshgp.push.interpreter import PushInterpreter
+from pyshgp.push.program import ProgramSignature, Program
 from pyshgp.push.state import PushState
-from pyshgp.gp.genome import Genome, GeneSpawner
+from pyshgp.gp.genome import Genome, GeneSpawner, genome_to_code
 
 
 @pytest.fixture(scope="session")
@@ -64,7 +66,7 @@ def simple_program_signature(push_config):
 
 @pytest.fixture(scope="function")
 def simple_program(simple_genome, simple_program_signature):
-    return Program(simple_genome.to_code_block(), simple_program_signature)
+    return Program(genome_to_code(simple_genome), simple_program_signature)
 
 
 @pytest.fixture(scope="function")

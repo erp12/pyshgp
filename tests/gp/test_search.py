@@ -2,7 +2,6 @@ import pytest
 
 from pyshgp.gp.search import SearchConfiguration
 from pyshgp.gp.evaluation import DatasetEvaluator
-from pyshgp.push.interpreter import ProgramSignature
 
 
 @pytest.fixture(scope="session")
@@ -24,6 +23,5 @@ class TestSearchConfiguration:
         )
         assert config.get_selector().tournament_size == 14
         assert config.get_variation_op().alignment_deviation == 5
-
 
 # @TODO: TEST - Test with custom PushTypeLibrary and custom instructions.

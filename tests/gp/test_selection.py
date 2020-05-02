@@ -5,7 +5,7 @@ from pyshgp.gp.selection import FitnessProportionate, Tournament, Lexicase, Elit
 from pyshgp.gp.population import Population
 from pyshgp.gp.individual import Individual
 from pyshgp.gp.genome import Genome
-from pyshgp.push.interpreter import ProgramSignature
+from pyshgp.push.program import ProgramSignature
 
 
 @pytest.fixture(scope="function")

@@ -36,6 +36,7 @@ setup(
         "numpy>=1.12.0",
         "scipy>=0.18.0",
         "pandas>=0.23.4",
+        "pyrsistent>=0.16.0",
     ],
     setup_requires=[
         "pytest-runner",

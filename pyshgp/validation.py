@@ -22,7 +22,7 @@ def check_1d(seq: Sequence) -> Sequence:
     return seq
 
 
-def check_2d(seq: Sequence) -> Sequence:
+def check_2d(seq: list) -> list:
     """Check given seq is two-dimensional. Raise error if can't be easily transformed."""
     for ndx, el in enumerate(seq):
         if not isinstance(el, (list, tuple, np.ndarray, pd.Series)):

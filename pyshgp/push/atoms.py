@@ -51,7 +51,6 @@ class Literal(Atom):
     def __init__(self, value: Any, push_type: PushType):
         self.push_type = push_type
         if not self.push_type.is_instance(value):
-            print("THIS?")
             value = self.push_type.coerce(value)
         self.value = value
 

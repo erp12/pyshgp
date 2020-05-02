@@ -68,7 +68,7 @@ class SimpleInstruction(Instruction):
         ----------
         state : PushState
             Push state to modify with the Instruction.
-        config : PushInterpreterConfig
+        config :  pyshgp.push.interpreter.PushConfig
             Configuration of the interpreter. Used to get various limits.
 
         Returns

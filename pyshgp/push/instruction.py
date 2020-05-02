@@ -1,6 +1,7 @@
 """Concrete implementations of the Instruction Atom type."""
 from typing import Callable, Set, Sequence
 
+from pyshgp.push.config import PushConfig
 from pyshgp.push.type_library import RESERVED_PSEUDO_STACKS
 from pyshgp.push.state import PushState
 from pyshgp.push.atoms import Instruction
@@ -58,7 +59,7 @@ class SimpleInstruction(Instruction):
         self.input_stacks = input_stacks
         self.output_stacks = output_stacks
 
-    def evaluate(self, push_state: PushState, interpreter_config):
+    def evaluate(self, push_state: PushState, interpreter_config: PushConfig):
         """Evaluate the instruction on the given PushState. Return mutated State.
 
         A SimpleInstruction infers which values to pop and push from the stack
@@ -120,7 +121,7 @@ class StateToStateInstruction(Instruction):
         self.f = f
         self.stacks_used = set(stacks_used)
 
-    def evaluate(self, push_state: PushState, interpreter_config):
+    def evaluate(self, push_state: PushState, interpreter_config: PushConfig):
         """Evaluate the instruction on the given PushState. Return mutated State.
 
         A SimpleInstruction infers which values to pop and push from the stack
@@ -194,7 +195,7 @@ class TakesStateInstruction(Instruction):
         self.output_stacks = output_stacks
         self.other_stacks = other_stacks
 
-    def evaluate(self, push_state: PushState, interpreter_config):
+    def evaluate(self, push_state: PushState, interpreter_config: PushConfig):
         """Evaluate the instruction on the given PushState. Return mutated State.
 
         A SimpleInstruction infers which values to pop and push from the stack
@@ -281,7 +282,7 @@ class ProducesManyOfTypeInstruction(Instruction):
         self.input_stacks = input_stacks
         self.output_stack = output_stack
 
-    def evaluate(self, push_state: PushState, interpreter_config):
+    def evaluate(self, push_state: PushState, interpreter_config: PushConfig):
         """Evaluate the instruction on the given PushState. Return mutated State.
 
         A ProducesManyOfTypeInstruction infers which values to pop from the stack

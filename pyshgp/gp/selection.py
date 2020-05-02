@@ -1,5 +1,6 @@
 """The :mod:`selection` module defines classes to select Individuals from Populations."""
 from abc import ABC, abstractmethod
+from copy import copy
 from typing import Sequence, Union
 from operator import attrgetter
 
@@ -150,80 +151,91 @@ def median_absolute_deviation(x: np.ndarray) -> np.float64:
     mad : float
 
     """
-    return np.median(np.abs(x - np.median(x)))
+    return np.median(np.abs(x - np.median(x))).item()
+
+
+class CaseStream:
+
+    def __init__(self, n_cases: int):
+        self.cases = list(range(n_cases))
+
+    def __iter__(self):
+        shuffle(self.cases)
+        for case in self.cases:
+            yield case
+
+
+def one_individual_per_error_vector(population: Population) -> Sequence[Individual]:
+    """Preselect one individual per distinct error vector.
+    Crucial for avoiding the worst case runtime of lexicase selection but
+    does not impact the behavior of which individual gets selected.
+    """
+    population_list = list(copy(population))
+    shuffle(population_list)
+    preselected = []
+    error_vector_hashes = set()
+    for individual in population_list:
+        error_vector_hash = hash(individual.error_vector_bytes)
+        if error_vector_hash not in error_vector_hashes:
+            preselected.append(individual)
+            error_vector_hashes.add(error_vector_hash)
+    return preselected
 
 
 class Lexicase(Selector):
     """Lexicase Selection.
-
     All training cases are considered iteratively in a random order. For each
     training cases, the population is filtered to only contain the Individuals
     which have an error value within epsilon of the best error value on that case.
     This filtering is repeated until the population is down to a single Individual
     or all cases have been used. After the filtering iterations, a random
     Individual from the remaining set is returned as the selected Individual.
-
     See: https://ieeexplore.ieee.org/document/6920034
     """
 
     def __init__(self, epsilon: Union[bool, float, np.ndarray] = False):
         self.epsilon = epsilon
 
-    def _preselection(self, population: Population) -> Sequence[Individual]:
-        """Preselect one individual per distinct error vector.
+    @staticmethod
+    def _epsilon_from_mad(error_matrix: np.ndarray):
+        return np.apply_along_axis(median_absolute_deviation, 0, error_matrix)
 
-        Crucial for avoiding the worst case runtime of lexicase selection but
-        does not impact the behavior of which indiviudal gets selected.
-        """
-        population_list = list(population)
-        shuffle(population_list)
-        preselected = []
-        error_vector_hashes = set()
-        for individual in population_list:
-            error_vector_hash = hash(individual.error_vector_bytes)
-            if error_vector_hash not in error_vector_hashes:
-                preselected.append(individual)
-                error_vector_hashes.add(error_vector_hash)
-        return preselected
+    def _select_with_stream(self, population: Population, cases: CaseStream) -> Individual:
+        candidates = one_individual_per_error_vector(population)
+
+        ep = self.epsilon
+        if isinstance(ep, bool) and ep:
+            ep = self._epsilon_from_mad(population.all_error_vectors())
+
+        for case in cases:
+            if len(candidates) <= 1:
+                break
+
+            errors_this_case = [i.error_vector[case] for i in candidates]
+            best_val_for_case = min(errors_this_case)
+
+            max_error = best_val_for_case
+            if isinstance(ep, np.ndarray):
+                max_error += ep[case]
+            elif isinstance(ep, (float, int, np.int64, np.float64)):
+                max_error += ep
+
+            candidates = [i for i in candidates if i.error_vector[case] <= max_error]
+        return choice(candidates)
 
     def select_one(self, population: Population) -> Individual:
         """Return single individual from population.
-
         Parameters
         ----------
         population
             A Population of Individuals.
-
         Returns
         -------
         Individual
             The selected Individual.
-
         """
-        candidates = self._preselection(population)
-        cases = np.arange(len(population[0].error_vector))
-        shuffle(cases)
-
-        if isinstance(self.epsilon, np.ndarray):
-            ep = np.apply_along_axis(median_absolute_deviation, 0, population.all_error_vectors())
-        elif isinstance(self.epsilon, (float, int, np.int64, np.float64)):
-            ep = self.epsilon
-
-        while len(cases) > 0 and len(candidates) > 1:
-            case = cases[0]
-            errors_this_case = [i.error_vector[case] for i in candidates]
-            best_val_for_case = min(errors_this_case)
-
-            if isinstance(self.epsilon, np.ndarray):
-                max_error = best_val_for_case + ep[case]
-            elif isinstance(self.epsilon, (float, int, np.int64, np.float64)):
-                max_error = best_val_for_case + ep
-            else:
-                max_error = best_val_for_case
-
-            candidates = [i for i in candidates if i.error_vector[case] <= max_error]
-            cases = cases[1:]
-        return choice(candidates)
+        cases = CaseStream(len(population[0].error_vector))
+        return self._select_with_stream(population, cases)
 
 
 class Elite(Selector):

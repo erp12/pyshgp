@@ -221,10 +221,10 @@ class SearchAlgorithm(ABC):
                     m=self.population.median_error(),
                     e_d=self.population.error_diversity()
                 ),
-                # stat_logs.append("Population: size={p_s}, program_diversity={p_d}".format(
-                #     p_s=len(self.population),
-                #     p_d=self.population.program_diversity()
-                # ))
+                "INDIVIDUALS: n={ps}, avg_genome_length={gn_len}".format(
+                    ps=len(self.population),
+                    gn_len=self.population.mean_genome_length()
+                )
             ]
             log(self.config.verbosity_config.generation, " | ".join(stat_logs))
 

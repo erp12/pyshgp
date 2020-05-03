@@ -91,3 +91,7 @@ class Population(Sequence):
         """Proportion of unique programs."""
         unq = set([pickle.dumps(i.get_program().code) for i in self])
         return len(unq) / float(len(self))
+
+    def mean_genome_length(self):
+        tot_gn_len = sum([len(i.genome) for i in self])
+        return tot_gn_len / len(self)

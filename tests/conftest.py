@@ -61,18 +61,17 @@ def simple_genome(atoms):
 
 @pytest.fixture(scope="function")
 def simple_program_signature(push_config):
-    return ProgramSignature(1, ["int"], push_config)
+    return ProgramSignature(arity=1, output_stacks=["int"], push_config=push_config)
 
 
 @pytest.fixture(scope="function")
 def simple_program(simple_genome, simple_program_signature):
-    return Program(genome_to_code(simple_genome), simple_program_signature)
+    return Program(code=genome_to_code(simple_genome), signature=simple_program_signature)
 
 
 @pytest.fixture(scope="function")
-def simple_individual(simple_genome, push_config):
-    sig = ProgramSignature(1, ["int"], push_config)
-    return Individual(simple_genome, sig)
+def simple_individual(simple_genome, simple_program_signature):
+    return Individual(simple_genome, simple_program_signature)
 
 
 @pytest.fixture(scope="function")

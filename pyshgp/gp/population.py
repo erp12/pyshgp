@@ -11,7 +11,7 @@ from pyshgp.gp.evaluation import Evaluator
 
 
 def _eval_indiv(indiv: Individual, evalr: Evaluator, ):
-    indiv.error_vector = evalr.evaluate(indiv.get_program())
+    indiv.error_vector = evalr.evaluate(indiv.program)
     return indiv
 
 
@@ -89,7 +89,7 @@ class Population(Sequence):
 
     def program_diversity(self):
         """Proportion of unique programs."""
-        unq = set([pickle.dumps(i.get_program().code) for i in self])
+        unq = set([pickle.dumps(i.program.code) for i in self])
         return len(unq) / float(len(self))
 
     def mean_genome_length(self):

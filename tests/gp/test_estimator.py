@@ -40,7 +40,7 @@ def run_ga_on_odd_test(parallelism):
     est.fit(X, y)
 
     assert isinstance(est.solution, Individual)
-    assert len(est.solution.get_program().code) > 0
+    assert len(est.solution.program.code) > 0
 
     path = "tmp.push"
     solution = est.solution.copy(deep=True)
@@ -82,4 +82,4 @@ def test_estimator_with_custom_types(point_cls, point_instr_set):
     est.fit(X, y)
 
     assert isinstance(est.solution, Individual)
-    assert len(est.solution.get_program().code) > 0
+    assert len(est.solution.program.code) > 0

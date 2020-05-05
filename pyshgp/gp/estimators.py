@@ -157,7 +157,7 @@ class PushEstimator:
             ndx = list_rindex(output_types, "str")
             if ndx is not None:
                 output_types[ndx] = "stdout"
-        self.signature = ProgramSignature(arity, output_types, self.push_config)
+        self.signature = ProgramSignature(arity=arity, output_stacks=output_types, push_config=self.push_config)
         self.evaluator = DatasetEvaluator(X, y, interpreter=self.interpreter)
         self._build_search_algo()
         self.solution = self.search.run()
@@ -181,7 +181,7 @@ class PushEstimator:
         check_is_fitted(self, "solution")
         return [
             self.interpreter.run(
-                self.solution.get_program(),
+                self.solution.program,
                 inputs
             ) for inputs in X
         ]
@@ -202,7 +202,7 @@ class PushEstimator:
         check_is_fitted(self, "solution")
         X, y, arity, y_types = check_X_y(X, y)
         self.evaluator = DatasetEvaluator(X, y, interpreter=self.interpreter)
-        return self.evaluator.evaluate(self.solution.get_program())
+        return self.evaluator.evaluate(self.solution.program)
 
     def save(self, filepath: str):
         """Load the found solution to a JSON file.

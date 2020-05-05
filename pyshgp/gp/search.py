@@ -211,7 +211,7 @@ class SearchAlgorithm(ABC):
                 return False
 
         if self.config.verbosity_config.generation >= self.config.verbosity_config.log_level and \
-           self.generation % self.config.verbosity_config.every_n_generations == 0:
+                self.generation % self.config.verbosity_config.every_n_generations == 0:
             stat_logs = [
                 "GENERATION: {g}".format(
                     g=self.generation
@@ -322,7 +322,7 @@ class SimulatedAnnealing(SearchAlgorithm):
             assert op.num_parents <= 1, "SimulatedAnnealing cannot take multiple parant variation operators."
         super().__init__(config)
 
-    def _get_temp(self,):
+    def _get_temp(self, ):
         """Return the temperature."""
         return 1.0 - (self.generation / self.config.max_generations)
 
@@ -353,7 +353,7 @@ class SimulatedAnnealing(SearchAlgorithm):
             ),
             self.config.signature
         )
-        candidate.error_vector = self.config.evaluator.evaluate(candidate.get_program())
+        candidate.error_vector = self.config.evaluator.evaluate(candidate.program())
 
         acceptance_probability = self._acceptance(candidate.total_error)
         if np.random.random() < acceptance_probability:

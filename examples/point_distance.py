@@ -121,6 +121,6 @@ if __name__ == "__main__":
         stream=sys.stdout
     )
     est.fit(X, y)
-    print(est.solution.get_program())
+    print(est.solution.program)
     print(est.predict(X))
     print(est.score(X, y))

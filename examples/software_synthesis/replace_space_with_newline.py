@@ -121,11 +121,11 @@ if __name__ == "__main__":
     est = PushEstimator(
         search="GA",
         population_size=500,
-        max_generations=20,
+        max_generations=150,
         spawner=spawner,
         simplification_steps=100,
         last_str_from_stdout=True,
-        parallelism=False,
+        parallelism=True,
         verbose=2
     )
 
@@ -136,4 +136,4 @@ if __name__ == "__main__":
     print("test_error: ", np.sum(est.score(X_test, y_test)))
     print("runtime: ", end - start)
     print("final_generation: ", est.search.generation)
-    print("best_genome: ", est.solution.genome.make_str())
+    print("best_genome: ", est.solution.genome)

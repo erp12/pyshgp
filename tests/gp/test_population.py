@@ -10,7 +10,7 @@ from pyshgp.push.program import ProgramSignature
 
 @pytest.fixture(scope="function")
 def simple_individuals(atoms, push_config):
-    sig = ProgramSignature(0, ["int"], push_config)
+    sig = ProgramSignature(arity=0, output_stacks=["int"], push_config=push_config)
     return [
         Individual(Genome([]), sig),
         Individual(Genome([atoms["5"]]), sig),

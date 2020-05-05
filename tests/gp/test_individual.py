@@ -3,7 +3,6 @@ import numpy as np
 
 from pyshgp.gp.individual import Individual
 from pyshgp.gp.genome import Genome
-from pyshgp.push.atoms import CodeBlock
 from pyshgp.push.interpreter import Program
 
 
@@ -20,7 +19,7 @@ def unevaluated_individual(simple_genome, simple_program_signature):
 class TestIndividual:
 
     def test_get_program(self, unevaluated_individual):
-        p = unevaluated_individual.get_program()
+        p = unevaluated_individual.program
         assert isinstance(p, Program)
 
     def test_set_error_vector(self, unevaluated_individual):

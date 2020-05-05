@@ -1,10 +1,12 @@
 import json
 
+from pyshgp.monitoring import VerbosityConfig
 from pyshgp.push.atoms import CodeBlock, Closer, Literal, JitInstructionRef
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.config import PushConfig
 from pyshgp.push.program import ProgramSignature, Program
 from pyshgp.push.instruction_set import InstructionSet
+from pyshgp.push.state import PushState
 
 
 def _code_block_from_list(lst: list, instr_set: InstructionSet) -> CodeBlock:
@@ -37,70 +39,58 @@ def load_code(name, interpreter) -> CodeBlock:
         return _code_block_from_list(json.load(f), interpreter.instruction_set)
 
 
-def test_program_relu_1(push_config: PushConfig):
-    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
-    cb = load_code("relu_via_max", interpreter)
-    sig = ProgramSignature(1, ["float"], push_config)
-    prog = Program(cb, sig)
-    result = interpreter.run(prog, [-5])
-    assert result == [0.0]
-
-    result = interpreter.run(prog, [5.6])
-    assert result == [5.6]
+def get_program(name: str, sig: ProgramSignature, interpreter: PushInterpreter):
+    cb = load_code(name, interpreter)
+    return Program(code=cb, signature=sig)
 
 
-def test_program_relu_2(push_config: PushConfig):
-    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
-    cb = load_code("relu_via_if", interpreter)
-    sig = ProgramSignature(1, ["float"], push_config)
-    prog = Program(cb, sig)
-    result = interpreter.run(prog, [-5])
-    assert result == [0.0]
-
-    result = interpreter.run(prog, [5.6])
-    assert result == [5.6]
+def check_program(name: str, inputs: list, outputs: list, sig: ProgramSignature, iset: InstructionSet) -> PushState:
+    """Returns the PushState for further validation."""
+    interpreter = PushInterpreter(iset.register_n_inputs(sig.arity), verbosity_config=VerbosityConfig(program_trace=True))
+    prog = get_program(name, sig, interpreter)
+    assert interpreter.run(prog, inputs) == outputs
+    return interpreter.state
 
 
-def test_program_fibonacci(push_config: PushConfig):
-    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
-    cb = load_code("fibonacci", interpreter)
-    sig = ProgramSignature(1, ["int"], push_config)
-    prog = Program(cb, sig)
-    interpreter.run(prog, [5])
-    assert list(interpreter.state["int"]) == [1, 1, 2, 3, 5]
-
-    interpreter.run(prog, [1])
-    assert list(interpreter.state["int"]) == [1]
-
-    interpreter.run(prog, [-3])
-    assert list(interpreter.state["int"]) == []
+def test_program_relu_1(push_config: PushConfig, instr_set: InstructionSet):
+    name = "relu_via_max"
+    sig = ProgramSignature(arity=1, output_stacks=["float"], push_config=push_config)
+    check_program(name, [-5], [0.0], sig, instr_set)
+    check_program(name, [5.6], [5.6], sig, instr_set)
 
 
-def test_program_rswn(push_config: PushConfig):
-    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
-    cb = load_code("replace_space_with_newline", interpreter)
-    sig = ProgramSignature(1, ["int", "stdout"], push_config)
-    prog = Program(cb, sig)
-    interpreter.run(prog, ["hello world"])
-    assert list(interpreter.state["int"]) == [10]
-    assert interpreter.state.stdout == "hello\nworld"
-
-    interpreter.run(prog, ["nospace"])
-    assert list(interpreter.state["int"]) == [7]
-    assert interpreter.state.stdout == "nospace"
-
-    interpreter.run(prog, ["   "])
-    assert list(interpreter.state["int"]) == [0]
-    assert interpreter.state.stdout == "\n\n\n"
+def test_program_relu_2(push_config: PushConfig, instr_set: InstructionSet):
+    name = "relu_via_if"
+    sig = ProgramSignature(arity=1, output_stacks=["float"], push_config=push_config)
+    check_program(name, [-5], [0.0], sig, instr_set)
+    check_program(name, [5.6], [5.6], sig, instr_set)
 
 
-def test_program_point_dist(point_instr_set, push_config: PushConfig):
-    interpreter = PushInterpreter(point_instr_set)
-    cb = load_code("point_distance", interpreter)
-    sig = ProgramSignature(4, ["float"], push_config)
-    prog = Program(cb, sig)
-    interpreter.run(prog, [1.0, 3.0, 3.0, 3.0])
-    assert list(interpreter.state["float"]) == [2.0]
+def test_program_fibonacci(push_config: PushConfig, instr_set: InstructionSet):
+    name = "fibonacci"
+    sig = ProgramSignature(arity=1, output_stacks=[], push_config=push_config)
+    result1 = check_program(name, [5], [], sig, instr_set)
+    assert list(result1["int"]) == [1, 1, 2, 3, 5]
+    result2 = check_program(name, [1], [], sig, instr_set)
+    assert list(result2["int"]) == [1]
+    result3 = check_program(name, [-2], [], sig, instr_set)
+    assert list(result3["int"]) == []
 
-    interpreter.run(prog, [3.0, 2.5, 3.0, -3.0])
-    assert list(interpreter.state["float"]) == [5.5]
+
+def test_program_rswn(push_config: PushConfig, instr_set: InstructionSet):
+    name = "replace_space_with_newline"
+    sig = ProgramSignature(arity=1, output_stacks=["int", "stdout"], push_config=push_config)
+    result1 = check_program(name, ["hello world"], [10, "hello\nworld"], sig, instr_set)
+    assert result1.stdout == "hello\nworld"
+    result2 = check_program(name, ["nospace"], [7, "nospace"], sig, instr_set)
+    assert result2.stdout == "nospace"
+    result3 = check_program(name, ["   "], [0, "\n\n\n"], sig, instr_set)
+    assert result3.stdout == "\n\n\n"
+
+
+def test_program_point_dist(push_config: PushConfig, point_instr_set: InstructionSet):
+    name = "point_distance"
+    sig = ProgramSignature(arity=4, output_stacks=["float"], push_config=push_config)
+    check_program(name, [1.0, 3.0, 3.0, 3.0], [2.0], sig, point_instr_set)
+    check_program(name, [3.0, 2.5, 3.0, -3.0], [5.5], sig, point_instr_set)
+    check_program(name, [0.0, 0.0, 0.0, 0.0], [0], sig, point_instr_set)

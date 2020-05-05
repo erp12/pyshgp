@@ -42,11 +42,12 @@ class Individual(Saveable, Copyable):
         self._total_error = None
         self._error_vector_bytes = None
 
-    def get_program(self) -> Program:
+    @property
+    def program(self) -> Program:
         """Push program of individual. Taken from Plush genome."""
         if self._program is None:
             cb = genome_to_code(self.genome)
-            self._program = Program(cb, self.signature)
+            self._program = Program(code=cb, signature=self.signature)
         return self._program
 
     @property

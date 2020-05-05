@@ -234,9 +234,7 @@ class GeneSpawner:
         """
         if isinstance(size, Sequence):
             size = np.random.randint(size[0], size[1]) + 1
-
-        genes = [self.random_gene() for _ in range(size)]
-        return Genome.create(genes)
+        return Genome.create([self.random_gene() for _ in range(size)])
 
 
 class GenomeSimplifier:
@@ -287,7 +285,7 @@ class GenomeSimplifier:
 
     def _errors_of_genome(self, genome: Genome) -> np.ndarray:
         cb = genome_to_code(genome)
-        program = Program(cb, self.program_signature)
+        program = Program(code=cb, signature=self.program_signature)
         return self.evaluator.evaluate(program)
 
     def _step(self, genome: Genome, errors_to_beat: np.ndarray) -> Tuple[Genome, np.ndarray]:

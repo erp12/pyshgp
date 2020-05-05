@@ -11,7 +11,7 @@ from pyshgp.push.program import ProgramSignature
 @pytest.fixture(scope="function")
 def population(atoms, push_config):
     gn = Genome()
-    sig = ProgramSignature(0, [], push_config)
+    sig = ProgramSignature(arity=0, output_stacks=[], push_config=push_config)
     i1 = Individual(gn, sig)
     i1.error_vector = np.array([0, 20, 0])  # 20
 

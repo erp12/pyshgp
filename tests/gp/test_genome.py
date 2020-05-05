@@ -40,7 +40,7 @@ class TestGenome:
         assert len(cb) == 1
         assert cb[0] == Literal(5, PushInt)
 
-    def test_empty_genome_to_codeblock(self, atoms):
+    def test_empty_genome_to_codeblock(self):
         gn = Genome()
         cb = genome_to_code(gn)
         assert len(cb) == 0
@@ -77,7 +77,7 @@ class TestGenomeSimplifier:
     def test_simplify_no_change(self, simple_individual):
         evaluator = DatasetEvaluator([[]], [10])
         genome = simple_individual.genome
-        err = evaluator.evaluate(simple_individual.get_program())
+        err = evaluator.evaluate(simple_individual.program)
 
         gs = GenomeSimplifier(evaluator, simple_individual.signature)
         new_genome, new_err = gs.simplify(genome, err, 100)
@@ -88,7 +88,7 @@ class TestGenomeSimplifier:
     def test_simplify(self, simple_individual, atoms):
         evaluator = DatasetEvaluator([[]], [5])
         genome = simple_individual.genome
-        err = evaluator.evaluate(simple_individual.get_program())
+        err = evaluator.evaluate(simple_individual.program)
 
         gs = GenomeSimplifier(evaluator, simple_individual.signature)
         new_genome, new_err = gs.simplify(genome, err, 1000)

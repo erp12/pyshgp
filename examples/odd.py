@@ -39,10 +39,10 @@ if __name__ == "__main__":
         spawner=spawner,
         population_size=300,
         max_generations=100,
-        verbose=1
+        verbose=2
     )
 
     est.fit(X, y)
-    print(est.solution.get_program())
+    print(est.solution.program)
     print(est.predict(X))
     print(est.score(X, y))

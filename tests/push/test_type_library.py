@@ -71,6 +71,6 @@ class TestPushTypeLibrary:
 
 def test_infer_literal():
     lib = PushTypeLibrary()
-    assert infer_literal(5, lib) == Literal(5, PushInt)
-    assert infer_literal(False, lib) == Literal(False, PushBool)
-    assert infer_literal("", lib) == Literal("", PushStr)
+    assert infer_literal(5, lib) == Literal(value=5, push_type=PushInt)
+    assert infer_literal(False, lib) == Literal(value=False, push_type=PushBool)
+    assert infer_literal("", lib) == Literal(value="", push_type=PushStr)

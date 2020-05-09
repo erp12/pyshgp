@@ -36,15 +36,9 @@ X = np.array([
 y = np.array([[target_function(s[0])] for s in X])
 
 
-instruction_set = (
-    InstructionSet()
-    .register_core_by_stack({"str", "int"})
-    .register_n_inputs(X.shape[1])
-)
-
-
 spawner = GeneSpawner(
-    instruction_set=instruction_set,
+    n_inputs=1,
+    instruction_set=    InstructionSet().register_core_by_stack({"str", "int"}),
     literals=[],
     erc_generators=[
         lambda: random.randint(0, 10),

@@ -211,4 +211,4 @@ def infer_literal(val: Any, type_library: PushTypeLibrary) -> Literal:
         The Literal object which holds the value and the corresponding PushType.
 
     """
-    return Literal(val, type_library.push_type_of(val, error_on_not_found=True))
+    return Literal(value=val, push_type=type_library.push_type_of(val, error_on_not_found=True))

@@ -1,7 +1,7 @@
 import json
 
 from pyshgp.monitoring import VerbosityConfig
-from pyshgp.push.atoms import CodeBlock, Closer, Literal, JitInstructionRef
+from pyshgp.push.atoms import CodeBlock, Closer, Literal, InstructionMeta, Input
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.config import PushConfig
 from pyshgp.push.program import ProgramSignature, Program
@@ -9,13 +9,13 @@ from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.state import PushState
 
 
-def _code_block_from_list(lst: list, instr_set: InstructionSet) -> CodeBlock:
+def _deserialize_atoms(lst, instr_set: InstructionSet):
     type_lib = instr_set.type_library
-    cb = CodeBlock()
+    atoms = []
     for atom_spec in lst:
         atom = None
         if isinstance(atom_spec, list):
-            atom = _code_block_from_list(atom_spec, instr_set)
+            atom = CodeBlock(_deserialize_atoms(atom_spec, instr_set))
         else:
             atom_type = atom_spec["a"]
             if atom_type == "close":
@@ -23,20 +23,22 @@ def _code_block_from_list(lst: list, instr_set: InstructionSet) -> CodeBlock:
             elif atom_type == "lit":
                 push_type = type_lib[atom_spec["t"]]
                 value = push_type.coerce(atom_spec["v"])
-                atom = Literal(value, push_type)
+                atom = Literal(value=value, push_type=push_type)
+            elif atom_type == "input":
+                atom = Input(input_index=atom_spec["i"])
             elif atom_type == "instr":
-                atom = instr_set[atom_spec["n"]]
-            elif atom_type == "jit-instr":
-                atom = JitInstructionRef(atom_spec["n"])
+                instr = instr_set[atom_spec["n"]]
+                atom = InstructionMeta(name=instr.name, code_blocks=instr.code_blocks)
             else:
                 raise ValueError("bad atom spec {s}".format(s=atom_spec))
-        cb.append(atom)
-    return cb
+        atoms.append(atom)
+    return atoms
 
 
 def load_code(name, interpreter) -> CodeBlock:
     with open("tests/resources/programs/" + name + ".json") as f:
-        return _code_block_from_list(json.load(f), interpreter.instruction_set)
+        atoms = _deserialize_atoms(json.load(f), interpreter.instruction_set)
+        return CodeBlock(atoms)
 
 
 def get_program(name: str, sig: ProgramSignature, interpreter: PushInterpreter):
@@ -46,7 +48,7 @@ def get_program(name: str, sig: ProgramSignature, interpreter: PushInterpreter):
 
 def check_program(name: str, inputs: list, outputs: list, sig: ProgramSignature, iset: InstructionSet) -> PushState:
     """Returns the PushState for further validation."""
-    interpreter = PushInterpreter(iset.register_n_inputs(sig.arity), verbosity_config=VerbosityConfig(program_trace=True))
+    interpreter = PushInterpreter(iset, verbosity_config=VerbosityConfig(program_trace=100))
     prog = get_program(name, sig, interpreter)
     assert interpreter.run(prog, inputs) == outputs
     return interpreter.state

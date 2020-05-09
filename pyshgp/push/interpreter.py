@@ -9,10 +9,11 @@ from typing import Sequence, Union
 import time
 from enum import Enum
 
+from pyshgp.push.instruction import Instruction
 from pyshgp.push.program import Program
 from pyshgp.push.state import PushState
 from pyshgp.push.instruction_set import InstructionSet
-from pyshgp.push.atoms import Atom, Closer, Literal, Instruction, JitInstructionRef, CodeBlock
+from pyshgp.push.atoms import Atom, Closer, Literal, InstructionMeta, CodeBlock, Input
 from pyshgp.push.types import PushStr
 from pyshgp.push.config import PushConfig
 from pyshgp.validation import PushError
@@ -21,7 +22,6 @@ from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log_fun
 
 class PushInterpreterStatus(Enum):
     """Enum class of all potential statuses of a PushInterpreter."""
-
     normal = 1
     step_limit_exceeded = 2
     runtime_limit_exceeded = 3
@@ -35,9 +35,9 @@ class PushInterpreter:
     ----------
     instruction_set : Union[InstructionSet, str], optional
         The InstructionSet to use for executing programs. Default is "core"
-        which instansiates an InstructionSet using all the core instructions.
+        which instantiates an InstructionSet using all the core instructions.
     verbosity_config : VerbosityConfig, optional
-        A VerbosityConfig controling what is logged during the execution
+        A VerbosityConfig controlling what is logged during the execution
         of the program. Default is no verbosity.
 
     Attributes
@@ -51,7 +51,7 @@ class PushInterpreter:
         The current PushState. Contains one stack for each PushType utilized
         mentioned by the instructions in the instruction set.
     status : PushInterpreterStatus
-        A string denoting if the Interpreter has enountered a situation
+        A string denoting if the Interpreter has encountered a situation
         where non-standard termination was required.
 
     """
@@ -98,7 +98,7 @@ class PushInterpreter:
         self.state = PushState(self.type_library)
         self.status = PushInterpreterStatus.normal
         self._verbose_trace = self.verbosity_config.program_trace
-        self._log_fn_for_trace = log_function(self._verbose_trace)
+        self._log_fn_for_trace = print
 
     def _log_trace(self, msg=None, log_state=False):
         if msg is not None:
@@ -106,7 +106,7 @@ class PushInterpreter:
         if log_state:
             self.state.pretty_print(self._log_fn_for_trace)
 
-    def _evaluate_instruction(self, instruction: Union[Instruction, JitInstructionRef], config: PushConfig):
+    def _evaluate_instruction(self, instruction: Instruction, config: PushConfig):
         self.state = instruction.evaluate(self.state, config)
 
     def untyped_to_typed(self):
@@ -122,17 +122,18 @@ class PushInterpreter:
         Parameters
         ----------
         atom : Atom
-            The Atom (Literal, Instruction, JitInstructionRef, or CodeBlock) to
+            The Atom (Literal, InstructionMeta, Input, or CodeBlock) to
             evaluate against the current PushState.
         config : PushConfig
             The configuration of the Push program being run.
 
         """
         try:
-            if isinstance(atom, Instruction):
-                self._evaluate_instruction(atom, config)
-            elif isinstance(atom, JitInstructionRef):
+            if isinstance(atom, InstructionMeta):
                 self._evaluate_instruction(self.instruction_set[atom.name], config)
+            elif isinstance(atom, Input):
+                input_value = self.state.inputs[atom.input_index]
+                self.state.untyped.append(input_value)
             elif isinstance(atom, CodeBlock):
                 for a in atom[::-1]:
                     self.state["exec"].push(a)
@@ -210,7 +211,7 @@ class PushInterpreter:
             next_atom = self.state["exec"].pop()
 
             if self._verbose_trace >= self.verbosity_config.log_level:
-                self._log_trace("Current Atom: " + str(next_atom))
+                self._log_trace("\nCurrent Atom: " + str(next_atom))
 
             # Evaluate atom.
             old_size = self.state.size()

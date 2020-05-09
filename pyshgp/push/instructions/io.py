@@ -8,30 +8,6 @@ from pyshgp.push.instruction import SimpleInstruction, TakesStateInstruction
 from pyshgp.push.type_library import PushTypeLibrary
 
 
-def _nth_input(state: PushState, ndx: int):
-    input_value = state.inputs[ndx]
-    if isinstance(input_value, Atom):
-        return input_value,
-    return input_value,
-
-
-def make_input_instruction(ndx: int) -> TakesStateInstruction:
-    """Return insctuction to push a copy of the input value at the given index."""
-    return TakesStateInstruction(
-        "input_{i}".format(i=ndx),
-        partial(_nth_input, ndx=ndx),
-        output_stacks=["untyped"],
-        other_stacks=[],
-        code_blocks=0,
-        docstring="Push a copy of input at index {i}.".format(i=ndx)
-    )
-
-
-def make_input_instructions(num_inputs: int) -> Sequence[TakesStateInstruction]:
-    """Return insctuctions to push a copy of the input value at the given index."""
-    return [make_input_instruction(i) for i in range(num_inputs)]
-
-
 # Printing instructions
 
 def _wrap_str(x):

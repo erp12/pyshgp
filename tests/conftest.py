@@ -34,12 +34,12 @@ def instr_set():
 @pytest.fixture(scope="function")
 def atoms(instr_set):
     return {
-        "5": Literal(5, PushInt),
-        "1.2": Literal(1.2, PushFloat),
-        "true": Literal(True, PushBool),
-        "add": instr_set["int_add"],
-        "sub": instr_set["int_sub"],
-        "if": instr_set["exec_if"],
+        "5": Literal(value=5, push_type=PushInt),
+        "1.2": Literal(value=1.2, push_type=PushFloat),
+        "true": Literal(value=True, push_type=PushBool),
+        "add": instr_set["int_add"].meta(),
+        "sub": instr_set["int_sub"].meta(),
+        "if": instr_set["exec_if"].meta(),
         "close": Closer()
     }
 
@@ -75,11 +75,11 @@ def simple_individual(simple_genome, simple_program_signature):
 
 
 @pytest.fixture(scope="function")
-def simple_gene_spawner(atoms):
+def simple_gene_spawner(instr_set):
     i_set = InstructionSet()
-    i_set.register_list([atoms["add"], atoms["sub"], atoms["if"]])
+    i_set.register_list([instr_set["int_add"], instr_set["int_sub"], instr_set["exec_if"]])
     l_set = [5, 1.2, True]
-    return GeneSpawner(i_set, l_set, [random.random])
+    return GeneSpawner(1, i_set, l_set, [random.random])
 
 
 # Custom Types
@@ -142,5 +142,4 @@ def point_instr_set(point_type_library, point_instructions):
     return (
         InstructionSet(type_library=point_type_library, register_core=True)
         .register_list(point_instructions)
-        .register_n_inputs(4)
     )

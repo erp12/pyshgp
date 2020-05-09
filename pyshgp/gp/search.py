@@ -353,7 +353,7 @@ class SimulatedAnnealing(SearchAlgorithm):
             ),
             self.config.signature
         )
-        candidate.error_vector = self.config.evaluator.evaluate(candidate.program())
+        candidate.error_vector = self.config.evaluator.evaluate(candidate.program)
 
         acceptance_probability = self._acceptance(candidate.total_error)
         if np.random.random() < acceptance_probability:

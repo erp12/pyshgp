@@ -4,12 +4,12 @@ from enum import Enum
 from typing import Sequence, Union, Any, Callable, Optional, Tuple
 
 import numpy as np
-from pyrsistent import PRecord, field, CheckedPVector
+from pyrsistent import PRecord, field, CheckedPVector, l
 
 from pyshgp.gp.evaluation import Evaluator
 from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log
 from pyshgp.push import InstructionSet, ProgramSignature, Program
-from pyshgp.push.atoms import Atom, CodeBlock, Instruction, Closer, Literal
+from pyshgp.push.atoms import Atom, CodeBlock, Closer, Literal, InstructionMeta, Input
 from pyshgp.push.type_library import infer_literal
 from pyshgp.utils import DiscreteProbDistrib
 
@@ -42,43 +42,44 @@ def genome_to_code(genome: Genome) -> CodeBlock:
     by an Evaluator.
 
     """
-    plushy_buffer = []
-    for atom in genome:
-        plushy_buffer.append(atom)
-        if isinstance(atom, Instruction) and atom.code_blocks > 0:
-            plushy_buffer.append(Opener(count=atom.code_blocks))
+    plushy_buffer = l()
+    for atom in genome[::-1]:
+        if isinstance(atom, InstructionMeta) and atom.code_blocks > 0:
+            plushy_buffer = plushy_buffer.cons(Opener(count=atom.code_blocks))
+        plushy_buffer = plushy_buffer.cons(atom)
 
     push_buffer = []
     while True:
         # If done with plush but unclosed opens, recur with one more close.
         if len(plushy_buffer) == 0 and _has_opener(push_buffer):
-            plushy_buffer.append(Closer())
+            plushy_buffer = plushy_buffer.cons(Closer())
         # If done with plush and all opens closed, return push.
         elif len(plushy_buffer) == 0:
-            return CodeBlock(*push_buffer)
+            return CodeBlock(push_buffer)
         else:
-            atom = plushy_buffer[0]
+            atom = plushy_buffer.first
+            plushy_buffer = plushy_buffer.rest
             # If next instruction is a close, and there is an open.
             if isinstance(atom, Closer) and _has_opener(push_buffer):
                 ndx, opener = [(ndx, el) for ndx, el in enumerate(push_buffer) if isinstance(el, Opener)][-1]
                 post_open = push_buffer[ndx + 1:]
                 pre_open = push_buffer[:ndx]
-                if opener.count == 1:
-                    push_buffer = pre_open + [post_open]
-                else:
+                push_buffer = pre_open + [CodeBlock(post_open)]
+                if opener.count > 1:
                     opener = opener.dec()
-                    push_buffer = pre_open + [post_open, opener]
-            # If next instruction is a close, and there is no open.
+                    push_buffer.append(opener)
+            # If next instruction is a close, and there is no open, ignore it.
+            # If next instruction is not a close.
             elif not isinstance(atom, Closer):
                 push_buffer.append(atom)
-            del plushy_buffer[0]
 
 
 class GeneTypes(Enum):
-    INSTRUCTION = 1
-    CLOSE = 2
-    LITERAL = 3
-    ERC = 4
+    INPUT = 1
+    INSTRUCTION = 2
+    CLOSE = 3
+    LITERAL = 4
+    ERC = 5
 
 
 class GeneSpawner:
@@ -94,28 +95,10 @@ class GeneSpawner:
     Riccardo Poli and William B. Langdon and Nicholas Freitag McPhee,
     http://www.gp-field-guide.org.uk/
 
-    Parameters
-    ----------
-    instruction_set : pyshgp.push.instruction_set.InstructionSet
-        InstructionSet containing instructions to use when spawning genes and
-        genomes.
-    literals : Sequence[pyshgp.push.instruction_set.atoms.Literal, Any]
-        A list of Literal objects to pull from when spawning genes and genomes.
-        If an element of ``literals`` is not an instance of Literal, an attempt
-        to wrap the value in a Literal will be made.
-    erc_generator : Sequence[Callable]
-        A list of functions (aka Ephemeral Random Constant generators). When one
-        of these functions is called, the output is placed in a Literal and
-        returned as the spawned gene.
-    distribution : pyshgp.utils.DiscreteProbDistrib, optional
-        A probability distribution describing how frequently to produce
-        Instructions, Closers, Literals, and ERCs. The default is "proportional"
-        which gives all Instructions, Literals, and ERC generators equal probability.
-        If "proportional", the likelyhood of producing a Closer is the same as
-        the likelyhood of producing an Instruction with opens a code block.
-
     Attributes
     ----------
+    n_input : int
+        Number of input instructions that could appear the genomes.
     instruction_set : pyshgp.push.instruction_set.InstructionSet
         InstructionSet containing instructions to use when spawning genes and
         genomes.
@@ -132,36 +115,46 @@ class GeneSpawner:
     """
 
     def __init__(self,
-                 instruction_set: InstructionSet,
+                 n_inputs: int,
+                 instruction_set: Union[InstructionSet, str],
                  literals: Sequence[Any],
                  erc_generators: Sequence[Callable],
                  distribution: DiscreteProbDistrib = "proportional"):
-        self.instruction_set = instruction_set
-        self.type_library = instruction_set.type_library
-        self.literals = [lit if isinstance(lit, Literal) else infer_literal(lit, self.type_library) for lit in literals]
+        self.n_inputs = n_inputs
         self.erc_generators = erc_generators
+
+        self.instruction_set = instruction_set
+        if self.instruction_set == "core":
+            self.instruction_set = InstructionSet(register_core=True)
+        self.type_library = self.instruction_set.type_library
+        self.literals = [lit if isinstance(lit, Literal) else infer_literal(lit, self.type_library) for lit in literals]
 
         if distribution == "proportional":
             self.distribution = (
                 DiscreteProbDistrib()
-                .add(GeneTypes.INSTRUCTION, len(instruction_set))
-                .add(GeneTypes.CLOSE, sum([i.code_blocks for i in instruction_set.values()]))
+                .add(GeneTypes.INPUT, self.n_inputs)
+                .add(GeneTypes.INSTRUCTION, len(self.instruction_set))
+                .add(GeneTypes.CLOSE, sum([i.code_blocks for i in self.instruction_set.values()]))
                 .add(GeneTypes.LITERAL, len(literals))
                 .add(GeneTypes.ERC, len(erc_generators))
             )
         else:
             self.distribution = distribution
 
-    def random_instruction(self) -> Instruction:
+    def random_input(self) -> Input:
+        return Input(input_index=np.random.randint(self.n_inputs))
+
+    def random_instruction(self) -> InstructionMeta:
         """Return a random Instruction from the InstructionSet.
 
         Returns
         -------
-        pushgp.push.atoms.Instruction
+        pushgp.push.atoms.InstructionMeta
             A randomly selected Literal.
 
         """
-        return np.random.choice(list(self.instruction_set.values()))
+        i = np.random.choice(list(self.instruction_set.values()))
+        return InstructionMeta(name=i.name, code_blocks=i.code_blocks)
 
     def random_literal(self) -> Literal:
         """Return a random Literal from the set of Literals.
@@ -201,7 +194,9 @@ class GeneSpawner:
 
         """
         atom_type = self.distribution.sample()
-        if atom_type is GeneTypes.INSTRUCTION:
+        if atom_type is GeneTypes.INPUT:
+            return self.random_input()
+        elif atom_type is GeneTypes.INSTRUCTION:
             return self.random_instruction()
         elif atom_type is GeneTypes.CLOSE:
             return Closer()

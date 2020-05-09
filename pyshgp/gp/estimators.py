@@ -151,7 +151,6 @@ class PushEstimator:
 
         """
         X, y, arity, y_types = check_X_y(X, y)
-        self.interpreter.instruction_set.register_n_inputs(arity)
         output_types = [self.interpreter.type_library.push_type_for_type(t).name for t in y_types]
         if self.last_str_from_stdout:
             ndx = list_rindex(output_types, "str")
@@ -169,9 +168,6 @@ class PushEstimator:
         ----------
         X : pandas dataframe of shape = [n_samples, n_features]
             The set of cases to predict.
-        verbose : bool, optional
-            Indicates if verbose printing should be used during searching.
-            Default is False.
 
         Returns
         -------

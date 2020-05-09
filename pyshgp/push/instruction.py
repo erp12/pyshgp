@@ -1,11 +1,86 @@
 """Concrete implementations of the Instruction Atom type."""
+from abc import ABC, abstractmethod
 from typing import Callable, Set, Sequence
 
+from pyshgp.push.atoms import InstructionMeta
 from pyshgp.push.config import PushConfig
 from pyshgp.push.type_library import RESERVED_PSEUDO_STACKS
 from pyshgp.push.state import PushState
-from pyshgp.push.atoms import Instruction
 from pyshgp.utils import Token
+
+
+class Instruction(ABC):
+    """A function in the Push language used to modify the PushState.
+
+    The Instruction class is the abstract base class for specific implementations
+    that are configured differently. For example, see SimpleInstruction verses
+    TakesStateInstruction.
+
+    Parameters
+    ----------
+    name : str,
+        A unique name for the instruction.
+    code_blocks : int
+        The number of CodeBlocks to open following the instruction in a Genome.
+    docstring : str, optional
+        A string describing in the behavior of the Instruction.
+
+    Attributes
+    ----------
+    name : str,
+        A unique name for the instruction.
+    code_blocks : int
+        The number of CodeBlocks to open following the instruction in a Genome.
+    docstring : str, optional
+        A string describing in the behavior of the Instruction.
+
+    """
+
+    __slots__ = ["name", "code_block", "docstring"]
+
+    def __init__(self, name: str, code_blocks: int, docstring="Write me!"):
+        self.name = name
+        self.code_blocks = code_blocks
+        self.docstring = docstring
+
+    @abstractmethod
+    def evaluate(self, push_state: PushState, push_config: PushConfig = None) -> PushState:
+        """Evaluate the instruction on the given PushState.
+
+        Parameters
+        ----------
+        push_state: pyshgp.push.state.PushState
+            The PushState to run the instruction on.
+        push_config: pyshgp.push.interpreter.PushConfig
+            The configuration of the Push language.
+
+        Returns
+        -------
+        pyshgp.push.state.PushState
+            Return the given state, possibly modified by the Instruction.
+
+        """
+        # Can't annotate types properly due to circular import.
+        pass
+
+    @abstractmethod
+    def required_stacks(self) -> Set[str]:
+        """Return a list of PushType names relevant to the instruction."""
+        pass
+
+    def meta(self) -> InstructionMeta:
+        return InstructionMeta(name=self.name, code_blocks=self.code_blocks)
+
+    def __eq__(self, other):
+        if type(self) == type(other):
+            return self.name == other.name
+        return False
+
+    def __hash__(self):
+        return self.name.__hash__()
+
+    def __repr__(self):
+        return "Instruction<{n}>".format(n=self.name)
 
 
 class SimpleInstruction(Instruction):
@@ -16,15 +91,15 @@ class SimpleInstruction(Instruction):
     function return values.
 
     The first step of evaluating a SimpleInstruction is to pop the arguments
-    from the stacks corresponding the instrution's ``input_stacks`` list.
-    If multiple occurences of the same type are in ``input_stacks``, items are
+    from the stacks corresponding the instruction's ``input_stacks`` list.
+    If multiple occurrences of the same type are in ``input_stacks``, items are
     taken from progressively deeper in that stack. If the stacks of the
-    PushState do not contain a sufficent number of items, the instruction does
+    PushState do not contain a sufficient number of items, the instruction does
     not modify the PushState.
 
     The popped arguments are then passed to the instruction's function to produce
     a tuple of outputs. It is crucial that the instruction's function produce a
-    tuple of outputs, even if it only conains a single element. The elements of
+    tuple of outputs, even if it only contains a single element. The elements of
     the tuple are then routed to the corresponding stacks specified in the
     instruction's ``output_stacks``.
 
@@ -59,7 +134,7 @@ class SimpleInstruction(Instruction):
         self.input_stacks = input_stacks
         self.output_stacks = output_stacks
 
-    def evaluate(self, push_state: PushState, interpreter_config: PushConfig):
+    def evaluate(self, push_state: PushState, push_config: PushConfig = None) -> PushState:
         """Evaluate the instruction on the given PushState. Return mutated State.
 
         A SimpleInstruction infers which values to pop and push from the stack
@@ -67,9 +142,9 @@ class SimpleInstruction(Instruction):
 
         Parameters
         ----------
-        state : PushState
+        push_state : PushState
             Push state to modify with the Instruction.
-        config :  pyshgp.push.interpreter.PushConfig
+        push_config :  pyshgp.push.interpreter.PushConfig
             Configuration of the interpreter. Used to get various limits.
 
         Returns
@@ -121,7 +196,7 @@ class StateToStateInstruction(Instruction):
         self.f = f
         self.stacks_used = set(stacks_used)
 
-    def evaluate(self, push_state: PushState, interpreter_config: PushConfig):
+    def evaluate(self, push_state: PushState, push_config: PushConfig = None) -> PushState:
         """Evaluate the instruction on the given PushState. Return mutated State.
 
         A SimpleInstruction infers which values to pop and push from the stack
@@ -129,9 +204,9 @@ class StateToStateInstruction(Instruction):
 
         Parameters
         ----------
-        state : PushState
+        push_state : PushState
             Push state to modify with the Instruction.
-        config : PushInterpreterConfig
+        push_config : PushConfig
             Configuration of the interpreter. Used to get various limits.
 
         Returns
@@ -195,7 +270,7 @@ class TakesStateInstruction(Instruction):
         self.output_stacks = output_stacks
         self.other_stacks = other_stacks
 
-    def evaluate(self, push_state: PushState, interpreter_config: PushConfig):
+    def evaluate(self, push_state: PushState, push_config: PushConfig = None) -> PushState:
         """Evaluate the instruction on the given PushState. Return mutated State.
 
         A SimpleInstruction infers which values to pop and push from the stack
@@ -203,9 +278,9 @@ class TakesStateInstruction(Instruction):
 
         Parameters
         ----------
-        state : PushState
+        push_state : PushState
             Push state to modify with the Instruction.
-        config : PushInterpreterConfig
+        push_config : PushConfig
             Configuration of the interpreter. Used to get various limits.
 
         Returns
@@ -282,7 +357,7 @@ class ProducesManyOfTypeInstruction(Instruction):
         self.input_stacks = input_stacks
         self.output_stack = output_stack
 
-    def evaluate(self, push_state: PushState, interpreter_config: PushConfig):
+    def evaluate(self, push_state: PushState, push_config: PushConfig = None) -> PushState:
         """Evaluate the instruction on the given PushState. Return mutated State.
 
         A ProducesManyOfTypeInstruction infers which values to pop from the stack
@@ -291,9 +366,9 @@ class ProducesManyOfTypeInstruction(Instruction):
 
         Parameters
         ----------
-        state : PushState
+        push_state : PushState
             Push state to modify with the Instruction.
-        config : PushInterpreterConfig
+        push_config : PushConfig
             Configuration of the interpreter. Used to get various limits.
 
         Returns

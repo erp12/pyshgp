@@ -80,7 +80,7 @@ class PushType:
             )
 
     def __repr__(self):
-        return self.name + "<" + ",".join([t.__name__ for t in list(self.underlying)]) + ">"
+        return "PushType(" + self.name + ")"
 
     def __eq__(self, other):
         if not isinstance(other, PushType):

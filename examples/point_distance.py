@@ -40,7 +40,7 @@ def to_point(thing):
     return Point(float(thing[0]), float(thing[1]))
 
 
-# The target funcgtion we would like to sythesize.
+# The target function we would like to synthesize.
 # Also the function used to define of one of our custom instructions.
 def point_distance(p1, p2):
     """Return the distance between two points."""
@@ -71,7 +71,7 @@ X = [[Point(row[0], row[1]), Point(row[2], row[3])] for row in np.random.rand(20
 y = [[point_distance(x[0], x[1])] for x in X]
 
 
-# Custom type library that specifies we will be sythesizing programs that
+# Custom type library that specifies we will be synthesizing programs that
 # manipulate "floats" (built-in to pyshgp) and "points" (custom for this problem)
 type_library = (
     PushTypeLibrary(register_core=False)
@@ -91,12 +91,12 @@ instruction_set = (
     InstructionSet(type_library=type_library, register_core=True)
     .register(point_distance_insrt)
     .register(point_from_floats_instr)
-    .register_n_inputs(2)
 )
 
 print(instruction_set.keys())
 
 spawner = GeneSpawner(
+    n_inputs=2,
     instruction_set=instruction_set,
     literals=[2.0],
     erc_generators=[]

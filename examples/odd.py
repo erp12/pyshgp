@@ -16,13 +16,9 @@ X = np.arange(-10, 10).reshape(-1, 1)
 y = [[bool(x % 2)] for x in X]
 
 
-instruction_set = (
-    InstructionSet(register_core=True)
-    .register_n_inputs(X.shape[1])
-)
-
 spawner = GeneSpawner(
-    instruction_set=instruction_set,
+    n_inputs=1,
+    instruction_set="core",
     literals=[],
     erc_generators=[lambda: random.randint(0, 10)]
 )

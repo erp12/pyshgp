@@ -128,7 +128,7 @@ def _make_code(x: Any, push_type: PushType) -> Tuple[Atom]:
     if isinstance(x, Atom):
         return x,
     else:
-        return Literal(x, push_type),
+        return Literal(value=x, push_type=push_type),
 
 
 def instructions(type_library: PushTypeLibrary):

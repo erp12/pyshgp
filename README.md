@@ -39,7 +39,7 @@ Although PushGP is constantly changing through research and publication, `pyshgp
 
 ##  Installing pyshgp
 
-`pyshgp` is compatible with python 3.5 and up.
+`pyshgp` is compatible with python 3.7.x and up.
 
 ### Install from pip
 

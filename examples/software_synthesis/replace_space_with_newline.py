@@ -91,20 +91,14 @@ y_test = [target_function(x[0]) for x in X_test]
 
 # Spawner
 
-instruction_set = (
-    InstructionSet()
-    .register_core_by_stack({"int", "bool", "string", "char", "exec", "stdout"})
-    .register_n_inputs(1)
-)
-
-
 def random_char():
     """Return a random character."""
     return Char(choice(_possible_chars))
 
 
 spawner = GeneSpawner(
-    instruction_set=instruction_set,
+    n_inputs=1,
+    instruction_set=InstructionSet().register_core_by_stack({"int", "bool", "string", "char", "exec", "stdout"}),
     literals=[" ", "\n"],
     erc_generators=[
         random_char,

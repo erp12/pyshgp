@@ -3,44 +3,36 @@
 An InstructionSet is a collection of Instruction objects, stored by name. The
 InstructionSet has methods to help define and register additional instructions.
 """
-from typing import Sequence, Set
+from typing import Sequence, Set, Dict
 import re
 
 from pyshgp.push.type_library import PushTypeLibrary, RESERVED_PSEUDO_STACKS
-from pyshgp.push.atoms import Instruction
-from pyshgp.push.instructions import core_instructions, io
+from pyshgp.push.instruction import Instruction
+from pyshgp.push.instructions import core_instructions
 
 
-class InstructionSet(dict):
+class InstructionSet(Dict[str, Instruction]):
     """A collection of Instruction objects stored by name.
-
-    Parameters
-    ----------
-    type_library : PushTypeLibrary, optional
-        The PushTypeLibrary which denote the PushTypes (and thus stacks)
-        are supported. Default is None, which corresponds to the core set of types.
-    register_all : bool, optional
-        If True, all instructions in the core instruction set will be registered
-        upon instanciation. Default is False.
-    strip_docstrings : bool, optional
-        If True, the docstring attribute of registered instructions will be
-        removed to reduce memory footprint. Default is True.
 
     Attributes
     ----------
     type_library : PushTypeLibrary, optional
         The PushTypeLibrary which denote the PushTypes (and thus stacks)
         are supported. Default is None, which corresponds to the core set of types.
-    register_all : bool, optional
+    register_core : bool, optional
         If True, all instructions in the core instruction set will be registered
-        upon instanciation. Default is False.
+        upon instantiation. Default is False.
     strip_docstrings : bool, optional
         If True, the docstring attribute of registered instructions will be
         removed to reduce memory footprint. Default is True.
 
     """
 
-    def __init__(self, type_library: PushTypeLibrary = None, register_core: bool = False, strip_docstrings: bool = True):
+    def __init__(self,
+                 type_library: PushTypeLibrary = None,
+                 register_core: bool = False,
+                 strip_docstrings: bool = True):
+        super().__init__()
         self.strip_docstrings = strip_docstrings
 
         if type_library is None:
@@ -88,7 +80,7 @@ class InstructionSet(dict):
         return self
 
     def register_list(self, instrs: Sequence[Instruction]):
-        """Register a list of Instruction ojbects.
+        """Register a list of Instruction objects.
 
         Parameters
         ----------
@@ -115,7 +107,10 @@ class InstructionSet(dict):
 
         Parameters
         ----------
-        type_names
+        include_stacks
+            List of PushType names.
+
+        exclude_stacks
             List of PushType names.
 
         Returns
@@ -127,9 +122,8 @@ class InstructionSet(dict):
         for i in core_instructions(self.type_library):
             req_stacks = i.required_stacks()
             if req_stacks <= include_stacks:
-                if exclude_stacks is not None and len(req_stacks & exclude_stacks) > 0:
-                    break
-                self.register(i)
+                if exclude_stacks is None or len(req_stacks & exclude_stacks) == 0:
+                    self.register(i)
         return self
 
     def register_core_by_name(self, name_pattern: str):
@@ -162,24 +156,6 @@ class InstructionSet(dict):
 
         """
         self.register_list(core_instructions(self.type_library))
-        return self
-
-    def register_n_inputs(self, n: int):
-        """Create and register `n` input instructions.
-
-        Parameters
-        ----------
-        n
-            The number of input instructions to make.
-
-        Returns
-        -------
-        InstructionSet
-            A reference to the InstructionSet.
-
-        """
-        input_instructions = io.make_input_instructions(n)
-        self.register_list(input_instructions)
         return self
 
     def unregister(self, instruction_name: str):

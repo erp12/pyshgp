@@ -3,7 +3,7 @@ from pyrsistent import InvariantException
 
 from pyshgp.gp.genome import Opener, _has_opener, genome_to_code, Genome, GenomeSimplifier
 from pyshgp.gp.evaluation import DatasetEvaluator
-from pyshgp.push.atoms import Atom, Literal, Instruction, CodeBlock
+from pyshgp.push.atoms import Atom, Literal, InstructionMeta, CodeBlock
 from pyshgp.push.types import PushInt, PushBool
 
 
@@ -25,20 +25,20 @@ class TestGenome:
 
     def test_genome_bad_init(self, atoms):
         with pytest.raises(InvariantException):
-            Genome(CodeBlock(*[atoms["5"], [atoms["5"], atoms["add"]]]))
+            Genome([atoms["5"], CodeBlock([atoms["5"], atoms["add"]])])
 
     def test_missing_close_genome_to_codeblock(self, atoms):
         gn = Genome([atoms["true"], atoms["if"], atoms["1.2"], atoms["close"], atoms["5"]])
         cb = genome_to_code(gn)
-        assert cb[0] == Literal(True, PushBool)
-        assert isinstance(cb[1], Instruction)
+        assert cb[0] == Literal(value=True, push_type=PushBool)
+        assert isinstance(cb[1], InstructionMeta)
         assert isinstance(cb[2], CodeBlock)
 
     def test_extra_close_genome_to_codeblock(self, atoms):
         gn = Genome([atoms["close"], atoms["5"], atoms["close"], atoms["close"]])
         cb = genome_to_code(gn)
         assert len(cb) == 1
-        assert cb[0] == Literal(5, PushInt)
+        assert cb[0] == Literal(value=5, push_type=PushInt)
 
     def test_empty_genome_to_codeblock(self):
         gn = Genome()
@@ -49,7 +49,7 @@ class TestGenome:
 class TestGeneSpawner:
 
     def test_random_instruction(self, simple_gene_spawner):
-        assert isinstance(simple_gene_spawner.random_instruction(), Instruction)
+        assert isinstance(simple_gene_spawner.random_instruction(), InstructionMeta)
 
     def test_random_literal(self, simple_gene_spawner):
         assert isinstance(simple_gene_spawner.random_literal(), Literal)

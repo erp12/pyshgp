@@ -7,7 +7,7 @@ from pyshgp.push.instruction import (
     StateToStateInstruction
 )
 from pyshgp.push.instructions.common import _revert, _wrap_tuple, _dup
-from pyshgp.push.atoms import Atom, JitInstructionRef, CodeBlock, Literal
+from pyshgp.push.atoms import Atom, InstructionMeta, CodeBlock, Literal
 from pyshgp.push.state import PushState
 from pyshgp.utils import Token
 
@@ -40,41 +40,36 @@ def _code_last(x) -> Tuple[Atom]:
 
 def _code_rest(x) -> Tuple[Atom]:
     if isinstance(x, CodeBlock) and len(x) > 1:
-        return CodeBlock(*x[1:]),
+        return CodeBlock(x[1:]),
     return Token.revert
 
 
 def _code_but_last(x) -> Tuple[Atom]:
     if isinstance(x, CodeBlock) and len(x) > 1:
-        return CodeBlock(*x[:-1]),
+        return CodeBlock(x[:-1]),
     return Token.revert
 
 
 def _wrap_code_block(*args):
-    return CodeBlock(*args),
+    return CodeBlock(args),
 
 
 def _code_combine(a: Atom, b: Atom) -> Tuple[CodeBlock]:
     if isinstance(a, CodeBlock) and isinstance(b, CodeBlock):
-        contents = list(b.copy()) + list(a.copy())
-        return CodeBlock(*contents),
+        return CodeBlock(b + a),
     elif isinstance(b, CodeBlock):
-        result = b.copy()
-        result.append(a)
-        return result,
+        return b.append(a),
     elif isinstance(a, CodeBlock):
-        result = a.copy()
-        result.append(b)
-        return result,
+        return a.append(b),
     else:
-        return CodeBlock(a, b),
+        return CodeBlock([a, b]),
 
 
 def _code_do_then_pop(state: PushState) -> Union[Token, PushState]:
     if state["code"].is_empty():
         return Token.revert
     c = state["code"].top()
-    state["exec"].push(JitInstructionRef("code_pop"))
+    state["exec"].push(InstructionMeta(name="code_pop", code_blocks=0))
     state["exec"].push(c)
     return state
 
@@ -93,13 +88,13 @@ def _code_do_range(state: PushState) -> Union[Token, PushState]:
         increment = -1
 
     if not increment == 0:
-        state["exec"].push(CodeBlock(
-            Literal(current_ndx + increment, PushInt),
-            Literal(destintaiton_ndx, PushInt),
-            JitInstructionRef("code_from_exec"),
+        state["exec"].push(CodeBlock([
+            Literal(value=current_ndx + increment, push_type=PushInt),
+            Literal(value=destintaiton_ndx, push_type=PushInt),
+            InstructionMeta(name="code_from_exec", code_blocks=1),
             to_do,
-            JitInstructionRef("code_do_range")
-        ))
+            InstructionMeta(name="code_do_range", code_blocks=0)
+        ]))
     state["int"].push(current_ndx)
     state["exec"].push(to_do)
     return state
@@ -119,12 +114,12 @@ def _exec_do_range(state: PushState) -> Union[Token, PushState]:
         increment = -1
 
     if not increment == 0:
-        state["exec"].push(CodeBlock(
-            Literal(current_ndx + increment, PushInt),
-            Literal(destination_ndx, PushInt),
-            JitInstructionRef("exec_do_range"),
+        state["exec"].push(CodeBlock([
+            Literal(value=current_ndx + increment, push_type=PushInt),
+            Literal(value=destination_ndx, push_type=PushInt),
+            InstructionMeta(name="exec_do_range", code_blocks=1),
             to_do
-        ))
+        ]))
     state["int"].push(current_ndx)
     state["exec"].push(to_do)
     return state
@@ -137,13 +132,13 @@ def _code_do_count(state: PushState) -> Union[Token, PushState]:
         return Token.revert
     code = state["code"].pop()
     count = state["int"].pop()
-    state["exec"].push(CodeBlock(
-        Literal(0, PushInt),
-        Literal(count - 1, PushInt),
-        JitInstructionRef("code_from_exec"),
+    state["exec"].push(CodeBlock([
+        Literal(value=0, push_type=PushInt),
+        Literal(value=count - 1, push_type=PushInt),
+        InstructionMeta(name="code_from_exec", code_blocks=1),
         code,
-        JitInstructionRef("code_do_range")
-    ))
+        InstructionMeta(name="code_do_range", code_blocks=0)
+    ]))
     return state
 
 
@@ -154,12 +149,12 @@ def _exec_do_count(state: PushState) -> Union[Token, PushState]:
         return Token.revert
     code = state["exec"].pop()
     count = state["int"].pop()
-    state["exec"].push(CodeBlock(
-        Literal(0, PushInt),
-        Literal(count - 1, PushInt),
-        JitInstructionRef("exec_do_range"),
+    state["exec"].push(CodeBlock([
+        Literal(value=0, push_type=PushInt),
+        Literal(value=count - 1, push_type=PushInt),
+        InstructionMeta(name="exec_do_range", code_blocks=1),
         code
-    ))
+    ]))
     return state
 
 
@@ -170,16 +165,16 @@ def _code_do_times(state: PushState) -> PushState:
         return Token.revert
     code = state["code"].pop()
     times = state["int"].pop()
-    state["exec"].push(CodeBlock(
-        Literal(0, PushInt),
-        Literal(times - 1, PushInt),
-        JitInstructionRef("code_from_exec"),
-        CodeBlock(
-            JitInstructionRef("int_pop"),
+    state["exec"].push(CodeBlock([
+        Literal(value=0, push_type=PushInt),
+        Literal(value=times - 1, push_type=PushInt),
+        InstructionMeta(name="code_from_exec", code_blocks=1),
+        CodeBlock([
+            InstructionMeta(name="int_pop", code_blocks=0),
             code,
-        ),
-        JitInstructionRef("code_do_range")
-    ))
+        ]),
+        InstructionMeta(name="code_do_range", code_blocks=0)
+    ]))
     return state
 
 
@@ -190,15 +185,15 @@ def _exec_do_times(state: PushState) -> Union[Token, PushState]:
         return Token.revert
     code = state["exec"].pop()
     times = state["int"].pop()
-    state["exec"].push(CodeBlock(
-        Literal(0, PushInt),
-        Literal(times - 1, PushInt),
-        JitInstructionRef("exec_do_range"),
-        CodeBlock(
-            JitInstructionRef("int_pop"),
+    state["exec"].push(CodeBlock([
+        Literal(value=0, push_type=PushInt),
+        Literal(value=times - 1, push_type=PushInt),
+        InstructionMeta(name="exec_do_range", code_blocks=1),
+        CodeBlock([
+            InstructionMeta(name="int_pop", code_blocks=0),
             code,
-        )
-    ))
+        ])
+    ]))
     return state
 
 
@@ -210,7 +205,7 @@ def _exec_while(state: PushState) -> Union[Token, PushState]:
         return state
     code = state["exec"].top()
     if state["bool"].pop():
-        state["exec"].push(JitInstructionRef("exec_while"))
+        state["exec"].push(InstructionMeta(name="exec_while", code_blocks=1))
         state["exec"].push(code)
     else:
         state["exec"].pop()
@@ -221,7 +216,7 @@ def _exec_do_while(state: PushState) -> PushState:
     if state["exec"].is_empty():
         return Token.revert
     code = state["exec"].top()
-    state["exec"].push(JitInstructionRef("exec_while"))
+    state["exec"].push(InstructionMeta(name="exec_while", code_blocks=1))
     state["exec"].push(code)
     return state
 
@@ -232,13 +227,11 @@ def _code_map(state: PushState) -> PushState:
     e = state["exec"].pop()
     c = state["code"].pop()
     if not isinstance(c, CodeBlock):
-        c = CodeBlock(c)
-    else:
-        c = c.copy()
-    l1 = [CodeBlock(JitInstructionRef("code_from_exec"), item, e) for item in c]
-    l2 = [JitInstructionRef("code_combine") for _ in c[1:]]
-    contents = l1 + [JitInstructionRef("code_wrap")] + l2
-    state["exec"].push(CodeBlock(*contents))
+        c = CodeBlock([c])
+    l1 = [CodeBlock([InstructionMeta(name="code_from_exec", code_blocks=1), item, e]) for item in c]
+    l2 = [InstructionMeta(name="code_combine", code_blocks=0) for _ in c[1:]]
+    contents = l1 + [InstructionMeta(name="code_wrap", code_blocks=0)] + l2
+    state["exec"].push(CodeBlock(contents))
     return state
 
 
@@ -265,13 +258,13 @@ def _exec_when(state: PushState) -> PushState:
 
 def _code_member(code: Atom, item: Atom) -> Tuple[bool]:
     if not isinstance(code, CodeBlock):
-        code = CodeBlock(code)
+        code = CodeBlock([code])
     return item in code,
 
 
 def _code_nth(code: Atom, ndx: int) -> Tuple[Atom]:
     if not isinstance(code, CodeBlock):
-        code = CodeBlock(code)
+        code = CodeBlock([code])
     if len(code) == 0:
         return Token.revert
     ndx = abs(ndx) % len(code)
@@ -302,22 +295,15 @@ def _code_extract(code: Atom, ndx: int) -> Union[Token, Tuple[Atom]]:
 
 
 def _code_insert(code1, code2, ndx) -> Union[Token, Tuple[Atom]]:
-    if isinstance(code1, CodeBlock):
-        code1 = code1.copy(True)
-    else:
-        code1 = CodeBlock(code1)
-
-    if isinstance(code2, CodeBlock):
-        code2 = code2.copy(True)
-
+    if not isinstance(code1, CodeBlock):
+        code1 = CodeBlock([code1])
     if code1.size() == 0:
-        code1.append(code2)
-        return code1,
+        return code1.append(code2),
     ndx = abs(ndx) % code1.size()
-    return code1.insert_code_at_point(code2, ndx),
+    return code1.with_code_inserted_at_point(code2, ndx),
 
 
-def _code_first_position(code1, code2) -> Union[Token, Tuple[Atom]]:
+def _code_first_position(code1, code2) -> Union[Token, Tuple[int]]:
     if (not isinstance(code1, CodeBlock)) or (len(code1) == 0):
         if code1 == code2:
             return 0,
@@ -331,7 +317,7 @@ def _code_first_position(code1, code2) -> Union[Token, Tuple[Atom]]:
 def _code_reverse(code):
     if not isinstance(code, CodeBlock):
         return code,
-    return CodeBlock(*code[::-1]),
+    return CodeBlock(code[::-1]),
 
 
 def instructions():
@@ -471,7 +457,7 @@ def instructions():
         _code_do_then_pop,
         stacks_used=["exec", "code"],
         code_blocks=0,
-        docstring="""Pushes a `code_pop` JitInstructionRef and the top item of the
+        docstring="""Pushes a `code_pop` InstructionMeta and the top item of the
         code stack to the exec stack. Result is the top code item executing before
         it is removed from the code stack."""
     ))

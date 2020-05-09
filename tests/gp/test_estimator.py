@@ -20,10 +20,10 @@ def run_ga_on_odd_test(parallelism):
     instruction_set = (
         InstructionSet()
         .register_core_by_stack({"int"}, exclude_stacks={"str", "exec", "code"})
-        .register_n_inputs(X.shape[1])
     )
 
     spawner = GeneSpawner(
+        n_inputs=1,
         instruction_set=instruction_set,
         literals=[],
         erc_generators=[
@@ -34,7 +34,7 @@ def run_ga_on_odd_test(parallelism):
     est = PushEstimator(
         spawner=spawner,
         population_size=30,
-        max_generations=5,
+        max_generations=3,
         simplification_steps=10,
         parallelism=parallelism)
     est.fit(X, y)
@@ -67,6 +67,7 @@ def test_estimator_with_custom_types(point_cls, point_instr_set):
     y = [[point_distance(point_cls(x[0], x[1]), point_cls(x[2], x[3]))] for x in X]
 
     spawner = GeneSpawner(
+        n_inputs=1,
         instruction_set=point_instr_set,
         literals=[],
         erc_generators=[]
@@ -75,7 +76,7 @@ def test_estimator_with_custom_types(point_cls, point_instr_set):
     est = PushEstimator(
         spawner=spawner,
         population_size=40,
-        max_generations=10,
+        max_generations=3,
         simplification_steps=2,
         interpreter=PushInterpreter(point_instr_set),
     )

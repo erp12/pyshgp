@@ -22,10 +22,10 @@ y = np.array([[target_function(x[0], x[1])] for x in X])
 instruction_set = (
     InstructionSet()
     .register_core_by_stack({"int"}, exclude_stacks={"str", "exec", "code"})
-    .register_n_inputs(X.shape[1])
 )
 
 spawner = GeneSpawner(
+    n_inputs=2,
     instruction_set=instruction_set,
     literals=[],
     erc_generators=[

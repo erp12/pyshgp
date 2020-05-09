@@ -20,24 +20,24 @@ def all_core_instrucitons(core_type_lib):
 
 class TestInstructionSet:
 
-    def test_register(self, atoms):
+    def test_register(self, instr_set):
         i_set = InstructionSet()
-        i_set.register(atoms["add"])
+        i_set.register(instr_set["int_add"])
         assert len(i_set) == 1
 
-    def test_register_list(self, atoms):
+    def test_register_list(self, instr_set):
         i_set = InstructionSet()
-        i_set.register_list([atoms["add"], atoms["sub"]])
+        i_set.register_list([instr_set["int_add"], instr_set["int_sub"]])
         assert len(i_set) == 2
 
-    def test_register_core_by_stack(self, core_type_lib):
+    def test_register_core_by_stack(self):
         i_set = InstructionSet()
         i_set.register_core_by_stack({"int"})
         for i in i_set.values():
             if len(i.required_stacks()) > 0:
                 assert "int" in i.required_stacks()
 
-    def test_register_core_by_name(self, core_type_lib):
+    def test_register_core_by_name(self):
         i_set = InstructionSet()
         i_set.register_core_by_name(".*_mult")
         assert len(i_set) == 2
@@ -47,10 +47,10 @@ class TestInstructionSet:
         i_set = InstructionSet().register_core()
         assert set(i_set.values()) == all_core_instrucitons
 
-    def test_unregister(self, atoms):
+    def test_unregister(self, instr_set):
         i_set = InstructionSet()
-        i_set.register(atoms["add"])
-        i_set.register(atoms["sub"])
+        i_set.register(instr_set["int_add"])
+        i_set.register(instr_set["int_sub"])
         i_set.unregister("int_add")
         assert len(i_set) == 1
         assert list(i_set.values())[0].name == "int_sub"

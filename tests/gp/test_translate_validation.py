@@ -1,6 +1,6 @@
 import json
 
-from pyshgp.push.atoms import CodeBlock, Closer, Literal, JitInstructionRef
+from pyshgp.push.atoms import CodeBlock, Closer, Literal, InstructionMeta, Input
 from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.gp.genome import Genome, genome_to_code
@@ -12,7 +12,7 @@ def _deserialize_atoms(lst, instr_set: InstructionSet):
     for atom_spec in lst:
         atom = None
         if isinstance(atom_spec, list):
-            atom = CodeBlock(*_deserialize_atoms(atom_spec, instr_set))
+            atom = CodeBlock(_deserialize_atoms(atom_spec, instr_set))
         else:
             atom_type = atom_spec["a"]
             if atom_type == "close":
@@ -20,11 +20,12 @@ def _deserialize_atoms(lst, instr_set: InstructionSet):
             elif atom_type == "lit":
                 push_type = type_lib[atom_spec["t"]]
                 value = push_type.coerce(atom_spec["v"])
-                atom = Literal(value, push_type)
+                atom = Literal(value=value, push_type=push_type)
+            elif atom_type == "input":
+                atom = Input(input_index=atom_spec["i"])
             elif atom_type == "instr":
-                atom = instr_set[atom_spec["n"]]
-            elif atom_type == "jit-instr":
-                atom = JitInstructionRef(atom_spec["n"])
+                instr = instr_set[atom_spec["n"]]
+                atom = InstructionMeta(name=instr.name, code_blocks=instr.code_blocks)
             else:
                 raise ValueError("bad atom spec {s}".format(s=atom_spec))
         atoms.append(atom)
@@ -34,13 +35,13 @@ def _deserialize_atoms(lst, instr_set: InstructionSet):
 def load_code(name, interpreter) -> CodeBlock:
     with open("tests/resources/programs/" + name + ".json") as f:
         atoms = _deserialize_atoms(json.load(f), interpreter.instruction_set)
-        return CodeBlock(*atoms)
+        return CodeBlock(atoms)
 
 
 def load_genome(name, interpreter) -> Genome:
     with open("tests/resources/genomes/" + name + ".json") as f:
         atoms = _deserialize_atoms(json.load(f), interpreter.instruction_set)
-        return Genome.create(atoms)
+        return Genome(atoms)
 
 
 def check_translation(program_name: str, interpreter: PushInterpreter):
@@ -50,7 +51,7 @@ def check_translation(program_name: str, interpreter: PushInterpreter):
 
 
 def check_unary_fn_translation(program_name: str):
-    interpreter = PushInterpreter(InstructionSet(register_core=True).register_n_inputs(1))
+    interpreter = PushInterpreter(InstructionSet(register_core=True))
     check_translation(program_name, interpreter)
 
 

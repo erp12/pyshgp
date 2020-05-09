@@ -3,7 +3,7 @@ from typing import Sequence, Set
 from itertools import chain
 
 from pyshgp.push.type_library import PushTypeLibrary
-from pyshgp.push.atoms import Instruction
+from pyshgp.push.instruction import Instruction
 from pyshgp.push.instructions import common, numeric, text, code, io, logical
 
 

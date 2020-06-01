@@ -11,9 +11,6 @@ BUILDDIR      = ../docs
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-api:
-	sphinx-apidoc -f --separate -o source/api/ ../pyshgp ../tests/ ../examples/ ../dev* ../scratch* ../setup*
-
 # @TODO: CLI - Move make file stuff to pyshgp_cli.py
 
 .PHONY: help Makefile

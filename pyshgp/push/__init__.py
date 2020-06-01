@@ -1,14 +1,10 @@
-"""pyshgp.push"""
+"""The ``push`` sub-package contains an extensible Push interpreter and Push program abstraction.
 
-from pyshgp.push.instruction_set import InstructionSet
-from pyshgp.push.program import Program, ProgramSignature
-from pyshgp.push.interpreter import PushInterpreter
-from pyshgp.push.config import PushConfig
+When running Push programs (either during search or after) the modules in this package are used to perform the
+stack-based execution of Push code and report output values. For more information on the Push programming language,
+see the following links
 
-__all__ = [
-    "PushConfig",
-    "ProgramSignature",
-    "Program",
-    "PushInterpreter",
-    "InstructionSet",
-]
+- http://faculty.hampshire.edu/lspector/push3-description.html
+- https://erp12.github.io/push-redux/
+
+"""

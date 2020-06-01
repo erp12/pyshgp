@@ -60,7 +60,6 @@ class Instruction(ABC):
             Return the given state, possibly modified by the Instruction.
 
         """
-        # Can't annotate types properly due to circular import.
         pass
 
     @abstractmethod
@@ -69,6 +68,7 @@ class Instruction(ABC):
         pass
 
     def meta(self) -> InstructionMeta:
+        """Create an ``InstructionMeta`` from the instruction object."""
         return InstructionMeta(name=self.name, code_blocks=self.code_blocks)
 
     def __eq__(self, other):

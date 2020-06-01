@@ -5,7 +5,7 @@ Release Notes
 A summary of changes made between each PyshGP release.
 
 
-v0.1.6 - December 19, 2019
+v0.1.6 - June 1, 2020
 ===============================
 
 API changes
@@ -14,18 +14,23 @@ API changes
 - Added a ``Program`` abstraction to better encapsulate (almost) everything needed to run a Push program consistently.
 - Added parallelism controls to ``PushEstimator`` and ``SearchAlgorithm``.
 - Added collection size cap to PushConfig to prevent programs from taking up huge amounts of memory.
+- Added ``TapManager`` and ``Taps`` for logging and monitoring.
+- Fixed ``exclude_stacks`` option of ``register_core_by_stack``.
 
 
 Internals
 -------------------------------
 
 - Fixed DatasetEvaluator support for pandas data structures.
+- Refactored ``Selector`` to use ``SimpleMultiSelectorMixin``.
+- Added more constraints to push execution.
 
 
 Development / Repository
 -------------------------------
 
-- Fixed multiple doc typos.
+- Added tox.
+- Fixed many doc typos.
 - Added some utility scripts for making deployment of new releases easier.
 - Updated CI to include multiple python versions.
 - Migrated CI/CD to GitHub actions.
@@ -36,15 +41,17 @@ Known Issues
 
 None yet.
 
-Report issues on `the Github <https://github.com/erp12/pyshgp/issues>`_.
+Report issues on `the Github issues page <https://github.com/erp12/pyshgp/issues>`_.
 
 Credits
 -------------------------------
 
 This release would not have been possible without the following contributors:
 
-- Github user `epicfaace <https://github.com/https://github.com/epicfaace>`_.
+- Github user `epicfaace <https://github.com/epicfaace>`_.
   - Reporting and fixing typos.
+- Github user `vargonis <https://github.com/vargonis>`_.
+  - Reporting failure of Push execution constraints.
 
 
 v0.1.5 - April 19, 2019

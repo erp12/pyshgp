@@ -8,6 +8,7 @@ from functools import partial
 
 from pyshgp.gp.individual import Individual
 from pyshgp.gp.evaluation import Evaluator
+from pyshgp.tap import tap
 
 
 def _eval_indiv(indiv: Individual, evalr: Evaluator, ):
@@ -52,6 +53,7 @@ class Population(Sequence):
         """Return the best n individuals in the population."""
         return self.evaluated[:n]
 
+    @tap
     def p_evaluate(self, evaluator_proxy, pool: Pool):
         """Evaluate all unevaluated individuals in the population in parallel."""
         func = partial(_eval_indiv, evalr=evaluator_proxy)
@@ -59,6 +61,7 @@ class Population(Sequence):
             insort_left(self.evaluated, individual)
         self.unevaluated = []
 
+    @tap
     def evaluate(self, evaluator: Evaluator):
         """Evaluate all unevaluated individuals in the population."""
         for individual in self.unevaluated:
@@ -93,5 +96,6 @@ class Population(Sequence):
         return len(unq) / float(len(self))
 
     def mean_genome_length(self):
+        """Average genome length across all individuals."""
         tot_gn_len = sum([len(i.genome) for i in self])
         return tot_gn_len / len(self)

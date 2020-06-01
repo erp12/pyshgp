@@ -20,14 +20,12 @@ Core Instructions
 
 PyshGP contains a collection of “core” instructions that work with the typical data types. These instructions include implementations of control structures such as ``if`` and ``while``. The inclusion of these control structures is a key feature that makes PushGP unique compared to many other genetic programming systems.
 
-To read about all the core instructions provided by the version of PyshGP you are using, see the following pages.
+To read about all the core instructions provided by PyshGP, see the following page.
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 1
 
-   core_instructions/v0_1_5_core_instructions
-   core_instructions/v0_1_4_core_instructions
-   core_instructions/v0_1_3_core_instructions
+    core_instructions
 
 
 Example Instruction Definitions

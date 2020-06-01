@@ -45,8 +45,8 @@ def atoms(instr_set):
 
 
 @pytest.fixture(scope="function")
-def state():
-    return PushState(PushTypeLibrary(PushInt, PushBool, PushFloat, PushStr))
+def state(push_config):
+    return PushState(PushTypeLibrary(PushInt, PushBool, PushFloat, PushStr), push_config)
 
 
 @pytest.fixture(scope="function")

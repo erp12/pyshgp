@@ -7,6 +7,7 @@ manipulation, and the producing of outputs after program execution.
 from typing import Sequence, Union
 from collections import deque
 import numpy as np
+from pyshgp.push.config import PushConfig
 
 from pyshgp.push.type_library import PushTypeLibrary
 from pyshgp.push.atoms import CodeBlock
@@ -17,17 +18,18 @@ from pyshgp.utils import Token
 class PushState(dict):
     """A collection of PushStacks used during push program execution."""
 
-    __slots__ = ["stdout", "inputs", "untyped", "type_library"]
+    __slots__ = ["stdout", "inputs", "untyped", "type_library", "push_config"]
 
-    def __init__(self, type_library: PushTypeLibrary):
+    def __init__(self, type_library: PushTypeLibrary, push_config: PushConfig):
         super().__init__()
         self.stdout = ""
         self.inputs = []
         self.untyped = deque([])
         self.type_library = type_library
+        self.push_config = push_config
 
         for name, push_type in type_library.items():
-            self[name] = PushStack(push_type)
+            self[name] = PushStack(push_type, push_config)
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, PushState):
@@ -35,7 +37,7 @@ class PushState(dict):
         return super().__eq__(other) and self.inputs == other.inputs and self.stdout == other.stdout
 
     @classmethod
-    def from_dict(cls, d, type_library: PushTypeLibrary):
+    def from_dict(cls, d, type_library: PushTypeLibrary, push_config: PushConfig):
         """Set the state to match the given dictionary.
 
         .. warning::
@@ -51,7 +53,7 @@ class PushState(dict):
             A Push type library.
 
         """
-        state = cls(type_library)
+        state = cls(type_library, push_config)
         inputs = []
         stdout = ""
         for k, v in d.items():
@@ -140,10 +142,10 @@ class PushState(dict):
         """Return the size of the PushState."""
         return sum([len(s) for s in self.values()]) + len(self.inputs)
 
-    def pretty_print(self, print_or_log_func=print):
+    def pretty_print(self):
         """Print the state of all stacks in the PushState."""
         for k, v in self.items():
-            print_or_log_func(" ".join([k, ":", str(v)]))
-        print_or_log_func("untyped :" + str(self.untyped))
-        print_or_log_func("inputs :" + str(self.inputs))
-        print_or_log_func("stdout :" + str(self.stdout))
+            print(" ".join([k, ":", str(v)]))
+        print("untyped : " + str(self.untyped))
+        print("inputs : " + str(self.inputs))
+        print("stdout : " + str(self.stdout))

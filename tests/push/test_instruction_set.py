@@ -1,7 +1,6 @@
 import pytest
 from itertools import chain
 
-from pyshgp.push.type_library import PushTypeLibrary
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.instructions import common, numeric, text, code, io, logical
 
@@ -37,6 +36,29 @@ class TestInstructionSet:
             if len(i.required_stacks()) > 0:
                 assert "int" in i.required_stacks()
 
+    def test_register_core_by_stack_with_exclude(self, core_type_lib):
+        foo = common.instructions(core_type_lib)
+        print([i for i in foo if i.name == "exec_dup_times"][0].required_stacks())
+
+        i_set = InstructionSet(register_core=False)
+        i_set.register_core_by_stack({"int"}, exclude_stacks={"str", "exec", "code"})
+        for i in i_set.values():
+            if len(i.required_stacks()) > 0:
+                print(i.name, i.required_stacks())
+                assert i.name not in {"exec_pop",
+                                      "exec_dup",
+                                      "exec_dup_times",
+                                      "exec_swap",
+                                      "exec_rot",
+                                      "exec_flush",
+                                      "exec_stack_depth",
+                                      "exec_yank",
+                                      "exec_yank_dup",
+                                      "exec_shove",
+                                      "exec_shove_dup"}
+                assert "int" in i.required_stacks()
+                assert "exec" not in i.required_stacks()
+
     def test_register_core_by_name(self):
         i_set = InstructionSet()
         i_set.register_core_by_name(".*_mult")
@@ -56,7 +78,7 @@ class TestInstructionSet:
         assert list(i_set.values())[0].name == "int_sub"
 
     def test_required_stacks(self, instr_set):
-        assert instr_set.required_stacks() == {"code", "int", "float", "bool", "str", "char"}
+        assert instr_set.required_stacks() == {"exec", "code", "int", "float", "bool", "str", "char"}
 
 
 # @TODO: TEST - Test all instruction set methods with custom type library.

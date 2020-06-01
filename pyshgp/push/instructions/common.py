@@ -15,7 +15,7 @@ from pyshgp.push.atoms import Atom, Literal
 from pyshgp.utils import Token
 
 
-DUP_LIMIT = 500
+DUP_LIMIT = 500  # @todo move `DUP_LIMIT` to PushConfig
 
 
 def _revert():

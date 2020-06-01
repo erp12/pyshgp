@@ -1,9 +1,7 @@
 """A simple regression problem using integer data."""
 
-import logging
 import random
 import numpy as np
-import sys
 
 from pyshgp.gp.selection import Lexicase
 from pyshgp.gp.estimators import PushEstimator
@@ -38,14 +36,8 @@ ep_lex_sel = Lexicase(epsilon=True)
 
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        stream=sys.stdout
-    )
-
     est = PushEstimator(
-        population_size=200,
+        population_size=300,
         max_generations=50,
         simplification_steps=500,
         spawner=spawner,

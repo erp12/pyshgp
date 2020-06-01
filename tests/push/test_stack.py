@@ -7,21 +7,16 @@ from pyshgp.validation import PushError
 
 
 @pytest.fixture(scope="function")
-def int_stack(atoms):
-    return PushStack(PushInt)
+def int_stack(atoms, push_config):
+    return PushStack(PushInt, push_config)
 
 
 @pytest.fixture(scope="function")
-def str_stack(atoms):
-    return PushStack(PushStr)
+def str_stack(atoms, push_config):
+    return PushStack(PushStr, push_config)
 
 
 class TestPushStack:
-
-    def test_init_values(self):
-        stack = PushStack(PushStr, ["bottom", "middle", "top"])
-        assert stack.top() == "top"
-        assert list(stack) == ["bottom", "middle", "top"]
 
     def test_push(self, int_stack: PushStack):
         int_stack.push(5)

@@ -15,10 +15,8 @@ This problem attempts to synthesize a program that computes the output of both
 the ReLU and LeakyReLU functions.
 
 """
-import logging
 import numpy as np
 import random
-import sys
 
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
@@ -28,10 +26,10 @@ from pyshgp.push.instruction_set import InstructionSet
 
 def target_function(x: float) -> (float, float):
     """Generate a training data point."""
-    return (max(0.0, x), max(0.1 * x, x))
+    return max(0.0, x), max(0.1 * x, x)
 
 
-X = np.arange(-1.0, 1.0, 0.15).reshape([-1, 1])
+X = np.arange(-1.0, 1.0, 0.05).reshape([-1, 1])
 y = np.array([target_function(x[0]) for x in X])
 
 
@@ -49,14 +47,8 @@ ep_lex_sel = Lexicase(epsilon=True)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        stream=sys.stdout
-    )
-
     est = PushEstimator(
-        population_size=500,
+        population_size=300,
         max_generations=50,
         simplification_steps=500,
         spawner=spawner,

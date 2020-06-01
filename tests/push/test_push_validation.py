@@ -1,8 +1,7 @@
 import json
 
-from pyshgp.monitoring import VerbosityConfig
 from pyshgp.push.atoms import CodeBlock, Closer, Literal, InstructionMeta, Input
-from pyshgp.push.interpreter import PushInterpreter
+from pyshgp.push.interpreter import PushInterpreter, PushInterpreterStatus
 from pyshgp.push.config import PushConfig
 from pyshgp.push.program import ProgramSignature, Program
 from pyshgp.push.instruction_set import InstructionSet
@@ -48,7 +47,7 @@ def get_program(name: str, sig: ProgramSignature, interpreter: PushInterpreter):
 
 def check_program(name: str, inputs: list, outputs: list, sig: ProgramSignature, iset: InstructionSet) -> PushState:
     """Returns the PushState for further validation."""
-    interpreter = PushInterpreter(iset, verbosity_config=VerbosityConfig(program_trace=100))
+    interpreter = PushInterpreter(iset)
     prog = get_program(name, sig, interpreter)
     assert interpreter.run(prog, inputs) == outputs
     return interpreter.state
@@ -96,3 +95,14 @@ def test_program_point_dist(push_config: PushConfig, point_instr_set: Instructio
     check_program(name, [1.0, 3.0, 3.0, 3.0], [2.0], sig, point_instr_set)
     check_program(name, [3.0, 2.5, 3.0, -3.0], [5.5], sig, point_instr_set)
     check_program(name, [0.0, 0.0, 0.0, 0.0], [0], sig, point_instr_set)
+
+
+def test_interpreter_constraints(push_config: PushConfig, instr_set: InstructionSet):
+    name = "infinite_growth"
+    sig = ProgramSignature(arity=0, output_stacks=["int"], push_config=push_config)
+    interpreter = PushInterpreter(instr_set)
+    cb = load_code(name, interpreter)
+    program = Program(code=cb, signature=sig)
+    output = interpreter.run(program, [0], print_trace=True)
+    assert output[0] == int(push_config.numeric_magnitude_limit)
+    assert interpreter.status == PushInterpreterStatus.step_limit_exceeded

@@ -5,6 +5,27 @@
 # This file does only contain a selection of the most common options. For a
 # full list see the documentation:
 # http://www.sphinx-doc.org/en/master/config
+import sphinx
+
+
+def monkeypatch(cls):
+    """ decorator to monkey-patch methods """
+    def decorator(f):
+        method = f.__name__
+        old_method = getattr(cls, method)
+        setattr(cls, method, lambda self, *args, **kwargs: f(old_method, self, *args, **kwargs))
+    return decorator
+
+
+# workaround until https://github.com/miyakogi/m2r/pull/55 is merged
+@monkeypatch(sphinx.registry.SphinxComponentRegistry)
+def add_source_parser(_old_add_source_parser, self, *args, **kwargs):
+    # signature is (parser: Type[Parser], **kwargs), but m2r expects
+    # the removed (str, parser: Type[Parser], **kwargs).
+    if isinstance(args[0], str):
+        args = args[1:]
+    return _old_add_source_parser(self, *args, **kwargs)
+
 
 # -- Path setup --------------------------------------------------------------
 
@@ -24,9 +45,9 @@ copyright = '2019, Edward Pantridge'
 author = 'Edward Pantridge'
 
 # The short X.Y version
-version = ''
+version = '0.1'
 # The full version, including alpha/beta/rc tags
-release = ''
+release = '0.1.6'
 
 
 # -- General configuration ---------------------------------------------------
@@ -45,7 +66,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'm2r',
+    'm2r'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -71,9 +92,7 @@ language = None
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = [
-    "tests/",
-    "dev*",
-    "scratch*"
+    "tests/"
 ]
 
 # The name of the Pygments (syntax highlighting) style to use.

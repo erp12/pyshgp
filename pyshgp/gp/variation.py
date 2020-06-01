@@ -13,6 +13,7 @@ from numpy.random import random, choice
 from pyshgp.push.types import PushType
 from pyshgp.push.atoms import Literal
 from pyshgp.gp.genome import Genome, GeneSpawner
+from pyshgp.tap import tap
 from pyshgp.utils import DiscreteProbDistrib, instantiate_using
 
 
@@ -51,6 +52,7 @@ class VariationOperator(ABC):
                 e=self.num_parents)
             )
 
+    @tap
     @abstractmethod
     def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
         """Produce a child Genome from parent Genomes and optional GenomeSpawner.
@@ -89,12 +91,12 @@ class VariationPipeline(VariationOperator):
 
     Parameters
     ----------
-    operators : list of VariationOperators
+    operators : Sequence[VariationOperators]
         A list of operators to apply in order to produce the child Genome.
 
     Attributes
     ----------
-    operators : list of VariationOperators
+    operators : Sequence[VariationOperators]
         A list of operators to apply in order to produce the child Genome.
     num_parents : int
         Number of parent Genomes the operator needs to produce a child
@@ -107,6 +109,7 @@ class VariationPipeline(VariationOperator):
         super().__init__(num_parents_needed)
         self.operators = operators
 
+    @tap
     def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
         """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
@@ -118,6 +121,7 @@ class VariationPipeline(VariationOperator):
             A GeneSpawner that can be used to produce new genes (aka Atoms).
 
         """
+        super().produce(parents, spawner)
         self.checknum_parents(parents)
         child = parents[0]
         for op in self.operators:
@@ -179,6 +183,7 @@ class LiteralMutation(VariationOperator, ABC):
     def _mutate_literal(self, literal: Literal) -> Literal:
         ...
 
+    @tap
     def produce(self, parents: Sequence[Genome], spawner: GeneSpawner = None) -> Genome:
         """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
@@ -190,6 +195,7 @@ class LiteralMutation(VariationOperator, ABC):
             A GeneSpawner that can be used to produce new genes (aka Atoms).
 
         """
+        super().produce(parents, spawner)
         self.checknum_parents(parents)
         new_genome = Genome()
         for atom in parents[0]:
@@ -225,6 +231,7 @@ class DeletionMutation(VariationOperator):
         super().__init__(1)
         self.rate = deletion_rate
 
+    @tap
     def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
         """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
@@ -236,6 +243,7 @@ class DeletionMutation(VariationOperator):
             A GeneSpawner that can be used to produce new genes (aka Atoms).
 
         """
+        super().produce(parents, spawner)
         self.checknum_parents(parents)
         new_genome = Genome()
         for gene in parents[0]:
@@ -269,6 +277,7 @@ class AdditionMutation(VariationOperator):
         super().__init__(1)
         self.rate = addition_rate
 
+    @tap
     def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
         """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
@@ -280,6 +289,7 @@ class AdditionMutation(VariationOperator):
             A GeneSpawner that can be used to produce new genes (aka Atoms).
 
         """
+        super().produce(parents, spawner)
         self.checknum_parents(parents)
         new_genome = Genome()
         for gene in parents[0]:
@@ -322,6 +332,7 @@ class Alternation(VariationOperator):
         self.rate = alternation_rate
         self.alignment_deviation = alignment_deviation
 
+    @tap
     def produce(self, parents: Sequence[Genome], spawner: GeneSpawner = None) -> Genome:
         """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
@@ -333,6 +344,7 @@ class Alternation(VariationOperator):
             A GeneSpawner that can be used to produce new genes (aka Atoms).
 
         """
+        super().produce(parents, spawner)
         self.checknum_parents(parents)
         gn1 = parents[0]
         gn2 = parents[1]
@@ -391,6 +403,7 @@ class Genesis(VariationOperator):
         super().__init__(0)
         self.size = size
 
+    @tap
     def produce(self, parents: Sequence[Genome], spawner: GeneSpawner) -> Genome:
         """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
@@ -402,6 +415,7 @@ class Genesis(VariationOperator):
             A GeneSpawner that can be used to produce new genes (aka Atoms).
 
         """
+        super().produce(parents, spawner)
         return spawner.spawn_genome(self.size)
 
 
@@ -419,6 +433,7 @@ class Cloning(VariationOperator):
     def __init__(self):
         super().__init__(1)
 
+    @tap
     def produce(self, parents: Sequence[Genome], spawner: GeneSpawner = None) -> Genome:
         """Produce a child Genome from parent Genomes and optional GenomeSpawner.
 
@@ -430,6 +445,7 @@ class Cloning(VariationOperator):
             A GeneSpawner that can be used to produce new genes (aka Atoms).
 
         """
+        super().produce(parents, spawner)
         return parents[0]
 
 

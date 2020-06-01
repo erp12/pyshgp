@@ -1,0 +1,480 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>pyshgp.tap &#8212; PyshGP 0.1.6 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyshgp.tap</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The ``Tap`` and ``TapManager`` abstractions allow for users to inject side effects into PyshGP runs.</span>
+
+<span class="sd">These side effects could be print statements for monitoring, writing to log files, or sending messages to</span>
+<span class="sd">external systems when certain events occur. A ``Tap`` can inject a side effect before a function call, after a</span>
+<span class="sd">function call, or both. Any function or method defined in PyshGP or your application code can be tapped with the</span>
+<span class="sd">``@tap`` decorator defined in the module.</span>
+
+<span class="sd">The taps provided in PyshGP are sufficient for most use cases, but user can define and register their</span>
+<span class="sd">own ``Tap`` objects via inheritance and method overrides.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">MutableMapping</span>
+
+
+<div class="viewcode-block" id="Tap"><a class="viewcode-back" href="../../api.html#pyshgp.tap.Tap">[docs]</a><span class="k">class</span> <span class="nc">Tap</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A debugging/logging abstraction to a function and collects its arguments and returned.</span>
+
+<span class="sd">    The methods of a ``Tap`` should be side effects. It is not recommended to make state changes from with a ``Tap`` if</span>
+<span class="sd">    that state will change code behavior.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Tap.pre"><a class="viewcode-back" href="../../api.html#pyshgp.tap.Tap.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform a particular side-effect directly before the associated function/method is called.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        id : str</span>
+<span class="sd">            The ID of the tap, generated based off of the name qualified name of the function.</span>
+<span class="sd">        args : list</span>
+<span class="sd">            The positional of the function call. For methods, ``args[0]`` is the class instance.</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            The keyword args of the function call.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Tap.post"><a class="viewcode-back" href="../../api.html#pyshgp.tap.Tap.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">returned</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform a particular side-effect directly before the associated function/method is called.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        id : str</span>
+<span class="sd">            The ID of the tap, generated based off of the name qualified name of the function.</span>
+<span class="sd">        args : list</span>
+<span class="sd">            The positional of the function call. For methods, ``args[0]`` is the class instance.</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            The keyword args of the function call.</span>
+<span class="sd">        returned : Any</span>
+<span class="sd">            The returned value of the function call.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Tap.do"><a class="viewcode-back" href="../../api.html#pyshgp.tap.Tap.do">[docs]</a>    <span class="k">def</span> <span class="nf">do</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform a particular side-effect when called.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        id : str</span>
+<span class="sd">            The ID of the tap.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="LogFileTap"><a class="viewcode-back" href="../../api.html#pyshgp.tap.LogFileTap">[docs]</a><span class="k">class</span> <span class="nc">LogFileTap</span><span class="p">(</span><span class="n">Tap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A ``Tap`` for writing log files.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    root : str</span>
+<span class="sd">        The root directory for putting log files (and directories).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># @todo Make log timestamps configurable.</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">root</span>
+
+<div class="viewcode-block" id="LogFileTap.dir"><a class="viewcode-back" href="../../api.html#pyshgp.tap.LogFileTap.dir">[docs]</a>    <span class="k">def</span> <span class="nf">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate the directory for log files associated with the given function ID.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="nb">id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LogFileTap.path"><a class="viewcode-back" href="../../api.html#pyshgp.tap.LogFileTap.path">[docs]</a>    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate the path for the log files with the given name under the directory for the given function ID.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="n">filename</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LogFileTap.log"><a class="viewcode-back" href="../../api.html#pyshgp.tap.LogFileTap.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write a line to a log file. Includes a timestamp for each log entry.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        id : str</span>
+<span class="sd">            The ID of the function being tapped. This is used to generate a directory for the log file.</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            The name of the log file.</span>
+<span class="sd">        line : str</span>
+<span class="sd">            The line of text to write to the log file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CsvTap"><a class="viewcode-back" href="../../api.html#pyshgp.tap.CsvTap">[docs]</a><span class="k">class</span> <span class="nc">CsvTap</span><span class="p">(</span><span class="n">LogFileTap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A ``Tap`` for writing CSV files.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    root : str</span>
+<span class="sd">        The root directory for putting log files (and directories).</span>
+<span class="sd">    column_names : Sequence[str]</span>
+<span class="sd">        The column names to put in the header of the CSV file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">column_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+
+<div class="viewcode-block" id="CsvTap.log"><a class="viewcode-back" href="../../api.html#pyshgp.tap.CsvTap.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write a to a CSV file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        id : str</span>
+<span class="sd">            The ID of the function being tapped. This is used to generate a directory for the log file.</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            The name of the CSV file.</span>
+<span class="sd">        row : dict</span>
+<span class="sd">            A dictionary that will be written as a row in the CSV. The keys should be in the</span>
+<span class="sd">            CsvTap&#39;s list of ``column_names``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">is_new</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_new</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_new</span><span class="p">:</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="JsonLinesTap"><a class="viewcode-back" href="../../api.html#pyshgp.tap.JsonLinesTap">[docs]</a><span class="k">class</span> <span class="nc">JsonLinesTap</span><span class="p">(</span><span class="n">LogFileTap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A ``Tap`` for writing JSON lines files.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    root : str</span>
+<span class="sd">        The root directory for putting log files (and directories).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+<div class="viewcode-block" id="JsonLinesTap.log"><a class="viewcode-back" href="../../api.html#pyshgp.tap.JsonLinesTap.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write a JSON object to a line of a JSON lines file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        id : str</span>
+<span class="sd">            The ID of the function being tapped. This is used to generate a directory for the log file.</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            The name of the JSON file.</span>
+<span class="sd">        row : dict</span>
+<span class="sd">            A dictionary that will be written as a row in the file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">([</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">row</span><span class="p">)])</span></div></div>
+
+
+<div class="viewcode-block" id="StdOutRun"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutRun">[docs]</a><span class="k">class</span> <span class="nc">StdOutRun</span><span class="p">(</span><span class="n">Tap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A ``Tap`` that prints information from a ``SearchAlgorithm`` run to stdout.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pre_print_config : bool, optional</span>
+<span class="sd">        If True, print the PushConfig before each run. Default False.</span>
+<span class="sd">    pre_print_atoms : bool, optional</span>
+<span class="sd">        If True, print all the atoms used to generate programs before each run. Default False.</span>
+<span class="sd">    post_print_best : bool, optional</span>
+<span class="sd">        If True, print a summary about the best program found at the end of each run. Default False.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">pre_print_config</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">pre_print_atoms</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">post_print_best</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_print_config</span> <span class="o">=</span> <span class="n">pre_print_config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_print_atoms</span> <span class="o">=</span> <span class="n">pre_print_atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_print_best</span> <span class="o">=</span> <span class="n">post_print_best</span>
+
+<div class="viewcode-block" id="StdOutRun.pre"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutRun.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print run config and/or all atoms to stdout.&quot;&quot;&quot;</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_print_config</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Search Configuration:&quot;</span><span class="p">)</span>
+            <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;signature&quot;</span><span class="p">,</span> <span class="s2">&quot;evaluator&quot;</span><span class="p">,</span> <span class="s2">&quot;spawner&quot;</span><span class="p">,</span> <span class="s2">&quot;population_size&quot;</span><span class="p">,</span> <span class="s2">&quot;max_generations&quot;</span><span class="p">,</span> <span class="s2">&quot;error_threshold&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;initial_genome_size&quot;</span><span class="p">,</span> <span class="s2">&quot;simplification_steps&quot;</span><span class="p">,</span> <span class="s2">&quot;parallel_context&quot;</span><span class="p">,</span> <span class="s2">&quot;selection&quot;</span><span class="p">,</span> <span class="s2">&quot;variation&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">attr</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">search</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_print_atoms</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Instructions:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">search</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">spawner</span><span class="o">.</span><span class="n">instruction_set</span><span class="o">.</span><span class="n">keys</span><span class="p">()]))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Literals:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">search</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">spawner</span><span class="o">.</span><span class="n">literals</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERC Generators:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">search</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">spawner</span><span class="o">.</span><span class="n">erc_generators</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StdOutRun.post"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutRun.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">returned</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print a summary of the run result to stdout.&quot;&quot;&quot;</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">search</span><span class="o">.</span><span class="n">is_solved</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution found.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No solution found.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_print_best</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Best individual found:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Genome:&quot;</span><span class="p">,</span> <span class="n">search</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">genome</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Program:&quot;</span><span class="p">,</span> <span class="n">search</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">program</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error vector:&quot;</span><span class="p">,</span> <span class="n">search</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">error_vector</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total error:&quot;</span><span class="p">,</span> <span class="n">search</span><span class="o">.</span><span class="n">best_seen</span><span class="o">.</span><span class="n">total_error</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="StdOutSearchStepTap"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutSearchStepTap">[docs]</a><span class="k">class</span> <span class="nc">StdOutSearchStepTap</span><span class="p">(</span><span class="n">Tap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A ``Tap`` that prints stats from a step (aka generation) of a ``SearchAlgorithm`` run.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">every_n_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">every_n_steps</span> <span class="o">=</span> <span class="n">every_n_steps</span>
+
+<div class="viewcode-block" id="StdOutSearchStepTap.pre"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutSearchStepTap.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print population stats before the next step of the run.&quot;&quot;&quot;</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">generation</span> <span class="o">=</span> <span class="n">search</span><span class="o">.</span><span class="n">generation</span>
+        <span class="k">if</span> <span class="n">generation</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">every_n_steps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span>
+                <span class="s2">&quot;GENERATION: </span><span class="si">{g}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">g</span><span class="o">=</span><span class="n">generation</span>
+                <span class="p">),</span>
+                <span class="s2">&quot;ERRORS: best=</span><span class="si">{b}</span><span class="s2">, median=</span><span class="si">{m}</span><span class="s2">, diversity=</span><span class="si">{e_d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">b</span><span class="o">=</span><span class="n">search</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">best</span><span class="p">()</span><span class="o">.</span><span class="n">total_error</span><span class="p">,</span>
+                    <span class="n">m</span><span class="o">=</span><span class="n">search</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">median_error</span><span class="p">(),</span>
+                    <span class="n">e_d</span><span class="o">=</span><span class="n">search</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">error_diversity</span><span class="p">()</span>
+                <span class="p">),</span>
+                <span class="s2">&quot;INDIVIDUALS: n=</span><span class="si">{ps}</span><span class="s2">, avg_genome_length=</span><span class="si">{gn_len}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">ps</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">search</span><span class="o">.</span><span class="n">population</span><span class="p">),</span>
+                    <span class="n">gn_len</span><span class="o">=</span><span class="n">search</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">mean_genome_length</span><span class="p">()</span>
+                <span class="p">),</span>
+            <span class="p">]))</span></div></div>
+
+
+<div class="viewcode-block" id="StdOutSimplification"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutSimplification">[docs]</a><span class="k">class</span> <span class="nc">StdOutSimplification</span><span class="p">(</span><span class="n">Tap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A ``Tap`` that prints a summary of Genome simplification.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="StdOutSimplification.pre"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutSimplification.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print a notification that genome simplification is starting.&quot;&quot;&quot;</span>
+        <span class="n">genome</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Simplifying genome of length </span><span class="si">{ln}</span><span class="s2"> with total error </span><span class="si">{er}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">genome</span><span class="p">),</span>
+            <span class="n">er</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="p">))</span></div>
+
+<div class="viewcode-block" id="StdOutSimplification.post"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutSimplification.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">returned</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print a summary of the result of genome simplification.&quot;&quot;&quot;</span>
+        <span class="n">gn</span><span class="p">,</span> <span class="n">errs</span> <span class="o">=</span> <span class="n">returned</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Simplified genome to length </span><span class="si">{ln}</span><span class="s2"> and total error </span><span class="si">{er}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">ln</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">gn</span><span class="p">),</span>
+            <span class="n">er</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">errs</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+        <span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="StdOutSimplificationStep"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutSimplificationStep">[docs]</a><span class="k">class</span> <span class="nc">StdOutSimplificationStep</span><span class="p">(</span><span class="n">Tap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A ``Tap`` that prints a notification of a successful Genome simplification step.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="StdOutSimplificationStep.post"><a class="viewcode-back" href="../../api.html#pyshgp.tap.StdOutSimplificationStep.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">returned</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print a notification of a successful step of Genome simplification.&quot;&quot;&quot;</span>
+        <span class="n">orig_gn</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">new_gn</span> <span class="o">=</span> <span class="n">returned</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">orig_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orig_gn</span><span class="p">)</span>
+        <span class="n">new_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_gn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_len</span> <span class="o">&lt;</span> <span class="n">orig_len</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Simplified genome by </span><span class="si">{diff}</span><span class="s2"> to length </span><span class="si">{ln}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">diff</span><span class="o">=</span><span class="n">orig_len</span> <span class="o">-</span> <span class="n">new_len</span><span class="p">,</span>
+                <span class="n">ln</span><span class="o">=</span><span class="n">new_len</span>
+            <span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="TapManager"><a class="viewcode-back" href="../../api.html#pyshgp.tap.TapManager">[docs]</a><span class="k">class</span> <span class="nc">TapManager</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stores a mapping of function ID to ``Tap`` object than can be used to inject side effects around functions.</span>
+
+<span class="sd">    The ``TapManger`` class is treated as a singleton and should not be instanced. Its methods are static and the state</span>
+<span class="sd">    they manage is shared between all usages of ``Taps``.</span>
+
+<span class="sd">    Function IDs are a fully qualified identifier for a function. They are generated as the concatenation</span>
+<span class="sd">    of the module name the function is defined in (ie. ``my_package.my_module``) and the qualified name of the function</span>
+<span class="sd">    definition (ie. ``MyClass.my_method``). The final function ID would be ``my_package.my_module.MyClass.my_method``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_taps</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tap</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># @todo multiple Taps per ID? CompositeTap type?</span>
+
+<div class="viewcode-block" id="TapManager.register"><a class="viewcode-back" href="../../api.html#pyshgp.tap.TapManager.register">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tap</span><span class="p">:</span> <span class="n">Tap</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Register a ``Tap`` to be performed when the function with the associated ID is called.&quot;&quot;&quot;</span>
+        <span class="n">TapManager</span><span class="o">.</span><span class="n">_taps</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">tap</span></div>
+
+<div class="viewcode-block" id="TapManager.unregister"><a class="viewcode-back" href="../../api.html#pyshgp.tap.TapManager.unregister">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">unregister</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Unregister the ``Tap`` associated with given ID.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">TapManager</span><span class="o">.</span><span class="n">_taps</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">TapManager</span><span class="o">.</span><span class="n">_taps</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TapManager.get"><a class="viewcode-back" href="../../api.html#pyshgp.tap.TapManager.get">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tap</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return the ``Tap`` associated with given ID or ``None`` if no tap is registered.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">TapManager</span><span class="o">.</span><span class="n">_taps</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">TapManager</span><span class="o">.</span><span class="n">_taps</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="TapManager.do"><a class="viewcode-back" href="../../api.html#pyshgp.tap.TapManager.do">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">do</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform the ``do`` method of the tap registered under the given ID.</span>
+
+<span class="sd">        This can be called from any location.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">TapManager</span><span class="o">.</span><span class="n">_taps</span><span class="p">:</span>
+            <span class="n">TapManager</span><span class="o">.</span><span class="n">_taps</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No Tap registered in TapManager with id &quot;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="tap"><a class="viewcode-back" href="../../api.html#pyshgp.tap.tap">[docs]</a><span class="k">def</span> <span class="nf">tap</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorate a function/method to call any associated taps that have been registered in the ``TapManager``.</span>
+
+<span class="sd">    Functional behavior is not changed.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fn_id</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmodule</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__qualname__</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">tapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">tap</span> <span class="o">=</span> <span class="n">TapManager</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fn_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tap</span><span class="o">.</span><span class="n">pre</span><span class="p">(</span><span class="n">fn_id</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tap</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">fn_id</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="n">tapped</span></div>
+
+
+<div class="viewcode-block" id="set_verbosity"><a class="viewcode-back" href="../../api.html#pyshgp.tap.set_verbosity">[docs]</a><span class="k">def</span> <span class="nf">set_verbosity</span><span class="p">(</span><span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Register some ``Tap`` objects in the ``TapManger`` that print to stdout during an evolutionary run.</span>
+
+<span class="sd">    Verbosity level 0 prints nothing to stdout.</span>
+
+<span class="sd">    Verbosity level 1 prints minimal run configuration as well as population statistics every 5 generations.</span>
+
+<span class="sd">    Verbosity level 2+ prints full run configuration, population statics every generation, and traces the genome</span>
+<span class="sd">    simplification process.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">TapManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyshgp.gp.genome.GenomeSimplifier.simplify&quot;</span><span class="p">,</span> <span class="n">StdOutSimplification</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">TapManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyshgp.gp.search.SearchAlgorithm.step&quot;</span><span class="p">,</span> <span class="n">StdOutSearchStepTap</span><span class="p">(</span><span class="n">every_n_steps</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+        <span class="n">TapManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyshgp.gp.search.SearchAlgorithm.run&quot;</span><span class="p">,</span> <span class="n">StdOutRun</span><span class="p">(</span><span class="n">pre_print_config</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                              <span class="n">pre_print_atoms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                                              <span class="n">post_print_best</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">level</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">TapManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyshgp.gp.search.SearchAlgorithm.step&quot;</span><span class="p">,</span> <span class="n">StdOutSearchStepTap</span><span class="p">(</span><span class="n">every_n_steps</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">TapManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyshgp.gp.search.SearchAlgorithm.run&quot;</span><span class="p">,</span> <span class="n">StdOutRun</span><span class="p">(</span><span class="n">pre_print_config</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                              <span class="n">pre_print_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                              <span class="n">post_print_best</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">TapManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyshgp.gp.genome.GenomeSimplifier._step&quot;</span><span class="p">,</span> <span class="n">StdOutSimplificationStep</span><span class="p">())</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

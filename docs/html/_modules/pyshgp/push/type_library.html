@@ -1,20 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyshgp.push.type_library &#8212; PyshGP  documentation</title>
+    <meta charset="utf-8" />
+    <title>pyshgp.push.type_library &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   </head><body>
@@ -27,7 +24,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -39,17 +36,17 @@
             
   <h1>Source code for pyshgp.push.type_library</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;A PushTypeLibrary describes the PushTypes which a given instance of PushGP will support.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Callable</span>
 
-<span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="k">import</span> <span class="n">PushType</span><span class="p">,</span> <span class="n">CORE_PUSH_TYPES</span>
-<span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Literal</span>
-<span class="kn">from</span> <span class="nn">pyshgp.validation</span> <span class="k">import</span> <span class="n">PushError</span>
-
-
-<span class="n">RESERVED_PSEUDO_STACKS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;exec&quot;</span><span class="p">,</span> <span class="s2">&quot;untyped&quot;</span><span class="p">,</span> <span class="s2">&quot;stdout&quot;</span><span class="p">}</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="kn">import</span> <span class="n">PushType</span><span class="p">,</span> <span class="n">CORE_PUSH_TYPES</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">pyshgp.validation</span> <span class="kn">import</span> <span class="n">PushError</span>
 
 
-<div class="viewcode-block" id="PushTypeLibrary"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.PushTypeLibrary">[docs]</a><span class="k">class</span> <span class="nc">PushTypeLibrary</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="n">RESERVED_PSEUDO_STACKS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;untyped&quot;</span><span class="p">,</span> <span class="s2">&quot;stdout&quot;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="PushTypeLibrary"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary">[docs]</a><span class="k">class</span> <span class="nc">PushTypeLibrary</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A collection of PushTypes which can support a corresponding PushStack.</span>
 
 <span class="sd">    Parameters</span>
@@ -68,40 +65,43 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register_core</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register_core</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">register_core</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">register_core</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_and_register</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="p">),</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_and_register</span><span class="p">(</span><span class="s2">&quot;exec&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="p">),</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PushTypeLibrary.register"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.PushTypeLibrary.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_type</span><span class="p">:</span> <span class="n">PushType</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="PushTypeLibrary.register"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_type</span><span class="p">:</span> <span class="n">PushType</span><span class="p">,</span> <span class="n">_force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Register a PushType object.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        push_type</span>
 <span class="sd">            PushType to register.</span>
+<span class="sd">        _force : bool, optional</span>
+<span class="sd">            For internal use only. Default is False.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        PushTypeLibrary</span>
-<span class="sd">            A reference to the PushTypeLibrary.</span>
+<span class="sd">            A reference to the ``PushTypeLibrary``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">push_type</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">force</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="n">RESERVED_PSEUDO_STACKS</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">_force</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="n">RESERVED_PSEUDO_STACKS</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot register PushType with name </span><span class="si">{nm}</span><span class="s2"> because it is reserved.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nm</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
         <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">push_type</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="PushTypeLibrary.create_and_register"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.PushTypeLibrary.create_and_register">[docs]</a>    <span class="k">def</span> <span class="nf">create_and_register</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">underlying_types</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">],</span>
-        <span class="n">coercion_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">force</span><span class="o">=</span><span class="kc">False</span>
-    <span class="p">):</span>
+<div class="viewcode-block" id="PushTypeLibrary.create_and_register"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.create_and_register">[docs]</a>    <span class="k">def</span> <span class="nf">create_and_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="n">underlying_types</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">],</span>
+                            <span class="n">is_collection</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                            <span class="n">is_numeric</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                            <span class="n">coercion_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a PushType and register it into the library.</span>
 
 <span class="sd">        Parameters</span>
@@ -110,9 +110,13 @@
 <span class="sd">            A name for the type. Used when referencing the PushType in Instruction</span>
 <span class="sd">            definitions and will be the key in the PushState for the corresponding</span>
 <span class="sd">            PushStack.</span>
-<span class="sd">        underlying : Tuple[type]</span>
+<span class="sd">        underlying_types : Tuple[type]</span>
 <span class="sd">            A tuple of python types that correspond to the underlying</span>
 <span class="sd">            native types which the PushType is representing.</span>
+<span class="sd">        is_collection : bool, optional</span>
+<span class="sd">            Indicates if the PushType is a collection. Default is False.</span>
+<span class="sd">        is_numeric : bool, optional</span>
+<span class="sd">            Indicates if the PushType is a number. Default is False.</span>
 <span class="sd">        coercion_func : Callable[[Any], Any], optional</span>
 <span class="sd">            A function which takes a single argument and returns argument coerced</span>
 <span class="sd">            into the PushTypes canonical type (the first type in ``underlying``).</span>
@@ -129,10 +133,10 @@
 <span class="sd">            A reference to the PushTypeLibrary.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">PushType</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">underlying_types</span><span class="p">,</span> <span class="n">coercion_func</span><span class="p">),</span> <span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">PushType</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">underlying_types</span><span class="p">,</span> <span class="n">is_collection</span><span class="p">,</span> <span class="n">is_numeric</span><span class="p">,</span> <span class="n">coercion_func</span><span class="o">=</span><span class="n">coercion_func</span><span class="p">),</span> <span class="n">force</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="PushTypeLibrary.unregister"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.PushTypeLibrary.unregister">[docs]</a>    <span class="k">def</span> <span class="nf">unregister</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="PushTypeLibrary.unregister"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.unregister">[docs]</a>    <span class="k">def</span> <span class="nf">unregister</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unregister a push type by name.</span>
 
 <span class="sd">        Parameters</span>
@@ -151,7 +155,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">push_type_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="PushTypeLibrary.register_list"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.PushTypeLibrary.register_list">[docs]</a>    <span class="k">def</span> <span class="nf">register_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_of_push_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">PushType</span><span class="p">]):</span>
+<div class="viewcode-block" id="PushTypeLibrary.register_list"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.register_list">[docs]</a>    <span class="k">def</span> <span class="nf">register_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_of_push_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">PushType</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Register a list of PushType ojbects.</span>
 
 <span class="sd">        Parameters</span>
@@ -169,7 +173,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">push_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="PushTypeLibrary.register_core"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.PushTypeLibrary.register_core">[docs]</a>    <span class="k">def</span> <span class="nf">register_core</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PushTypeLibrary.register_core"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.register_core">[docs]</a>    <span class="k">def</span> <span class="nf">register_core</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Register all core PushTypes defined in pyshgp.</span>
 
 <span class="sd">        Returns</span>
@@ -181,7 +185,7 @@
         <span class="k">for</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="n">CORE_PUSH_TYPES</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">push_type</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PushTypeLibrary.supported_stacks"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.PushTypeLibrary.supported_stacks">[docs]</a>    <span class="k">def</span> <span class="nf">supported_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="PushTypeLibrary.supported_stacks"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.supported_stacks">[docs]</a>    <span class="k">def</span> <span class="nf">supported_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;All stack names which the PushTypeLibrary can support.</span>
 
 <span class="sd">        Returns</span>
@@ -192,7 +196,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="PushTypeLibrary.push_type_of"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.PushTypeLibrary.push_type_of">[docs]</a>    <span class="k">def</span> <span class="nf">push_type_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thing</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">error_on_not_found</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PushType</span><span class="p">]:</span>
+<div class="viewcode-block" id="PushTypeLibrary.push_type_of"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.push_type_of">[docs]</a>    <span class="k">def</span> <span class="nf">push_type_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thing</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">error_on_not_found</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PushType</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return the PushType of the given thing.</span>
 
 <span class="sd">        Parameters</span>
@@ -210,7 +214,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type_for_type</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">thing</span><span class="p">),</span> <span class="n">error_on_not_found</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PushTypeLibrary.push_type_for_type"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.PushTypeLibrary.push_type_for_type">[docs]</a>    <span class="k">def</span> <span class="nf">push_type_for_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">error_on_not_found</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PushType</span><span class="p">]:</span>
+<div class="viewcode-block" id="PushTypeLibrary.push_type_for_type"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.push_type_for_type">[docs]</a>    <span class="k">def</span> <span class="nf">push_type_for_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">error_on_not_found</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PushType</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return the PushType of the given python (or numpy) type.</span>
 
 <span class="sd">        Parameters</span>
@@ -233,7 +237,7 @@
             <span class="k">raise</span> <span class="n">PushError</span><span class="o">.</span><span class="n">no_type</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="infer_literal"><a class="viewcode-back" href="../../../api/pyshgp.push.html#pyshgp.push.type_library.infer_literal">[docs]</a><span class="k">def</span> <span class="nf">infer_literal</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">type_library</span><span class="p">:</span> <span class="n">PushTypeLibrary</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">:</span>
+<div class="viewcode-block" id="infer_literal"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.infer_literal">[docs]</a><span class="k">def</span> <span class="nf">infer_literal</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">type_library</span><span class="p">:</span> <span class="n">PushTypeLibrary</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Make a literal by infering the PushType of the value.</span>
 
 <span class="sd">    Parameters</span>
@@ -249,7 +253,7 @@
 <span class="sd">        The Literal object which holds the value and the corresponding PushType.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">type_library</span><span class="o">.</span><span class="n">push_type_of</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">error_on_not_found</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">val</span><span class="p">,</span> <span class="n">push_type</span><span class="o">=</span><span class="n">type_library</span><span class="o">.</span><span class="n">push_type_of</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">error_on_not_found</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
 </pre></div>
 
           </div>
@@ -258,17 +262,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -282,13 +284,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

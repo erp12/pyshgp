@@ -3,13 +3,10 @@
 The goal of the Odd problem is to evolve a program that will produce a True if
 the input integer is odd, and a False if its even.
 """
-import logging
 import numpy as np
 import random
-import sys
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
-from pyshgp.push.instruction_set import InstructionSet
 
 
 X = np.arange(-10, 10).reshape(-1, 1)
@@ -25,12 +22,6 @@ spawner = GeneSpawner(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        stream=sys.stdout
-    )
-
     est = PushEstimator(
         spawner=spawner,
         population_size=300,

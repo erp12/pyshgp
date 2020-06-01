@@ -5,6 +5,7 @@ representations which can be manipulated by seach algorithms.
 
 """
 from typing import Union
+from uuid import uuid4
 
 import numpy as np
 
@@ -30,11 +31,12 @@ class Individual(Saveable, Copyable):
     """
 
     __slots__ = [
-        "genome", "signature",
+        "id", "genome", "signature",
         "_program", "_error_vector", "_total_error", "_error_vector_bytes"
     ]
 
     def __init__(self, genome: Genome, signature: ProgramSignature):
+        self.id = uuid4()
         self.genome = genome
         self.signature = signature
         self._program = None

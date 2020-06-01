@@ -38,14 +38,6 @@ setup(
         "pandas>=0.23.4",
         "pyrsistent>=0.16.0",
     ],
-    setup_requires=[
-        "pytest-runner",
-        "flake8>=3.5.0",
-        "flake8-docstrings>=1.3.0",
-        "sphinx>=1.8.3",
-        "m2r>=0.2.1",
-        "mkdocs-nature>=0.3.1",
-    ],
     tests_require=[
         "pytest"
     ],

@@ -1,0 +1,9 @@
+[
+    {"a": "lit", "t": "int", "v": 10},
+    {"a": "instr", "n": "exec_dup"},
+    [
+        {"a": "instr", "n": "int_dup"},
+        {"a": "instr", "n": "int_mult"},
+        {"a": "instr", "n": "exec_dup"}
+    ]
+]

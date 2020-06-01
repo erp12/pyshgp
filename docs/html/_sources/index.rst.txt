@@ -1,16 +1,32 @@
 PyshGP Documentation
 ====================
 
+API
+---
+
+.. toctree::
+    :maxdepth: 2
+
+    api
+
+Guides
+------
+
 .. toctree::
    :maxdepth: 2
 
-   api
+   overview
    instructions
    push_types
-   release_notes
    contributing
 
-.. mdinclude:: ../../README.md
+Release Notes
+-------------
+
+.. toctree::
+   :maxdepth: 2
+
+   release_notes
 
 
 Indices and tables

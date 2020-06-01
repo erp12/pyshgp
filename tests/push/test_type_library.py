@@ -31,7 +31,7 @@ class TestPushTypeLibrary:
     def test_register_reserved(self):
         lib = PushTypeLibrary(register_core=False)
         with pytest.raises(ValueError):
-            lib.create_and_register("exec", (list, ))
+            lib.create_and_register("stdout", (list, ))
 
     def test_unregister(self):
         lib = PushTypeLibrary()
@@ -42,7 +42,7 @@ class TestPushTypeLibrary:
     def test_unregister_reserved(self):
         lib = PushTypeLibrary()
         with pytest.raises(ValueError):
-            lib.unregister("exec")
+            lib.unregister("untyped")
 
     def test_register_core(self):
         lib = PushTypeLibrary()

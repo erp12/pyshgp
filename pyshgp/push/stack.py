@@ -1,47 +1,55 @@
 # -*- coding: utf-8 -*-
 """The :mod:`stack` module defines the ``PushStack`` class.
 
-A PushStack is used to hold values of a certain PushType in a PushState object.
+A ``PushStack`` is used to hold values of a certain ``PushType`` in a ``PushState`` object.
 """
-from typing import Optional, Sequence, List
+from typing import Optional, List
 
+from pyshgp.push.config import constrain_collection, constrain_number, PushConfig
 from pyshgp.push.types import PushType
 from pyshgp.utils import Token
 
 
 class PushStack(List):
-    """Stack that holds elements of a sinlge PushType.
+    """Stack that holds elements of a single ``PushType``.
 
     Parameters
     ----------
     push_type : PushType
         The PushType all items of the stack should conform to.
-    values: Sequence, optional
-        A collection of values to push onto the stack. Values will be pushed in
-        order resulting in the first item being at the bottom of the stack and the
-        last item being on top.
+    push_config : PushConfig
+        The configuration of the Push program being run.
 
     Attributes
     ----------
     push_type : PushType
         The PushType all items of the stack should conform to.
+    push_config : PushConfig
+        The configuration of the Push program being run.
 
     """
 
-    __slots__ = ["push_type"]
+    __slots__ = ["push_type", "push_config"]
 
-    def __init__(self, push_type: PushType, values: Optional[Sequence] = None):
+    def __init__(self, push_type: PushType, push_config: PushConfig):
         super().__init__()
         self.push_type = push_type
-        if values is not None:
-            for val in values:
-                self.push(val)
+        self.push_config = push_config
 
     def is_empty(self) -> bool:
         """Return True if the stack is empty. Return False otherwise."""
         return len(self) == 0
 
     def _coerce(self, value):
+        if not self.push_type.is_instance(value):
+            value = self.push_type.coerce(value)
+        # Collection sizes and string lengths are bounded to avoid utilizing too many resources.
+        if self.push_type.is_collection:
+            value = constrain_collection(self.push_config, value)
+        # Numbers are clamped to a constrained range to avoid utilizing too many resources.
+        if self.push_type.is_numeric:
+            value = constrain_number(self.push_config, value)
+        # Coercion happens a second time in case the constraining changes type.
         if not self.push_type.is_instance(value):
             value = self.push_type.coerce(value)
         return value
@@ -66,8 +74,8 @@ class PushStack(List):
 
         Parameters
         ----------
-        index :
-            Index to pop from the stack.
+        index : int, optional
+            Index to pop from the stack. Default of ``None`` will pop the top item.
 
         Returns
         --------
@@ -92,7 +100,7 @@ class PushStack(List):
 
         Returns
         --------
-        Element at ``positon`` in stack.
+        Element at ``position`` in stack.
 
         """
         if len(self) <= position:
@@ -102,10 +110,10 @@ class PushStack(List):
         else:
             return self[(len(self) - 1) - position]
 
-    def take(self, n: int):
-        """Return the top `n` items from the tack.
+    def take(self, n: int) -> List:
+        """Return the top ``n`` items from the stack.
 
-        If `n` is less than zero, result is an empty list. If `n` is greater
+        If ``n`` is less than zero, result is an empty list. If ``n`` is greater
         than the size of the stack, result contains every element.
 
         Parameters
@@ -115,7 +123,7 @@ class PushStack(List):
 
         Returns
         --------
-        Element at ``positon`` in stack.
+        Top ``n`` elements of the stack.
 
         """
         if n < 0:
@@ -123,11 +131,11 @@ class PushStack(List):
         return self[:-(n + 1):-1]
 
     def top(self):
-        """Return the top item on the stack, or a ``no_stack_item`` token if empty.
+        """Return the top item on the stack, or a ``Token.no_stack_item`` token if empty.
 
         Returns
         --------
-        Returns the top element of the stack, or None if empty.
+        Returns the top element of the stack, or ``Token.no_stack_item`` if empty.
 
         """
         if len(self) > 0:
@@ -136,7 +144,7 @@ class PushStack(List):
             return Token.no_stack_item
 
     def insert(self, position: int, value):
-        """Insert value at position in stack.
+        """Insert value at ``position`` in stack.
 
         Parameters
         ----------
@@ -178,4 +186,3 @@ class PushStack(List):
         if not isinstance(other, PushStack):
             return False
         return self.push_type == other.push_type and list(self) == list(other)
-

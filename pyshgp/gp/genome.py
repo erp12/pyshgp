@@ -1,24 +1,40 @@
+"""The :mod:`genome` module defines the ``Genome`` type and provides genome translation, spawning and simplification.
+
+A ``Genome`` is a persistent collection of gene Atoms (any `Atom` that isn't a ``CodeBlock``). It can be translated
+into a ``CodeBlock``.
+
+The ``GeneSpawner`` is a factory capable of generating random genes and random genomes. It is used for initializing a
+population as well producing new genes used by variation operators (ie. mutation).
+
+The genome simplification process is useful for removing superfluous genes from a genome without negatively impacting
+the behavior of the program produced by the genome. This process has many benefits including: improving generalization,
+shrinking the size of the serialized solution, and in some cases making the program easier to explain.
+
+"""
 from __future__ import annotations
 
 from enum import Enum
-from typing import Sequence, Union, Any, Callable, Optional, Tuple
+from typing import Sequence, Union, Any, Callable, Tuple
 
 import numpy as np
 from pyrsistent import PRecord, field, CheckedPVector, l
 
 from pyshgp.gp.evaluation import Evaluator
-from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log
-from pyshgp.push import InstructionSet, ProgramSignature, Program
+from pyshgp.push.instruction_set import InstructionSet
+from pyshgp.push.program import ProgramSignature, Program
 from pyshgp.push.atoms import Atom, CodeBlock, Closer, Literal, InstructionMeta, Input
 from pyshgp.push.type_library import infer_literal
+from pyshgp.tap import tap
 from pyshgp.utils import DiscreteProbDistrib
 
 
 class Opener(PRecord):
     """Marks the start of one or more CodeBlock."""
+
     count = field(type=int, mandatory=True)
 
     def dec(self) -> Opener:
+        """Create an ``Opener`` with ``count`` decremented."""
         return Opener(count=self.count - 1)
 
 
@@ -30,6 +46,14 @@ def _has_opener(seq: Sequence) -> bool:
 
 
 class Genome(CheckedPVector):
+    """A linear sequence of genes (aka any atom that isn't a ``CodeBlock``).
+
+    PyshGP uses the Plushy genome representation.
+
+    See: http://gpbib.cs.ucl.ac.uk/gp-html/Spector_2019_GPTP.html
+
+    """
+
     __type__ = Atom
     __invariant__ = lambda a: (not isinstance(a, CodeBlock), 'CodeBlock')
 
@@ -75,6 +99,8 @@ def genome_to_code(genome: Genome) -> CodeBlock:
 
 
 class GeneTypes(Enum):
+    """An ``Enum`` denoting the different types of genes that can appear in a Genome."""
+
     INPUT = 1
     INSTRUCTION = 2
     CLOSE = 3
@@ -142,6 +168,13 @@ class GeneSpawner:
             self.distribution = distribution
 
     def random_input(self) -> Input:
+        """Return a random ``Input``.
+
+        Returns
+        -------
+        pyshgp.push.atoms.Input
+
+        """
         return Input(input_index=np.random.randint(self.n_inputs))
 
     def random_instruction(self) -> InstructionMeta:
@@ -149,7 +182,7 @@ class GeneSpawner:
 
         Returns
         -------
-        pushgp.push.atoms.InstructionMeta
+        pyshgp.push.atoms.InstructionMeta
             A randomly selected Literal.
 
         """
@@ -161,7 +194,7 @@ class GeneSpawner:
 
         Returns
         -------
-        pushgp.push.atoms.Literal
+        pyshgp.push.atoms.Literal
             A randomly selected Literal.
 
         """
@@ -175,7 +208,7 @@ class GeneSpawner:
 
         Returns
         -------
-        pushgp.push.atoms.Literal
+        pyshgp.push.atoms.Literal
             A Literal whose value comes from running a ERC generator function.
 
         """
@@ -189,7 +222,7 @@ class GeneSpawner:
 
         Returns
         -------
-        pushgp.push.atoms.Atom
+        pyshgp.push.atoms.Atom
             An random Atom. Either an Instruction, Closer, or Literal.
 
         """
@@ -223,13 +256,13 @@ class GeneSpawner:
 
         Returns
         -------
-        pushgp.gp.genome.Genome
+        pyshgp.gp.genome.Genome
             A Genome with random contents of a given size.
 
         """
         if isinstance(size, Sequence):
             size = np.random.randint(size[0], size[1]) + 1
-        return Genome.create([self.random_gene() for _ in range(size)])
+        return Genome([self.random_gene() for _ in range(size)])
 
 
 class GenomeSimplifier:
@@ -255,7 +288,7 @@ class GenomeSimplifier:
     In Proceedings of the Genetic and Evolutionary Computation Conference (GECCO '17).
     ACM, New York, NY, USA, 937-944. DOI: https://doi.org/10.1145/3071178.3071330
 
-    https://dl.acm.org/citation.cfm?id=3071178.3071330
+    See: https://dl.acm.org/citation.cfm?id=3071178.3071330
 
     """
 
@@ -263,13 +296,12 @@ class GenomeSimplifier:
 
     def __init__(self,
                  evaluator: Evaluator,
-                 program_signature: ProgramSignature,
-                 verbosity_config: Optional[VerbosityConfig] = None):
+                 program_signature: ProgramSignature):
         self.evaluator = evaluator
         self.program_signature = program_signature
-        self.verbosity_config = verbosity_config
 
     def _remove_rand_genes(self, genome: Genome) -> Genome:
+        # @todo DRY with deletion variation operator.
         gn = genome
         n_genes_to_remove = min(np.random.randint(1, 4), len(genome) - 1)
         ndx_of_genes_to_remove = np.random.choice(np.arange(len(gn)), n_genes_to_remove, replace=False)
@@ -283,18 +315,15 @@ class GenomeSimplifier:
         program = Program(code=cb, signature=self.program_signature)
         return self.evaluator.evaluate(program)
 
+    @tap
     def _step(self, genome: Genome, errors_to_beat: np.ndarray) -> Tuple[Genome, np.ndarray]:
         new_gn = self._remove_rand_genes(genome)
         new_errs = self._errors_of_genome(new_gn)
         if np.sum(new_errs) <= np.sum(errors_to_beat):
-            if self.verbosity_config.simplification_step >= self.verbosity_config.log_level:
-                log(
-                    self.verbosity_config.simplification_step,
-                    "Simplified to length {ln}.".format(ln=len(new_gn))
-                )
             return new_gn, new_errs
         return genome, errors_to_beat
 
+    @tap
     def simplify(self,
                  genome: Genome,
                  original_errors: np.ndarray,
@@ -312,32 +341,14 @@ class GenomeSimplifier:
 
         Returns
         -------
-        pushgp.gp.genome.Genome
+        pyshgp.gp.genome.Genome
             The shorter Genome that expresses the same computation.
 
         """
-        if self.verbosity_config is None:
-            self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
-        if self.verbosity_config.simplification_step >= self.verbosity_config.log_level:
-            log(
-                self.verbosity_config.simplification,
-                "Simplifying genome of length {ln}.".format(ln=len(genome))
-            )
         gn = genome
         errs = original_errors
         for step in range(steps):
             gn, errs = self._step(gn, errs)
             if len(gn) == 1:
                 break
-
-        if self.verbosity_config.simplification_step >= self.verbosity_config.log_level:
-            log(
-                self.verbosity_config.simplification,
-                "Simplified genome length {ln}.".format(ln=len(gn))
-            )
-            log(
-                self.verbosity_config.simplification,
-                "Simplified genome total error {te}.".format(te=np.sum(errs))
-            )
-
         return gn, errs

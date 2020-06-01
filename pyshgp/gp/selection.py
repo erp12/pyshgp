@@ -9,6 +9,7 @@ from numpy.random import random, choice, shuffle
 
 from pyshgp.gp.individual import Individual
 from pyshgp.gp.population import Population
+from pyshgp.tap import tap
 from pyshgp.utils import instantiate_using
 
 
@@ -32,6 +33,30 @@ class Selector(ABC):
         """
         pass
 
+    @tap
+    def select(self, population: Population, n: int = 1) -> Sequence[Individual]:
+        """Return `n` individuals from the population.
+
+        Parameters
+        ----------
+        population : Population
+            A Population of Individuals.
+        n : int
+            The number of parents to select from the population. Default is 1.
+
+        Returns
+        -------
+        Sequence[Individual]
+            The selected Individuals.
+
+        """
+        pass
+
+
+class SimpleMultiSelectorMixin:
+    """A mixin for ``Selector`` classes where selecting many individuals is done by repeated calls to `select_one`."""
+
+    @tap
     def select(self, population: Population, n: int = 1) -> Sequence[Individual]:
         """Return `n` individuals from the population.
 
@@ -76,6 +101,7 @@ class FitnessProportionate(Selector):
         """
         return self.select(population)[0]
 
+    @tap
     def select(self, population: Population, n: int = 1) -> Sequence[Individual]:
         """Return `n` individuals from the population.
 
@@ -92,6 +118,7 @@ class FitnessProportionate(Selector):
             The selected Individuals.
 
         """
+        super().select(population, n)
         population_total_errors = np.array([i.total_error for i in population])
         sum_of_total_errors = np.sum(population_total_errors)
         probabilities = 1.0 - (population_total_errors / sum_of_total_errors)
@@ -99,7 +126,7 @@ class FitnessProportionate(Selector):
         return [population[ndx] for ndx in selected_ndxs]
 
 
-class Tournament(Selector):
+class Tournament(SimpleMultiSelectorMixin, Selector):
     """Tournament selection.
 
     See: https://en.wikipedia.org/wiki/Tournament_selection
@@ -155,6 +182,9 @@ def median_absolute_deviation(x: np.ndarray) -> np.float64:
 
 
 class CaseStream:
+    """A generator of indices yielded in a random order."""
+
+    # @todo generalize to RandomIndexStream
 
     def __init__(self, n_cases: int):
         self.cases = list(range(n_cases))
@@ -167,6 +197,7 @@ class CaseStream:
 
 def one_individual_per_error_vector(population: Population) -> Sequence[Individual]:
     """Preselect one individual per distinct error vector.
+
     Crucial for avoiding the worst case runtime of lexicase selection but
     does not impact the behavior of which individual gets selected.
     """
@@ -182,14 +213,16 @@ def one_individual_per_error_vector(population: Population) -> Sequence[Individu
     return preselected
 
 
-class Lexicase(Selector):
+class Lexicase(SimpleMultiSelectorMixin, Selector):
     """Lexicase Selection.
+
     All training cases are considered iteratively in a random order. For each
     training cases, the population is filtered to only contain the Individuals
     which have an error value within epsilon of the best error value on that case.
     This filtering is repeated until the population is down to a single Individual
     or all cases have been used. After the filtering iterations, a random
     Individual from the remaining set is returned as the selected Individual.
+
     See: https://ieeexplore.ieee.org/document/6920034
     """
 
@@ -225,10 +258,12 @@ class Lexicase(Selector):
 
     def select_one(self, population: Population) -> Individual:
         """Return single individual from population.
+
         Parameters
         ----------
         population
             A Population of Individuals.
+
         Returns
         -------
         Individual
@@ -236,6 +271,25 @@ class Lexicase(Selector):
         """
         cases = CaseStream(len(population[0].error_vector))
         return self._select_with_stream(population, cases)
+
+    @tap
+    def select(self, population: Population, n: int = 1) -> Sequence[Individual]:
+        """Return `n` individuals from the population.
+
+        Parameters
+        ----------
+        population
+            A Population of Individuals.
+        n : int
+            The number of parents to select from the population. Default is 1.
+
+        Returns
+        -------
+        Sequence[Individual]
+            The selected Individuals.
+
+        """
+        return super().select(population, n)
 
 
 class Elite(Selector):
@@ -257,6 +311,7 @@ class Elite(Selector):
         """
         return population.best()
 
+    @tap
     def select(self, population: Population, n: int = 1) -> Sequence[Individual]:
         """Return `n` individuals from the population.
 
@@ -273,6 +328,7 @@ class Elite(Selector):
             The selected Individuals.
 
         """
+        super().select(population, n)
         return population.best_n(n)
 
 

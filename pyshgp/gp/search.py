@@ -8,6 +8,7 @@ from functools import partial
 from multiprocessing import Pool, Manager
 
 from pyshgp.push.program import ProgramSignature
+from pyshgp.tap import tap, set_verbosity
 from pyshgp.utils import DiscreteProbDistrib
 from pyshgp.gp.evaluation import Evaluator
 from pyshgp.gp.genome import GeneSpawner, GenomeSimplifier
@@ -16,7 +17,6 @@ from pyshgp.gp.population import Population
 from pyshgp.gp.selection import Selector, get_selector
 from pyshgp.gp.variation import VariationOperator, get_variation_operator
 from pyshgp.utils import instantiate_using
-from pyshgp.monitoring import VerbosityConfig, DEFAULT_VERBOSITY_LEVELS, log
 
 
 class ParallelContext:
@@ -38,6 +38,8 @@ class ParallelContext:
 
 class SearchConfiguration:
     """Configuration of an search algorithm.
+
+    @todo change to a PClass
 
     Parameters
     ----------
@@ -88,7 +90,7 @@ class SearchConfiguration:
                  initial_genome_size: Tuple[int, int] = (10, 50),
                  simplification_steps: int = 2000,
                  parallelism: Union[int, bool] = True,
-                 verbosity_config: Union[VerbosityConfig, str] = "default",
+                 verbose: int = 0,
                  **kwargs):
         self.signature = signature
         self.evaluator = evaluator
@@ -98,7 +100,9 @@ class SearchConfiguration:
         self.error_threshold = error_threshold
         self.initial_genome_size = initial_genome_size
         self.simplification_steps = simplification_steps
+        self.verbose = verbose
         self.ext = kwargs
+        set_verbosity(self.verbose)
 
         self.parallel_context = None
         if isinstance(parallelism, bool):
@@ -108,33 +112,28 @@ class SearchConfiguration:
             self.parallel_context = ParallelContext(spawner, evaluator, parallelism)
 
         if isinstance(selection, Selector):
-            self._selection = DiscreteProbDistrib().add(selection, 1.0)
+            self.selection = DiscreteProbDistrib().add(selection, 1.0)
         elif isinstance(selection, DiscreteProbDistrib):
-            self._selection = selection
+            self.selection = selection
         else:
             selector = get_selector(selection, **self.ext)
-            self._selection = DiscreteProbDistrib().add(selector, 1.0)
+            self.selection = DiscreteProbDistrib().add(selector, 1.0)
 
         if isinstance(variation, VariationOperator):
-            self._variation = DiscreteProbDistrib().add(variation, 1.0)
+            self.variation = DiscreteProbDistrib().add(variation, 1.0)
         elif isinstance(variation, DiscreteProbDistrib):
-            self._variation = variation
+            self.variation = variation
         else:
             variation_op = get_variation_operator(variation, **self.ext)
-            self._variation = DiscreteProbDistrib().add(variation_op, 1.0)
-
-        if verbosity_config == "default":
-            self.verbosity_config = DEFAULT_VERBOSITY_LEVELS[0]
-        else:
-            self.verbosity_config = verbosity_config
+            self.variation = DiscreteProbDistrib().add(variation_op, 1.0)
 
     def get_selector(self):
         """Return a Selector."""
-        return self._selection.sample()
+        return self.selection.sample()
 
     def get_variation_op(self):
         """Return a VariationOperator."""
-        return self._variation.sample()
+        return self.variation.sample()
 
 
 def _spawn_individual(spawner, genome_size, program_signature: ProgramSignature, *args):
@@ -185,9 +184,10 @@ class SearchAlgorithm(ABC):
             for i in range(pop_size):
                 self.population.add(_spawn_individual(spawner, init_gn_size, signature))
 
+    @tap
     @abstractmethod
     def step(self) -> bool:
-        """Perform one generation (step) of the search. Return if should continue.
+        """Perform one generation (step) of the search.
 
         The step method should assume an evaluated Population, and must only
         perform parent selection and variation (producing children). The step
@@ -210,48 +210,24 @@ class SearchAlgorithm(ABC):
             if self.best_seen.total_error <= self.config.error_threshold:
                 return False
 
-        if self.config.verbosity_config.generation >= self.config.verbosity_config.log_level and \
-                self.generation % self.config.verbosity_config.every_n_generations == 0:
-            stat_logs = [
-                "GENERATION: {g}".format(
-                    g=self.generation
-                ),
-                "ERRORS: best={b}, median={m}, diversity={e_d}".format(
-                    b=self.population.best().total_error,
-                    m=self.population.median_error(),
-                    e_d=self.population.error_diversity()
-                ),
-                "INDIVIDUALS: n={ps}, avg_genome_length={gn_len}".format(
-                    ps=len(self.population),
-                    gn_len=self.population.mean_genome_length()
-                )
-            ]
-            log(self.config.verbosity_config.generation, " | ".join(stat_logs))
-
         self.step()
         return True
 
-    def _is_solved(self):
+    def is_solved(self) -> bool:
+        """Return ``True`` if the search algorithm has found a solution or ``False`` otherwise."""
         return self.best_seen.total_error <= self.config.error_threshold
 
+    @tap
     def run(self) -> Individual:
         """Run the algorithm until termination."""
         while self._full_step():
             if self.generation >= self.config.max_generations:
                 break
 
-        verbose_solution = self.config.verbosity_config.solution_found
-        if verbose_solution >= self.config.verbosity_config.log_level:
-            if self._is_solved():
-                log(verbose_solution, "Unsimplified solution found.")
-            else:
-                log(verbose_solution, "No unsimplified solution found.")
-
-        # Simplify the best individual for a better generalization and interpreteation.
+        # Simplify the best individual for a better generalization and interpretation.
         simplifier = GenomeSimplifier(
             self.config.evaluator,
-            self.config.signature,
-            self.config.verbosity_config
+            self.config.signature
         )
         simp_genome, simp_error_vector = simplifier.simplify(
             self.best_seen.genome,
@@ -260,14 +236,8 @@ class SearchAlgorithm(ABC):
         )
         simplified_best = Individual(simp_genome, self.config.signature)
         simplified_best.error_vector = simp_error_vector
-
-        if verbose_solution >= self.config.verbosity_config.log_level:
-            if self._is_solved():
-                log(verbose_solution, "Simplified solution found.")
-            else:
-                log(verbose_solution, "No simplified solution found.")
-
-        return simplified_best
+        self.best_seen = simplified_best
+        return self.best_seen
 
 
 class GeneticAlgorithm(SearchAlgorithm):
@@ -290,6 +260,7 @@ class GeneticAlgorithm(SearchAlgorithm):
         child_genome = op.produce(parent_genomes, self.config.spawner)
         return Individual(child_genome, self.config.signature)
 
+    @tap
     def step(self):
         """Perform one generation (step) of the genetic algorithm.
 
@@ -297,6 +268,7 @@ class GeneticAlgorithm(SearchAlgorithm):
         selection and variation (producing children).
 
         """
+        super().step()
         self.population = Population(
             [self._make_child() for _ in range(self.config.population_size)]
         )
@@ -318,7 +290,7 @@ class SimulatedAnnealing(SearchAlgorithm):
 
     def __init__(self, config: SearchConfiguration):
         config.population_size = 1
-        for op in config._variation.elements:
+        for op in config.variation.elements:
             assert op.num_parents <= 1, "SimulatedAnnealing cannot take multiple parant variation operators."
         super().__init__(config)
 
@@ -334,6 +306,7 @@ class SimulatedAnnealing(SearchAlgorithm):
         else:
             return math.exp(-(next_error - current_error) / self._get_temp())
 
+    @tap
     def step(self):
         """Perform one generation, or step, of the Simulated Annealing.
 
@@ -343,6 +316,7 @@ class SimulatedAnnealing(SearchAlgorithm):
         Population.
 
         """
+        super().step()
         if self._get_temp() <= 0:
             return
 

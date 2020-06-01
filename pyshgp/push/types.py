@@ -53,10 +53,12 @@ class PushType:
                  name: str,
                  underlying: Sequence[type],
                  is_collection: bool = False,
+                 is_numeric: bool = False,
                  coercion_func: Optional[Callable[[Any], Any]] = None):
         self.name = name
         self.underlying = underlying
         self.is_collection = is_collection
+        self.is_numeric = is_numeric
         if coercion_func is None:
             self.coercion_func = underlying[0]
         else:
@@ -117,8 +119,8 @@ class Char(str):
 # @TODO: Add vector type(s)
 
 
-PushInt = PushType("int", (int, np.int64, np.int32, np.int16, np.int8))
-PushFloat = PushType("float", (float, np.float64, np.float32, np.float16))
+PushInt = PushType("int", (int, np.int64, np.int32, np.int16, np.int8), is_numeric=True)
+PushFloat = PushType("float", (float, np.float64, np.float32, np.float16), is_numeric=True)
 PushStr = PushType("str", (str, np.str_))
 PushBool = PushType("bool", (bool, np.bool_))
 PushChar = PushType("char", (Char, ))

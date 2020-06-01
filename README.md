@@ -43,7 +43,7 @@ Although PushGP is constantly changing through research and publication, `pyshgp
 
 ### Install from pip
 
-```
+```sh
 pip install pyshgp
 ```
 
@@ -58,28 +58,28 @@ pip install pyshgp
 
 Run the following command from project root directory. Make sure all the packages from `requirements-with-dev.txt` are installed in the instance of python you are using.
 
-```
+```sh
 python -m pytest
 ```
 
 Or run tests continuously (on save) during development using [pytest-watch](https://github.com/joeyespo/pytest-watch).
 
-```
+```sh
 ptw 
 ``` 
 
 ## Documentation
 
-### Example Usage
-
 Example usages of `pyshgp` can be found in the `examples/` [folder of the Github repository](https://github.com/erp12/pyshgp/tree/master/examples).
-
-### API
 
 The full `pyshgp` API can be found on [official website](http://erp12.github.io/pyshgp).
 
 ## Pysh Roadmap / Contributing
 
-PyshGP isn't quite ready for its 1.0 release. It still has a few key features that need implementing. More details can be found in `ROADMAPS.md` and in the projects tab on Github.
+PyshGP is nearly ready for its 1.0 release. The main outstanding items ares:
+
+- Support for vector types. This is present in Clojush and required for many standard benchmarks.
+- Extensive benchmarking to make sure pyshgp has the program-finding capabilities we expect from a contemporary PushGP system.
+- More feedback on the API must be gathered before we commit to not making any breaking changes.
 
 For information about contributing, see the [Contributing Guide](http://erp12.github.io/pyshgp/html/contributing.html).

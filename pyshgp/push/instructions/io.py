@@ -1,17 +1,16 @@
 """Definitions for all core I/O instructions, including input instructions."""
-from typing import Sequence
-from functools import partial
-
-from pyshgp.push.state import PushState
-from pyshgp.push.atoms import Atom
-from pyshgp.push.instruction import SimpleInstruction, TakesStateInstruction
+from pyshgp.push.instruction import SimpleInstruction
 from pyshgp.push.type_library import PushTypeLibrary
 
 
 # Printing instructions
 
-def _wrap_str(x):
+def _wrap(x):
     return str(x),
+
+
+def _wrap_and_newline(x):
+    return str(x) + "\n",
 
 
 def instructions(type_library: PushTypeLibrary):
@@ -21,7 +20,15 @@ def instructions(type_library: PushTypeLibrary):
     for push_type in type_library.keys():
         i.append(SimpleInstruction(
             "print_{t}".format(t=push_type),
-            _wrap_str,
+            _wrap,
+            input_stacks=[push_type],
+            output_stacks=["stdout"],
+            code_blocks=0,
+            docstring="Prints the top {t}.".format(t=push_type)
+        )),
+        i.append(SimpleInstruction(
+            "println_{t}".format(t=push_type),
+            _wrap_and_newline,
             input_stacks=[push_type],
             output_stacks=["stdout"],
             code_blocks=0,

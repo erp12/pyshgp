@@ -1,24 +1,20 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Release Notes &#8212; PyshGP  documentation</title>
+    <meta charset="utf-8" />
+    <title>Release Notes &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contributing" href="contributing.html" />
-    <link rel="prev" title="Push Types" href="push_types.html" /> 
+    <link rel="prev" title="Contributing" href="contributing.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -31,11 +27,8 @@
              >modules</a> |</li>
         <li class="right" >
           <a href="contributing.html" title="Contributing"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="push_types.html" title="Push Types"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -47,15 +40,61 @@
   <div class="section" id="release-notes">
 <h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
 <p>A summary of changes made between each PyshGP release.</p>
-<div class="section" id="v0-1-5-april-19-2019">
-<h2>v0.1.5 - April 19, 2019<a class="headerlink" href="#v0-1-5-april-19-2019" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v0-1-6-june-1-2020">
+<h2>v0.1.6 - June 1, 2020<a class="headerlink" href="#v0-1-6-june-1-2020" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="api-changes">
 <h3>API changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Separated “types” and “stacks” in a more logical way. Various arguments have been renamed.</li>
-<li>Made verbosity config easier to configure and use.</li>
-<li>Add optional argument to <code class="docutils literal notranslate"><span class="pre">PushStack</span></code> for pushing initial values. Useful for custom fitness functions.</li>
-<li>Added the <code class="docutils literal notranslate"><span class="pre">PushTypeLibrary</span></code> abstraction. Read more at link below.</li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">Program</span></code> abstraction to better encapsulate (almost) everything needed to run a Push program consistently.</p></li>
+<li><p>Added parallelism controls to <code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code> and <code class="docutils literal notranslate"><span class="pre">SearchAlgorithm</span></code>.</p></li>
+<li><p>Added collection size cap to PushConfig to prevent programs from taking up huge amounts of memory.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">TapManager</span></code> and <code class="docutils literal notranslate"><span class="pre">Taps</span></code> for logging and monitoring.</p></li>
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">exclude_stacks</span></code> option of <code class="docutils literal notranslate"><span class="pre">register_core_by_stack</span></code>.</p></li>
+</ul>
+</div>
+<div class="section" id="internals">
+<h3>Internals<a class="headerlink" href="#internals" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed DatasetEvaluator support for pandas data structures.</p></li>
+<li><p>Refactored <code class="docutils literal notranslate"><span class="pre">Selector</span></code> to use <code class="docutils literal notranslate"><span class="pre">SimpleMultiSelectorMixin</span></code>.</p></li>
+<li><p>Added more constraints to push execution.</p></li>
+</ul>
+</div>
+<div class="section" id="development-repository">
+<h3>Development / Repository<a class="headerlink" href="#development-repository" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Added tox.</p></li>
+<li><p>Fixed many doc typos.</p></li>
+<li><p>Added some utility scripts for making deployment of new releases easier.</p></li>
+<li><p>Updated CI to include multiple python versions.</p></li>
+<li><p>Migrated CI/CD to GitHub actions.</p></li>
+</ul>
+</div>
+<div class="section" id="known-issues">
+<h3>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h3>
+<p>None yet.</p>
+<p>Report issues on <a class="reference external" href="https://github.com/erp12/pyshgp/issues">the Github issues page</a>.</p>
+</div>
+<div class="section" id="credits">
+<h3>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h3>
+<p>This release would not have been possible without the following contributors:</p>
+<ul class="simple">
+<li><p>Github user <a class="reference external" href="https://github.com/epicfaace">epicfaace</a>.
+- Reporting and fixing typos.</p></li>
+<li><p>Github user <a class="reference external" href="https://github.com/vargonis">vargonis</a>.
+- Reporting failure of Push execution constraints.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="v0-1-5-april-19-2019">
+<h2>v0.1.5 - April 19, 2019<a class="headerlink" href="#v0-1-5-april-19-2019" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>API changes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Separated “types” and “stacks” in a more logical way. Various arguments have been renamed.</p></li>
+<li><p>Made verbosity config easier to configure and use.</p></li>
+<li><p>Add optional argument to <code class="docutils literal notranslate"><span class="pre">PushStack</span></code> for pushing initial values. Useful for custom fitness functions.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">PushTypeLibrary</span></code> abstraction. Read more at link below.</p></li>
 </ul>
 <div class="toctree-wrapper compound">
 <ul>
@@ -63,41 +102,43 @@
 </ul>
 </div>
 </div>
-<div class="section" id="internals">
-<h3>Internals<a class="headerlink" href="#internals" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Internals<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Changed how core instructions can be added to instruction sets.</li>
-<li>Added support for smaller numpy ints than int64.</li>
-<li>Improved performance with respect to monitoring/verbosity.</li>
-<li>Fixed rarely occurring non-deterministic type matching.</li>
+<li><p>Changed how core instructions can be added to instruction sets.</p></li>
+<li><p>Added support for smaller numpy ints than int64.</p></li>
+<li><p>Improved performance with respect to monitoring/verbosity.</p></li>
+<li><p>Fixed rarely occurring non-deterministic type matching.</p></li>
 </ul>
 </div>
-<div class="section" id="development-repository">
-<h3>Development / Repository<a class="headerlink" href="#development-repository" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Development / Repository<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Added <code class="docutils literal notranslate"><span class="pre">tutorials/point_distance.py</span></code> example to demonstrate custom types.</li>
-<li>Added documentation article push types.</li>
-<li>Moved style checking from tests to CI</li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">tutorials/point_distance.py</span></code> example to demonstrate custom types.</p></li>
+<li><p>Added documentation article push types.</p></li>
+<li><p>Moved style checking from tests to CI</p></li>
 </ul>
 </div>
-<div class="section" id="known-issues">
-<h3>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Known Issues<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Programs that have literal values of custom types are not be serializable to JSON.</li>
+<li><p>Programs that have literal values of custom types are not be serializable to JSON.</p></li>
 </ul>
 <p>Report issues on <a class="reference external" href="https://github.com/erp12/pyshgp/issues">the Github</a>.</p>
 </div>
-<div class="section" id="credits">
-<h3>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>Credits<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>This release would not have been possible without the following contributors:</p>
 <ul class="simple">
-<li>Blossom Metevier.<ul>
-<li>Reported lack of support for smaller numpy int types.</li>
-<li>Demonstrated the annoyance of style checking in tests.</li>
+<li><p>Blossom Metevier.</p>
+<ul>
+<li><p>Reported lack of support for smaller numpy int types.</p></li>
+<li><p>Demonstrated the annoyance of style checking in tests.</p></li>
 </ul>
 </li>
-<li>Julian Oks<ul>
-<li>Demonstrated a need for <code class="docutils literal notranslate"><span class="pre">PushState</span></code> initial values argument.</li>
+<li><p>Julian Oks</p>
+<ul>
+<li><p>Demonstrated a need for <code class="docutils literal notranslate"><span class="pre">PushState</span></code> initial values argument.</p></li>
 </ul>
 </li>
 </ul>
@@ -105,51 +146,54 @@
 </div>
 <div class="section" id="v0-1-4-march-23-2019">
 <h2>v0.1.4 - March 23, 2019<a class="headerlink" href="#v0-1-4-march-23-2019" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>API changes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>API changes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Changed <code class="docutils literal notranslate"><span class="pre">PushState.pretty_print()</span></code> signature from argument annotation to default.</li>
+<li><p>Changed <code class="docutils literal notranslate"><span class="pre">PushState.pretty_print()</span></code> signature from argument annotation to default.</p></li>
 </ul>
-</div>
-<div class="section" id="id2">
-<h3>Internals<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Removed variable annotations from codebase to make pyshgp compatible with Python 3.5 again.</li>
-<li>Fixed overflow error in dup_times instructions (<a class="reference external" href="https://github.com/erp12/pyshgp/issues/108">#108</a>)</li>
-<li><code class="docutils literal notranslate"><span class="pre">TakesStateInstruction</span></code> allows for tuple return values</li>
-<li>If push program input value is Atom subtype, it will no longer be wrapped in a <code class="docutils literal notranslate"><span class="pre">Literal</span></code>.</li>
-<li>Removed incorrect numpy string types.</li>
-<li>All exceptions when evaluating atoms will be caught and raised after printing which atom was being evaluated.</li>
-</ul>
-</div>
-<div class="section" id="id4">
-<h3>Development / Repository<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Added documentation article on instructions.</li>
-<li>Added documentation showing all core instruction docstrings.</li>
-<li>Tuned string tutorial examples to take less time for CI testing.</li>
-<li>Fixed typos in README.md</li>
-<li>Added this release notes page :)</li>
-</ul>
-</div>
-<div class="section" id="id5">
-<h3>Known Issues<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
-<p>None yet. Report issues on <a class="reference external" href="https://github.com/erp12/pyshgp/issues">the Github</a>.</p>
 </div>
 <div class="section" id="id7">
-<h3>Credits<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<h3>Internals<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Removed variable annotations from codebase to make pyshgp compatible with Python 3.5 again.</p></li>
+<li><p>Fixed overflow error in dup_times instructions (<a class="reference external" href="https://github.com/erp12/pyshgp/issues/108">#108</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TakesStateInstruction</span></code> allows for tuple return values</p></li>
+<li><p>If push program input value is Atom subtype, it will no longer be wrapped in a <code class="docutils literal notranslate"><span class="pre">Literal</span></code>.</p></li>
+<li><p>Removed incorrect numpy string types.</p></li>
+<li><p>All exceptions when evaluating atoms will be caught and raised after printing which atom was being evaluated.</p></li>
+</ul>
+</div>
+<div class="section" id="id9">
+<h3>Development / Repository<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Added documentation article on instructions.</p></li>
+<li><p>Added documentation showing all core instruction docstrings.</p></li>
+<li><p>Tuned string tutorial examples to take less time for CI testing.</p></li>
+<li><p>Fixed typos in README.md</p></li>
+<li><p>Added this release notes page :)</p></li>
+</ul>
+</div>
+<div class="section" id="id10">
+<h3>Known Issues<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<p>None yet. Report issues on <a class="reference external" href="https://github.com/erp12/pyshgp/issues">the Github</a>.</p>
+</div>
+<div class="section" id="id12">
+<h3>Credits<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <p>This release would not have been possible without the following contributors:</p>
 <ul class="simple">
-<li>Blossom Metevier.<ul>
-<li>Reported the incompatibility with Python 3.5 due to variable annotations.</li>
+<li><p>Blossom Metevier.</p>
+<ul>
+<li><p>Reported the incompatibility with Python 3.5 due to variable annotations.</p></li>
 </ul>
 </li>
-<li>Lee Spector<ul>
-<li>Feedback on README file.</li>
+<li><p>Lee Spector</p>
+<ul>
+<li><p>Feedback on README file.</p></li>
 </ul>
 </li>
-<li>Michael Garcia<ul>
-<li>Reporting the lack of documentation on defining and registering custom instructions.</li>
+<li><p>Michael Garcia</p>
+<ul>
+<li><p>Reporting the lack of documentation on defining and registering custom instructions.</p></li>
 </ul>
 </li>
 </ul>
@@ -157,38 +201,38 @@
 </div>
 <div class="section" id="v0-1-3-march-12-2019">
 <h2>v0.1.3 - March 12, 2019<a class="headerlink" href="#v0-1-3-march-12-2019" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id8">
-<h3>API changes<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id13">
+<h3>API changes<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Added last_str_from_stdout option to PushEstimator. If True, the last string type output of a program will be taken from the PushState’s stdout attribute after program evaluation finishes.</li>
-<li>Added validation and verbosity controls. Estimator has minimal verbosity options (0, 1, or 2). SearchAlgorithm can take a fully configurable VerbosityConfig.</li>
+<li><p>Added last_str_from_stdout option to PushEstimator. If True, the last string type output of a program will be taken from the PushState’s stdout attribute after program evaluation finishes.</p></li>
+<li><p>Added validation and verbosity controls. Estimator has minimal verbosity options (0, 1, or 2). SearchAlgorithm can take a fully configurable VerbosityConfig.</p></li>
 </ul>
 </div>
-<div class="section" id="id9">
-<h3>Internals<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id14">
+<h3>Internals<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Removed a source of infinite loops instructions.</li>
+<li><p>Removed a source of infinite loops instructions.</p></li>
 </ul>
 </div>
-<div class="section" id="id10">
-<h3>Development / Repository<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id15">
+<h3>Development / Repository<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Added “Replace Space With Newline” example file.</li>
-<li>Improved verbosity of example problems.</li>
-<li>Mentioned tests in README.</li>
-<li>Added license file.</li>
+<li><p>Added “Replace Space With Newline” example file.</p></li>
+<li><p>Improved verbosity of example problems.</p></li>
+<li><p>Mentioned tests in README.</p></li>
+<li><p>Added license file.</p></li>
 </ul>
 </div>
-<div class="section" id="id11">
-<h3>Known Issues<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id16">
+<h3>Known Issues<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <p>None yet. Report issues on <a class="reference external" href="https://github.com/erp12/pyshgp/issues">the Github</a>.</p>
 </div>
-<div class="section" id="id13">
-<h3>Credits<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id18">
+<h3>Credits<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
 <p>This release would not have been possible without the following contributors:</p>
 <ul class="simple">
-<li>Github user <a class="reference external" href="https://github.com/RedBeansAndRice">RedBeansAndRice</a>.
-- Reporting issues with example files not conforming to API changes.</li>
+<li><p>Github user <a class="reference external" href="https://github.com/RedBeansAndRice">RedBeansAndRice</a>.
+- Reporting issues with example files not conforming to API changes.</p></li>
 </ul>
 </div>
 </div>
@@ -203,7 +247,7 @@
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
-<li><a class="reference internal" href="#v0-1-5-april-19-2019">v0.1.5 - April 19, 2019</a><ul>
+<li><a class="reference internal" href="#v0-1-6-june-1-2020">v0.1.6 - June 1, 2020</a><ul>
 <li><a class="reference internal" href="#api-changes">API changes</a></li>
 <li><a class="reference internal" href="#internals">Internals</a></li>
 <li><a class="reference internal" href="#development-repository">Development / Repository</a></li>
@@ -211,20 +255,28 @@
 <li><a class="reference internal" href="#credits">Credits</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#v0-1-4-march-23-2019">v0.1.4 - March 23, 2019</a><ul>
+<li><a class="reference internal" href="#v0-1-5-april-19-2019">v0.1.5 - April 19, 2019</a><ul>
 <li><a class="reference internal" href="#id1">API changes</a></li>
 <li><a class="reference internal" href="#id2">Internals</a></li>
-<li><a class="reference internal" href="#id4">Development / Repository</a></li>
-<li><a class="reference internal" href="#id5">Known Issues</a></li>
-<li><a class="reference internal" href="#id7">Credits</a></li>
+<li><a class="reference internal" href="#id3">Development / Repository</a></li>
+<li><a class="reference internal" href="#id4">Known Issues</a></li>
+<li><a class="reference internal" href="#id5">Credits</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v0-1-4-march-23-2019">v0.1.4 - March 23, 2019</a><ul>
+<li><a class="reference internal" href="#id6">API changes</a></li>
+<li><a class="reference internal" href="#id7">Internals</a></li>
+<li><a class="reference internal" href="#id9">Development / Repository</a></li>
+<li><a class="reference internal" href="#id10">Known Issues</a></li>
+<li><a class="reference internal" href="#id12">Credits</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#v0-1-3-march-12-2019">v0.1.3 - March 12, 2019</a><ul>
-<li><a class="reference internal" href="#id8">API changes</a></li>
-<li><a class="reference internal" href="#id9">Internals</a></li>
-<li><a class="reference internal" href="#id10">Development / Repository</a></li>
-<li><a class="reference internal" href="#id11">Known Issues</a></li>
-<li><a class="reference internal" href="#id13">Credits</a></li>
+<li><a class="reference internal" href="#id13">API changes</a></li>
+<li><a class="reference internal" href="#id14">Internals</a></li>
+<li><a class="reference internal" href="#id15">Development / Repository</a></li>
+<li><a class="reference internal" href="#id16">Known Issues</a></li>
+<li><a class="reference internal" href="#id18">Credits</a></li>
 </ul>
 </li>
 </ul>
@@ -232,11 +284,8 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="push_types.html"
-                        title="previous chapter">Push Types</a></p>
-  <h4>Next topic</h4>
   <p class="topless"><a href="contributing.html"
-                        title="next chapter">Contributing</a></p>
+                        title="previous chapter">Contributing</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -245,17 +294,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -271,16 +318,13 @@
              >modules</a> |</li>
         <li class="right" >
           <a href="contributing.html" title="Contributing"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="push_types.html" title="Push Types"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

@@ -1,20 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pyshgp.gp.individual &#8212; PyshGP  documentation</title>
+    <meta charset="utf-8" />
+    <title>pyshgp.gp.individual &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   </head><body>
@@ -27,7 +24,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -44,23 +41,23 @@
 <span class="sd">representations which can be manipulated by seach algorithms.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">pyshgp.push.atoms</span> <span class="k">import</span> <span class="n">CodeBlock</span>
-<span class="kn">from</span> <span class="nn">pyshgp.gp.genome</span> <span class="k">import</span> <span class="n">Genome</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.genome</span> <span class="kn">import</span> <span class="n">Genome</span><span class="p">,</span> <span class="n">genome_to_code</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.program</span> <span class="kn">import</span> <span class="n">Program</span><span class="p">,</span> <span class="n">ProgramSignature</span>
+<span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="kn">import</span> <span class="n">Saveable</span><span class="p">,</span> <span class="n">Copyable</span>
 
 
-<div class="viewcode-block" id="Individual"><a class="viewcode-back" href="../../../api/pyshgp.gp.html#pyshgp.gp.individual.Individual">[docs]</a><span class="k">class</span> <span class="nc">Individual</span><span class="p">:</span>
+<div class="viewcode-block" id="Individual"><a class="viewcode-back" href="../../../api/gp.html#pyshgp.gp.individual.Individual">[docs]</a><span class="k">class</span> <span class="nc">Individual</span><span class="p">(</span><span class="n">Saveable</span><span class="p">,</span> <span class="n">Copyable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An individual in an evolutionary population.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    genome : Genome</span>
 <span class="sd">        The Genome of the Individual.</span>
-<span class="sd">    program : CodeBlock</span>
-<span class="sd">        The CodeBlock produced by translating the Individual&#39;s genome.</span>
 <span class="sd">    error_vector : np.array</span>
 <span class="sd">        An array of error values produced by evaluating the Individual&#39;s program.</span>
 <span class="sd">    total_error : float</span>
@@ -70,34 +67,27 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_genome&quot;</span><span class="p">,</span> <span class="s2">&quot;_program&quot;</span><span class="p">,</span> <span class="s2">&quot;_error_vector&quot;</span><span class="p">,</span> <span class="s2">&quot;_total_error&quot;</span><span class="p">,</span> <span class="s2">&quot;_error_vector_bytes&quot;</span><span class="p">]</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;genome&quot;</span><span class="p">,</span> <span class="s2">&quot;signature&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;_program&quot;</span><span class="p">,</span> <span class="s2">&quot;_error_vector&quot;</span><span class="p">,</span> <span class="s2">&quot;_total_error&quot;</span><span class="p">,</span> <span class="s2">&quot;_error_vector_bytes&quot;</span>
+    <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genome</span><span class="p">:</span> <span class="n">Genome</span> <span class="o">=</span> <span class="n">Genome</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_genome</span> <span class="o">=</span> <span class="n">genome</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genome</span><span class="p">:</span> <span class="n">Genome</span><span class="p">,</span> <span class="n">signature</span><span class="p">:</span> <span class="n">ProgramSignature</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">genome</span> <span class="o">=</span> <span class="n">genome</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">=</span> <span class="n">signature</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_program</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_vector</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_total_error</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_error_vector_bytes</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Plush Genome of individual.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_genome</span>
-
-    <span class="nd">@genome</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">genome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Genome</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_genome</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">program</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CodeBlock</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">program</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Program</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Push program of individual. Taken from Plush genome.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_program</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_program</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">genome</span><span class="o">.</span><span class="n">to_code_block</span><span class="p">()</span>
+            <span class="n">cb</span> <span class="o">=</span> <span class="n">genome_to_code</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">genome</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_program</span> <span class="o">=</span> <span class="n">Program</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">cb</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_program</span>
-
-    <span class="nd">@program</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">program</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">CodeBlock</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Cannot set program directly. Must set genome.&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">error_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -133,8 +123,11 @@
     <span class="k">def</span> <span class="nf">error_vector_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Cannot set error_vector_bytes directly. Must set error_vector.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_error</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">total_error</span></div>
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_error</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">total_error</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Individual</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">genome</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">genome</span></div>
 </pre></div>
 
           </div>
@@ -143,17 +136,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -167,13 +158,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

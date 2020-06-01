@@ -11,8 +11,6 @@ from random import random, randint, choice
 import numpy as np
 import time
 import string
-import logging
-import sys
 
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
@@ -106,12 +104,6 @@ spawner = GeneSpawner(
 )
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        stream=sys.stdout
-    )
-
     est = PushEstimator(
         search="GA",
         population_size=500,

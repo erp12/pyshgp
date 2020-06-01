@@ -32,9 +32,8 @@ Code Style
 ----------
 
 Pyshgp strives to conform to `pep8 <https://www.python.org/dev/peps/pep-0008/>`_
-as much as possible. Codacy has been set up to log almost all pep8 violations as
-issues. Pull requests will not be accepted until all code style issues have
-been resolved.
+as much as possible. Pull requests will not be accepted until all code style issues have
+been resolved, unless otherwise approved by the project maintainers.
 
 Unit Tests
 ----------
@@ -61,7 +60,7 @@ Adding examples to ``pyshgp`` is a great way to demonstrate functionality to use
 and document different use cases.
 
 Example files should be placed in the ``examples`` folder. If possible, data
-files should not be included with examples, but constructed or downloaded by
+files should not be included with examples, but rather constructed or downloaded by
 the example file.
 
 Examples should never import ``pyshgp`` modules using relative paths. Instead
@@ -73,8 +72,8 @@ Release Pattern
 The GitHub repository's master branch is always kept in sync with what is
 available on PyPi.
 
-In anticipation of a new release, a "pre-version" branch will be created with
-the naming convention "v##-pre" where "##" is the anticipated version.
+In anticipation of a new release, a "dev-version" branch will be created with
+the naming convention "v##.dev" where "##" is the anticipated version.
 
 As feature branches (and forks) are opened to address issues, they will be
 reviewed via PR and merged into the "pre-version" branch.

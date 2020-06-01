@@ -1,24 +1,21 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>PyshGP API &#8212; PyshGP  documentation</title>
+    <meta charset="utf-8" />
+    <title>Push API &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pyshgp" href="api/modules.html" />
-    <link rel="prev" title="Contents" href="index.html" /> 
+    <link rel="next" title="pyshgp.push package" href="api/push.html" />
+    <link rel="prev" title="PyshGP Documentation" href="index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -30,12 +27,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="api/modules.html" title="pyshgp"
+          <a href="api/push.html" title="pyshgp.push package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Contents"
+          <a href="index.html" title="PyshGP Documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -44,27 +41,486 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="pyshgp-api">
-<h1>PyshGP API<a class="headerlink" href="#pyshgp-api" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="push-api">
+<h1>Push API<a class="headerlink" href="#push-api" title="Permalink to this headline">¶</a></h1>
+<p>There are two main sub-packages that make up PyshGP’s functionality.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">push</span></code> package provides a Push interpreter and a Push program abstraction.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">pyshgp</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/pyshgp.html">pyshgp package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/pyshgp.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/pyshgp.gp.html">pyshgp.gp package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/pyshgp.push.html">pyshgp.push package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/push.html">pyshgp.push package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/gp.html">pyshgp.gp package</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="api/pyshgp.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/pyshgp.html#module-pyshgp.monitoring">pyshgp.monitoring module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/pyshgp.html#module-pyshgp.utils">pyshgp.utils module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/pyshgp.html#module-pyshgp.validation">pyshgp.validation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/pyshgp.html#module-pyshgp">Module contents</a></li>
+</div>
+<div class="section" id="other-modules">
+<h2>Other Modules<a class="headerlink" href="#other-modules" title="Permalink to this headline">¶</a></h2>
+<p>There are a handful of modules that are used throughout both the Push sub-package and the genetic programming
+sub-package.</p>
+<div class="section" id="module-pyshgp.tap">
+<span id="pyshgp-tap-module"></span><h3>pyshgp.tap module<a class="headerlink" href="#module-pyshgp.tap" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Tap</span></code> and <code class="docutils literal notranslate"><span class="pre">TapManager</span></code> abstractions allow for users to inject side effects into PyshGP runs.</p>
+<p>These side effects could be print statements for monitoring, writing to log files, or sending messages to
+external systems when certain events occur. A <code class="docutils literal notranslate"><span class="pre">Tap</span></code> can inject a side effect before a function call, after a
+function call, or both. Any function or method defined in PyshGP or your application code can be tapped with the
+<code class="docutils literal notranslate"><span class="pre">&#64;tap</span></code> decorator defined in the module.</p>
+<p>The taps provided in PyshGP are sufficient for most use cases, but user can define and register their
+own <code class="docutils literal notranslate"><span class="pre">Tap</span></code> objects via inheritance and method overrides.</p>
+<dl class="py class">
+<dt id="pyshgp.tap.CsvTap">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">CsvTap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">column_names</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#CsvTap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.CsvTap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.tap.LogFileTap" title="pyshgp.tap.LogFileTap"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.tap.LogFileTap</span></code></a></p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Tap</span></code> for writing CSV files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root</strong> (<em>str</em>) – The root directory for putting log files (and directories).</p></li>
+<li><p><strong>column_names</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – The column names to put in the header of the CSV file.</p></li>
 </ul>
-</li>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="pyshgp.tap.CsvTap.log">
+<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">row</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#CsvTap.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.CsvTap.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a to a CSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The ID of the function being tapped. This is used to generate a directory for the log file.</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – The name of the CSV file.</p></li>
+<li><p><strong>row</strong> (<em>dict</em>) – A dictionary that will be written as a row in the CSV. The keys should be in the
+CsvTap’s list of <code class="docutils literal notranslate"><span class="pre">column_names</span></code>.</p></li>
 </ul>
-</li>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.tap.JsonLinesTap">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">JsonLinesTap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#JsonLinesTap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.JsonLinesTap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.tap.LogFileTap" title="pyshgp.tap.LogFileTap"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.tap.LogFileTap</span></code></a></p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Tap</span></code> for writing JSON lines files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>root</strong> (<em>str</em>) – The root directory for putting log files (and directories).</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="pyshgp.tap.JsonLinesTap.log">
+<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">row</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#JsonLinesTap.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.JsonLinesTap.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a JSON object to a line of a JSON lines file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The ID of the function being tapped. This is used to generate a directory for the log file.</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – The name of the JSON file.</p></li>
+<li><p><strong>row</strong> (<em>dict</em>) – A dictionary that will be written as a row in the file.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.tap.LogFileTap">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">LogFileTap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#LogFileTap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.LogFileTap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.tap.Tap" title="pyshgp.tap.Tap"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.tap.Tap</span></code></a></p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Tap</span></code> for writing log files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>root</strong> (<em>str</em>) – The root directory for putting log files (and directories).</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="pyshgp.tap.LogFileTap.dir">
+<code class="sig-name descname">dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/pyshgp/tap.html#LogFileTap.dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.LogFileTap.dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the directory for log files associated with the given function ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.tap.LogFileTap.log">
+<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">line</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#LogFileTap.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.LogFileTap.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a line to a log file. Includes a timestamp for each log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The ID of the function being tapped. This is used to generate a directory for the log file.</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – The name of the log file.</p></li>
+<li><p><strong>line</strong> (<em>str</em>) – The line of text to write to the log file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.tap.LogFileTap.path">
+<code class="sig-name descname">path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">filename</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/pyshgp/tap.html#LogFileTap.path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.LogFileTap.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the path for the log files with the given name under the directory for the given function ID.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.tap.StdOutRun">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">StdOutRun</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">pre_print_config</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pre_print_atoms</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">post_print_best</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutRun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutRun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.tap.Tap" title="pyshgp.tap.Tap"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.tap.Tap</span></code></a></p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Tap</span></code> that prints information from a <code class="docutils literal notranslate"><span class="pre">SearchAlgorithm</span></code> run to stdout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pre_print_config</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print the PushConfig before each run. Default False.</p></li>
+<li><p><strong>pre_print_atoms</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print all the atoms used to generate programs before each run. Default False.</p></li>
+<li><p><strong>post_print_best</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print a summary about the best program found at the end of each run. Default False.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="pyshgp.tap.StdOutRun.post">
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">returned</span></em>, <em class="sig-param"><span class="n">obj</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutRun.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutRun.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a summary of the run result to stdout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.tap.StdOutRun.pre">
+<code class="sig-name descname">pre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">obj</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutRun.pre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutRun.pre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print run config and/or all atoms to stdout.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.tap.StdOutSearchStepTap">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">StdOutSearchStepTap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">every_n_steps</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutSearchStepTap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutSearchStepTap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.tap.Tap" title="pyshgp.tap.Tap"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.tap.Tap</span></code></a></p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Tap</span></code> that prints stats from a step (aka generation) of a <code class="docutils literal notranslate"><span class="pre">SearchAlgorithm</span></code> run.</p>
+<dl class="py method">
+<dt id="pyshgp.tap.StdOutSearchStepTap.pre">
+<code class="sig-name descname">pre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">obj</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutSearchStepTap.pre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutSearchStepTap.pre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print population stats before the next step of the run.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.tap.StdOutSimplification">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">StdOutSimplification</code><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutSimplification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutSimplification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.tap.Tap" title="pyshgp.tap.Tap"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.tap.Tap</span></code></a></p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Tap</span></code> that prints a summary of Genome simplification.</p>
+<dl class="py method">
+<dt id="pyshgp.tap.StdOutSimplification.post">
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">returned</span></em>, <em class="sig-param"><span class="n">obj</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutSimplification.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutSimplification.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a summary of the result of genome simplification.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.tap.StdOutSimplification.pre">
+<code class="sig-name descname">pre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">obj</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutSimplification.pre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutSimplification.pre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a notification that genome simplification is starting.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.tap.StdOutSimplificationStep">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">StdOutSimplificationStep</code><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutSimplificationStep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutSimplificationStep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.tap.Tap" title="pyshgp.tap.Tap"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.tap.Tap</span></code></a></p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Tap</span></code> that prints a notification of a successful Genome simplification step.</p>
+<dl class="py method">
+<dt id="pyshgp.tap.StdOutSimplificationStep.post">
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">returned</span></em>, <em class="sig-param"><span class="n">obj</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#StdOutSimplificationStep.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.StdOutSimplificationStep.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a notification of a successful step of Genome simplification.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.tap.Tap">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">Tap</code><a class="reference internal" href="_modules/pyshgp/tap.html#Tap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.Tap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>A debugging/logging abstraction to a function and collects its arguments and returned.</p>
+<p>The methods of a <code class="docutils literal notranslate"><span class="pre">Tap</span></code> should be side effects. It is not recommended to make state changes from with a <code class="docutils literal notranslate"><span class="pre">Tap</span></code> if
+that state will change code behavior.</p>
+<dl class="py method">
+<dt id="pyshgp.tap.Tap.do">
+<code class="sig-name descname">do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#Tap.do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.Tap.do" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a particular side-effect when called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – The ID of the tap.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.tap.Tap.post">
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">returned</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#Tap.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.Tap.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a particular side-effect directly before the associated function/method is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The ID of the tap, generated based off of the name qualified name of the function.</p></li>
+<li><p><strong>args</strong> (<em>list</em>) – The positional of the function call. For methods, <code class="docutils literal notranslate"><span class="pre">args[0]</span></code> is the class instance.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – The keyword args of the function call.</p></li>
+<li><p><strong>returned</strong> (<em>Any</em>) – The returned value of the function call.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.tap.Tap.pre">
+<code class="sig-name descname">pre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#Tap.pre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.Tap.pre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a particular side-effect directly before the associated function/method is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The ID of the tap, generated based off of the name qualified name of the function.</p></li>
+<li><p><strong>args</strong> (<em>list</em>) – The positional of the function call. For methods, <code class="docutils literal notranslate"><span class="pre">args[0]</span></code> is the class instance.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – The keyword args of the function call.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.tap.TapManager">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">TapManager</code><a class="reference internal" href="_modules/pyshgp/tap.html#TapManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.TapManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Stores a mapping of function ID to <code class="docutils literal notranslate"><span class="pre">Tap</span></code> object than can be used to inject side effects around functions.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">TapManger</span></code> class is treated as a singleton and should not be instanced. Its methods are static and the state
+they manage is shared between all usages of <code class="docutils literal notranslate"><span class="pre">Taps</span></code>.</p>
+<p>Function IDs are a fully qualified identifier for a function. They are generated as the concatenation
+of the module name the function is defined in (ie. <code class="docutils literal notranslate"><span class="pre">my_package.my_module</span></code>) and the qualified name of the function
+definition (ie. <code class="docutils literal notranslate"><span class="pre">MyClass.my_method</span></code>). The final function ID would be <code class="docutils literal notranslate"><span class="pre">my_package.my_module.MyClass.my_method</span></code>.</p>
+<dl class="py method">
+<dt id="pyshgp.tap.TapManager.do">
+<em class="property">static </em><code class="sig-name descname">do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#TapManager.do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.TapManager.do" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the <code class="docutils literal notranslate"><span class="pre">do</span></code> method of the tap registered under the given ID.</p>
+<p>This can be called from any location.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.tap.TapManager.get">
+<em class="property">static </em><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#pyshgp.tap.Tap" title="pyshgp.tap.Tap">pyshgp.tap.Tap</a><span class="p">]</span><a class="reference internal" href="_modules/pyshgp/tap.html#TapManager.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.TapManager.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">Tap</span></code> associated with given ID or <code class="docutils literal notranslate"><span class="pre">None</span></code> if no tap is registered.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.tap.TapManager.register">
+<em class="property">static </em><code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">tap</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.tap.Tap" title="pyshgp.tap.Tap">pyshgp.tap.Tap</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#TapManager.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.TapManager.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a <code class="docutils literal notranslate"><span class="pre">Tap</span></code> to be performed when the function with the associated ID is called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.tap.TapManager.unregister">
+<em class="property">static </em><code class="sig-name descname">unregister</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#TapManager.unregister"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.TapManager.unregister" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregister the <code class="docutils literal notranslate"><span class="pre">Tap</span></code> associated with given ID.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.tap.set_verbosity">
+<code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">level</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#set_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register some <code class="docutils literal notranslate"><span class="pre">Tap</span></code> objects in the <code class="docutils literal notranslate"><span class="pre">TapManger</span></code> that print to stdout during an evolutionary run.</p>
+<p>Verbosity level 0 prints nothing to stdout.</p>
+<p>Verbosity level 1 prints minimal run configuration as well as population statistics every 5 generations.</p>
+<p>Verbosity level 2+ prints full run configuration, population statics every generation, and traces the genome
+simplification process.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.tap.tap">
+<code class="sig-prename descclassname">pyshgp.tap.</code><code class="sig-name descname">tap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#tap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.tap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorate a function/method to call any associated taps that have been registered in the <code class="docutils literal notranslate"><span class="pre">TapManager</span></code>.</p>
+<p>Functional behavior is not changed.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.utils">
+<span id="pyshgp-utils-module"></span><h3>pyshgp.utils module<a class="headerlink" href="#module-pyshgp.utils" title="Permalink to this headline">¶</a></h3>
+<p>Utility classes and functions used throughout pyshgp.</p>
+<dl class="py class">
+<dt id="pyshgp.utils.Copyable">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.utils.</code><code class="sig-name descname">Copyable</code><a class="reference internal" href="_modules/pyshgp/utils.html#Copyable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Copyable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Allows an object to be copied via a method.</p>
+<dl class="py method">
+<dt id="pyshgp.utils.Copyable.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">deep</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#Copyable.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Copyable.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy the CodeBlock.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.utils.DiscreteProbDistrib">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.utils.</code><code class="sig-name descname">DiscreteProbDistrib</code><a class="reference internal" href="_modules/pyshgp/utils.html#DiscreteProbDistrib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Discrete Probability Distribution.</p>
+<dl class="py method">
+<dt id="pyshgp.utils.DiscreteProbDistrib.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">el</span></em>, <em class="sig-param"><span class="n">p</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#DiscreteProbDistrib.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an element with a relative probability.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.utils.DiscreteProbDistrib.elements">
+<code class="sig-name descname">elements</code><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.elements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.utils.DiscreteProbDistrib.sample">
+<code class="sig-name descname">sample</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#DiscreteProbDistrib.sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a sample from the distribution.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.utils.DiscreteProbDistrib.sample_n">
+<code class="sig-name descname">sample_n</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">replace</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#DiscreteProbDistrib.sample_n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.sample_n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return n samples from the distribution.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.utils.DiscreteProbDistrib.size">
+<code class="sig-name descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#DiscreteProbDistrib.size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.DiscreteProbDistrib.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of elements in the distribution.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.utils.Saveable">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.utils.</code><code class="sig-name descname">Saveable</code><a class="reference internal" href="_modules/pyshgp/utils.html#Saveable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Saveable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Allows a pickle-able class to be written and loaded from a file.</p>
+<dl class="py method">
+<dt id="pyshgp.utils.Saveable.load">
+<em class="property">static </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#Saveable.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Saveable.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a CodeBlock from a binary file..</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.utils.Saveable.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#Saveable.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Saveable.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the CodeBlock to a binary file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.utils.Token">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.utils.</code><code class="sig-name descname">Token</code><a class="reference internal" href="_modules/pyshgp/utils.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enum class of all Tokens.</p>
+<dl class="py attribute">
+<dt id="pyshgp.utils.Token.no_stack_item">
+<code class="sig-name descname">no_stack_item</code><em class="property"> = 1</em><a class="headerlink" href="#pyshgp.utils.Token.no_stack_item" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.utils.Token.revert">
+<code class="sig-name descname">revert</code><em class="property"> = 2</em><a class="headerlink" href="#pyshgp.utils.Token.revert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.utils.Token.whole_state">
+<code class="sig-name descname">whole_state</code><em class="property"> = 3</em><a class="headerlink" href="#pyshgp.utils.Token.whole_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.utils.instantiate_using">
+<code class="sig-prename descclassname">pyshgp.utils.</code><code class="sig-name descname">instantiate_using</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span><span class="p">:</span> <span class="n">type</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#instantiate_using"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.instantiate_using" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call the given function using only the relevant kwargs present in the args dict.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.utils.list_rindex">
+<code class="sig-prename descclassname">pyshgp.utils.</code><code class="sig-name descname">list_rindex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lst</span></em>, <em class="sig-param"><span class="n">el</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#list_rindex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.list_rindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index of the last occurrence of an item in a list. Return None is item not found.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.validation">
+<span id="pyshgp-validation-module"></span><h3>pyshgp.validation module<a class="headerlink" href="#module-pyshgp.validation" title="Permalink to this headline">¶</a></h3>
+<p>Module for validating data and raising informative errors.</p>
+<dl class="py exception">
+<dt id="pyshgp.validation.PushError">
+<em class="property">exception </em><code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">PushError</code><a class="reference internal" href="_modules/pyshgp/validation.html#PushError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Error raised during Push program execution.</p>
+<dl class="py method">
+<dt id="pyshgp.validation.PushError.empty_character">
+<em class="property">classmethod </em><code class="sig-name descname">empty_character</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/validation.html#PushError.empty_character"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError.empty_character" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise PushError when Character is made from empty string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.validation.PushError.failed_coerce">
+<em class="property">classmethod </em><code class="sig-name descname">failed_coerce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thing</span></em>, <em class="sig-param"><span class="n">push_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/validation.html#PushError.failed_coerce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError.failed_coerce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise PushError when something fails to coerce to a PushType.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.validation.PushError.long_character">
+<em class="property">classmethod </em><code class="sig-name descname">long_character</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/validation.html#PushError.long_character"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError.long_character" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise PushError when Character is made from string length more than 1.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.validation.PushError.no_type">
+<em class="property">classmethod </em><code class="sig-name descname">no_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thing</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/validation.html#PushError.no_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.PushError.no_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise PushError when no PushType can be found for something.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.validation.check_1d">
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span></em><span class="sig-paren">)</span> &#x2192; Sequence<a class="reference internal" href="_modules/pyshgp/validation.html#check_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check given seq is one-dimensional. Raise error if can’t be easily transformed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.validation.check_2d">
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>list<span class="p">, </span>numpy.ndarray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="_modules/pyshgp/validation.html#check_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check given seq is two-dimensional. Raise error if can’t be easily transformed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.validation.check_X_y">
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_X_y</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Sequence<span class="p">, </span>Sequence<span class="p">, </span>int<span class="p">, </span>Sequence<span class="p">]</span><a class="reference internal" href="_modules/pyshgp/validation.html#check_X_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_X_y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the given X and y datasets are prepared to be passed to a PushEstimator.</p>
+<p>Inspired by the scikit-learn function with the same name.
+<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.utils.check_X_y.html#sklearn.utils.check_X_y">https://scikit-learn.org/stable/modules/generated/sklearn.utils.check_X_y.html#sklearn.utils.check_X_y</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.validation.check_column_types">
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_column_types</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span></em>, <em class="sig-param"><span class="n">certainty_proportion</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.2</span></em><span class="sig-paren">)</span> &#x2192; Sequence<span class="p">[</span>type<span class="p">]</span><a class="reference internal" href="_modules/pyshgp/validation.html#check_column_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_column_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check all elements of each column are of the same type.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.validation.check_is_fitted">
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_is_fitted</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">estimator</span></em>, <em class="sig-param"><span class="n">attribute</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/validation.html#check_is_fitted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_is_fitted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the given estimator has already been fit.</p>
+<p>Inspired by the scikit-learn function with the same name.
+<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted">https://scikit-learn.org/stable/modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.validation.check_num_columns">
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_num_columns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span></em>, <em class="sig-param"><span class="n">certainty_proportion</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.2</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/pyshgp/validation.html#check_num_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_num_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of columns of in the dataset.</p>
+</dd></dl>
+
+</div>
 </div>
 </div>
 
@@ -74,12 +530,25 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Push API</a><ul>
+<li><a class="reference internal" href="#other-modules">Other Modules</a><ul>
+<li><a class="reference internal" href="#module-pyshgp.tap">pyshgp.tap module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.utils">pyshgp.utils module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.validation">pyshgp.validation module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
-                        title="previous chapter">Contents</a></p>
+                        title="previous chapter">PyshGP Documentation</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="api/modules.html"
-                        title="next chapter">pyshgp</a></p>
+  <p class="topless"><a href="api/push.html"
+                        title="next chapter">pyshgp.push package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -88,17 +557,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -113,17 +580,17 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="api/modules.html" title="pyshgp"
+          <a href="api/push.html" title="pyshgp.push package"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Contents"
+          <a href="index.html" title="PyshGP Documentation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PyshGP  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

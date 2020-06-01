@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER, Program
+from pyshgp.tap import tap
 from pyshgp.utils import Token
 
 
@@ -120,6 +121,7 @@ class Evaluator(ABC):
                 raise ValueError("Unknown expected type for {e}".format(e=expected))
         return np.array(errors)
 
+    @tap
     @abstractmethod
     def evaluate(self, program: Program) -> np.ndarray:
         """Evaluate the program and return the error vector.
@@ -167,6 +169,7 @@ class DatasetEvaluator(Evaluator):
         self.X = pd.DataFrame(X)
         self.y = pd.DataFrame(y)
 
+    @tap
     def evaluate(self, program: Program) -> np.array:
         """Evaluate the program and return the error vector.
 
@@ -181,6 +184,7 @@ class DatasetEvaluator(Evaluator):
             The error vector of the program.
 
         """
+        super().evaluate(program)
         errors = []
         for ndx in range(self.X.shape[0]):
             inputs = self.X.iloc[ndx].to_list()
@@ -213,6 +217,7 @@ class FunctionEvaluator(Evaluator):
         super().__init__()
         self.error_function = error_function
 
+    @tap
     def evaluate(self, program: Program) -> np.ndarray:
         """Evaluate the program and return the error vector.
 
@@ -227,4 +232,5 @@ class FunctionEvaluator(Evaluator):
             The error vector of the program.
 
         """
+        super().evaluate(program)
         return self.error_function(program)

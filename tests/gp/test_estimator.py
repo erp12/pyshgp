@@ -75,7 +75,7 @@ def test_estimator_with_custom_types(point_cls, point_instr_set):
 
     est = PushEstimator(
         spawner=spawner,
-        population_size=40,
+        population_size=30,
         max_generations=3,
         simplification_steps=2,
         interpreter=PushInterpreter(point_instr_set),

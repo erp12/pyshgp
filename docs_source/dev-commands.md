@@ -2,6 +2,8 @@
 # Generate HTML
 ```
 make html
+
+sphinx-build -M html "source" "../docs"
 ```
 
 # Generate API Docs

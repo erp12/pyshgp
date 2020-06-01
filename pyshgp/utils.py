@@ -6,7 +6,6 @@ import pickle
 import os
 
 import numpy as np
-from numpy.random import choice
 
 
 def instantiate_using(cls: type, args: dict):
@@ -57,13 +56,13 @@ class DiscreteProbDistrib:
         """Return a sample from the distribution."""
         if self.size() == 1:
             return self.elements[0]
-        return choice(self.elements, p=self._normalized_probabilities)
+        return np.random.choice(self.elements, p=self._normalized_probabilities)
 
     def sample_n(self, n: int = 1, replace: bool = True):
         """Return n samples from the distribution."""
         if self.size() == 1 and replace:
             return [self.elements[0]] * n
-        return choice(self.elements, n, replace, self._normalized_probabilities)
+        return np.random.choice(self.elements, n, replace, self._normalized_probabilities)
 
 
 class Token(Enum):

@@ -6,7 +6,7 @@ from pyshgp.push.atoms import Atom, Literal
 from pyshgp.validation import PushError
 
 
-RESERVED_PSEUDO_STACKS = {"exec", "untyped", "stdout"}
+RESERVED_PSEUDO_STACKS = {"untyped", "stdout"}
 
 
 class PushTypeLibrary(dict):
@@ -36,22 +36,24 @@ class PushTypeLibrary(dict):
         self.create_and_register("code", (Atom, ), force=True)
         self.create_and_register("exec", (Atom, ), force=True)
 
-    def register(self, push_type: PushType, force=False):
+    def register(self, push_type: PushType, _force=False):
         """Register a PushType object.
 
         Parameters
         ----------
         push_type
             PushType to register.
+        _force : bool, optional
+            For internal use only. Default is False.
 
         Returns
         -------
         PushTypeLibrary
-            A reference to the PushTypeLibrary.
+            A reference to the ``PushTypeLibrary``.
 
         """
         name = push_type.name
-        if (not force) and (name in RESERVED_PSEUDO_STACKS):
+        if (not _force) and (name in RESERVED_PSEUDO_STACKS):
             raise ValueError("Cannot register PushType with name {nm} because it is reserved.".format(nm=name))
         self[name] = push_type
         return self
@@ -60,6 +62,7 @@ class PushTypeLibrary(dict):
                             name: str,
                             underlying_types: Tuple[type],
                             is_collection: bool = False,
+                            is_numeric: bool = False,
                             coercion_func: Optional[Callable[[Any], Any]] = None,
                             force=False):
         """Create a PushType and register it into the library.
@@ -75,6 +78,8 @@ class PushTypeLibrary(dict):
             native types which the PushType is representing.
         is_collection : bool, optional
             Indicates if the PushType is a collection. Default is False.
+        is_numeric : bool, optional
+            Indicates if the PushType is a number. Default is False.
         coercion_func : Callable[[Any], Any], optional
             A function which takes a single argument and returns argument coerced
             into the PushTypes canonical type (the first type in ``underlying``).
@@ -91,7 +96,7 @@ class PushTypeLibrary(dict):
             A reference to the PushTypeLibrary.
 
         """
-        self.register(PushType(name, underlying_types, is_collection, coercion_func), force)
+        self.register(PushType(name, underlying_types, is_collection, is_numeric, coercion_func=coercion_func), force)
         return self
 
     def unregister(self, push_type_name: str):

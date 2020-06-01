@@ -4,9 +4,7 @@ The goal of this example is to evolve a program that computes the distance
 between two x-y points. This is acomplished by using a custom PushType and
 a custom PushInstruction.
 """
-import logging
 import numpy as np
-import sys
 from math import pow, sqrt
 
 
@@ -106,7 +104,7 @@ spawner = GeneSpawner(
 # Our estimator with a custom interpreter defined.
 est = PushEstimator(
     spawner=spawner,
-    population_size=500,
+    population_size=300,
     max_generations=20,
     simplification_steps=500,
     interpreter=PushInterpreter(instruction_set),
@@ -115,11 +113,6 @@ est = PushEstimator(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        stream=sys.stdout
-    )
     est.fit(X, y)
     print(est.solution.program)
     print(est.predict(X))

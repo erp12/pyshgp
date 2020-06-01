@@ -1,0 +1,1648 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>pyshgp.push package &#8212; PyshGP 0.1.6 documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyshgp.gp package" href="gp.html" />
+    <link rel="prev" title="Push API" href="../api.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gp.html" title="pyshgp.gp package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../api.html" title="Push API"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">Push API</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyshgp-push-package">
+<h1>pyshgp.push package<a class="headerlink" href="#pyshgp-push-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pyshgp.push.atoms">
+<span id="pyshgp-push-atoms-module"></span><h2>pyshgp.push.atoms module<a class="headerlink" href="#module-pyshgp.push.atoms" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">atoms</span></code> module defines all types of Push Atoms.</p>
+<p>An <cite>Atom</cite> is a piece of code in the Push language. Some <cite>Atoms</cite> only exist in <cite>Programs</cite> and some only exist in
+<cite>Genomes</cite>.</p>
+<p>A <cite>Literal</cite> atom is a constant value of one of the supported PushType.</p>
+<p>An <cite>Instruction</cite> atom is a wrapped function that can be used to manipulate a <cite>PushState</cite>. These atoms are where the
+logic of our Push programs is stored.</p>
+<p>An <cite>Input</cite> atom is a reference to one of the Push program’s inputs (aka arguments). Inputs are referenced by position.</p>
+<p>A <cite>CodeBlock</cite> is a sequence of other Atoms is used to express nested block of code. They cannot appear in <cite>Genomes</cite>.</p>
+<dl class="py class">
+<dt id="pyshgp.push.atoms.Atom">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Atom</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class of all Atoms. The fundamental element of Push programs.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.atoms.Closer">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Closer</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Closer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Closer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._pclass.PClass</span></code></p>
+<p>An Atom dedicated to denoting the close of a CodeBlock in a <cite>Genomes</cite> representation.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.atoms.CodeBlock">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">CodeBlock</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#CodeBlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.CodeBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._checked_types.CheckedPVector</span></code></p>
+<p>An <cite>Atom</cite> which holds a sequence of other atoms in order to express a nested code block.</p>
+<dl class="py method">
+<dt id="pyshgp.push.atoms.CodeBlock.code_at_point">
+<code class="sig-name descname">code_at_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ndx</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom">pyshgp.push.atoms.Atom</a><span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#CodeBlock.code_at_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.CodeBlock.code_at_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a nested element of the CodeBlock using depth first traversal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.atoms.CodeBlock.depth">
+<code class="sig-name descname">depth</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/pyshgp/push/atoms.html#CodeBlock.depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.CodeBlock.depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the farthest depth of the CodeBlock.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.atoms.CodeBlock.size">
+<code class="sig-name descname">size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">depth</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/pyshgp/push/atoms.html#CodeBlock.size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.CodeBlock.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the size of the block and the size of all the nested blocks.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.atoms.CodeBlock.with_code_inserted_at_point">
+<code class="sig-name descname">with_code_inserted_at_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom">pyshgp.push.atoms.Atom</a></span></em>, <em class="sig-param"><span class="n">index</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pyshgp.push.atoms.CodeBlock" title="pyshgp.push.atoms.CodeBlock">pyshgp.push.atoms.CodeBlock</a><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#CodeBlock.with_code_inserted_at_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.CodeBlock.with_code_inserted_at_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert an element into the CodeBlock using depth first traversal.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.atoms.Input">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Input</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._pclass.PClass</span></code></p>
+<p>A reference to a positional argument of the <cite>PushProgram</cite> which the atom is part of.</p>
+<dl class="py attribute">
+<dt id="pyshgp.push.atoms.Input.input_index">
+<code class="sig-name descname">input_index</code><a class="headerlink" href="#pyshgp.push.atoms.Input.input_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>The position of the associated input to Push program.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id0">
+<code class="sig-name descname">input_index</code><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.atoms.InstructionMeta">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">InstructionMeta</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#InstructionMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.InstructionMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._pclass.PClass</span></code></p>
+<p>An identifier of a Push Instruction.</p>
+<p>The <cite>InstructionMeta</cite> is a placeholder atom. When a PushInterpreter evaluates
+an instruction ID, it searches for an instruction with the given
+name in its <cite>InstructionSet</cite>. If found, this instruction is evaluated by the <cite>PushInterpreter</cite>.</p>
+<dl class="py attribute">
+<dt id="pyshgp.push.atoms.InstructionMeta.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pyshgp.push.atoms.InstructionMeta.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the Instruction being referenced.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.atoms.InstructionMeta.code_blocks">
+<code class="sig-name descname">code_blocks</code><a class="headerlink" href="#pyshgp.push.atoms.InstructionMeta.code_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of code blocks that are expected to follow the instruction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id1">
+<code class="sig-name descname">code_blocks</code><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id2">
+<code class="sig-name descname">name</code><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.atoms.Literal">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Literal</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._pclass.PClass</span></code></p>
+<p>An Atom which holds a constant value.</p>
+<dl class="py attribute">
+<dt id="pyshgp.push.atoms.Literal.value">
+<code class="sig-name descname">value</code><a class="headerlink" href="#pyshgp.push.atoms.Literal.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The value to be stored in Literal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.atoms.Literal.push_type">
+<code class="sig-name descname">push_type</code><a class="headerlink" href="#pyshgp.push.atoms.Literal.push_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <cite>PushType</cite> of the <cite>Literal</cite>. Usually, the PushType’s underlying native
+type is the same as the type of the Literal’s value. The PushType is
+used to determine how to route the Literal onto the correct PushStack
+of the PushState during program execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">PushType</a>, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id3">
+<code class="sig-name descname">push_type</code><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id4">
+<code class="sig-name descname">value</code><a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instruction">
+<span id="pyshgp-push-instruction-module"></span><h2>pyshgp.push.instruction module<a class="headerlink" href="#module-pyshgp.push.instruction" title="Permalink to this headline">¶</a></h2>
+<p>Concrete implementations of the Instruction Atom type.</p>
+<dl class="py class">
+<dt id="pyshgp.push.instruction.Instruction">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.instruction.</code><code class="sig-name descname">Instruction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">code_blocks</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">docstring</span><span class="o">=</span><span class="default_value">'Write me!'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#Instruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.Instruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>A function in the Push language used to modify the PushState.</p>
+<p>The Instruction class is the abstract base class for specific implementations
+that are configured differently. For example, see SimpleInstruction verses
+TakesStateInstruction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>,</em>) – A unique name for the instruction.</p></li>
+<li><p><strong>code_blocks</strong> (<em>int</em>) – The number of CodeBlocks to open following the instruction in a Genome.</p></li>
+<li><p><strong>docstring</strong> (<em>str</em><em>, </em><em>optional</em>) – A string describing in the behavior of the Instruction.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.Instruction.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pyshgp.push.instruction.Instruction.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unique name for the instruction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str,</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.Instruction.code_blocks">
+<code class="sig-name descname">code_blocks</code><a class="headerlink" href="#pyshgp.push.instruction.Instruction.code_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of CodeBlocks to open following the instruction in a Genome.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.Instruction.docstring">
+<code class="sig-name descname">docstring</code><a class="headerlink" href="#pyshgp.push.instruction.Instruction.docstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string describing in the behavior of the Instruction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.Instruction.code_block">
+<code class="sig-name descname">code_block</code><a class="headerlink" href="#pyshgp.push.instruction.Instruction.code_block" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id5">
+<code class="sig-name descname">docstring</code><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.Instruction.evaluate">
+<em class="property">abstract </em><code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">push_state</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a></span></em>, <em class="sig-param"><span class="n">push_config</span><span class="p">:</span> <span class="n">pyshgp.push.config.PushConfig</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#Instruction.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.Instruction.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the instruction on the given PushState.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>push_state</strong> (<a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState"><em>pyshgp.push.state.PushState</em></a>) – The PushState to run the instruction on.</p></li>
+<li><p><strong>push_config</strong> (<em>pyshgp.push.interpreter.PushConfig</em>) – The configuration of the Push language.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return the given state, possibly modified by the Instruction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.Instruction.meta">
+<code class="sig-name descname">meta</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pyshgp.push.atoms.InstructionMeta" title="pyshgp.push.atoms.InstructionMeta">pyshgp.push.atoms.InstructionMeta</a><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#Instruction.meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.Instruction.meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an <code class="docutils literal notranslate"><span class="pre">InstructionMeta</span></code> from the instruction object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id6">
+<code class="sig-name descname">name</code><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.Instruction.required_stacks">
+<em class="property">abstract </em><code class="sig-name descname">required_stacks</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#Instruction.required_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.Instruction.required_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of PushType names relevant to the instruction.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.instruction.</code><code class="sig-name descname">ProducesManyOfTypeInstruction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">input_stacks</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">output_stack</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">code_blocks</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">docstring</span><span class="o">=</span><span class="default_value">'Write me!'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#ProducesManyOfTypeInstruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.instruction.Instruction" title="pyshgp.push.instruction.Instruction"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.instruction.Instruction</span></code></a></p>
+<p>Instruction that produces arbitarily many values of a given PushType.</p>
+<p>ProducesManyOfTypeInstructions pop their arguments in the same was as
+SimpleInstructions. Items are popped from the stacks corresponding the
+types denoted in the <code class="docutils literal notranslate"><span class="pre">input_stacks</span></code> list. If multiple occurences of the
+same type are in <code class="docutils literal notranslate"><span class="pre">input_stacks</span></code>, items are taken from progressively deeper
+in that stack. If the stacks of the PushState do not contain a sufficent
+number of items, the instruction does not modify the PushState.</p>
+<p>The popped arguments are then passed to the instruction’s function to produce
+a tuple of outputs. It is crucial that the instruction’s function produce a
+tuple of outputs, even if it only conains a single element. All elements of
+the tuple are pushed individually to the stack denoted in <code class="docutils literal notranslate"><span class="pre">output_stack</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>,</em>) – A unique name for the instruction.</p></li>
+<li><p><strong>f</strong> (<em>Callable</em>) – A function whose signature matches input_stacks and output_stacks.</p></li>
+<li><p><strong>input_stacks</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – A list of PushType names to use when popping arguments from the PushState.</p></li>
+<li><p><strong>output_stack</strong> (<em>str</em>) – The name of a PushType to use when pushing function results to the PushState.
+All values returned by the function go to the stack for this type.</p></li>
+<li><p><strong>code_blocks</strong> (<em>int</em>) – The number of CodeBlocks to open following the instruction in a Genome.</p></li>
+<li><p><strong>docstring</strong> (<em>str</em><em>, </em><em>optional</em>) – A string describing in the behavior of the Instruction.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction.code_blocks">
+<code class="sig-name descname">code_blocks</code><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction.code_blocks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction.docstring">
+<code class="sig-name descname">docstring</code><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction.docstring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">push_state</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a></span></em>, <em class="sig-param"><span class="n">push_config</span><span class="p">:</span> <span class="n">pyshgp.push.config.PushConfig</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#ProducesManyOfTypeInstruction.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the instruction on the given PushState. Return mutated State.</p>
+<p>A ProducesManyOfTypeInstruction infers which values to pop from the stack
+based on <cite>input_stacks</cite> and pushes each output to the same stack
+based on <cite>output_stack</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>push_state</strong> (<a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState"><em>PushState</em></a>) – Push state to modify with the Instruction.</p></li>
+<li><p><strong>push_config</strong> (<em>PushConfig</em>) – Configuration of the interpreter. Used to get various limits.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return the given state, possibly modified by the Instruction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">PushState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction.f">
+<code class="sig-name descname">f</code><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction.f" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction.input_stacks">
+<code class="sig-name descname">input_stacks</code><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction.input_stacks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction.output_stack">
+<code class="sig-name descname">output_stack</code><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction.output_stack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction.required_stacks">
+<code class="sig-name descname">required_stacks</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#ProducesManyOfTypeInstruction.required_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction.required_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of PushType names relevant to the instruction.</p>
+<p>Based on the the instructions input types and output type.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.instruction.SimpleInstruction">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.instruction.</code><code class="sig-name descname">SimpleInstruction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">input_stacks</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">output_stacks</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">code_blocks</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">docstring</span><span class="o">=</span><span class="default_value">'Write me!'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#SimpleInstruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.SimpleInstruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.instruction.Instruction" title="pyshgp.push.instruction.Instruction"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.instruction.Instruction</span></code></a></p>
+<p>A simple instruction implementation.</p>
+<p>A SimpleInstruction uses a standardized way of manipulating PushStates. In
+other words, it handles popping its own function arguments and pushing the
+function return values.</p>
+<p>The first step of evaluating a SimpleInstruction is to pop the arguments
+from the stacks corresponding the instruction’s <code class="docutils literal notranslate"><span class="pre">input_stacks</span></code> list.
+If multiple occurrences of the same type are in <code class="docutils literal notranslate"><span class="pre">input_stacks</span></code>, items are
+taken from progressively deeper in that stack. If the stacks of the
+PushState do not contain a sufficient number of items, the instruction does
+not modify the PushState.</p>
+<p>The popped arguments are then passed to the instruction’s function to produce
+a tuple of outputs. It is crucial that the instruction’s function produce a
+tuple of outputs, even if it only contains a single element. The elements of
+the tuple are then routed to the corresponding stacks specified in the
+instruction’s <code class="docutils literal notranslate"><span class="pre">output_stacks</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>,</em>) – A unique name for the instruction.</p></li>
+<li><p><strong>f</strong> (<em>Callable</em>) – A function whose signature matches input_stacks and output_stacks.</p></li>
+<li><p><strong>input_stacks</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – A list of PushType names to use when popping arguments from the PushState.</p></li>
+<li><p><strong>output_stacks</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – A list of PushType names to use when pushing function results to the PushState.</p></li>
+<li><p><strong>code_blocks</strong> (<em>int</em>) – The number of CodeBlocks to open following the instruction in a Genome.</p></li>
+<li><p><strong>docstring</strong> (<em>str</em><em>, </em><em>optional</em>) – A string describing in the behavior of the Instruction.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.SimpleInstruction.code_blocks">
+<code class="sig-name descname">code_blocks</code><a class="headerlink" href="#pyshgp.push.instruction.SimpleInstruction.code_blocks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.SimpleInstruction.docstring">
+<code class="sig-name descname">docstring</code><a class="headerlink" href="#pyshgp.push.instruction.SimpleInstruction.docstring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.SimpleInstruction.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">push_state</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a></span></em>, <em class="sig-param"><span class="n">push_config</span><span class="p">:</span> <span class="n">pyshgp.push.config.PushConfig</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#SimpleInstruction.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.SimpleInstruction.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the instruction on the given PushState. Return mutated State.</p>
+<p>A SimpleInstruction infers which values to pop and push from the stack
+based on its <cite>input_stacks</cite> and <cite>output_stacks</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>push_state</strong> (<a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState"><em>PushState</em></a>) – Push state to modify with the Instruction.</p></li>
+<li><p><strong>push_config</strong> (<em>pyshgp.push.interpreter.PushConfig</em>) – Configuration of the interpreter. Used to get various limits.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return the given state, possibly modified by the Instruction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">PushState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.SimpleInstruction.f">
+<code class="sig-name descname">f</code><a class="headerlink" href="#pyshgp.push.instruction.SimpleInstruction.f" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.SimpleInstruction.input_stacks">
+<code class="sig-name descname">input_stacks</code><a class="headerlink" href="#pyshgp.push.instruction.SimpleInstruction.input_stacks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.SimpleInstruction.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pyshgp.push.instruction.SimpleInstruction.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.SimpleInstruction.output_stacks">
+<code class="sig-name descname">output_stacks</code><a class="headerlink" href="#pyshgp.push.instruction.SimpleInstruction.output_stacks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.SimpleInstruction.required_stacks">
+<code class="sig-name descname">required_stacks</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#SimpleInstruction.required_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.SimpleInstruction.required_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of PushType names relevant to the instruction.</p>
+<p>Based on the the instructions input and output types.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.instruction.StateToStateInstruction">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.instruction.</code><code class="sig-name descname">StateToStateInstruction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">stacks_used</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">code_blocks</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">docstring</span><span class="o">=</span><span class="default_value">'Write me!'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#StateToStateInstruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.StateToStateInstruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.instruction.Instruction" title="pyshgp.push.instruction.Instruction"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.instruction.Instruction</span></code></a></p>
+<p>Instruction that takes entire PushState and returns entire PushState.</p>
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.StateToStateInstruction.code_blocks">
+<code class="sig-name descname">code_blocks</code><a class="headerlink" href="#pyshgp.push.instruction.StateToStateInstruction.code_blocks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.StateToStateInstruction.docstring">
+<code class="sig-name descname">docstring</code><a class="headerlink" href="#pyshgp.push.instruction.StateToStateInstruction.docstring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.StateToStateInstruction.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">push_state</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a></span></em>, <em class="sig-param"><span class="n">push_config</span><span class="p">:</span> <span class="n">pyshgp.push.config.PushConfig</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#StateToStateInstruction.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.StateToStateInstruction.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the instruction on the given PushState. Return mutated State.</p>
+<p>A SimpleInstruction infers which values to pop and push from the stack
+based on its <cite>input_stacks</cite> and <cite>output_stacks</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>push_state</strong> (<a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState"><em>PushState</em></a>) – Push state to modify with the Instruction.</p></li>
+<li><p><strong>push_config</strong> (<em>PushConfig</em>) – Configuration of the interpreter. Used to get various limits.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return the given state, possibly modified by the Instruction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">PushState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.StateToStateInstruction.f">
+<code class="sig-name descname">f</code><a class="headerlink" href="#pyshgp.push.instruction.StateToStateInstruction.f" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.StateToStateInstruction.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pyshgp.push.instruction.StateToStateInstruction.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.StateToStateInstruction.required_stacks">
+<code class="sig-name descname">required_stacks</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#StateToStateInstruction.required_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.StateToStateInstruction.required_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of PushType names relevant to the instruction.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.StateToStateInstruction.stacks_used">
+<code class="sig-name descname">stacks_used</code><a class="headerlink" href="#pyshgp.push.instruction.StateToStateInstruction.stacks_used" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.instruction.TakesStateInstruction">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.instruction.</code><code class="sig-name descname">TakesStateInstruction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">output_stacks</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">other_stacks</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">code_blocks</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">docstring</span><span class="o">=</span><span class="default_value">'Write me!'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#TakesStateInstruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.TakesStateInstruction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.instruction.Instruction" title="pyshgp.push.instruction.Instruction"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.instruction.Instruction</span></code></a></p>
+<p>Instruction that takes entire PushState and returns particular values.</p>
+<p>The function of a TakesStateInstruction accepts an entire PushState as input
+and produces either a <code class="docutils literal notranslate"><span class="pre">Token.revert</span></code> or a tuple of outputs values. It is
+crucial that the instruction’s function produce a tuple of outputs, even if
+it only conains a single element.</p>
+<p>The elements of the tuple are then routed to the corresponding stacks
+specified in the instruction’s <code class="docutils literal notranslate"><span class="pre">output_stacks</span></code>.</p>
+<p>Additional PushTypes utilized by the instruction are denoted in <code class="docutils literal notranslate"><span class="pre">other_stacks</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em>,</em>) – A unique name for the instruction.</p></li>
+<li><p><strong>f</strong> (<em>Callable</em>) – A function that takes a PushState as input and produces values corresponding to <code class="docutils literal notranslate"><span class="pre">output_stacks.</span></code></p></li>
+<li><p><strong>output_stacks</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – A list of PushType names to use when pushing function results to the PushState.</p></li>
+<li><p><strong>other_stacks</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – A list of additional PushType names used by the Insturction’s function.</p></li>
+<li><p><strong>code_blocks</strong> (<em>int</em>) – The number of CodeBlocks to open following the instruction in a Genome.</p></li>
+<li><p><strong>docstring</strong> (<em>str</em><em>, </em><em>optional</em>) – A string describing in the behavior of the Instruction.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.TakesStateInstruction.code_blocks">
+<code class="sig-name descname">code_blocks</code><a class="headerlink" href="#pyshgp.push.instruction.TakesStateInstruction.code_blocks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.TakesStateInstruction.docstring">
+<code class="sig-name descname">docstring</code><a class="headerlink" href="#pyshgp.push.instruction.TakesStateInstruction.docstring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.TakesStateInstruction.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">push_state</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a></span></em>, <em class="sig-param"><span class="n">push_config</span><span class="p">:</span> <span class="n">pyshgp.push.config.PushConfig</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">pyshgp.push.state.PushState</a><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#TakesStateInstruction.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.TakesStateInstruction.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the instruction on the given PushState. Return mutated State.</p>
+<p>A SimpleInstruction infers which values to pop and push from the stack
+based on its <cite>input_stacks</cite> and <cite>output_stacks</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>push_state</strong> (<a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState"><em>PushState</em></a>) – Push state to modify with the Instruction.</p></li>
+<li><p><strong>push_config</strong> (<em>PushConfig</em>) – Configuration of the interpreter. Used to get various limits.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return the given state, possibly modified by the Instruction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">PushState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.TakesStateInstruction.f">
+<code class="sig-name descname">f</code><a class="headerlink" href="#pyshgp.push.instruction.TakesStateInstruction.f" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.TakesStateInstruction.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pyshgp.push.instruction.TakesStateInstruction.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.TakesStateInstruction.other_stacks">
+<code class="sig-name descname">other_stacks</code><a class="headerlink" href="#pyshgp.push.instruction.TakesStateInstruction.other_stacks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction.TakesStateInstruction.output_stacks">
+<code class="sig-name descname">output_stacks</code><a class="headerlink" href="#pyshgp.push.instruction.TakesStateInstruction.output_stacks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction.TakesStateInstruction.required_stacks">
+<code class="sig-name descname">required_stacks</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#TakesStateInstruction.required_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.TakesStateInstruction.required_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of PushType names relevant to the instruction.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.instruction_set">
+<span id="pyshgp-push-instruction-set-module"></span><h2>pyshgp.push.instruction_set module<a class="headerlink" href="#module-pyshgp.push.instruction_set" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">instruction_set</span></code> module defines the InstructionSet class.</p>
+<p>An InstructionSet is a collection of Instruction objects, stored by name. The
+InstructionSet has methods to help define and register additional instructions.</p>
+<dl class="py class">
+<dt id="pyshgp.push.instruction_set.InstructionSet">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.instruction_set.</code><code class="sig-name descname">InstructionSet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type_library</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">pyshgp.push.type_library.PushTypeLibrary</a></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">register_core</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">strip_docstrings</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></p>
+<p>A collection of Instruction objects stored by name.</p>
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction_set.InstructionSet.type_library">
+<code class="sig-name descname">type_library</code><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.type_library" title="Permalink to this definition">¶</a></dt>
+<dd><p>The PushTypeLibrary which denote the PushTypes (and thus stacks)
+are supported. Default is None, which corresponds to the core set of types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">PushTypeLibrary</a>, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction_set.InstructionSet.register_core">
+<code class="sig-name descname">register_core</code><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet.register_core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.register_core" title="Permalink to this definition">¶</a></dt>
+<dd><p>If True, all instructions in the core instruction set will be registered
+upon instantiation. Default is False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.instruction_set.InstructionSet.strip_docstrings">
+<code class="sig-name descname">strip_docstrings</code><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.strip_docstrings" title="Permalink to this definition">¶</a></dt>
+<dd><p>If True, the docstring attribute of registered instructions will be
+removed to reduce memory footprint. Default is True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction_set.InstructionSet.register">
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">instr</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.instruction.Instruction" title="pyshgp.push.instruction.Instruction">pyshgp.push.instruction.Instruction</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register an Instruction object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>instr</strong> – Instruction to register.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the InstructionSet.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">InstructionSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id7">
+<code class="sig-name descname">register_core</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet.register_core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register all core instructions defined in pyshgp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A reference to the InstructionSet.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">InstructionSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction_set.InstructionSet.register_core_by_name">
+<code class="sig-name descname">register_core_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name_pattern</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet.register_core_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.register_core_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register all instructions whose name match the given pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name_pattern</strong> – A regex string.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the InstructionSet.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">InstructionSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction_set.InstructionSet.register_core_by_stack">
+<code class="sig-name descname">register_core_by_stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">include_stacks</span><span class="p">:</span> <span class="n">Set<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">exclude_stacks</span><span class="p">:</span> <span class="n">Set<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet.register_core_by_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.register_core_by_stack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register all instructions that make use of the given type name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>include_stacks</strong> – List of PushType names.</p></li>
+<li><p><strong>exclude_stacks</strong> – List of PushType names.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the InstructionSet.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">InstructionSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction_set.InstructionSet.register_list">
+<code class="sig-name descname">register_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">instrs</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="#pyshgp.push.instruction.Instruction" title="pyshgp.push.instruction.Instruction">pyshgp.push.instruction.Instruction</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet.register_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.register_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a list of Instruction objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>instrs</strong> – List of Instruction objects to register.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the InstructionSet.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">InstructionSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction_set.InstructionSet.required_stacks">
+<code class="sig-name descname">required_stacks</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet.required_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.required_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all stack names used throughout the registered instructions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The set of stack names that are used by the registered instructions.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Set[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction_set.InstructionSet.set_type_library">
+<code class="sig-name descname">set_type_library</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type_library</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">pyshgp.push.type_library.PushTypeLibrary</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet.set_type_library"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.set_type_library" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the type library attribute and return self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type_library</strong> – PushTypeLibrary to set.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the InstructionSet.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">InstructionSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.instruction_set.InstructionSet.unregister">
+<code class="sig-name descname">unregister</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">instruction_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction_set.html#InstructionSet.unregister"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction_set.InstructionSet.unregister" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregister an instruction by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>instruction_name</strong> – The name of the instruciton to unregister.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the InstructionSet.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">InstructionSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.interpreter">
+<span id="pyshgp-push-interpreter-module"></span><h2>pyshgp.push.interpreter module<a class="headerlink" href="#module-pyshgp.push.interpreter" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">interpreter</span></code> module defines the <code class="docutils literal notranslate"><span class="pre">PushInterpreter</span></code> used to run Push programs.</p>
+<dl class="py class">
+<dt id="pyshgp.push.interpreter.PushInterpreter">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.interpreter.</code><code class="sig-name descname">PushInterpreter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">instruction_set</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">pyshgp.push.instruction_set.InstructionSet</a><span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'core'</span></em>, <em class="sig-param"><span class="n">reset_on_run</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An interpreter capable of running Push programs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>instruction_set</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet"><em>InstructionSet</em></a><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – The <code class="docutils literal notranslate"><span class="pre">InstructionSet</span></code> to use for executing programs. Default is “core”
+which instantiates an <code class="docutils literal notranslate"><span class="pre">InstructionSet</span></code> using all the core instructions.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreter.instruction_set">
+<code class="sig-name descname">instruction_set</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.instruction_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">InstructionSet</span></code> to use for executing programs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.instruction_set.InstructionSet" title="pyshgp.push.instruction_set.InstructionSet">InstructionSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreter.state">
+<code class="sig-name descname">state</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current <code class="docutils literal notranslate"><span class="pre">PushState</span></code>. Contains one stack for each <code class="docutils literal notranslate"><span class="pre">PushType</span></code>
+mentioned by the instructions in the instruction set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.state.PushState" title="pyshgp.push.state.PushState">PushState</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreter.status">
+<code class="sig-name descname">status</code><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string denoting if the interpreter has encountered a situation
+where non-standard termination was required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.interpreter.PushInterpreterStatus" title="pyshgp.push.interpreter.PushInterpreterStatus">PushInterpreterStatus</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.evaluate_atom">
+<code class="sig-name descname">evaluate_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom">pyshgp.push.atoms.Atom</a></span></em>, <em class="sig-param"><span class="n">config</span><span class="p">:</span> <span class="n">pyshgp.push.config.PushConfig</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter.evaluate_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.evaluate_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate an <code class="docutils literal notranslate"><span class="pre">Atom</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> (<a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><em>Atom</em></a>) – The Atom (<code class="docutils literal notranslate"><span class="pre">Literal</span></code>, <code class="docutils literal notranslate"><span class="pre">InstructionMeta</span></code>, <code class="docutils literal notranslate"><span class="pre">Input</span></code>, or <code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code>) to
+evaluate against the current <code class="docutils literal notranslate"><span class="pre">PushState</span></code>.</p></li>
+<li><p><strong>config</strong> (<em>PushConfig</em>) – The configuration of the Push program being run.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n">pyshgp.push.program.Program</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">print_trace</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a Push <code class="docutils literal notranslate"><span class="pre">Program</span></code> given some inputs and desired output <code class="docutils literal notranslate"><span class="pre">PushTypes</span></code>.</p>
+<dl class="simple">
+<dt>The general flow of this method is:</dt><dd><ol class="arabic simple">
+<li><p>Create a new push state</p></li>
+<li><p>Load the program and inputs.</p></li>
+<li><p>If the exec stack is empty, return the outputs.</p></li>
+<li><p>Else, pop the exec stack and process the atom.</p></li>
+<li><p>Return to step 3.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>program</strong> (<em>Program</em>) – Program to run.</p></li>
+<li><p><strong>inputs</strong> (<em>list</em>) – A sequence of values to use as inputs to the push program.</p></li>
+<li><p><strong>print_trace</strong> (<em>bool</em>) – If True, each step of program execution will be summarized in stdout.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A sequence of values pulled from the final push state. May contain
+pyshgp.utils.Token.no_stack_item if output stacks are empty.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.interpreter.PushInterpreter.untyped_to_typed">
+<code class="sig-name descname">untyped_to_typed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreter.untyped_to_typed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreter.untyped_to_typed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infer <code class="docutils literal notranslate"><span class="pre">PushType</span></code> of items on state’s untyped queue and push to corresponding stacks.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.interpreter.</code><code class="sig-name descname">PushInterpreterStatus</code><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreterStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enum class of all potential statuses of a PushInterpreter.</p>
+<dl class="py attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus.growth_cap_exceeded">
+<code class="sig-name descname">growth_cap_exceeded</code><em class="property"> = 4</em><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus.growth_cap_exceeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus.normal">
+<code class="sig-name descname">normal</code><em class="property"> = 1</em><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus.normal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus.runtime_limit_exceeded">
+<code class="sig-name descname">runtime_limit_exceeded</code><em class="property"> = 3</em><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus.runtime_limit_exceeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.interpreter.PushInterpreterStatus.step_limit_exceeded">
+<code class="sig-name descname">step_limit_exceeded</code><em class="property"> = 2</em><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus.step_limit_exceeded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.stack">
+<span id="pyshgp-push-stack-module"></span><h2>pyshgp.push.stack module<a class="headerlink" href="#module-pyshgp.push.stack" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">stack</span></code> module defines the <code class="docutils literal notranslate"><span class="pre">PushStack</span></code> class.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">PushStack</span></code> is used to hold values of a certain <code class="docutils literal notranslate"><span class="pre">PushType</span></code> in a <code class="docutils literal notranslate"><span class="pre">PushState</span></code> object.</p>
+<dl class="py class">
+<dt id="pyshgp.push.stack.PushStack">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.stack.</code><code class="sig-name descname">PushStack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">push_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">pyshgp.push.types.PushType</a></span></em>, <em class="sig-param"><span class="n">push_config</span><span class="p">:</span> <span class="n">pyshgp.push.config.PushConfig</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></p>
+<p>Stack that holds elements of a single <code class="docutils literal notranslate"><span class="pre">PushType</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>push_type</strong> (<a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType"><em>PushType</em></a>) – The PushType all items of the stack should conform to.</p></li>
+<li><p><strong>push_config</strong> (<em>PushConfig</em>) – The configuration of the Push program being run.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyshgp.push.stack.PushStack.push_type">
+<code class="sig-name descname">push_type</code><a class="headerlink" href="#pyshgp.push.stack.PushStack.push_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The PushType all items of the stack should conform to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">PushType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.stack.PushStack.push_config">
+<code class="sig-name descname">push_config</code><a class="headerlink" href="#pyshgp.push.stack.PushStack.push_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>The configuration of the Push program being run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>PushConfig</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.stack.PushStack.flush">
+<code class="sig-name descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Empty the stack.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.stack.PushStack.insert">
+<code class="sig-name descname">insert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">position</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert value at <code class="docutils literal notranslate"><span class="pre">position</span></code> in stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> (<em>int</em>) – Position in stack to get item.</p></li>
+<li><p><strong>value</strong> – Value to insert into stack.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.stack.PushStack.is_empty">
+<code class="sig-name descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.is_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the stack is empty. Return False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.stack.PushStack.nth">
+<code class="sig-name descname">nth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">position</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.nth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.nth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the element at a given position.</p>
+<p>If stack is empty, returns None. If <code class="docutils literal notranslate"><span class="pre">position</span> <span class="pre">&lt;</span> <span class="pre">0</span></code> or
+<code class="docutils literal notranslate"><span class="pre">position</span> <span class="pre">&gt;</span> <span class="pre">len(self)</span></code> returns a <code class="docutils literal notranslate"><span class="pre">no_stack_item</span></code> token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>position</strong> (<em>int</em>) – Position in stack to get item.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Element at <code class="docutils literal notranslate"><span class="pre">position</span></code> in stack.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.stack.PushStack.pop">
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.pop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop the top item off the stack, or pop the item at some index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em><em>, </em><em>optional</em>) – Index to pop from the stack. Default of <code class="docutils literal notranslate"><span class="pre">None</span></code> will pop the top item.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Element at <code class="docutils literal notranslate"><span class="pre">index</span></code> in stack.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.stack.PushStack.push">
+<code class="sig-name descname">push</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.push"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pushes a value to the top of the stack.</p>
+<p>A type safe alias for <cite>append</cite> which makes the definition of push
+instructions more clear.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – Value to push onto stack.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id8">
+<code class="sig-name descname">push_config</code><a class="headerlink" href="#id8" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id9">
+<code class="sig-name descname">push_type</code><a class="headerlink" href="#id9" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.stack.PushStack.set_nth">
+<code class="sig-name descname">set_nth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">position</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.set_nth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.set_nth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwrite the item in the nth position of the stack with the new value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> (<em>int</em>) – Position in stack to get item.</p></li>
+<li><p><strong>value</strong> – Value to insert into stack.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.stack.PushStack.take">
+<code class="sig-name descname">take</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.take"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.take" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the top <code class="docutils literal notranslate"><span class="pre">n</span></code> items from the stack.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">n</span></code> is less than zero, result is an empty list. If <code class="docutils literal notranslate"><span class="pre">n</span></code> is greater
+than the size of the stack, result contains every element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em>) – Number of items</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Top <code class="docutils literal notranslate"><span class="pre">n</span></code> elements of the stack.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.stack.PushStack.top">
+<code class="sig-name descname">top</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/stack.html#PushStack.top"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.stack.PushStack.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the top item on the stack, or a <code class="docutils literal notranslate"><span class="pre">Token.no_stack_item</span></code> token if empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Returns the top element of the stack, or <code class="docutils literal notranslate"><span class="pre">Token.no_stack_item</span></code> if empty.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.state">
+<span id="pyshgp-push-state-module"></span><h2>pyshgp.push.state module<a class="headerlink" href="#module-pyshgp.push.state" title="Permalink to this headline">¶</a></h2>
+<p>The state module is define the PushState class.</p>
+<p>A PushState object holds the PushStacks, stdout string, and collection of input
+values. The PushState is what controls the setup of all stacks before program
+manipulation, and the producing of outputs after program execution.</p>
+<dl class="py class">
+<dt id="pyshgp.push.state.PushState">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.state.</code><code class="sig-name descname">PushState</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type_library</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">pyshgp.push.type_library.PushTypeLibrary</a></span></em>, <em class="sig-param"><span class="n">push_config</span><span class="p">:</span> <span class="n">pyshgp.push.config.PushConfig</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/state.html#PushState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.state.PushState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>A collection of PushStacks used during push program execution.</p>
+<dl class="py method">
+<dt id="pyshgp.push.state.PushState.from_dict">
+<em class="property">classmethod </em><code class="sig-name descname">from_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">type_library</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">pyshgp.push.type_library.PushTypeLibrary</a></span></em>, <em class="sig-param"><span class="n">push_config</span><span class="p">:</span> <span class="n">pyshgp.push.config.PushConfig</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/state.html#PushState.from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.state.PushState.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the state to match the given dictionary.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is written to be used in <code class="docutils literal notranslate"><span class="pre">pyshgp</span></code> tests, NOT as part of
+push program execution or evolution. There are no checks to confirm
+that the <code class="docutils literal notranslate"><span class="pre">d</span></code> can be converted to a valid Push state.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d</strong> (<em>dict</em>) – Dict that is converted into a Push state.</p></li>
+<li><p><strong>type_library</strong> (<a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary"><em>PushTypeLibrary</em></a>) – A Push type library.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.state.PushState.inputs">
+<code class="sig-name descname">inputs</code><a class="headerlink" href="#pyshgp.push.state.PushState.inputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.state.PushState.load_code">
+<code class="sig-name descname">load_code</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.atoms.CodeBlock" title="pyshgp.push.atoms.CodeBlock">pyshgp.push.atoms.CodeBlock</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/state.html#PushState.load_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.state.PushState.load_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Push the given CodeBlock to the execution stack.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.state.PushState.load_inputs">
+<code class="sig-name descname">load_inputs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/state.html#PushState.load_inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.state.PushState.load_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a list of input values onto the PushState inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>list</em>) – List of input values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.state.PushState.observe_stacks">
+<code class="sig-name descname">observe_stacks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">types</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/pyshgp/push/state.html#PushState.observe_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.state.PushState.observe_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of output values based on the given types indicated.</p>
+<p>Items are take from the tops of each stack. If multiple occurences of
+the same type are in <code class="docutils literal notranslate"><span class="pre">output_types</span></code>, the returned values are taken
+from progressively deeper in that stack. Does not pop the values off
+the stacks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>types</strong> (<em>list</em>) – List of strings denoting the push types of the returned values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.state.PushState.pop_from_stacks">
+<code class="sig-name descname">pop_from_stacks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">types</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>Sequence<span class="p">, </span><a class="reference internal" href="../api.html#pyshgp.utils.Token" title="pyshgp.utils.Token">pyshgp.utils.Token</a><span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/state.html#PushState.pop_from_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.state.PushState.pop_from_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop the top items for each value_type. Return a vector of the values popped from each stack.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.state.PushState.pretty_print">
+<code class="sig-name descname">pretty_print</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/state.html#PushState.pretty_print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.state.PushState.pretty_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the state of all stacks in the PushState.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.state.PushState.push_config">
+<code class="sig-name descname">push_config</code><a class="headerlink" href="#pyshgp.push.state.PushState.push_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.state.PushState.push_to_stacks">
+<code class="sig-name descname">push_to_stacks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">types</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/state.html#PushState.push_to_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.state.PushState.push_to_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that all values can be coerced into their expected PushType. Push them onto the correct stack.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.state.PushState.size">
+<code class="sig-name descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/state.html#PushState.size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.state.PushState.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the size of the PushState.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.state.PushState.stdout">
+<code class="sig-name descname">stdout</code><a class="headerlink" href="#pyshgp.push.state.PushState.stdout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.state.PushState.type_library">
+<code class="sig-name descname">type_library</code><a class="headerlink" href="#pyshgp.push.state.PushState.type_library" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.state.PushState.untyped">
+<code class="sig-name descname">untyped</code><a class="headerlink" href="#pyshgp.push.state.PushState.untyped" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.type_library">
+<span id="pyshgp-push-type-library-module"></span><h2>pyshgp.push.type_library module<a class="headerlink" href="#module-pyshgp.push.type_library" title="Permalink to this headline">¶</a></h2>
+<p>A PushTypeLibrary describes the PushTypes which a given instance of PushGP will support.</p>
+<dl class="py class">
+<dt id="pyshgp.push.type_library.PushTypeLibrary">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.type_library.</code><code class="sig-name descname">PushTypeLibrary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">register_core</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>A collection of PushTypes which can support a corresponding PushStack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>register_core</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, all core types will be registered. Default is True.</p></li>
+<li><p><strong>*args</strong> – A collection of PushTypes to register.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyshgp.push.type_library.PushTypeLibrary.register_core">
+<code class="sig-name descname">register_core</code><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.register_core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.register_core" title="Permalink to this definition">¶</a></dt>
+<dd><p>If True, all core types will be registered. Default is True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">\*args</code></dt>
+<dd><p>A collection of PushTypes to register.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.type_library.PushTypeLibrary.create_and_register">
+<code class="sig-name descname">create_and_register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">underlying_types</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>type<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">is_collection</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_numeric</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">coercion_func</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">force</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.create_and_register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.create_and_register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a PushType and register it into the library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – A name for the type. Used when referencing the PushType in Instruction
+definitions and will be the key in the PushState for the corresponding
+PushStack.</p></li>
+<li><p><strong>underlying_types</strong> (<em>Tuple</em><em>[</em><em>type</em><em>]</em>) – A tuple of python types that correspond to the underlying
+native types which the PushType is representing.</p></li>
+<li><p><strong>is_collection</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if the PushType is a collection. Default is False.</p></li>
+<li><p><strong>is_numeric</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if the PushType is a number. Default is False.</p></li>
+<li><p><strong>coercion_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Any</em><em>]</em><em>, </em><em>Any</em><em>]</em><em>, </em><em>optional</em>) – A function which takes a single argument and returns argument coerced
+into the PushTypes canonical type (the first type in <code class="docutils literal notranslate"><span class="pre">underlying</span></code>).
+If None, the constructor of the canonical type is used. Default is None.</p></li>
+<li><p><strong>force</strong> (<em>bool</em>) – If True, will register the type even if it will overwrite an
+existing reserved stack typed (eg. exec, stdout, untyped). Default
+is False. It is not reccomended this argument be changed unless
+you have a very good reason to do so.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the PushTypeLibrary.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">PushTypeLibrary</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.type_library.PushTypeLibrary.push_type_for_type">
+<code class="sig-name descname">push_type_for_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">typ</span><span class="p">:</span> <span class="n">type</span></em>, <em class="sig-param"><span class="n">error_on_not_found</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">pyshgp.push.types.PushType</a><span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.push_type_for_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.push_type_for_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the PushType of the given python (or numpy) type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>typ</strong> (<em>type</em>) – Any type to try and find the corresponding PushType.</p></li>
+<li><p><strong>error_on_not_found</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, will raise error if no PushType found. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The corresponding PushType of the given type. If no corresponding type, returns None.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">PushType</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.type_library.PushTypeLibrary.push_type_of">
+<code class="sig-name descname">push_type_of</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thing</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">error_on_not_found</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">pyshgp.push.types.PushType</a><span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.push_type_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.push_type_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the PushType of the given thing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>thing</strong> (<em>Any</em>) – Any value to try and find the corresponding PushType.</p></li>
+<li><p><strong>error_on_not_found</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, will raise error if no PushType found. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The corresponding PushType of the thing. If no corresponding type, returns None.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">PushType</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.type_library.PushTypeLibrary.register">
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">push_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">pyshgp.push.types.PushType</a></span></em>, <em class="sig-param"><span class="n">_force</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a PushType object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>push_type</strong> – PushType to register.</p></li>
+<li><p><strong>_force</strong> (<em>bool</em><em>, </em><em>optional</em>) – For internal use only. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the <code class="docutils literal notranslate"><span class="pre">PushTypeLibrary</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">PushTypeLibrary</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id10">
+<code class="sig-name descname">register_core</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.register_core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#id10" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register all core PushTypes defined in pyshgp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A reference to the PushTypeLibrary.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">PushTypeLibrary</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.type_library.PushTypeLibrary.register_list">
+<code class="sig-name descname">register_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">list_of_push_types</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">pyshgp.push.types.PushType</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.register_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.register_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a list of PushType ojbects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>list_of_push_types</strong> – List of Instruction objects to register.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the PushTypeLibrary.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">PushTypeLibrary</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.type_library.PushTypeLibrary.supported_stacks">
+<code class="sig-name descname">supported_stacks</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.supported_stacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.supported_stacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>All stack names which the PushTypeLibrary can support.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A set of stacks names which the type library can support.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>set[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.type_library.PushTypeLibrary.unregister">
+<code class="sig-name descname">unregister</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">push_type_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.unregister"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.unregister" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregister a push type by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>push_type_name</strong> – The name of the push type to unregister.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A reference to the PushTypeLibrary.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">PushTypeLibrary</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.push.type_library.infer_literal">
+<code class="sig-prename descclassname">pyshgp.push.type_library.</code><code class="sig-name descname">infer_literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">type_library</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">pyshgp.push.type_library.PushTypeLibrary</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pyshgp.push.atoms.Literal" title="pyshgp.push.atoms.Literal">pyshgp.push.atoms.Literal</a><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#infer_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.infer_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a literal by infering the PushType of the value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val</strong> (<em>Any</em>) – Any value to try and make a Literal out of.</p></li>
+<li><p><strong>type_library</strong> (<a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary"><em>PushTypeLibrary</em></a>) – The library of PushTypes which a Literal can be made of.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The Literal object which holds the value and the corresponding PushType.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.atoms.Literal" title="pyshgp.push.atoms.Literal">Literal</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push.types">
+<span id="pyshgp-push-types-module"></span><h2>pyshgp.push.types module<a class="headerlink" href="#module-pyshgp.push.types" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">types</span></code> module contains the core PushTypes and functions to reference them.</p>
+<p>A PushType simply is a named collection of Python types. A PushType
+can be used to determine if multiple items should be considered the same type
+during Push program execution.</p>
+<dl class="py class">
+<dt id="pyshgp.push.types.Char">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">Char</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">char</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#Char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.Char" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<p>Holds a string of length 1.</p>
+<p>Used to distinguish between string and char literals in Push program
+interpretation.</p>
+<dl class="py attribute">
+<dt id="pyshgp.push.types.Char.char">
+<code class="sig-name descname">char</code><a class="headerlink" href="#pyshgp.push.types.Char.char" title="Permalink to this definition">¶</a></dt>
+<dd><p>String of length 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.PushType">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">PushType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">underlying</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>type<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">is_collection</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_numeric</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">coercion_func</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Type information for values used by Push programs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – A name for the type. Used when referencing the PushType in Instruction
+definitions and will be the key in the PushState for the corresponding
+PushStack.</p></li>
+<li><p><strong>underlying</strong> (<em>Sequence</em><em>[</em><em>type</em><em>]</em>) – A tuple of python (or numpy) types that correspond to the underlying
+native types which the PushType is representing.</p></li>
+<li><p><strong>is_collection</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indication that the PushType is a collection.</p></li>
+<li><p><strong>coercion_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Any</em><em>]</em><em>, </em><em>Any</em><em>]</em><em>, </em><em>optional</em>) – A function which takes a single argument and returns argument coerced
+into the PushTypes canonical type (the first type in <code class="docutils literal notranslate"><span class="pre">underlying</span></code>).
+If None, the constructor of the canonical type is used. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyshgp.push.types.PushType.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pyshgp.push.types.PushType.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A name for the type. Used when referencing the PushType in Instruction
+definitions and will be the key in the PushState for the corresponding
+PushStack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.types.PushType.underlying">
+<code class="sig-name descname">underlying</code><a class="headerlink" href="#pyshgp.push.types.PushType.underlying" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tuple of python (or numpy) types that correspond to the underlying
+native types which the PushType is representing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Sequence[type]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.types.PushType.is_collection">
+<code class="sig-name descname">is_collection</code><a class="headerlink" href="#pyshgp.push.types.PushType.is_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates if that the PushType is a collection. Default is False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyshgp.push.types.PushType.coercion_func">
+<code class="sig-name descname">coercion_func</code><a class="headerlink" href="#pyshgp.push.types.PushType.coercion_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function which takes a single argument and returns argument coerced
+into the PushTypes canonical type (the first type in <code class="docutils literal notranslate"><span class="pre">underlying</span></code>).
+If None, the constructor of the canonical type is used. Default is None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Callable[[Any], Any], optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.types.PushType.coerce">
+<code class="sig-name descname">coerce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thing</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType.coerce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType.coerce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert thing into PushTypes underlying type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.types.PushType.is_instance">
+<code class="sig-name descname">is_instance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thing</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType.is_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType.is_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return true if thing is instance of PushTypes underlying type(s).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyshgp.push">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyshgp.push" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">push</span></code> sub-package contains an extensible Push interpreter and Push program abstraction.</p>
+<p>When running Push programs (either during search or after) the modules in this package are used to perform the
+stack-based execution of Push code and report output values. For more information on the Push programming language,
+see the following links</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://faculty.hampshire.edu/lspector/push3-description.html">http://faculty.hampshire.edu/lspector/push3-description.html</a></p></li>
+<li><p><a class="reference external" href="https://erp12.github.io/push-redux/">https://erp12.github.io/push-redux/</a></p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyshgp.push package</a><ul>
+<li><a class="reference internal" href="#module-pyshgp.push.atoms">pyshgp.push.atoms module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.instruction">pyshgp.push.instruction module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.instruction_set">pyshgp.push.instruction_set module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.interpreter">pyshgp.push.interpreter module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.stack">pyshgp.push.stack module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.state">pyshgp.push.state module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.type_library">pyshgp.push.type_library module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push.types">pyshgp.push.types module</a></li>
+<li><a class="reference internal" href="#module-pyshgp.push">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../api.html"
+                        title="previous chapter">Push API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gp.html"
+                        title="next chapter">pyshgp.gp package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/push.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gp.html" title="pyshgp.gp package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../api.html" title="Push API"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >Push API</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Edward Pantridge.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

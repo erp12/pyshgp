@@ -14,10 +14,8 @@ aritifically low. To see the best search performance, consider increasing
 population size, max generations, and initial_genome_size.
 
 """
-import logging
 import numpy as np
 import random
-import sys
 
 from pyshgp.gp.estimators import PushEstimator
 from pyshgp.gp.genome import GeneSpawner
@@ -47,16 +45,10 @@ spawner = GeneSpawner(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        stream=sys.stdout
-    )
-
     est = PushEstimator(
         search="SA",
         spawner=spawner,
-        max_generations=500,
+        max_generations=300,
         initial_genome_size=(10, 50),
         simplification_steps=500,
         parallelism=False,

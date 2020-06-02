@@ -24,11 +24,16 @@ Internals
 - Fixed DatasetEvaluator support for pandas data structures.
 - Refactored ``Selector`` to use ``SimpleMultiSelectorMixin``.
 - Added more constraints to push execution.
+- Replaced Instructions in genomes and programs with InstructionMeta.
+- Changed Inputs their own Atom type instead of Instruction.
+- Switched to persistent collections and classes throughout genome, program, and config abstractions.
+- Fixes a bug in ``EpsilonLexicaseSelection``.
 
 
 Development / Repository
 -------------------------------
 
+- Removes support for Python 3.6
 - Added tox.
 - Fixed many doc typos.
 - Added some utility scripts for making deployment of new releases easier.

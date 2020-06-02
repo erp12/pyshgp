@@ -1,7 +1,7 @@
 # PyshGP
 
 [![PyPI version](https://badge.fury.io/py/pyshgp.svg)](https://badge.fury.io/py/pyshgp)
-[![CircleCI](https://circleci.com/gh/erp12/pyshgp/tree/master.svg?style=svg)](https://circleci.com/gh/erp12/pyshgp/tree/master)
+![PyshGP Tests](https://github.com/erp12/pyshgp/workflows/PyshGP%20Tests/badge.svg)
 
 Push Genetic Programming in Python
 

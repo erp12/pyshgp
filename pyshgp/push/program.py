@@ -45,3 +45,7 @@ class Program(Saveable, PRecord):
 
     code = field(type=CodeBlock, mandatory=True)
     signature = field(type=ProgramSignature, mandatory=True)
+
+    def pretty_str(self) -> str:
+        """Generate a simple string representation of the program's code."""
+        return self.code.pretty_str()

@@ -14,6 +14,8 @@ A `CodeBlock` is a sequence of other Atoms is used to express nested block of co
 
 """
 from __future__ import annotations
+
+from abc import abstractmethod
 from typing import Sequence, Tuple, Optional
 from itertools import chain, count
 
@@ -25,13 +27,18 @@ from pyshgp.push.types import PushType
 class Atom:
     """Base class of all Atoms. The fundamental element of Push programs."""
 
-    ...
+    @abstractmethod
+    def pretty_str(self) -> str:
+        """Generate a simple string representation of the Atom."""
+        raise NotImplementedError()
 
 
 class Closer(Atom, PClass):
     """An Atom dedicated to denoting the close of a CodeBlock in a `Genomes` representation."""
 
-    ...
+    def pretty_str(self) -> str:
+        """Generate a simple string representation of the Atom."""
+        return "close"
 
 
 class Literal(Atom, PClass):
@@ -53,6 +60,14 @@ class Literal(Atom, PClass):
     value = field(mandatory=True)
     push_type = field(type=PushType, mandatory=True)
 
+    def pretty_str(self) -> str:
+        """Generate a simple string representation of the Literal."""
+        # @todo make smarter by using a method on the PushType.
+        s = str(self.value)
+        if isinstance(self.value, str):
+            s = "\"" + s + "\""
+        return s
+
 
 class InstructionMeta(Atom, PClass):
     """An identifier of a Push Instruction.
@@ -73,6 +88,10 @@ class InstructionMeta(Atom, PClass):
     name = field(type=str, mandatory=True)
     code_blocks = field(type=int, mandatory=True)
 
+    def pretty_str(self) -> str:
+        """Generate a simple string representation of the Instruction."""
+        return self.name
+
 
 class Input(Atom, PClass):
     """A reference to a positional argument of the `PushProgram` which the atom is part of.
@@ -85,6 +104,10 @@ class Input(Atom, PClass):
     """
 
     input_index = field(type=int, mandatory=True)
+
+    def pretty_str(self) -> str:
+        """Generate a simple string representation of the Input."""
+        return "input_" + str(self.input_index)
 
 
 class CodeBlock(Atom, CheckedPVector):
@@ -146,3 +169,7 @@ class CodeBlock(Atom, CheckedPVector):
         if i == 0:
             return True, self.append(code)
         return False, self
+
+    def pretty_str(self) -> str:
+        """Generate a simple string representation of the CodeBlock."""
+        return "(" + " ".join([el.pretty_str() for el in self]) + ")"

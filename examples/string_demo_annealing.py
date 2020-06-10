@@ -56,6 +56,6 @@ if __name__ == "__main__":
     )
 
     est.fit(X=X, y=y)
-    print(est.solution.program.code)
+    print(est.solution.program.pretty_str())
     print(est.predict(X))
     print(est.score(X, y))

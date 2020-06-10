@@ -123,3 +123,4 @@ if __name__ == "__main__":
     print("runtime: ", end - start)
     print("final_generation: ", est.search.generation)
     print("best_genome: ", est.solution.genome)
+    print("best_program_str:", est.solution.program.pretty_str())

@@ -90,7 +90,6 @@ class SearchConfiguration:
                  initial_genome_size: Tuple[int, int] = (10, 50),
                  simplification_steps: int = 2000,
                  parallelism: Union[int, bool] = True,
-                 verbose: int = 0,
                  **kwargs):
         self.signature = signature
         self.evaluator = evaluator
@@ -100,9 +99,7 @@ class SearchConfiguration:
         self.error_threshold = error_threshold
         self.initial_genome_size = initial_genome_size
         self.simplification_steps = simplification_steps
-        self.verbose = verbose
         self.ext = kwargs
-        set_verbosity(self.verbose)
 
         self.parallel_context = None
         if isinstance(parallelism, bool):

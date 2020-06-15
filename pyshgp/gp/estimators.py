@@ -11,7 +11,7 @@ from pyshgp.gp.genome import GeneSpawner
 from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
 from pyshgp.push.config import PushConfig
 from pyshgp.push.program import ProgramSignature
-from pyshgp.tap import tap
+from pyshgp.tap import tap, set_verbosity
 from pyshgp.utils import list_rindex
 from pyshgp.validation import check_is_fitted, check_X_y
 
@@ -90,6 +90,7 @@ class PushEstimator:
         self.parallelism = parallelism
         self.verbose = verbose
         self.ext = kwargs
+        set_verbosity(self.verbose)
 
         # Initialize attributes that will be set later.
         self.evaluator = None
@@ -126,8 +127,7 @@ class PushEstimator:
             initial_genome_size=self.initial_genome_size,
             simplification_steps=self.simplification_steps,
             parallelism=self.parallelism,
-            push_config=self.push_config,
-            verbose=self.verbose
+            push_config=self.push_config
         )
         self.search = sr.get_search_algo(self._search_name, config=search_config, **self.ext)
 

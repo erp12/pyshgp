@@ -59,6 +59,12 @@ logic of our Push programs is stored.</p>
 <em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Atom</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Atom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class of all Atoms. The fundamental element of Push programs.</p>
+<dl class="py method">
+<dt id="pyshgp.push.atoms.Atom.pretty_str">
+<em class="property">abstract </em><code class="sig-name descname">pretty_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Atom.pretty_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Atom.pretty_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a simple string representation of the Atom.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -66,6 +72,12 @@ logic of our Push programs is stored.</p>
 <em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Closer</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Closer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Closer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._pclass.PClass</span></code></p>
 <p>An Atom dedicated to denoting the close of a CodeBlock in a <cite>Genomes</cite> representation.</p>
+<dl class="py method">
+<dt id="pyshgp.push.atoms.Closer.pretty_str">
+<code class="sig-name descname">pretty_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Closer.pretty_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Closer.pretty_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a simple string representation of the Atom.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -83,6 +95,12 @@ logic of our Push programs is stored.</p>
 <dt id="pyshgp.push.atoms.CodeBlock.depth">
 <code class="sig-name descname">depth</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/pyshgp/push/atoms.html#CodeBlock.depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.CodeBlock.depth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the farthest depth of the CodeBlock.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.atoms.CodeBlock.pretty_str">
+<code class="sig-name descname">pretty_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/push/atoms.html#CodeBlock.pretty_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.CodeBlock.pretty_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a simple string representation of the CodeBlock.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -119,6 +137,12 @@ logic of our Push programs is stored.</p>
 <dt id="id0">
 <code class="sig-name descname">input_index</code><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.atoms.Input.pretty_str">
+<code class="sig-name descname">pretty_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Input.pretty_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Input.pretty_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a simple string representation of the Input.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -162,6 +186,12 @@ name in its <cite>InstructionSet</cite>. If found, this instruction is evaluated
 <code class="sig-name descname">name</code><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt id="pyshgp.push.atoms.InstructionMeta.pretty_str">
+<code class="sig-name descname">pretty_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/push/atoms.html#InstructionMeta.pretty_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.InstructionMeta.pretty_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a simple string representation of the Instruction.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -192,6 +222,12 @@ of the PushState during program execution.</p>
 <dd class="field-odd"><p><a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">PushType</a>, optional</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.push.atoms.Literal.pretty_str">
+<code class="sig-name descname">pretty_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Literal.pretty_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Literal.pretty_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a simple string representation of the Literal.</p>
 </dd></dl>
 
 <dl class="py attribute">

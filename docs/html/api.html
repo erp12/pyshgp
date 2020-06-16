@@ -254,14 +254,14 @@ that state will change code behavior.</p>
 
 <dl class="py method">
 <dt id="pyshgp.tap.Tap.post">
-<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">returned</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#Tap.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.Tap.post" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Tuple</span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">returned</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#Tap.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.Tap.post" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a particular side-effect directly before the associated function/method is called.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<em>str</em>) – The ID of the tap, generated based off of the name qualified name of the function.</p></li>
-<li><p><strong>args</strong> (<em>list</em>) – The positional of the function call. For methods, <code class="docutils literal notranslate"><span class="pre">args[0]</span></code> is the class instance.</p></li>
-<li><p><strong>kwargs</strong> (<em>dict</em>) – The keyword args of the function call.</p></li>
+<li><p><strong>args</strong> (<em>Tuple</em>) – The positional of the function call. For methods, <code class="docutils literal notranslate"><span class="pre">args[0]</span></code> is the class instance.</p></li>
+<li><p><strong>kwargs</strong> (<em>Dict</em>) – The keyword args of the function call.</p></li>
 <li><p><strong>returned</strong> (<em>Any</em>) – The returned value of the function call.</p></li>
 </ul>
 </dd>
@@ -270,14 +270,14 @@ that state will change code behavior.</p>
 
 <dl class="py method">
 <dt id="pyshgp.tap.Tap.pre">
-<code class="sig-name descname">pre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#Tap.pre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.Tap.pre" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">pre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Tuple</span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/tap.html#Tap.pre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.tap.Tap.pre" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a particular side-effect directly before the associated function/method is called.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<em>str</em>) – The ID of the tap, generated based off of the name qualified name of the function.</p></li>
-<li><p><strong>args</strong> (<em>list</em>) – The positional of the function call. For methods, <code class="docutils literal notranslate"><span class="pre">args[0]</span></code> is the class instance.</p></li>
-<li><p><strong>kwargs</strong> (<em>dict</em>) – The keyword args of the function call.</p></li>
+<li><p><strong>args</strong> (<em>Tuple</em>) – The positional of the function call. For methods, <code class="docutils literal notranslate"><span class="pre">args[0]</span></code> is the class instance.</p></li>
+<li><p><strong>kwargs</strong> (<em>Dict</em>) – The keyword args of the function call.</p></li>
 </ul>
 </dd>
 </dl>

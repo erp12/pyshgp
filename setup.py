@@ -20,7 +20,7 @@ setup(
     keywords=["push gp", "genetic programming", "pushgp", "gp", "push"],
     author="Eddie Pantridge",
     author_email="erp12@hampshire.edu",
-    license="LGPL",
+    license="MIT",
     url="https://github.com/erp12/pyshgp",
     packages=find_packages(
         exclude=('examples', 'examples.*', 'tests', 'tests.*', 'docs', 'docs_source')

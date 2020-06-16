@@ -34,6 +34,7 @@ class Selector(ABC):
         pass
 
     @tap
+    @abstractmethod
     def select(self, population: Population, n: int = 1) -> Sequence[Individual]:
         """Return `n` individuals from the population.
 

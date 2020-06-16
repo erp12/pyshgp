@@ -46,13 +46,14 @@ Although PushGP is constantly changing through research and publication, `pyshgp
 ```sh
 pip install pyshgp
 ```
+- That's it! Read through the docs and examples to learn more.
 
-### Build Frome source
+### Build From source
 
 - Clone the repo
 - cd into the `pyshgp` repo directory
 - run `pip install . --upgrade`
-- Thats it! Check out the examples and documentation.
+- That's it! Read through the docs and examples to learn more.
 
 ### Running Tests
 

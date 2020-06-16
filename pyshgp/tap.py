@@ -18,7 +18,7 @@ from datetime import datetime
 import numpy as np
 from abc import ABC
 from functools import wraps
-from typing import Dict, Sequence, Optional, MutableMapping
+from typing import Dict, Sequence, Optional, MutableMapping, Tuple
 
 
 class Tap(ABC):
@@ -28,31 +28,31 @@ class Tap(ABC):
     that state will change code behavior.
     """
 
-    def pre(self, id: str, args, kwargs):
+    def pre(self, id: str, args: Tuple, kwargs: Dict):
         """Perform a particular side-effect directly before the associated function/method is called.
 
         Parameters
         ----------
         id : str
             The ID of the tap, generated based off of the name qualified name of the function.
-        args : list
+        args : Tuple
             The positional of the function call. For methods, ``args[0]`` is the class instance.
-        kwargs : dict
+        kwargs : Dict
             The keyword args of the function call.
 
         """
         pass
 
-    def post(self, id: str, args, kwargs, returned):
+    def post(self, id: str, args: Tuple, kwargs: Dict, returned):
         """Perform a particular side-effect directly before the associated function/method is called.
 
         Parameters
         ----------
         id : str
             The ID of the tap, generated based off of the name qualified name of the function.
-        args : list
+        args : Tuple
             The positional of the function call. For methods, ``args[0]`` is the class instance.
-        kwargs : dict
+        kwargs : Dict
             The keyword args of the function call.
         returned : Any
             The returned value of the function call.
@@ -215,6 +215,9 @@ class StdOutRun(Tap):
     def pre(self, id: str, args, kwargs, obj=None):
         """Print run config and/or all atoms to stdout."""
         search = args[0]
+        print("========================================")
+        print("Setup")
+        print("========================================")
         if self.pre_print_config:
             print("Search Configuration:")
             attrs = ["signature", "evaluator", "spawner", "population_size", "max_generations", "error_threshold",
@@ -228,21 +231,27 @@ class StdOutRun(Tap):
             print(search.config.spawner.literals)
             print("ERC Generators:")
             print(search.config.spawner.erc_generators)
+        print("========================================")
+        print("Start Run")
+        print("========================================")
 
     def post(self, id: str, args, kwargs, returned, obj=None):
         """Print a summary of the run result to stdout."""
         search = args[0]
+        print("========================================")
+        print("End Run")
+        print("========================================")
         if search.is_solved():
             print("Solution found.")
         else:
             print("No solution found.")
 
         if self.post_print_best:
-            print("Best individual found:")
-            print("Genome:", search.best_seen.genome)
-            print("Program:", search.best_seen.program)
-            print("Error vector:", search.best_seen.error_vector)
-            print("Total error:", search.best_seen.total_error)
+            print("Best Seen Individual")
+            print("\tGenome:\n\t", search.best_seen.genome)
+            print("\tProgram:\n\t", search.best_seen.program.pretty_str())
+            print("\tError vector:\n\t", search.best_seen.error_vector)
+            print("\tTotal error:\n\t", search.best_seen.total_error)
 
 
 class StdOutSearchStepTap(Tap):

@@ -4,6 +4,50 @@ Release Notes
 
 A summary of changes made between each PyshGP release.
 
+v0.1.7 - June 15, 2020
+===============================
+
+API changes
+-------------------------------
+
+- Added the ``.pretty_str()`` method to ``Program`` to get a traditional Push program representation.
+
+Internals
+-------------------------------
+
+- Verbosity is set in the ``PushEstimator`` and not the ``SearchAlgorithm``. User who directly call the internals should use the ``TapManager`` directly.
+- The default information printed to stdout has been cleaned up.
+- Parallel process pool is manually closed after evolution to prevent a hang.
+
+Development / Repository
+-------------------------------
+
+- README has been clarified and typos fixed.
+- ``setup.py`` file license has been updated to match the ``LISCENSE`` file in the repo.
+- The ``push_cli.py`` file for generating instruction list HTML files has been removed.
+
+Known Issues
+-------------------------------
+
+None yet.
+
+Report issues on `the Github issues page <https://github.com/erp12/pyshgp/issues>`_.
+
+Credits
+-------------------------------
+
+This release would not have been possible without the following contributors:
+
+- Naya Burshan
+
+    - Reporting that ``push_cli.py`` has broken
+
+- Lee Spector
+
+    - Suggesting the ``.pretty_str()`` method.
+    - Providing feedback on what is printed to to stdout.
+    - Reporting typos and clarity issues in the README.
+
 
 v0.1.6 - June 1, 2020
 ===============================
@@ -24,11 +68,16 @@ Internals
 - Fixed DatasetEvaluator support for pandas data structures.
 - Refactored ``Selector`` to use ``SimpleMultiSelectorMixin``.
 - Added more constraints to push execution.
+- Replaced Instructions in genomes and programs with InstructionMeta.
+- Changed Inputs their own Atom type instead of Instruction.
+- Switched to persistent collections and classes throughout genome, program, and config abstractions.
+- Fixes a bug in ``EpsilonLexicaseSelection``.
 
 
 Development / Repository
 -------------------------------
 
+- Removes support for Python 3.6
 - Added tox.
 - Fixed many doc typos.
 - Added some utility scripts for making deployment of new releases easier.

@@ -51,6 +51,8 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">count</span>
 
@@ -62,13 +64,18 @@
 <div class="viewcode-block" id="Atom"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.Atom">[docs]</a><span class="k">class</span> <span class="nc">Atom</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Base class of all Atoms. The fundamental element of Push programs.&quot;&quot;&quot;</span>
 
-    <span class="o">...</span></div>
+<div class="viewcode-block" id="Atom.pretty_str"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.Atom.pretty_str">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate a simple string representation of the Atom.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="Closer"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.Closer">[docs]</a><span class="k">class</span> <span class="nc">Closer</span><span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">PClass</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Atom dedicated to denoting the close of a CodeBlock in a `Genomes` representation.&quot;&quot;&quot;</span>
 
-    <span class="o">...</span></div>
+<div class="viewcode-block" id="Closer.pretty_str"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.Closer.pretty_str">[docs]</a>    <span class="k">def</span> <span class="nf">pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate a simple string representation of the Atom.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;close&quot;</span></div></div>
 
 
 <div class="viewcode-block" id="Literal"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.Literal">[docs]</a><span class="k">class</span> <span class="nc">Literal</span><span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">PClass</span><span class="p">):</span>
@@ -88,7 +95,15 @@
 
     <span class="n">__invariant__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="s2">&quot;Value is not of PushType.&quot;</span><span class="p">)</span>
     <span class="n">value</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">push_type</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">PushType</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">push_type</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">PushType</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Literal.pretty_str"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.Literal.pretty_str">[docs]</a>    <span class="k">def</span> <span class="nf">pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate a simple string representation of the Literal.&quot;&quot;&quot;</span>
+        <span class="c1"># @todo make smarter by using a method on the PushType.</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">s</span></div></div>
 
 
 <div class="viewcode-block" id="InstructionMeta"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.InstructionMeta">[docs]</a><span class="k">class</span> <span class="nc">InstructionMeta</span><span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">PClass</span><span class="p">):</span>
@@ -108,7 +123,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">code_blocks</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">code_blocks</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InstructionMeta.pretty_str"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.InstructionMeta.pretty_str">[docs]</a>    <span class="k">def</span> <span class="nf">pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate a simple string representation of the Instruction.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div></div>
 
 
 <div class="viewcode-block" id="Input"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.Input">[docs]</a><span class="k">class</span> <span class="nc">Input</span><span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">PClass</span><span class="p">):</span>
@@ -121,7 +140,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">input_index</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="n">input_index</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Input.pretty_str"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.Input.pretty_str">[docs]</a>    <span class="k">def</span> <span class="nf">pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate a simple string representation of the Input.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;input_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_index</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="CodeBlock"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.CodeBlock">[docs]</a><span class="k">class</span> <span class="nc">CodeBlock</span><span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">CheckedPVector</span><span class="p">):</span>
@@ -182,7 +205,11 @@
             <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="bp">self</span></div>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="CodeBlock.pretty_str"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.atoms.CodeBlock.pretty_str">[docs]</a>    <span class="k">def</span> <span class="nf">pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate a simple string representation of the CodeBlock.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">el</span><span class="o">.</span><span class="n">pretty_str</span><span class="p">()</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span></div></div>
 </pre></div>
 
           </div>

@@ -54,6 +54,7 @@ if __name__ == "__main__":
     )
 
     est.fit(X=X, y=y)
+    print("Best program found:")
     print(est.solution.program.pretty_str())
-    print(est.predict(X))
+    print("Errors:")
     print(est.score(X, y))

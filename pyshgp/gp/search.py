@@ -8,7 +8,7 @@ from functools import partial
 from multiprocessing import Pool, Manager
 
 from pyshgp.push.program import ProgramSignature
-from pyshgp.tap import tap, set_verbosity
+from pyshgp.tap import tap
 from pyshgp.utils import DiscreteProbDistrib
 from pyshgp.gp.evaluation import Evaluator
 from pyshgp.gp.genome import GeneSpawner, GenomeSimplifier

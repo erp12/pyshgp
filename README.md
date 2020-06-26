@@ -71,7 +71,10 @@ ptw
 
 ## Documentation
 
-Example usages of `pyshgp` can be found in the `examples/` [folder of the Github repository](https://github.com/erp12/pyshgp/tree/master/examples).
+Example usages of `pyshgp` can be found: 
+
+- In the `examples/` [folder of the pyshgp Github repository](https://github.com/erp12/pyshgp/tree/master/examples).
+- In the minimal [demo repository](https://github.com/erp12/pyshgp-demo).
 
 The full `pyshgp` API can be found on [official website](http://erp12.github.io/pyshgp).
 

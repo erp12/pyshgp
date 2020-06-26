@@ -119,10 +119,6 @@ class TestPopulation:
     def test_error_diversity(self, partially_evaluated_pop):
         assert partially_evaluated_pop.error_diversity() == 0.5
 
-    def test_error_diversity_empty_pop(self):
-        with pytest.raises(ValueError):
-            Population().error_diversity()
-
     def test_genome_diversity(self, partially_evaluated_pop):
         assert partially_evaluated_pop.genome_diversity() == 0.75
 

@@ -30,16 +30,19 @@ class ParallelContext:
         self.ns = self.manager.Namespace()
         self.ns.spawner = spawner
         self.ns.evaluator = evaluator
+        self.pool = None
         if n_proc is None:
             self.pool = Pool()
         else:
             self.pool = Pool(n_proc)
 
+    def close(self):
+        if self.pool is not None:
+            self.pool.close()
+
 
 class SearchConfiguration:
     """Configuration of an search algorithm.
-
-    @todo change to a PClass
 
     Parameters
     ----------
@@ -77,6 +80,8 @@ class SearchConfiguration:
         is no verbosity.
 
     """
+
+    # @todo change to a PClass
 
     def __init__(self,
                  signature: ProgramSignature,
@@ -131,6 +136,10 @@ class SearchConfiguration:
     def get_variation_op(self):
         """Return a VariationOperator."""
         return self.variation.sample()
+
+    def tear_down(self):
+        if self.parallel_context is not None:
+            self.parallel_context.close()
 
 
 def _spawn_individual(spawner, genome_size, program_signature: ProgramSignature, *args):

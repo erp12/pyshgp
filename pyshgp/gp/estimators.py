@@ -154,8 +154,7 @@ class PushEstimator:
         self.evaluator = DatasetEvaluator(X, y, interpreter=self.interpreter)
         self._build_search_algo()
         self.solution = self.search.run()
-        if self.search.config.parallel_context is not None:
-            self.search.config.parallel_context.pool.close()
+        self.search.config.tear_down()
 
     def predict(self, X):
         """Execute the synthesized push program on a dataset.

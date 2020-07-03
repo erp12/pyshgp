@@ -22,18 +22,15 @@ This class will be the underlying type for our custom PushType.
 
 class Rectangle:
 
-    # constructor
     def __init__(self, height: float, width: float):
         self.height = height
         self.width = width
 
-    # checks the equality of two Rectangle objects
     def __eq__(self, other):
         if isinstance(other, Rectangle):
             return self.height == other.height and self.width == other.width
         return False
 
-    # returns the Rectangle object's representation
     def __repr__(self):
         return "Rectangle: {height} X {width}".format(height=self.height, width=self.width)
 
@@ -106,8 +103,8 @@ Next, we create a type library that specifies we will be synthesizing programs t
 
 type_library = (
     PushTypeLibrary(register_core=False)
-        .register(PushFloat)
-        .create_and_register(name="rectangle", underlying_types=(Rectangle,), coercion_func=to_rect)
+    .register(PushFloat)
+    .create_and_register(name="rectangle", underlying_types=(Rectangle,), coercion_func=to_rect)
 )
 
 """
@@ -121,8 +118,8 @@ For example, the instruction int_from_float will NOT be registered because
 
 instruction_set = (
     InstructionSet(type_library=type_library, register_core=True)
-        .register(rectangle_areas_instruction)
-        .register(rectangle_from_floats_instruction)
+    .register(rectangle_areas_instruction)
+    .register(rectangle_from_floats_instruction)
 )
 
 print("Stacks: ", instruction_set.required_stacks())

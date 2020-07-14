@@ -15,9 +15,9 @@ class TestPushTypeLibrary:
 
     def test_create_and_register(self):
         lib = PushTypeLibrary(register_core=False)
-        lib.create_and_register("seq", (list, tuple))
-        assert set(lib.keys()) == {"seq", "exec", "code"}
-        new_type = lib["seq"]
+        lib.create_and_register("data", (list, tuple))
+        assert set(lib.keys()) == {"data", "exec", "code"}
+        new_type = lib["data"]
         assert new_type.is_instance((1, 2, 3))
         assert new_type.is_instance([1, 2, 3])
 

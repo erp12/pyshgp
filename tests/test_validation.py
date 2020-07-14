@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import pandas as pd
 
 from pyshgp.validation import check_1d, check_2d, check_column_types, check_num_columns
 
@@ -23,7 +24,15 @@ def test_check_2d_on_1d():
 
 
 def test_check_2d_on_2d():
-    assert np.array_equal(check_2d(np.arange(10).reshape(-1, 2)), np.arange(10).reshape(-1, 2))
+    df = pd.DataFrame({
+        "x1": [-2, -1, 0, 1, 2],
+        "x2": [-1, 2, -3, 4, -5],
+        "y":  [2, -2, 0, 4, -10]
+    })
+    pd.testing.assert_frame_equal(check_2d(df), df)
+
+    a = np.arange(10).reshape(-1, 2)
+    assert np.array_equal(check_2d(a), a)
 
 
 def test_check_2d_on_3d():

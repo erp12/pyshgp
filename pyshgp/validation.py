@@ -1,11 +1,14 @@
 """Module for validating data and raising informative errors."""
-from typing import Sequence, Tuple, Union
+from typing import Sequence, Tuple, MutableSequence
 import numpy as np
 import pandas as pd
 
 
-def check_1d(seq: Sequence) -> Sequence:
-    """Check given seq is one-dimensional. Raise error if can't be easily transformed."""
+# @todo This module is slow and brittle. Should be at least refactored, possibly with an API change.
+
+
+def check_1d(seq: MutableSequence) -> Sequence:
+    """Check given data is one-dimensional. Raise error if can't be easily transformed."""
     e = ValueError("Too many dimensions.")
     for ndx, el in enumerate(seq):
         if isinstance(el, (list, tuple)):
@@ -22,17 +25,21 @@ def check_1d(seq: Sequence) -> Sequence:
     return seq
 
 
-def check_2d(seq: Union[list, np.ndarray]) -> list:
-    """Check given seq is two-dimensional. Raise error if can't be easily transformed."""
-    for ndx, el in enumerate(seq):
+def check_2d(data):
+    """Check given data is two-dimensional. Raise error if can't be easily transformed."""
+    if isinstance(data, pd.DataFrame):
+        return data
+    for ndx, el in enumerate(data):
         if not isinstance(el, (list, tuple, np.ndarray, pd.Series)):
             raise ValueError("Too few dimensions.")
-        seq[ndx] = check_1d(el)
-    return seq
+        data[ndx] = check_1d(el)
+    return data
 
 
-def check_column_types(seq: Sequence, certainty_proportion: float = 0.2) -> Sequence[type]:
+def check_column_types(seq, certainty_proportion: float = 0.2) -> Sequence[type]:
     """Check all elements of each column are of the same type."""
+    if isinstance(seq, pd.DataFrame):
+        return [dt.type for dt in seq.dtypes]
     output_types = None
     for ndx in range(min(int(len(seq) * certainty_proportion) + 1, len(seq) - 1)):
         el = seq[ndx]
@@ -48,11 +55,13 @@ def check_column_types(seq: Sequence, certainty_proportion: float = 0.2) -> Sequ
     return output_types
 
 
-def check_num_columns(seq: Sequence, certainty_proportion: float = 0.2) -> int:
+def check_num_columns(data: Sequence, certainty_proportion: float = 0.2) -> int:
     """Return the number of columns of in the dataset."""
+    if isinstance(data, pd.DataFrame):
+        return data.shape[1]
     num_columns = None
-    for ndx in range(min(int(len(seq) * certainty_proportion) + 1, len(seq) - 1)):
-        el_len = len(list(seq[ndx]))
+    for ndx in range(min(int(len(data) * certainty_proportion) + 1, len(data) - 1)):
+        el_len = len(list(data[ndx]))
         if num_columns is None:
             num_columns = el_len
         else:

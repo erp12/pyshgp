@@ -8,6 +8,7 @@ from typing import Optional, List
 from pyshgp.push.config import constrain_collection, constrain_number, PushConfig
 from pyshgp.push.types import PushType
 from pyshgp.utils import Token
+from pyshgp.validation import PushError
 
 
 class PushStack(List):
@@ -41,17 +42,20 @@ class PushStack(List):
         return len(self) == 0
 
     def _coerce(self, value):
-        if not self.push_type.is_instance(value):
-            value = self.push_type.coerce(value)
-        # Collection sizes and string lengths are bounded to avoid utilizing too many resources.
-        if self.push_type.is_collection:
-            value = constrain_collection(self.push_config, value)
-        # Numbers are clamped to a constrained range to avoid utilizing too many resources.
-        if self.push_type.is_numeric:
-            value = constrain_number(self.push_config, value)
-        # Coercion happens a second time in case the constraining changes type.
-        if not self.push_type.is_instance(value):
-            value = self.push_type.coerce(value)
+        try:
+            if not self.push_type.is_instance(value):
+                value = self.push_type.coerce(value)
+            # Collection sizes and string lengths are bounded to avoid utilizing too many resources.
+            if self.push_type.is_collection:
+                value = constrain_collection(self.push_config, value)
+            # Numbers are clamped to a constrained range to avoid utilizing too many resources.
+            if self.push_type.is_numeric:
+                value = constrain_number(self.push_config, value)
+            # Coercion happens a second time in case the constraining changes type.
+            if not self.push_type.is_instance(value):
+                value = self.push_type.coerce(value)
+        except Exception as e:
+            raise PushError.failed_coerce(value, self.push_type)
         return value
 
     def push(self, value):

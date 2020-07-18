@@ -6,7 +6,7 @@ from pyshgp.gp.individual import Individual
 
 from pyshgp.push.config import PushConfig
 from pyshgp.push.type_library import PushTypeLibrary
-from pyshgp.push.types import PushInt, PushBool, PushFloat, PushStr
+from pyshgp.push.types import PushInt, PushBool, PushFloat, PushStr, PushType
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.instruction import SimpleInstruction
 from pyshgp.push.atoms import Closer, Literal
@@ -96,18 +96,24 @@ class Point:
         return False
 
 
+class PointType(PushType):
+
+    def __init__(self):
+        super().__init__("point", (Point,))
+
+    # override
+    def coerce(self, value):
+        return Point(float(value[0]), float(value[1]))
+
+
 @pytest.fixture(scope="session")
 def point_cls():
     return Point
 
 
-def to_point(thing):
-    return Point(float(thing[0]), float(thing[1]))
-
-
 @pytest.fixture(scope="session")
-def to_point_func():
-    return to_point
+def point_type():
+    return PointType()
 
 
 def point_distance(p1, p2):
@@ -129,11 +135,11 @@ def point_instructions():
 
 
 @pytest.fixture(scope="session")
-def point_type_library(to_point_func):
+def point_type_library(point_type):
     return (
         PushTypeLibrary(register_core=False)
         .register(PushFloat)
-        .create_and_register("point", (Point, ), coercion_func=to_point_func)
+        .register(point_type)
     )
 
 

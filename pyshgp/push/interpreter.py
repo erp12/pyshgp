@@ -1,4 +1,5 @@
 """The :mod:`interpreter` module defines the ``PushInterpreter`` used to run Push programs."""
+import traceback
 from typing import Union
 import time
 from enum import Enum
@@ -112,11 +113,12 @@ class PushInterpreter:
                 raise PushError("Cannot evaluate {t}, require a subclass of Atom".format(t=type(atom)))
             self.untyped_to_typed()
         except Exception as e:
-            err_type = type(e).__name__
+            err_type = type(e)
             err_msg = str(e)
+            traceback.print_exc()
             raise PushError(
                 "{t} raised while evaluating {atom}. Original message: \"{m}\"".format(
-                    t=err_type,
+                    t=err_type.__name__,
                     atom=atom,
                     m=err_msg
                 ))
@@ -202,6 +204,3 @@ class PushInterpreter:
             print("Finished program evaluation.")
 
         return self.state.observe_stacks(program.signature.output_stacks)
-
-
-DEFAULT_INTERPRETER = PushInterpreter()

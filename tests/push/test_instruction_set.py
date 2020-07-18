@@ -2,18 +2,19 @@ import pytest
 from itertools import chain
 
 from pyshgp.push.instruction_set import InstructionSet
-from pyshgp.push.instructions import common, numeric, text, code, io, logical
+from pyshgp.push.instructions import common, numeric, text, code, io, logical, vector
 
 
 @pytest.fixture(scope="function")
-def all_core_instrucitons(core_type_lib):
+def all_core_instructions(core_type_lib):
     return set(chain(
         common.instructions(core_type_lib),
         io.instructions(core_type_lib),
-        code.instructions(),
-        numeric.instructions(),
-        text.instructions(),
-        logical.instructions(),
+        code.instructions(core_type_lib),
+        numeric.instructions(core_type_lib),
+        text.instructions(core_type_lib),
+        logical.instructions(core_type_lib),
+        vector.instructions(core_type_lib),
     ))
 
 
@@ -65,9 +66,9 @@ class TestInstructionSet:
         assert len(i_set) == 2
         assert set([i.name for i in i_set.values()]) == {"int_mult", "float_mult"}
 
-    def test_register_core(self, all_core_instrucitons):
+    def test_register_core(self, all_core_instructions):
         i_set = InstructionSet().register_core()
-        assert set(i_set.values()) == all_core_instrucitons
+        assert set(i_set.values()) == all_core_instructions
 
     def test_unregister(self, instr_set):
         i_set = InstructionSet()
@@ -78,7 +79,10 @@ class TestInstructionSet:
         assert list(i_set.values())[0].name == "int_sub"
 
     def test_required_stacks(self, instr_set):
-        assert instr_set.required_stacks() == {"exec", "code", "int", "float", "bool", "str", "char"}
+        assert instr_set.required_stacks() == {
+            "exec", "code", "int", "float", "bool", "str", "char",
+            'vector_str', 'vector_char', 'vector_bool', 'vector_int', 'vector_float'
+        }
 
 
 # @TODO: TEST - Test all instruction set methods with custom type library.

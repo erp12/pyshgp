@@ -6,7 +6,7 @@ from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.instruction import SimpleInstruction
 from pyshgp.push.type_library import PushTypeLibrary
-from pyshgp.push.types import PushFloat
+from pyshgp.push.types import PushFloat, PushType
 
 """
 In this demo, we attempt to evolve a program that can find the difference between the areas of two rectangles.
@@ -101,10 +101,21 @@ Next, we create a type library that specifies we will be synthesizing programs t
     "floats" (built-in to pyshgp) and "rectangles" (custom for this problem).
 """
 
+
+class RectangleType(PushType):
+
+    def __init__(self):
+        super().__init__("rectangle", (Rectangle,))
+
+    # override
+    def coerce(self, value):
+        return Rectangle(float(value[0]), float(value[1]))
+
+
 type_library = (
     PushTypeLibrary(register_core=False)
     .register(PushFloat)
-    .create_and_register(name="rectangle", underlying_types=(Rectangle,), coercion_func=to_rect)
+    .register(RectangleType())
 )
 
 """
@@ -168,9 +179,3 @@ Otherwise, the run may have gotten "stuck" or not find a solution during the evo
 
 if __name__ == "__main__":
     est.fit(X, y)
-    print()
-    print("Best program found:")
-    print(est.solution.program.pretty_str())
-    print()
-    print("Errors:")
-    print(est.score(X, y))

@@ -8,7 +8,7 @@ import pyshgp.gp.selection as sl
 import pyshgp.gp.variation as vr
 from pyshgp.gp.evaluation import DatasetEvaluator
 from pyshgp.gp.genome import GeneSpawner
-from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER
+from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.config import PushConfig
 from pyshgp.push.program import ProgramSignature
 from pyshgp.tap import tap, set_verbosity
@@ -99,7 +99,7 @@ class PushEstimator:
         self.solution = None
 
         if interpreter == "default":
-            self.interpreter = DEFAULT_INTERPRETER
+            self.interpreter = PushInterpreter()
         else:
             self.interpreter = interpreter
 
@@ -145,6 +145,7 @@ class PushEstimator:
 
         """
         X, y, arity, y_types = check_X_y(X, y)
+        print(y_types)
         output_types = [self.interpreter.type_library.push_type_for_type(t).name for t in y_types]
         if self.last_str_from_stdout:
             ndx = list_rindex(output_types, "str")

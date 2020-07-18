@@ -83,6 +83,14 @@ class Instruction(ABC):
         return "Instruction<{n}>".format(n=self.name)
 
 
+def _check_is_seq(x, source):
+    if not isinstance(x, Sequence):
+        raise ValueError("Instruction result must be a sequence. {i} gave {t}.".format(
+            i=source,
+            t=type(x)
+        ))
+
+
 class SimpleInstruction(Instruction):
     """A simple instruction implementation.
 
@@ -162,11 +170,7 @@ class SimpleInstruction(Instruction):
         result = self.f(*args)
         if result is Token.revert:
             return push_state
-        if not isinstance(result, (list, tuple)):
-            raise ValueError("Instruction result must be a collection. {i} gave {t}.".format(
-                i=self,
-                t=type(result)
-            ))
+        _check_is_seq(result, self)
 
         # Remove arguments, push results.
         push_state.pop_from_stacks(self.input_stacks)
@@ -295,11 +299,7 @@ class TakesStateInstruction(Instruction):
         # Return if revert.
         if result is Token.revert:
             return push_state
-        if not isinstance(result, (list, tuple)):
-            raise ValueError("Instruction result must be a collection. {i} gave {t}.".format(
-                i=self,
-                t=type(result)
-            ))
+        _check_is_seq(result, self)
 
         # Push results.
         push_state.push_to_stacks(result, self.output_stacks)
@@ -311,7 +311,7 @@ class TakesStateInstruction(Instruction):
 
 
 class ProducesManyOfTypeInstruction(Instruction):
-    """Instruction that produces arbitarily many values of a given PushType.
+    """Instruction that produces arbitrarily many values of a given PushType.
 
     ProducesManyOfTypeInstructions pop their arguments in the same was as
     SimpleInstructions. Items are popped from the stacks corresponding the
@@ -386,11 +386,7 @@ class ProducesManyOfTypeInstruction(Instruction):
         result = self.f(*args)
         if result is Token.revert:
             return push_state
-        if not isinstance(result, (list, tuple)):
-            raise ValueError("Instruction result must be a collection. {i} gave {t}.".format(
-                i=self,
-                t=type(result)
-            ))
+        _check_is_seq(result, self)
 
         # Remove arguments, push results.
         push_state.pop_from_stacks(self.input_stacks)

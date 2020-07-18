@@ -1,4 +1,5 @@
 """Definitions for all core text instructions."""
+from pyshgp.push.type_library import PushTypeLibrary
 from pyshgp.push.instruction import SimpleInstruction, ProducesManyOfTypeInstruction
 from pyshgp.push.types import Char
 from pyshgp.utils import Token
@@ -168,7 +169,7 @@ def _all_chars(s):
     return [Char(c) for c in list(s)[::-1]]
 
 
-def instructions():
+def instructions(type_library: PushTypeLibrary):
     """Return all core text instructions."""
     i = []
 
@@ -522,7 +523,7 @@ def instructions():
     ))
 
     i.append(SimpleInstruction(
-        "_char_from_float",
+        "char_from_float",
         _char_from_float,
         input_stacks=["float"],
         output_stacks=["char"],

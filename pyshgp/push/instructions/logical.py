@@ -2,6 +2,7 @@
 import operator as op
 from typing import Tuple
 
+from pyshgp.push.type_library import PushTypeLibrary
 from pyshgp.push.instruction import SimpleInstruction
 
 
@@ -37,7 +38,7 @@ def _bool_from_float(f: float) -> Tuple[bool]:
     return bool(f),
 
 
-def instructions():
+def instructions(type_library: PushTypeLibrary):
     """Return all core numeric instructions."""
     i = []
 

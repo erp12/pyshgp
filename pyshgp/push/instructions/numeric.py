@@ -1,6 +1,7 @@
 """Definitions for all core numeric instructions."""
 import math
 
+from pyshgp.push.type_library import PushTypeLibrary
 from pyshgp.push.instruction import SimpleInstruction
 from pyshgp.utils import Token
 
@@ -81,7 +82,7 @@ def _to_float(x):
     return float(x),
 
 
-def instructions():
+def instructions(type_library: PushTypeLibrary):
     """Return all core numeric instructions."""
     i = []
 

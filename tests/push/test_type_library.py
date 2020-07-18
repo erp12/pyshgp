@@ -2,7 +2,10 @@ import pytest
 
 from pyshgp.push.type_library import PushTypeLibrary, infer_literal
 from pyshgp.push.atoms import Literal
-from pyshgp.push.types import PushChar, PushInt, PushBool, PushStr, Char
+from pyshgp.push.types import PushChar, PushInt, PushBool, PushStr, Char, CORE_PUSH_TYPES
+
+
+ALL_CORE_TYPE_NAMES = set([t.name for t in CORE_PUSH_TYPES]) | {"exec", "code"}
 
 
 class TestPushTypeLibrary:
@@ -37,7 +40,7 @@ class TestPushTypeLibrary:
         lib = PushTypeLibrary()
         lib.unregister("char")
         lib.unregister("float")
-        assert set(lib.keys()) == {"int", "str", "bool", "exec", "code"}
+        assert set(lib.keys()) == ALL_CORE_TYPE_NAMES - {"char", "float"}
 
     def test_unregister_reserved(self):
         lib = PushTypeLibrary()
@@ -46,13 +49,13 @@ class TestPushTypeLibrary:
 
     def test_register_core(self):
         lib = PushTypeLibrary()
-        assert set(lib.keys()) == {"bool", "int", "float", "char", "str", "code", "exec"}
+        assert set(lib.keys()) == ALL_CORE_TYPE_NAMES
         assert lib["char"] == PushChar
         assert lib["int"] == PushInt
 
     def test_supported_stacks(self):
         lib = PushTypeLibrary()
-        assert lib.supported_stacks() == {"bool", "int", "float", "char", "str", "code", "exec"}
+        assert lib.supported_stacks() == ALL_CORE_TYPE_NAMES
 
     def test_push_type_of(self):
         lib = PushTypeLibrary()

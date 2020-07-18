@@ -1,6 +1,7 @@
 """Definitions for all core code instructions."""
 from typing import Tuple, Union
 
+from pyshgp.push.type_library import PushTypeLibrary
 from pyshgp.push.types import PushInt
 from pyshgp.push.instruction import (
     SimpleInstruction,
@@ -320,7 +321,7 @@ def _code_reverse(code):
     return CodeBlock(code[::-1]),
 
 
-def instructions():
+def instructions(type_library: PushTypeLibrary):
     """Return all core code SimpleInstructions."""
     i = []
 

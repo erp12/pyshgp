@@ -5,7 +5,7 @@ from collections import defaultdict
 import numpy as np
 import pandas as pd
 
-from pyshgp.push.interpreter import PushInterpreter, DEFAULT_INTERPRETER, Program
+from pyshgp.push.interpreter import PushInterpreter, Program
 from pyshgp.tap import tap
 from pyshgp.utils import Token
 
@@ -77,7 +77,7 @@ class Evaluator(ABC):
                  penalty: float = 1e6):
         self.penalty = penalty
         if interpreter == "default":
-            self.interpreter = DEFAULT_INTERPRETER
+            self.interpreter = PushInterpreter()
         else:
             self.interpreter = interpreter
 

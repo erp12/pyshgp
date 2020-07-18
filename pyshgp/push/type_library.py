@@ -33,8 +33,8 @@ class PushTypeLibrary(dict):
         if register_core:
             self.register_core()
         self.register_list(args)
-        self.create_and_register("code", (Atom, ), force=True)
-        self.create_and_register("exec", (Atom, ), force=True)
+        self.create_and_register("code", (Atom,), force=True)
+        self.create_and_register("exec", (Atom,), force=True)
 
     def register(self, push_type: PushType, _force=False):
         """Register a PushType object.
@@ -60,10 +60,9 @@ class PushTypeLibrary(dict):
 
     def create_and_register(self,
                             name: str,
-                            underlying_types: Tuple[type],
+                            python_types: Tuple[type, ...],
                             is_collection: bool = False,
                             is_numeric: bool = False,
-                            coercion_func: Optional[Callable[[Any], Any]] = None,
                             force=False):
         """Create a PushType and register it into the library.
 
@@ -73,7 +72,7 @@ class PushTypeLibrary(dict):
             A name for the type. Used when referencing the PushType in Instruction
             definitions and will be the key in the PushState for the corresponding
             PushStack.
-        underlying_types : Tuple[type]
+        python_types : Tuple[type]
             A tuple of python types that correspond to the underlying
             native types which the PushType is representing.
         is_collection : bool, optional
@@ -87,7 +86,7 @@ class PushTypeLibrary(dict):
         force : bool
             If True, will register the type even if it will overwrite an
             existing reserved stack typed (eg. exec, stdout, untyped). Default
-            is False. It is not reccomended this argument be changed unless
+            is False. It is not recommended this argument be changed unless
             you have a very good reason to do so.
 
         Returns
@@ -96,7 +95,8 @@ class PushTypeLibrary(dict):
             A reference to the PushTypeLibrary.
 
         """
-        self.register(PushType(name, underlying_types, is_collection, is_numeric, coercion_func=coercion_func), force)
+        p_type = PushType(name, python_types, is_collection=is_collection, is_numeric=is_numeric)
+        self.register(p_type, force)
         return self
 
     def unregister(self, push_type_name: str):
@@ -175,7 +175,11 @@ class PushTypeLibrary(dict):
             The corresponding PushType of the thing. If no corresponding type, returns None.
 
         """
-        return self.push_type_for_type(type(thing), error_on_not_found)
+        for push_type in self.values():
+            if push_type.is_instance(thing):
+                return push_type
+        if error_on_not_found:
+            raise PushError.no_type(thing)
 
     def push_type_for_type(self, typ: type, error_on_not_found: bool = False) -> Optional[PushType]:
         """Return the PushType of the given python (or numpy) type.
@@ -194,7 +198,7 @@ class PushTypeLibrary(dict):
 
         """
         for push_type in self.values():
-            if typ in push_type.underlying:
+            if typ in push_type.python_types:
                 return push_type
         if error_on_not_found:
             raise PushError.no_type(typ)

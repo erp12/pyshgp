@@ -51,6 +51,8 @@ class PushState(dict):
             Dict that is converted into a Push state.
         type_library : PushTypeLibrary
             A Push type library.
+        push_config : PushConfig
+            The configuration of the current program being executed.
 
         """
         state = cls(type_library, push_config)

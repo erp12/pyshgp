@@ -14,7 +14,7 @@ from pyshgp.push.interpreter import PushInterpreter
 from pyshgp.push.instruction_set import InstructionSet
 from pyshgp.push.instruction import SimpleInstruction
 from pyshgp.push.type_library import PushTypeLibrary
-from pyshgp.push.types import PushFloat
+from pyshgp.push.types import PushFloat, PushType
 
 
 class Point:
@@ -69,12 +69,22 @@ X = [[Point(row[0], row[1]), Point(row[2], row[3])] for row in np.random.rand(20
 y = [[point_distance(x[0], x[1])] for x in X]
 
 
+class PointType(PushType):
+
+    def __init__(self):
+        super().__init__("point", (Point,))
+
+    # override
+    def coerce(self, value):
+        return Point(float(value[0]), float(value[1]))
+
+
 # Custom type library that specifies we will be synthesizing programs that
 # manipulate "floats" (built-in to pyshgp) and "points" (custom for this problem)
 type_library = (
     PushTypeLibrary(register_core=False)
     .register(PushFloat)
-    .create_and_register("point", (Point, ), coercion_func=to_point)
+    .register(PointType())
 )
 
 
@@ -91,7 +101,6 @@ instruction_set = (
     .register(point_from_floats_instr)
 )
 
-print(instruction_set.keys())
 
 spawner = GeneSpawner(
     n_inputs=2,
@@ -114,7 +123,3 @@ est = PushEstimator(
 
 if __name__ == "__main__":
     est.fit(X, y)
-    print("Best program found:")
-    print(est.solution.program.pretty_str())
-    print("Errors:")
-    print(est.score(X, y))

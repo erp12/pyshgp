@@ -27,8 +27,7 @@ class PushConfig(PRecord):
         termination. Default is 10.
     growth_cap : int
         Max number of elements that can be added to a PushState at any given
-        step of program execution. If exceeded, program terminates. Default is
-        500.
+        step of program execution. If exceeded, program terminates. Default is 500.
     collection_size_cap : int, optional
         Max size of any collection (code blocks, vectors, strings, etc). Default is 1000.
     numeric_magnitude_limit : float, optional

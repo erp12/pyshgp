@@ -103,7 +103,7 @@ class PushCharType(PushType):
 class PushStrType(PushType):
 
     def __init__(self):
-        super().__init__("str", (str, np.str_))
+        super().__init__("str", (str, np.str_, np.object_))
 
 
 class PushVectorType(PushType):

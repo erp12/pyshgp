@@ -40,31 +40,27 @@ def test_check_2d_on_3d():
         check_2d(np.arange(12).reshape(-1, 2, 2))
 
 
-def test_check_column_types_on_int_ndarray():
-    assert (
-        check_column_types(np.arange(30).reshape(-1, 3)) == [np.int64, np.int64, np.int64] or
-        check_column_types(np.arange(30).reshape(-1, 3)) == [np.int32, np.int32, np.int32] or
-        check_column_types(np.arange(30).reshape(-1, 3)) == [np.int16, np.int16, np.int16]
-    )
+def test_check_column_types():
+    arr_col_types = check_column_types(np.arange(30).reshape(-1, 3))
+    assert arr_col_types == [np.int64, np.int64, np.int64] or \
+           arr_col_types == [np.int32, np.int32, np.int32] or \
+           arr_col_types == [np.int16, np.int16, np.int16]
 
-
-def test_check_column_types_on_nested_list():
-    mock_dataset = [
-        [1, "a"],
-        [2, "b"],
-        [3, "c"]
-    ]
+    mock_dataset = [[1, "a"], [2, "b"], [3, "c"]]
     assert check_column_types(mock_dataset, 1.0) == [int, str]
 
-
-def test_check_column_types_on_bad_dataset():
-    mock_dataset = [
-        [1, "a"],
-        [2, False],
-        [3, "c"]
-    ]
+    mock_dataset2 = [[1, "a"], [2, False], [3, "c"]]
     with pytest.raises(ValueError):
-        check_column_types(mock_dataset, 1.0)
+        check_column_types(mock_dataset2, 1.0)
+
+    df = pd.DataFrame({
+        "i": [1, 2, 3, 4, 5],
+        "s": ["a", "b", "c", "d", "e"]
+    })
+    df_col_types = check_column_types(df, 1.0)
+    assert df_col_types == [np.int64, np.object_] or \
+           df_col_types == [np.int32, np.object_] or \
+           df_col_types == [np.int16, np.object_]
 
 
 def test_check_num_columns_a():

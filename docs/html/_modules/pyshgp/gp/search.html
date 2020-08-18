@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyshgp.gp.search &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -25,7 +26,8 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.gp.search</a></li> 
       </ul>
     </div>  
 
@@ -67,16 +69,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">Namespace</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ns</span><span class="o">.</span><span class="n">spawner</span> <span class="o">=</span> <span class="n">spawner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ns</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">evaluator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">n_proc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">n_proc</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">n_proc</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ParallelContext.close"><a class="viewcode-back" href="../../../api/gp.html#pyshgp.gp.search.ParallelContext.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="SearchConfiguration"><a class="viewcode-back" href="../../../api/gp.html#pyshgp.gp.search.SearchConfiguration">[docs]</a><span class="k">class</span> <span class="nc">SearchConfiguration</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Configuration of an search algorithm.</span>
-
-<span class="sd">    @todo change to a PClass</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -114,6 +119,8 @@
 <span class="sd">        is no verbosity.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># @todo change to a PClass</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">signature</span><span class="p">:</span> <span class="n">ProgramSignature</span><span class="p">,</span>
@@ -167,7 +174,11 @@
 
 <div class="viewcode-block" id="SearchConfiguration.get_variation_op"><a class="viewcode-back" href="../../../api/gp.html#pyshgp.gp.search.SearchConfiguration.get_variation_op">[docs]</a>    <span class="k">def</span> <span class="nf">get_variation_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a VariationOperator.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variation</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variation</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SearchConfiguration.tear_down"><a class="viewcode-back" href="../../../api/gp.html#pyshgp.gp.search.SearchConfiguration.tear_down">[docs]</a>    <span class="k">def</span> <span class="nf">tear_down</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parallel_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parallel_context</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 
 
 <span class="k">def</span> <span class="nf">_spawn_individual</span><span class="p">(</span><span class="n">spawner</span><span class="p">,</span> <span class="n">genome_size</span><span class="p">,</span> <span class="n">program_signature</span><span class="p">:</span> <span class="n">ProgramSignature</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -388,6 +399,7 @@
     <span class="k">return</span> <span class="n">instantiate_using</span><span class="p">(</span><span class="n">_cls</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -417,12 +429,13 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.gp.search</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

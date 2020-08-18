@@ -4,6 +4,39 @@ Release Notes
 
 A summary of changes made between each PyshGP release.
 
+v0.1.8 - August 17, 2020
+===============================
+
+API changes
+-------------------------------
+
+- Fixed a bug with passing Pandas dataframes to the ``fit`` method of ``PushEstimator``.
+- Adds ``PushVector`` and all common vector Push types.
+
+Internals
+-------------------------------
+
+- Multiprocessing pools properly get closed after each run.
+- Fixes bug where string columns of Pandas DataFrames were not properly converted to ``PushString``.
+
+Development / Repository
+-------------------------------
+
+- README now contains a link to the `pyshgp demo repository <https://github.com/erp12/pyshgp-demo>`_
+- Added 3 new examples: triple, rectangle, and iris. `See them here <https://github.com/erp12/pyshgp/tree/master/examples>`_.
+
+Known Issues
+-------------------------------
+
+None yet.
+
+Report issues on `the Github issues page <https://github.com/erp12/pyshgp/issues>`_.
+
+Credits
+-------------------------------
+
+This release would not have been possible without the following contributors:
+
 v0.1.7 - June 15, 2020
 ===============================
 

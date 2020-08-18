@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PyshGP Core Instruction Set &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -33,7 +34,8 @@
           <a href="instructions.html" title="Push Instructions"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="instructions.html" accesskey="U">Push Instructions</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="instructions.html" accesskey="U">Push Instructions</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PyshGP Core Instruction Set</a></li> 
       </ul>
     </div>  
 
@@ -67,7 +69,7 @@
 <div class="section" id="int-mod">
 <h2>int_mod<a class="headerlink" href="#int-mod" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [int, int] - Produces: [int]</em></p>
-<p>Computes the modulous of the top two ints and pushes the result.</p>
+<p>Computes the modulus of the top two ints and pushes the result.</p>
 </div>
 <div class="section" id="int-min">
 <h2>int_min<a class="headerlink" href="#int-min" title="Permalink to this headline">¶</a></h2>
@@ -132,7 +134,7 @@
 <div class="section" id="float-mod">
 <h2>float_mod<a class="headerlink" href="#float-mod" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [float, float] - Produces: [float]</em></p>
-<p>Computes the modulous of the top two floats and pushes the result.</p>
+<p>Computes the modulus of the top two floats and pushes the result.</p>
 </div>
 <div class="section" id="float-min">
 <h2>float_min<a class="headerlink" href="#float-min" title="Permalink to this headline">¶</a></h2>
@@ -520,7 +522,7 @@
 <p>Pushes the top int converted into a Character by using the int mod 128 as an ascii value.</p>
 </div>
 <div class="section" id="char-from-float">
-<h2>_char_from_float<a class="headerlink" href="#char-from-float" title="Permalink to this headline">¶</a></h2>
+<h2>char_from_float<a class="headerlink" href="#char-from-float" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [float] - Produces: [char]</em></p>
 <dl class="simple">
 <dt>Pushes the top float converted into a Character by flooring</dt><dd><p>the float to an int, taking the int mod 128, and using it as an ascii value.</p>
@@ -656,7 +658,7 @@ items are CodeBlocks, they are concatenated together.</p>
 <h2>code_do_then_pop<a class="headerlink" href="#code-do-then-pop" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: PushState - Produces: PushState</em></p>
 <dl class="simple">
-<dt>Pushes a <cite>code_pop</cite> JitInstructionRef and the top item of the</dt><dd><p>code stack to the exec stack. Result is the top code item executing before
+<dt>Pushes a <cite>code_pop</cite> InstructionMeta and the top item of the</dt><dd><p>code stack to the exec stack. Result is the top code item executing before
 it is removed from the code stack.</p>
 </dd>
 </dl>
@@ -843,8 +845,538 @@ equal and -1 otherwise.</p>
 </dd>
 </dl>
 </div>
+<div class="section" id="vector-int-concat">
+<h2>vector_int_concat<a class="headerlink" href="#vector-int-concat" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, vector_int] - Produces: [vector_int]</em></p>
+<p>Concatenates the top two vector_int.</p>
+</div>
+<div class="section" id="vector-int-conj">
+<h2>vector_int_conj<a class="headerlink" href="#vector-int-conj" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int] - Produces: [vector_int]</em></p>
+<p>Appends the top int to the top vector_int.</p>
+</div>
+<div class="section" id="vector-int-take">
+<h2>vector_int_take<a class="headerlink" href="#vector-int-take" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int] - Produces: [vector_int]</em></p>
+<p>Creates a new vector_int from the first N elements of the top vector_int. N is top int.</p>
+</div>
+<div class="section" id="vector-int-subvec">
+<h2>vector_int_subvec<a class="headerlink" href="#vector-int-subvec" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int, int] - Produces: [vector_int]</em></p>
+<p>Creates a new vector_int from a slice of the top vector_int. Start and end indices are the top two ints.</p>
+</div>
+<div class="section" id="vector-int-first">
+<h2>vector_int_first<a class="headerlink" href="#vector-int-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [int]</em></p>
+<p>Takes the first element of the top vector_int and pushes it to the int stack.</p>
+</div>
+<div class="section" id="vector-int-last">
+<h2>vector_int_last<a class="headerlink" href="#vector-int-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [int]</em></p>
+<p>Takes the last element of the top vector_int and pushes it to the int stack.</p>
+</div>
+<div class="section" id="vector-int-nth">
+<h2>vector_int_nth<a class="headerlink" href="#vector-int-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int] - Produces: [int]</em></p>
+<p>Takes the nth element of the top vector_int and pushes it to the int stack. N is the top int.</p>
+</div>
+<div class="section" id="vector-int-rest">
+<h2>vector_int_rest<a class="headerlink" href="#vector-int-rest" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [vector_int]</em></p>
+<p>Drops the first element of the top vector_int.</p>
+</div>
+<div class="section" id="vector-int-but-last">
+<h2>vector_int_but_last<a class="headerlink" href="#vector-int-but-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [vector_int]</em></p>
+<p>Drops the last element of the top vector_int.</p>
+</div>
+<div class="section" id="vector-int-length">
+<h2>vector_int_length<a class="headerlink" href="#vector-int-length" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [int]</em></p>
+<p>Pushes the length of the top vector_int to the int stack.</p>
+</div>
+<div class="section" id="vector-int-reverse">
+<h2>vector_int_reverse<a class="headerlink" href="#vector-int-reverse" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [vector_int]</em></p>
+<p>Reverses the top vector_int.</p>
+</div>
+<div class="section" id="vector-int-push-all">
+<h2>vector_int_push_all<a class="headerlink" href="#vector-int-push-all" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: Arbitrary number of int values.</em></p>
+<p>Pushes all elements of the top vector_int to the int.</p>
+</div>
+<div class="section" id="vector-int-empty-vector">
+<h2>vector_int_empty_vector<a class="headerlink" href="#vector-int-empty-vector" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top vector_int is empty. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-int-contains">
+<h2>vector_int_contains<a class="headerlink" href="#vector-int-contains" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top int is found in the top vector_int. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-int-index-of">
+<h2>vector_int_index_of<a class="headerlink" href="#vector-int-index-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int] - Produces: [int]</em></p>
+<p>Pushes the index top int is top vector_int to int stack. Pushes -1 if not found.</p>
+</div>
+<div class="section" id="vector-int-occurrences-of">
+<h2>vector_int_occurrences_of<a class="headerlink" href="#vector-int-occurrences-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int] - Produces: [int]</em></p>
+<p>Pushes the number of time the top int is found in the top vector_int to int stack.</p>
+</div>
+<div class="section" id="vector-int-set-nth">
+<h2>vector_int_set_nth<a class="headerlink" href="#vector-int-set-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int, int] - Produces: [vector_int]</em></p>
+<p>Sets the nth element of the top vector_int to be the top int. N is the top int.</p>
+</div>
+<div class="section" id="vector-int-replace">
+<h2>vector_int_replace<a class="headerlink" href="#vector-int-replace" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int, int] - Produces: [vector_int]</em></p>
+<p>Replaces all instances of the top int from the top vector_int.</p>
+</div>
+<div class="section" id="vector-int-replace-first">
+<h2>vector_int_replace_first<a class="headerlink" href="#vector-int-replace-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int, int] - Produces: [vector_int]</em></p>
+<p>Replaces the first instance of the top int from the top vector_int.</p>
+</div>
+<div class="section" id="vector-int-remove">
+<h2>vector_int_remove<a class="headerlink" href="#vector-int-remove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, int] - Produces: [vector_int]</em></p>
+<p>Removes all instances of the top int from the top vector_int.</p>
+</div>
+<div class="section" id="vector-int-iterate">
+<h2>vector_int_iterate<a class="headerlink" href="#vector-int-iterate" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState - Opens 1 code blocks</em></p>
+<p>Iterates over the top vector_int using the code on top of the exec stack.</p>
+</div>
+<div class="section" id="vector-float-concat">
+<h2>vector_float_concat<a class="headerlink" href="#vector-float-concat" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, vector_float] - Produces: [vector_float]</em></p>
+<p>Concatenates the top two vector_float.</p>
+</div>
+<div class="section" id="vector-float-conj">
+<h2>vector_float_conj<a class="headerlink" href="#vector-float-conj" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, float] - Produces: [vector_float]</em></p>
+<p>Appends the top float to the top vector_float.</p>
+</div>
+<div class="section" id="vector-float-take">
+<h2>vector_float_take<a class="headerlink" href="#vector-float-take" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, int] - Produces: [vector_float]</em></p>
+<p>Creates a new vector_float from the first N elements of the top vector_float. N is top int.</p>
+</div>
+<div class="section" id="vector-float-subvec">
+<h2>vector_float_subvec<a class="headerlink" href="#vector-float-subvec" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, int, int] - Produces: [vector_float]</em></p>
+<p>Creates a new vector_float from a slice of the top vector_float. Start and end indices are the top two ints.</p>
+</div>
+<div class="section" id="vector-float-first">
+<h2>vector_float_first<a class="headerlink" href="#vector-float-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [float]</em></p>
+<p>Takes the first element of the top vector_float and pushes it to the float stack.</p>
+</div>
+<div class="section" id="vector-float-last">
+<h2>vector_float_last<a class="headerlink" href="#vector-float-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [float]</em></p>
+<p>Takes the last element of the top vector_float and pushes it to the float stack.</p>
+</div>
+<div class="section" id="vector-float-nth">
+<h2>vector_float_nth<a class="headerlink" href="#vector-float-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, int] - Produces: [float]</em></p>
+<p>Takes the nth element of the top vector_float and pushes it to the float stack. N is the top int.</p>
+</div>
+<div class="section" id="vector-float-rest">
+<h2>vector_float_rest<a class="headerlink" href="#vector-float-rest" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [vector_float]</em></p>
+<p>Drops the first element of the top vector_float.</p>
+</div>
+<div class="section" id="vector-float-but-last">
+<h2>vector_float_but_last<a class="headerlink" href="#vector-float-but-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [vector_float]</em></p>
+<p>Drops the last element of the top vector_float.</p>
+</div>
+<div class="section" id="vector-float-length">
+<h2>vector_float_length<a class="headerlink" href="#vector-float-length" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [int]</em></p>
+<p>Pushes the length of the top vector_float to the int stack.</p>
+</div>
+<div class="section" id="vector-float-reverse">
+<h2>vector_float_reverse<a class="headerlink" href="#vector-float-reverse" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [vector_float]</em></p>
+<p>Reverses the top vector_float.</p>
+</div>
+<div class="section" id="vector-float-push-all">
+<h2>vector_float_push_all<a class="headerlink" href="#vector-float-push-all" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: Arbitrary number of float values.</em></p>
+<p>Pushes all elements of the top vector_float to the float.</p>
+</div>
+<div class="section" id="vector-float-empty-vector">
+<h2>vector_float_empty_vector<a class="headerlink" href="#vector-float-empty-vector" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top vector_float is empty. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-float-contains">
+<h2>vector_float_contains<a class="headerlink" href="#vector-float-contains" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, float] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top float is found in the top vector_float. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-float-index-of">
+<h2>vector_float_index_of<a class="headerlink" href="#vector-float-index-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, float] - Produces: [int]</em></p>
+<p>Pushes the index top float is top vector_float to int stack. Pushes -1 if not found.</p>
+</div>
+<div class="section" id="vector-float-occurrences-of">
+<h2>vector_float_occurrences_of<a class="headerlink" href="#vector-float-occurrences-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, float] - Produces: [int]</em></p>
+<p>Pushes the number of time the top float is found in the top vector_float to int stack.</p>
+</div>
+<div class="section" id="vector-float-set-nth">
+<h2>vector_float_set_nth<a class="headerlink" href="#vector-float-set-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, int, float] - Produces: [vector_float]</em></p>
+<p>Sets the nth element of the top vector_float to be the top float. N is the top int.</p>
+</div>
+<div class="section" id="vector-float-replace">
+<h2>vector_float_replace<a class="headerlink" href="#vector-float-replace" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, float, float] - Produces: [vector_float]</em></p>
+<p>Replaces all instances of the top float from the top vector_float.</p>
+</div>
+<div class="section" id="vector-float-replace-first">
+<h2>vector_float_replace_first<a class="headerlink" href="#vector-float-replace-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, float, float] - Produces: [vector_float]</em></p>
+<p>Replaces the first instance of the top float from the top vector_float.</p>
+</div>
+<div class="section" id="vector-float-remove">
+<h2>vector_float_remove<a class="headerlink" href="#vector-float-remove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, float] - Produces: [vector_float]</em></p>
+<p>Removes all instances of the top float from the top vector_float.</p>
+</div>
+<div class="section" id="vector-float-iterate">
+<h2>vector_float_iterate<a class="headerlink" href="#vector-float-iterate" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState - Opens 1 code blocks</em></p>
+<p>Iterates over the top vector_float using the code on top of the exec stack.</p>
+</div>
+<div class="section" id="vector-str-concat">
+<h2>vector_str_concat<a class="headerlink" href="#vector-str-concat" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, vector_str] - Produces: [vector_str]</em></p>
+<p>Concatenates the top two vector_str.</p>
+</div>
+<div class="section" id="vector-str-conj">
+<h2>vector_str_conj<a class="headerlink" href="#vector-str-conj" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, str] - Produces: [vector_str]</em></p>
+<p>Appends the top str to the top vector_str.</p>
+</div>
+<div class="section" id="vector-str-take">
+<h2>vector_str_take<a class="headerlink" href="#vector-str-take" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, int] - Produces: [vector_str]</em></p>
+<p>Creates a new vector_str from the first N elements of the top vector_str. N is top int.</p>
+</div>
+<div class="section" id="vector-str-subvec">
+<h2>vector_str_subvec<a class="headerlink" href="#vector-str-subvec" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, int, int] - Produces: [vector_str]</em></p>
+<p>Creates a new vector_str from a slice of the top vector_str. Start and end indices are the top two ints.</p>
+</div>
+<div class="section" id="vector-str-first">
+<h2>vector_str_first<a class="headerlink" href="#vector-str-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [str]</em></p>
+<p>Takes the first element of the top vector_str and pushes it to the str stack.</p>
+</div>
+<div class="section" id="vector-str-last">
+<h2>vector_str_last<a class="headerlink" href="#vector-str-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [str]</em></p>
+<p>Takes the last element of the top vector_str and pushes it to the str stack.</p>
+</div>
+<div class="section" id="vector-str-nth">
+<h2>vector_str_nth<a class="headerlink" href="#vector-str-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, int] - Produces: [str]</em></p>
+<p>Takes the nth element of the top vector_str and pushes it to the str stack. N is the top int.</p>
+</div>
+<div class="section" id="vector-str-rest">
+<h2>vector_str_rest<a class="headerlink" href="#vector-str-rest" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [vector_str]</em></p>
+<p>Drops the first element of the top vector_str.</p>
+</div>
+<div class="section" id="vector-str-but-last">
+<h2>vector_str_but_last<a class="headerlink" href="#vector-str-but-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [vector_str]</em></p>
+<p>Drops the last element of the top vector_str.</p>
+</div>
+<div class="section" id="vector-str-length">
+<h2>vector_str_length<a class="headerlink" href="#vector-str-length" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [int]</em></p>
+<p>Pushes the length of the top vector_str to the int stack.</p>
+</div>
+<div class="section" id="vector-str-reverse">
+<h2>vector_str_reverse<a class="headerlink" href="#vector-str-reverse" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [vector_str]</em></p>
+<p>Reverses the top vector_str.</p>
+</div>
+<div class="section" id="vector-str-push-all">
+<h2>vector_str_push_all<a class="headerlink" href="#vector-str-push-all" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: Arbitrary number of str values.</em></p>
+<p>Pushes all elements of the top vector_str to the str.</p>
+</div>
+<div class="section" id="vector-str-empty-vector">
+<h2>vector_str_empty_vector<a class="headerlink" href="#vector-str-empty-vector" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top vector_str is empty. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-str-contains">
+<h2>vector_str_contains<a class="headerlink" href="#vector-str-contains" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, str] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top str is found in the top vector_str. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-str-index-of">
+<h2>vector_str_index_of<a class="headerlink" href="#vector-str-index-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, str] - Produces: [int]</em></p>
+<p>Pushes the index top str is top vector_str to int stack. Pushes -1 if not found.</p>
+</div>
+<div class="section" id="vector-str-occurrences-of">
+<h2>vector_str_occurrences_of<a class="headerlink" href="#vector-str-occurrences-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, str] - Produces: [int]</em></p>
+<p>Pushes the number of time the top str is found in the top vector_str to int stack.</p>
+</div>
+<div class="section" id="vector-str-set-nth">
+<h2>vector_str_set_nth<a class="headerlink" href="#vector-str-set-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, int, str] - Produces: [vector_str]</em></p>
+<p>Sets the nth element of the top vector_str to be the top str. N is the top int.</p>
+</div>
+<div class="section" id="vector-str-replace">
+<h2>vector_str_replace<a class="headerlink" href="#vector-str-replace" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, str, str] - Produces: [vector_str]</em></p>
+<p>Replaces all instances of the top str from the top vector_str.</p>
+</div>
+<div class="section" id="vector-str-replace-first">
+<h2>vector_str_replace_first<a class="headerlink" href="#vector-str-replace-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, str, str] - Produces: [vector_str]</em></p>
+<p>Replaces the first instance of the top str from the top vector_str.</p>
+</div>
+<div class="section" id="vector-str-remove">
+<h2>vector_str_remove<a class="headerlink" href="#vector-str-remove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, str] - Produces: [vector_str]</em></p>
+<p>Removes all instances of the top str from the top vector_str.</p>
+</div>
+<div class="section" id="vector-str-iterate">
+<h2>vector_str_iterate<a class="headerlink" href="#vector-str-iterate" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState - Opens 1 code blocks</em></p>
+<p>Iterates over the top vector_str using the code on top of the exec stack.</p>
+</div>
+<div class="section" id="vector-bool-concat">
+<h2>vector_bool_concat<a class="headerlink" href="#vector-bool-concat" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, vector_bool] - Produces: [vector_bool]</em></p>
+<p>Concatenates the top two vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-conj">
+<h2>vector_bool_conj<a class="headerlink" href="#vector-bool-conj" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, bool] - Produces: [vector_bool]</em></p>
+<p>Appends the top bool to the top vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-take">
+<h2>vector_bool_take<a class="headerlink" href="#vector-bool-take" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, int] - Produces: [vector_bool]</em></p>
+<p>Creates a new vector_bool from the first N elements of the top vector_bool. N is top int.</p>
+</div>
+<div class="section" id="vector-bool-subvec">
+<h2>vector_bool_subvec<a class="headerlink" href="#vector-bool-subvec" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, int, int] - Produces: [vector_bool]</em></p>
+<p>Creates a new vector_bool from a slice of the top vector_bool. Start and end indices are the top two ints.</p>
+</div>
+<div class="section" id="vector-bool-first">
+<h2>vector_bool_first<a class="headerlink" href="#vector-bool-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [bool]</em></p>
+<p>Takes the first element of the top vector_bool and pushes it to the bool stack.</p>
+</div>
+<div class="section" id="vector-bool-last">
+<h2>vector_bool_last<a class="headerlink" href="#vector-bool-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [bool]</em></p>
+<p>Takes the last element of the top vector_bool and pushes it to the bool stack.</p>
+</div>
+<div class="section" id="vector-bool-nth">
+<h2>vector_bool_nth<a class="headerlink" href="#vector-bool-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, int] - Produces: [bool]</em></p>
+<p>Takes the nth element of the top vector_bool and pushes it to the bool stack. N is the top int.</p>
+</div>
+<div class="section" id="vector-bool-rest">
+<h2>vector_bool_rest<a class="headerlink" href="#vector-bool-rest" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [vector_bool]</em></p>
+<p>Drops the first element of the top vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-but-last">
+<h2>vector_bool_but_last<a class="headerlink" href="#vector-bool-but-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [vector_bool]</em></p>
+<p>Drops the last element of the top vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-length">
+<h2>vector_bool_length<a class="headerlink" href="#vector-bool-length" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [int]</em></p>
+<p>Pushes the length of the top vector_bool to the int stack.</p>
+</div>
+<div class="section" id="vector-bool-reverse">
+<h2>vector_bool_reverse<a class="headerlink" href="#vector-bool-reverse" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [vector_bool]</em></p>
+<p>Reverses the top vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-push-all">
+<h2>vector_bool_push_all<a class="headerlink" href="#vector-bool-push-all" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: Arbitrary number of bool values.</em></p>
+<p>Pushes all elements of the top vector_bool to the bool.</p>
+</div>
+<div class="section" id="vector-bool-empty-vector">
+<h2>vector_bool_empty_vector<a class="headerlink" href="#vector-bool-empty-vector" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top vector_bool is empty. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-bool-contains">
+<h2>vector_bool_contains<a class="headerlink" href="#vector-bool-contains" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, bool] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top bool is found in the top vector_bool. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-bool-index-of">
+<h2>vector_bool_index_of<a class="headerlink" href="#vector-bool-index-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, bool] - Produces: [int]</em></p>
+<p>Pushes the index top bool is top vector_bool to int stack. Pushes -1 if not found.</p>
+</div>
+<div class="section" id="vector-bool-occurrences-of">
+<h2>vector_bool_occurrences_of<a class="headerlink" href="#vector-bool-occurrences-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, bool] - Produces: [int]</em></p>
+<p>Pushes the number of time the top bool is found in the top vector_bool to int stack.</p>
+</div>
+<div class="section" id="vector-bool-set-nth">
+<h2>vector_bool_set_nth<a class="headerlink" href="#vector-bool-set-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, int, bool] - Produces: [vector_bool]</em></p>
+<p>Sets the nth element of the top vector_bool to be the top bool. N is the top int.</p>
+</div>
+<div class="section" id="vector-bool-replace">
+<h2>vector_bool_replace<a class="headerlink" href="#vector-bool-replace" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, bool, bool] - Produces: [vector_bool]</em></p>
+<p>Replaces all instances of the top bool from the top vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-replace-first">
+<h2>vector_bool_replace_first<a class="headerlink" href="#vector-bool-replace-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, bool, bool] - Produces: [vector_bool]</em></p>
+<p>Replaces the first instance of the top bool from the top vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-remove">
+<h2>vector_bool_remove<a class="headerlink" href="#vector-bool-remove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, bool] - Produces: [vector_bool]</em></p>
+<p>Removes all instances of the top bool from the top vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-iterate">
+<h2>vector_bool_iterate<a class="headerlink" href="#vector-bool-iterate" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState - Opens 1 code blocks</em></p>
+<p>Iterates over the top vector_bool using the code on top of the exec stack.</p>
+</div>
+<div class="section" id="vector-char-concat">
+<h2>vector_char_concat<a class="headerlink" href="#vector-char-concat" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, vector_char] - Produces: [vector_char]</em></p>
+<p>Concatenates the top two vector_char.</p>
+</div>
+<div class="section" id="vector-char-conj">
+<h2>vector_char_conj<a class="headerlink" href="#vector-char-conj" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, char] - Produces: [vector_char]</em></p>
+<p>Appends the top char to the top vector_char.</p>
+</div>
+<div class="section" id="vector-char-take">
+<h2>vector_char_take<a class="headerlink" href="#vector-char-take" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, int] - Produces: [vector_char]</em></p>
+<p>Creates a new vector_char from the first N elements of the top vector_char. N is top int.</p>
+</div>
+<div class="section" id="vector-char-subvec">
+<h2>vector_char_subvec<a class="headerlink" href="#vector-char-subvec" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, int, int] - Produces: [vector_char]</em></p>
+<p>Creates a new vector_char from a slice of the top vector_char. Start and end indices are the top two ints.</p>
+</div>
+<div class="section" id="vector-char-first">
+<h2>vector_char_first<a class="headerlink" href="#vector-char-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [char]</em></p>
+<p>Takes the first element of the top vector_char and pushes it to the char stack.</p>
+</div>
+<div class="section" id="vector-char-last">
+<h2>vector_char_last<a class="headerlink" href="#vector-char-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [char]</em></p>
+<p>Takes the last element of the top vector_char and pushes it to the char stack.</p>
+</div>
+<div class="section" id="vector-char-nth">
+<h2>vector_char_nth<a class="headerlink" href="#vector-char-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, int] - Produces: [char]</em></p>
+<p>Takes the nth element of the top vector_char and pushes it to the char stack. N is the top int.</p>
+</div>
+<div class="section" id="vector-char-rest">
+<h2>vector_char_rest<a class="headerlink" href="#vector-char-rest" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [vector_char]</em></p>
+<p>Drops the first element of the top vector_char.</p>
+</div>
+<div class="section" id="vector-char-but-last">
+<h2>vector_char_but_last<a class="headerlink" href="#vector-char-but-last" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [vector_char]</em></p>
+<p>Drops the last element of the top vector_char.</p>
+</div>
+<div class="section" id="vector-char-length">
+<h2>vector_char_length<a class="headerlink" href="#vector-char-length" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [int]</em></p>
+<p>Pushes the length of the top vector_char to the int stack.</p>
+</div>
+<div class="section" id="vector-char-reverse">
+<h2>vector_char_reverse<a class="headerlink" href="#vector-char-reverse" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [vector_char]</em></p>
+<p>Reverses the top vector_char.</p>
+</div>
+<div class="section" id="vector-char-push-all">
+<h2>vector_char_push_all<a class="headerlink" href="#vector-char-push-all" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: Arbitrary number of char values.</em></p>
+<p>Pushes all elements of the top vector_char to the char.</p>
+</div>
+<div class="section" id="vector-char-empty-vector">
+<h2>vector_char_empty_vector<a class="headerlink" href="#vector-char-empty-vector" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top vector_char is empty. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-char-contains">
+<h2>vector_char_contains<a class="headerlink" href="#vector-char-contains" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, char] - Produces: [bool]</em></p>
+<p>Pushes True to the bool stack if the top char is found in the top vector_char. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-char-index-of">
+<h2>vector_char_index_of<a class="headerlink" href="#vector-char-index-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, char] - Produces: [int]</em></p>
+<p>Pushes the index top char is top vector_char to int stack. Pushes -1 if not found.</p>
+</div>
+<div class="section" id="vector-char-occurrences-of">
+<h2>vector_char_occurrences_of<a class="headerlink" href="#vector-char-occurrences-of" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, char] - Produces: [int]</em></p>
+<p>Pushes the number of time the top char is found in the top vector_char to int stack.</p>
+</div>
+<div class="section" id="vector-char-set-nth">
+<h2>vector_char_set_nth<a class="headerlink" href="#vector-char-set-nth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, int, char] - Produces: [vector_char]</em></p>
+<p>Sets the nth element of the top vector_char to be the top char. N is the top int.</p>
+</div>
+<div class="section" id="vector-char-replace">
+<h2>vector_char_replace<a class="headerlink" href="#vector-char-replace" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, char, char] - Produces: [vector_char]</em></p>
+<p>Replaces all instances of the top char from the top vector_char.</p>
+</div>
+<div class="section" id="vector-char-replace-first">
+<h2>vector_char_replace_first<a class="headerlink" href="#vector-char-replace-first" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, char, char] - Produces: [vector_char]</em></p>
+<p>Replaces the first instance of the top char from the top vector_char.</p>
+</div>
+<div class="section" id="vector-char-remove">
+<h2>vector_char_remove<a class="headerlink" href="#vector-char-remove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, char] - Produces: [vector_char]</em></p>
+<p>Removes all instances of the top char from the top vector_char.</p>
+</div>
+<div class="section" id="vector-char-iterate">
+<h2>vector_char_iterate<a class="headerlink" href="#vector-char-iterate" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState - Opens 1 code blocks</em></p>
+<p>Iterates over the top vector_char using the code on top of the exec stack.</p>
+</div>
 <div class="section" id="print-bool">
 <h2>print_bool<a class="headerlink" href="#print-bool" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [bool] - Produces: [stdout]</em></p>
+<p>Prints the top bool.</p>
+</div>
+<div class="section" id="println-bool">
+<h2>println_bool<a class="headerlink" href="#println-bool" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [bool] - Produces: [stdout]</em></p>
 <p>Prints the top bool.</p>
 </div>
@@ -853,8 +1385,18 @@ equal and -1 otherwise.</p>
 <p><em>Takes: [int] - Produces: [stdout]</em></p>
 <p>Prints the top int.</p>
 </div>
+<div class="section" id="println-int">
+<h2>println_int<a class="headerlink" href="#println-int" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [int] - Produces: [stdout]</em></p>
+<p>Prints the top int.</p>
+</div>
 <div class="section" id="print-char">
 <h2>print_char<a class="headerlink" href="#print-char" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [char] - Produces: [stdout]</em></p>
+<p>Prints the top char.</p>
+</div>
+<div class="section" id="println-char">
+<h2>println_char<a class="headerlink" href="#println-char" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [char] - Produces: [stdout]</em></p>
 <p>Prints the top char.</p>
 </div>
@@ -863,18 +1405,88 @@ equal and -1 otherwise.</p>
 <p><em>Takes: [float] - Produces: [stdout]</em></p>
 <p>Prints the top float.</p>
 </div>
+<div class="section" id="println-float">
+<h2>println_float<a class="headerlink" href="#println-float" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [float] - Produces: [stdout]</em></p>
+<p>Prints the top float.</p>
+</div>
 <div class="section" id="print-str">
 <h2>print_str<a class="headerlink" href="#print-str" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [str] - Produces: [stdout]</em></p>
 <p>Prints the top str.</p>
+</div>
+<div class="section" id="println-str">
+<h2>println_str<a class="headerlink" href="#println-str" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [str] - Produces: [stdout]</em></p>
+<p>Prints the top str.</p>
+</div>
+<div class="section" id="print-vector-int">
+<h2>print_vector_int<a class="headerlink" href="#print-vector-int" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [stdout]</em></p>
+<p>Prints the top vector_int.</p>
+</div>
+<div class="section" id="println-vector-int">
+<h2>println_vector_int<a class="headerlink" href="#println-vector-int" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [stdout]</em></p>
+<p>Prints the top vector_int.</p>
+</div>
+<div class="section" id="print-vector-float">
+<h2>print_vector_float<a class="headerlink" href="#print-vector-float" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [stdout]</em></p>
+<p>Prints the top vector_float.</p>
+</div>
+<div class="section" id="println-vector-float">
+<h2>println_vector_float<a class="headerlink" href="#println-vector-float" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [stdout]</em></p>
+<p>Prints the top vector_float.</p>
+</div>
+<div class="section" id="print-vector-str">
+<h2>print_vector_str<a class="headerlink" href="#print-vector-str" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [stdout]</em></p>
+<p>Prints the top vector_str.</p>
+</div>
+<div class="section" id="println-vector-str">
+<h2>println_vector_str<a class="headerlink" href="#println-vector-str" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [stdout]</em></p>
+<p>Prints the top vector_str.</p>
+</div>
+<div class="section" id="print-vector-bool">
+<h2>print_vector_bool<a class="headerlink" href="#print-vector-bool" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [stdout]</em></p>
+<p>Prints the top vector_bool.</p>
+</div>
+<div class="section" id="println-vector-bool">
+<h2>println_vector_bool<a class="headerlink" href="#println-vector-bool" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [stdout]</em></p>
+<p>Prints the top vector_bool.</p>
+</div>
+<div class="section" id="print-vector-char">
+<h2>print_vector_char<a class="headerlink" href="#print-vector-char" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [stdout]</em></p>
+<p>Prints the top vector_char.</p>
+</div>
+<div class="section" id="println-vector-char">
+<h2>println_vector_char<a class="headerlink" href="#println-vector-char" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [stdout]</em></p>
+<p>Prints the top vector_char.</p>
 </div>
 <div class="section" id="print-code">
 <h2>print_code<a class="headerlink" href="#print-code" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [code] - Produces: [stdout]</em></p>
 <p>Prints the top code.</p>
 </div>
+<div class="section" id="println-code">
+<h2>println_code<a class="headerlink" href="#println-code" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [code] - Produces: [stdout]</em></p>
+<p>Prints the top code.</p>
+</div>
 <div class="section" id="print-exec">
 <h2>print_exec<a class="headerlink" href="#print-exec" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [exec] - Produces: [stdout]</em></p>
+<p>Prints the top exec.</p>
+</div>
+<div class="section" id="println-exec">
+<h2>println_exec<a class="headerlink" href="#println-exec" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [exec] - Produces: [stdout]</em></p>
 <p>Prints the top exec.</p>
 </div>
@@ -1203,6 +1815,331 @@ equal and -1 otherwise.</p>
 <p><em>Takes: PushState - Produces: [bool]</em></p>
 <p>Pushes True if the str stack is empty. Pushes False otherwise.</p>
 </div>
+<div class="section" id="vector-int-pop">
+<h2>vector_int_pop<a class="headerlink" href="#vector-int-pop" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: []</em></p>
+<p>Pops the top vector_int.</p>
+</div>
+<div class="section" id="vector-int-dup">
+<h2>vector_int_dup<a class="headerlink" href="#vector-int-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [vector_int, vector_int]</em></p>
+<p>Duplicates the top vector_int.</p>
+</div>
+<div class="section" id="vector-int-dup-times">
+<h2>vector_int_dup_times<a class="headerlink" href="#vector-int-dup-times" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [int, vector_int] - Produces: Arbitrary number of vector_int values.</em></p>
+<p>Duplicates the top vector_int <cite>n</cite> times where <cite>n</cite> is from the int stack.</p>
+</div>
+<div class="section" id="vector-int-swap">
+<h2>vector_int_swap<a class="headerlink" href="#vector-int-swap" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, vector_int] - Produces: [vector_int, vector_int]</em></p>
+<p>Swaps the top two vector_ints.</p>
+</div>
+<div class="section" id="vector-int-rot">
+<h2>vector_int_rot<a class="headerlink" href="#vector-int-rot" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, vector_int, vector_int] - Produces: [vector_int, vector_int, vector_int]</em></p>
+<p>Rotates the top three vector_ints.</p>
+</div>
+<div class="section" id="vector-int-flush">
+<h2>vector_int_flush<a class="headerlink" href="#vector-int-flush" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Empties the vector_int stack.</p>
+</div>
+<div class="section" id="vector-int-eq">
+<h2>vector_int_eq<a class="headerlink" href="#vector-int-eq" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int, vector_int] - Produces: [bool]</em></p>
+<p>Pushes True if the top two vector_int are equal. Otherwise pushes False.</p>
+</div>
+<div class="section" id="vector-int-stack-depth">
+<h2>vector_int_stack_depth<a class="headerlink" href="#vector-int-stack-depth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [int]</em></p>
+<p>Pushes the size of the vector_int stack to the int stack.</p>
+</div>
+<div class="section" id="vector-int-yank">
+<h2>vector_int_yank<a class="headerlink" href="#vector-int-yank" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a vector_int from deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-int-yank-dup">
+<h2>vector_int_yank_dup<a class="headerlink" href="#vector-int-yank-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a copy of a vector_int deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-int-shove">
+<h2>vector_int_shove<a class="headerlink" href="#vector-int-shove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves the top vector_int deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-int-shove-dup">
+<h2>vector_int_shove_dup<a class="headerlink" href="#vector-int-shove-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves a copy of the top vector_int deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-int-is-empty">
+<h2>vector_int_is_empty<a class="headerlink" href="#vector-int-is-empty" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [bool]</em></p>
+<p>Pushes True if the vector_int stack is empty. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-float-pop">
+<h2>vector_float_pop<a class="headerlink" href="#vector-float-pop" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: []</em></p>
+<p>Pops the top vector_float.</p>
+</div>
+<div class="section" id="vector-float-dup">
+<h2>vector_float_dup<a class="headerlink" href="#vector-float-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [vector_float, vector_float]</em></p>
+<p>Duplicates the top vector_float.</p>
+</div>
+<div class="section" id="vector-float-dup-times">
+<h2>vector_float_dup_times<a class="headerlink" href="#vector-float-dup-times" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [int, vector_float] - Produces: Arbitrary number of vector_float values.</em></p>
+<p>Duplicates the top vector_float <cite>n</cite> times where <cite>n</cite> is from the int stack.</p>
+</div>
+<div class="section" id="vector-float-swap">
+<h2>vector_float_swap<a class="headerlink" href="#vector-float-swap" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, vector_float] - Produces: [vector_float, vector_float]</em></p>
+<p>Swaps the top two vector_floats.</p>
+</div>
+<div class="section" id="vector-float-rot">
+<h2>vector_float_rot<a class="headerlink" href="#vector-float-rot" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, vector_float, vector_float] - Produces: [vector_float, vector_float, vector_float]</em></p>
+<p>Rotates the top three vector_floats.</p>
+</div>
+<div class="section" id="vector-float-flush">
+<h2>vector_float_flush<a class="headerlink" href="#vector-float-flush" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Empties the vector_float stack.</p>
+</div>
+<div class="section" id="vector-float-eq">
+<h2>vector_float_eq<a class="headerlink" href="#vector-float-eq" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float, vector_float] - Produces: [bool]</em></p>
+<p>Pushes True if the top two vector_float are equal. Otherwise pushes False.</p>
+</div>
+<div class="section" id="vector-float-stack-depth">
+<h2>vector_float_stack_depth<a class="headerlink" href="#vector-float-stack-depth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [int]</em></p>
+<p>Pushes the size of the vector_float stack to the int stack.</p>
+</div>
+<div class="section" id="vector-float-yank">
+<h2>vector_float_yank<a class="headerlink" href="#vector-float-yank" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a vector_float from deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-float-yank-dup">
+<h2>vector_float_yank_dup<a class="headerlink" href="#vector-float-yank-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a copy of a vector_float deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-float-shove">
+<h2>vector_float_shove<a class="headerlink" href="#vector-float-shove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves the top vector_float deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-float-shove-dup">
+<h2>vector_float_shove_dup<a class="headerlink" href="#vector-float-shove-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves a copy of the top vector_float deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-float-is-empty">
+<h2>vector_float_is_empty<a class="headerlink" href="#vector-float-is-empty" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [bool]</em></p>
+<p>Pushes True if the vector_float stack is empty. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-str-pop">
+<h2>vector_str_pop<a class="headerlink" href="#vector-str-pop" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: []</em></p>
+<p>Pops the top vector_str.</p>
+</div>
+<div class="section" id="vector-str-dup">
+<h2>vector_str_dup<a class="headerlink" href="#vector-str-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [vector_str, vector_str]</em></p>
+<p>Duplicates the top vector_str.</p>
+</div>
+<div class="section" id="vector-str-dup-times">
+<h2>vector_str_dup_times<a class="headerlink" href="#vector-str-dup-times" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [int, vector_str] - Produces: Arbitrary number of vector_str values.</em></p>
+<p>Duplicates the top vector_str <cite>n</cite> times where <cite>n</cite> is from the int stack.</p>
+</div>
+<div class="section" id="vector-str-swap">
+<h2>vector_str_swap<a class="headerlink" href="#vector-str-swap" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, vector_str] - Produces: [vector_str, vector_str]</em></p>
+<p>Swaps the top two vector_strs.</p>
+</div>
+<div class="section" id="vector-str-rot">
+<h2>vector_str_rot<a class="headerlink" href="#vector-str-rot" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, vector_str, vector_str] - Produces: [vector_str, vector_str, vector_str]</em></p>
+<p>Rotates the top three vector_strs.</p>
+</div>
+<div class="section" id="vector-str-flush">
+<h2>vector_str_flush<a class="headerlink" href="#vector-str-flush" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Empties the vector_str stack.</p>
+</div>
+<div class="section" id="vector-str-eq">
+<h2>vector_str_eq<a class="headerlink" href="#vector-str-eq" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str, vector_str] - Produces: [bool]</em></p>
+<p>Pushes True if the top two vector_str are equal. Otherwise pushes False.</p>
+</div>
+<div class="section" id="vector-str-stack-depth">
+<h2>vector_str_stack_depth<a class="headerlink" href="#vector-str-stack-depth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [int]</em></p>
+<p>Pushes the size of the vector_str stack to the int stack.</p>
+</div>
+<div class="section" id="vector-str-yank">
+<h2>vector_str_yank<a class="headerlink" href="#vector-str-yank" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a vector_str from deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-str-yank-dup">
+<h2>vector_str_yank_dup<a class="headerlink" href="#vector-str-yank-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a copy of a vector_str deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-str-shove">
+<h2>vector_str_shove<a class="headerlink" href="#vector-str-shove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves the top vector_str deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-str-shove-dup">
+<h2>vector_str_shove_dup<a class="headerlink" href="#vector-str-shove-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves a copy of the top vector_str deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-str-is-empty">
+<h2>vector_str_is_empty<a class="headerlink" href="#vector-str-is-empty" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [bool]</em></p>
+<p>Pushes True if the vector_str stack is empty. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-bool-pop">
+<h2>vector_bool_pop<a class="headerlink" href="#vector-bool-pop" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: []</em></p>
+<p>Pops the top vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-dup">
+<h2>vector_bool_dup<a class="headerlink" href="#vector-bool-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [vector_bool, vector_bool]</em></p>
+<p>Duplicates the top vector_bool.</p>
+</div>
+<div class="section" id="vector-bool-dup-times">
+<h2>vector_bool_dup_times<a class="headerlink" href="#vector-bool-dup-times" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [int, vector_bool] - Produces: Arbitrary number of vector_bool values.</em></p>
+<p>Duplicates the top vector_bool <cite>n</cite> times where <cite>n</cite> is from the int stack.</p>
+</div>
+<div class="section" id="vector-bool-swap">
+<h2>vector_bool_swap<a class="headerlink" href="#vector-bool-swap" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, vector_bool] - Produces: [vector_bool, vector_bool]</em></p>
+<p>Swaps the top two vector_bools.</p>
+</div>
+<div class="section" id="vector-bool-rot">
+<h2>vector_bool_rot<a class="headerlink" href="#vector-bool-rot" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, vector_bool, vector_bool] - Produces: [vector_bool, vector_bool, vector_bool]</em></p>
+<p>Rotates the top three vector_bools.</p>
+</div>
+<div class="section" id="vector-bool-flush">
+<h2>vector_bool_flush<a class="headerlink" href="#vector-bool-flush" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Empties the vector_bool stack.</p>
+</div>
+<div class="section" id="vector-bool-eq">
+<h2>vector_bool_eq<a class="headerlink" href="#vector-bool-eq" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool, vector_bool] - Produces: [bool]</em></p>
+<p>Pushes True if the top two vector_bool are equal. Otherwise pushes False.</p>
+</div>
+<div class="section" id="vector-bool-stack-depth">
+<h2>vector_bool_stack_depth<a class="headerlink" href="#vector-bool-stack-depth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [int]</em></p>
+<p>Pushes the size of the vector_bool stack to the int stack.</p>
+</div>
+<div class="section" id="vector-bool-yank">
+<h2>vector_bool_yank<a class="headerlink" href="#vector-bool-yank" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a vector_bool from deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-bool-yank-dup">
+<h2>vector_bool_yank_dup<a class="headerlink" href="#vector-bool-yank-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a copy of a vector_bool deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-bool-shove">
+<h2>vector_bool_shove<a class="headerlink" href="#vector-bool-shove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves the top vector_bool deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-bool-shove-dup">
+<h2>vector_bool_shove_dup<a class="headerlink" href="#vector-bool-shove-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves a copy of the top vector_bool deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-bool-is-empty">
+<h2>vector_bool_is_empty<a class="headerlink" href="#vector-bool-is-empty" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [bool]</em></p>
+<p>Pushes True if the vector_bool stack is empty. Pushes False otherwise.</p>
+</div>
+<div class="section" id="vector-char-pop">
+<h2>vector_char_pop<a class="headerlink" href="#vector-char-pop" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: []</em></p>
+<p>Pops the top vector_char.</p>
+</div>
+<div class="section" id="vector-char-dup">
+<h2>vector_char_dup<a class="headerlink" href="#vector-char-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [vector_char, vector_char]</em></p>
+<p>Duplicates the top vector_char.</p>
+</div>
+<div class="section" id="vector-char-dup-times">
+<h2>vector_char_dup_times<a class="headerlink" href="#vector-char-dup-times" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [int, vector_char] - Produces: Arbitrary number of vector_char values.</em></p>
+<p>Duplicates the top vector_char <cite>n</cite> times where <cite>n</cite> is from the int stack.</p>
+</div>
+<div class="section" id="vector-char-swap">
+<h2>vector_char_swap<a class="headerlink" href="#vector-char-swap" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, vector_char] - Produces: [vector_char, vector_char]</em></p>
+<p>Swaps the top two vector_chars.</p>
+</div>
+<div class="section" id="vector-char-rot">
+<h2>vector_char_rot<a class="headerlink" href="#vector-char-rot" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, vector_char, vector_char] - Produces: [vector_char, vector_char, vector_char]</em></p>
+<p>Rotates the top three vector_chars.</p>
+</div>
+<div class="section" id="vector-char-flush">
+<h2>vector_char_flush<a class="headerlink" href="#vector-char-flush" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Empties the vector_char stack.</p>
+</div>
+<div class="section" id="vector-char-eq">
+<h2>vector_char_eq<a class="headerlink" href="#vector-char-eq" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char, vector_char] - Produces: [bool]</em></p>
+<p>Pushes True if the top two vector_char are equal. Otherwise pushes False.</p>
+</div>
+<div class="section" id="vector-char-stack-depth">
+<h2>vector_char_stack_depth<a class="headerlink" href="#vector-char-stack-depth" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [int]</em></p>
+<p>Pushes the size of the vector_char stack to the int stack.</p>
+</div>
+<div class="section" id="vector-char-yank">
+<h2>vector_char_yank<a class="headerlink" href="#vector-char-yank" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a vector_char from deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-char-yank-dup">
+<h2>vector_char_yank_dup<a class="headerlink" href="#vector-char-yank-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Yanks a copy of a vector_char deep in the stack based on an index from the int stack and puts it on top.</p>
+</div>
+<div class="section" id="vector-char-shove">
+<h2>vector_char_shove<a class="headerlink" href="#vector-char-shove" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves the top vector_char deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-char-shove-dup">
+<h2>vector_char_shove_dup<a class="headerlink" href="#vector-char-shove-dup" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: PushState</em></p>
+<p>Shoves a copy of the top vector_char deep in the stack based on an index from the int stack.</p>
+</div>
+<div class="section" id="vector-char-is-empty">
+<h2>vector_char_is_empty<a class="headerlink" href="#vector-char-is-empty" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: PushState - Produces: [bool]</em></p>
+<p>Pushes True if the vector_char stack is empty. Pushes False otherwise.</p>
+</div>
 <div class="section" id="code-pop">
 <h2>code_pop<a class="headerlink" href="#code-pop" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [code] - Produces: []</em></p>
@@ -1358,6 +2295,31 @@ equal and -1 otherwise.</p>
 <p><em>Takes: [str] - Produces: [code]</em></p>
 <p>Moves the top str to the code stack.</p>
 </div>
+<div class="section" id="code-from-vector-int">
+<h2>code_from_vector_int<a class="headerlink" href="#code-from-vector-int" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_int] - Produces: [code]</em></p>
+<p>Moves the top vector_int to the code stack.</p>
+</div>
+<div class="section" id="code-from-vector-float">
+<h2>code_from_vector_float<a class="headerlink" href="#code-from-vector-float" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_float] - Produces: [code]</em></p>
+<p>Moves the top vector_float to the code stack.</p>
+</div>
+<div class="section" id="code-from-vector-str">
+<h2>code_from_vector_str<a class="headerlink" href="#code-from-vector-str" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_str] - Produces: [code]</em></p>
+<p>Moves the top vector_str to the code stack.</p>
+</div>
+<div class="section" id="code-from-vector-bool">
+<h2>code_from_vector_bool<a class="headerlink" href="#code-from-vector-bool" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_bool] - Produces: [code]</em></p>
+<p>Moves the top vector_bool to the code stack.</p>
+</div>
+<div class="section" id="code-from-vector-char">
+<h2>code_from_vector_char<a class="headerlink" href="#code-from-vector-char" title="Permalink to this headline">¶</a></h2>
+<p><em>Takes: [vector_char] - Produces: [code]</em></p>
+<p>Moves the top vector_char to the code stack.</p>
+</div>
 <div class="section" id="code-from-exec">
 <h2>code_from_exec<a class="headerlink" href="#code-from-exec" title="Permalink to this headline">¶</a></h2>
 <p><em>Takes: [exec] - Produces: [code] - Opens 1 code blocks</em></p>
@@ -1366,6 +2328,7 @@ equal and -1 otherwise.</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -1460,7 +2423,7 @@ equal and -1 otherwise.</p>
 <li><a class="reference internal" href="#str-from-char">str_from_char</a></li>
 <li><a class="reference internal" href="#char-from-bool">char_from_bool</a></li>
 <li><a class="reference internal" href="#char-from-ascii-int">char_from_ascii_int</a></li>
-<li><a class="reference internal" href="#char-from-float">_char_from_float</a></li>
+<li><a class="reference internal" href="#char-from-float">char_from_float</a></li>
 <li><a class="reference internal" href="#chars-from-str">chars_from_str</a></li>
 <li><a class="reference internal" href="#bool-and">bool_and</a></li>
 <li><a class="reference internal" href="#bool-or">bool_or</a></li>
@@ -1507,13 +2470,135 @@ equal and -1 otherwise.</p>
 <li><a class="reference internal" href="#code-insert">code_insert</a></li>
 <li><a class="reference internal" href="#code-first-position">code_first_position</a></li>
 <li><a class="reference internal" href="#code-reverse">code_reverse</a></li>
+<li><a class="reference internal" href="#vector-int-concat">vector_int_concat</a></li>
+<li><a class="reference internal" href="#vector-int-conj">vector_int_conj</a></li>
+<li><a class="reference internal" href="#vector-int-take">vector_int_take</a></li>
+<li><a class="reference internal" href="#vector-int-subvec">vector_int_subvec</a></li>
+<li><a class="reference internal" href="#vector-int-first">vector_int_first</a></li>
+<li><a class="reference internal" href="#vector-int-last">vector_int_last</a></li>
+<li><a class="reference internal" href="#vector-int-nth">vector_int_nth</a></li>
+<li><a class="reference internal" href="#vector-int-rest">vector_int_rest</a></li>
+<li><a class="reference internal" href="#vector-int-but-last">vector_int_but_last</a></li>
+<li><a class="reference internal" href="#vector-int-length">vector_int_length</a></li>
+<li><a class="reference internal" href="#vector-int-reverse">vector_int_reverse</a></li>
+<li><a class="reference internal" href="#vector-int-push-all">vector_int_push_all</a></li>
+<li><a class="reference internal" href="#vector-int-empty-vector">vector_int_empty_vector</a></li>
+<li><a class="reference internal" href="#vector-int-contains">vector_int_contains</a></li>
+<li><a class="reference internal" href="#vector-int-index-of">vector_int_index_of</a></li>
+<li><a class="reference internal" href="#vector-int-occurrences-of">vector_int_occurrences_of</a></li>
+<li><a class="reference internal" href="#vector-int-set-nth">vector_int_set_nth</a></li>
+<li><a class="reference internal" href="#vector-int-replace">vector_int_replace</a></li>
+<li><a class="reference internal" href="#vector-int-replace-first">vector_int_replace_first</a></li>
+<li><a class="reference internal" href="#vector-int-remove">vector_int_remove</a></li>
+<li><a class="reference internal" href="#vector-int-iterate">vector_int_iterate</a></li>
+<li><a class="reference internal" href="#vector-float-concat">vector_float_concat</a></li>
+<li><a class="reference internal" href="#vector-float-conj">vector_float_conj</a></li>
+<li><a class="reference internal" href="#vector-float-take">vector_float_take</a></li>
+<li><a class="reference internal" href="#vector-float-subvec">vector_float_subvec</a></li>
+<li><a class="reference internal" href="#vector-float-first">vector_float_first</a></li>
+<li><a class="reference internal" href="#vector-float-last">vector_float_last</a></li>
+<li><a class="reference internal" href="#vector-float-nth">vector_float_nth</a></li>
+<li><a class="reference internal" href="#vector-float-rest">vector_float_rest</a></li>
+<li><a class="reference internal" href="#vector-float-but-last">vector_float_but_last</a></li>
+<li><a class="reference internal" href="#vector-float-length">vector_float_length</a></li>
+<li><a class="reference internal" href="#vector-float-reverse">vector_float_reverse</a></li>
+<li><a class="reference internal" href="#vector-float-push-all">vector_float_push_all</a></li>
+<li><a class="reference internal" href="#vector-float-empty-vector">vector_float_empty_vector</a></li>
+<li><a class="reference internal" href="#vector-float-contains">vector_float_contains</a></li>
+<li><a class="reference internal" href="#vector-float-index-of">vector_float_index_of</a></li>
+<li><a class="reference internal" href="#vector-float-occurrences-of">vector_float_occurrences_of</a></li>
+<li><a class="reference internal" href="#vector-float-set-nth">vector_float_set_nth</a></li>
+<li><a class="reference internal" href="#vector-float-replace">vector_float_replace</a></li>
+<li><a class="reference internal" href="#vector-float-replace-first">vector_float_replace_first</a></li>
+<li><a class="reference internal" href="#vector-float-remove">vector_float_remove</a></li>
+<li><a class="reference internal" href="#vector-float-iterate">vector_float_iterate</a></li>
+<li><a class="reference internal" href="#vector-str-concat">vector_str_concat</a></li>
+<li><a class="reference internal" href="#vector-str-conj">vector_str_conj</a></li>
+<li><a class="reference internal" href="#vector-str-take">vector_str_take</a></li>
+<li><a class="reference internal" href="#vector-str-subvec">vector_str_subvec</a></li>
+<li><a class="reference internal" href="#vector-str-first">vector_str_first</a></li>
+<li><a class="reference internal" href="#vector-str-last">vector_str_last</a></li>
+<li><a class="reference internal" href="#vector-str-nth">vector_str_nth</a></li>
+<li><a class="reference internal" href="#vector-str-rest">vector_str_rest</a></li>
+<li><a class="reference internal" href="#vector-str-but-last">vector_str_but_last</a></li>
+<li><a class="reference internal" href="#vector-str-length">vector_str_length</a></li>
+<li><a class="reference internal" href="#vector-str-reverse">vector_str_reverse</a></li>
+<li><a class="reference internal" href="#vector-str-push-all">vector_str_push_all</a></li>
+<li><a class="reference internal" href="#vector-str-empty-vector">vector_str_empty_vector</a></li>
+<li><a class="reference internal" href="#vector-str-contains">vector_str_contains</a></li>
+<li><a class="reference internal" href="#vector-str-index-of">vector_str_index_of</a></li>
+<li><a class="reference internal" href="#vector-str-occurrences-of">vector_str_occurrences_of</a></li>
+<li><a class="reference internal" href="#vector-str-set-nth">vector_str_set_nth</a></li>
+<li><a class="reference internal" href="#vector-str-replace">vector_str_replace</a></li>
+<li><a class="reference internal" href="#vector-str-replace-first">vector_str_replace_first</a></li>
+<li><a class="reference internal" href="#vector-str-remove">vector_str_remove</a></li>
+<li><a class="reference internal" href="#vector-str-iterate">vector_str_iterate</a></li>
+<li><a class="reference internal" href="#vector-bool-concat">vector_bool_concat</a></li>
+<li><a class="reference internal" href="#vector-bool-conj">vector_bool_conj</a></li>
+<li><a class="reference internal" href="#vector-bool-take">vector_bool_take</a></li>
+<li><a class="reference internal" href="#vector-bool-subvec">vector_bool_subvec</a></li>
+<li><a class="reference internal" href="#vector-bool-first">vector_bool_first</a></li>
+<li><a class="reference internal" href="#vector-bool-last">vector_bool_last</a></li>
+<li><a class="reference internal" href="#vector-bool-nth">vector_bool_nth</a></li>
+<li><a class="reference internal" href="#vector-bool-rest">vector_bool_rest</a></li>
+<li><a class="reference internal" href="#vector-bool-but-last">vector_bool_but_last</a></li>
+<li><a class="reference internal" href="#vector-bool-length">vector_bool_length</a></li>
+<li><a class="reference internal" href="#vector-bool-reverse">vector_bool_reverse</a></li>
+<li><a class="reference internal" href="#vector-bool-push-all">vector_bool_push_all</a></li>
+<li><a class="reference internal" href="#vector-bool-empty-vector">vector_bool_empty_vector</a></li>
+<li><a class="reference internal" href="#vector-bool-contains">vector_bool_contains</a></li>
+<li><a class="reference internal" href="#vector-bool-index-of">vector_bool_index_of</a></li>
+<li><a class="reference internal" href="#vector-bool-occurrences-of">vector_bool_occurrences_of</a></li>
+<li><a class="reference internal" href="#vector-bool-set-nth">vector_bool_set_nth</a></li>
+<li><a class="reference internal" href="#vector-bool-replace">vector_bool_replace</a></li>
+<li><a class="reference internal" href="#vector-bool-replace-first">vector_bool_replace_first</a></li>
+<li><a class="reference internal" href="#vector-bool-remove">vector_bool_remove</a></li>
+<li><a class="reference internal" href="#vector-bool-iterate">vector_bool_iterate</a></li>
+<li><a class="reference internal" href="#vector-char-concat">vector_char_concat</a></li>
+<li><a class="reference internal" href="#vector-char-conj">vector_char_conj</a></li>
+<li><a class="reference internal" href="#vector-char-take">vector_char_take</a></li>
+<li><a class="reference internal" href="#vector-char-subvec">vector_char_subvec</a></li>
+<li><a class="reference internal" href="#vector-char-first">vector_char_first</a></li>
+<li><a class="reference internal" href="#vector-char-last">vector_char_last</a></li>
+<li><a class="reference internal" href="#vector-char-nth">vector_char_nth</a></li>
+<li><a class="reference internal" href="#vector-char-rest">vector_char_rest</a></li>
+<li><a class="reference internal" href="#vector-char-but-last">vector_char_but_last</a></li>
+<li><a class="reference internal" href="#vector-char-length">vector_char_length</a></li>
+<li><a class="reference internal" href="#vector-char-reverse">vector_char_reverse</a></li>
+<li><a class="reference internal" href="#vector-char-push-all">vector_char_push_all</a></li>
+<li><a class="reference internal" href="#vector-char-empty-vector">vector_char_empty_vector</a></li>
+<li><a class="reference internal" href="#vector-char-contains">vector_char_contains</a></li>
+<li><a class="reference internal" href="#vector-char-index-of">vector_char_index_of</a></li>
+<li><a class="reference internal" href="#vector-char-occurrences-of">vector_char_occurrences_of</a></li>
+<li><a class="reference internal" href="#vector-char-set-nth">vector_char_set_nth</a></li>
+<li><a class="reference internal" href="#vector-char-replace">vector_char_replace</a></li>
+<li><a class="reference internal" href="#vector-char-replace-first">vector_char_replace_first</a></li>
+<li><a class="reference internal" href="#vector-char-remove">vector_char_remove</a></li>
+<li><a class="reference internal" href="#vector-char-iterate">vector_char_iterate</a></li>
 <li><a class="reference internal" href="#print-bool">print_bool</a></li>
+<li><a class="reference internal" href="#println-bool">println_bool</a></li>
 <li><a class="reference internal" href="#print-int">print_int</a></li>
+<li><a class="reference internal" href="#println-int">println_int</a></li>
 <li><a class="reference internal" href="#print-char">print_char</a></li>
+<li><a class="reference internal" href="#println-char">println_char</a></li>
 <li><a class="reference internal" href="#print-float">print_float</a></li>
+<li><a class="reference internal" href="#println-float">println_float</a></li>
 <li><a class="reference internal" href="#print-str">print_str</a></li>
+<li><a class="reference internal" href="#println-str">println_str</a></li>
+<li><a class="reference internal" href="#print-vector-int">print_vector_int</a></li>
+<li><a class="reference internal" href="#println-vector-int">println_vector_int</a></li>
+<li><a class="reference internal" href="#print-vector-float">print_vector_float</a></li>
+<li><a class="reference internal" href="#println-vector-float">println_vector_float</a></li>
+<li><a class="reference internal" href="#print-vector-str">print_vector_str</a></li>
+<li><a class="reference internal" href="#println-vector-str">println_vector_str</a></li>
+<li><a class="reference internal" href="#print-vector-bool">print_vector_bool</a></li>
+<li><a class="reference internal" href="#println-vector-bool">println_vector_bool</a></li>
+<li><a class="reference internal" href="#print-vector-char">print_vector_char</a></li>
+<li><a class="reference internal" href="#println-vector-char">println_vector_char</a></li>
 <li><a class="reference internal" href="#print-code">print_code</a></li>
+<li><a class="reference internal" href="#println-code">println_code</a></li>
 <li><a class="reference internal" href="#print-exec">print_exec</a></li>
+<li><a class="reference internal" href="#println-exec">println_exec</a></li>
 <li><a class="reference internal" href="#bool-pop">bool_pop</a></li>
 <li><a class="reference internal" href="#bool-dup">bool_dup</a></li>
 <li><a class="reference internal" href="#bool-dup-times">bool_dup_times</a></li>
@@ -1579,6 +2664,71 @@ equal and -1 otherwise.</p>
 <li><a class="reference internal" href="#str-shove">str_shove</a></li>
 <li><a class="reference internal" href="#str-shove-dup">str_shove_dup</a></li>
 <li><a class="reference internal" href="#str-is-empty">str_is_empty</a></li>
+<li><a class="reference internal" href="#vector-int-pop">vector_int_pop</a></li>
+<li><a class="reference internal" href="#vector-int-dup">vector_int_dup</a></li>
+<li><a class="reference internal" href="#vector-int-dup-times">vector_int_dup_times</a></li>
+<li><a class="reference internal" href="#vector-int-swap">vector_int_swap</a></li>
+<li><a class="reference internal" href="#vector-int-rot">vector_int_rot</a></li>
+<li><a class="reference internal" href="#vector-int-flush">vector_int_flush</a></li>
+<li><a class="reference internal" href="#vector-int-eq">vector_int_eq</a></li>
+<li><a class="reference internal" href="#vector-int-stack-depth">vector_int_stack_depth</a></li>
+<li><a class="reference internal" href="#vector-int-yank">vector_int_yank</a></li>
+<li><a class="reference internal" href="#vector-int-yank-dup">vector_int_yank_dup</a></li>
+<li><a class="reference internal" href="#vector-int-shove">vector_int_shove</a></li>
+<li><a class="reference internal" href="#vector-int-shove-dup">vector_int_shove_dup</a></li>
+<li><a class="reference internal" href="#vector-int-is-empty">vector_int_is_empty</a></li>
+<li><a class="reference internal" href="#vector-float-pop">vector_float_pop</a></li>
+<li><a class="reference internal" href="#vector-float-dup">vector_float_dup</a></li>
+<li><a class="reference internal" href="#vector-float-dup-times">vector_float_dup_times</a></li>
+<li><a class="reference internal" href="#vector-float-swap">vector_float_swap</a></li>
+<li><a class="reference internal" href="#vector-float-rot">vector_float_rot</a></li>
+<li><a class="reference internal" href="#vector-float-flush">vector_float_flush</a></li>
+<li><a class="reference internal" href="#vector-float-eq">vector_float_eq</a></li>
+<li><a class="reference internal" href="#vector-float-stack-depth">vector_float_stack_depth</a></li>
+<li><a class="reference internal" href="#vector-float-yank">vector_float_yank</a></li>
+<li><a class="reference internal" href="#vector-float-yank-dup">vector_float_yank_dup</a></li>
+<li><a class="reference internal" href="#vector-float-shove">vector_float_shove</a></li>
+<li><a class="reference internal" href="#vector-float-shove-dup">vector_float_shove_dup</a></li>
+<li><a class="reference internal" href="#vector-float-is-empty">vector_float_is_empty</a></li>
+<li><a class="reference internal" href="#vector-str-pop">vector_str_pop</a></li>
+<li><a class="reference internal" href="#vector-str-dup">vector_str_dup</a></li>
+<li><a class="reference internal" href="#vector-str-dup-times">vector_str_dup_times</a></li>
+<li><a class="reference internal" href="#vector-str-swap">vector_str_swap</a></li>
+<li><a class="reference internal" href="#vector-str-rot">vector_str_rot</a></li>
+<li><a class="reference internal" href="#vector-str-flush">vector_str_flush</a></li>
+<li><a class="reference internal" href="#vector-str-eq">vector_str_eq</a></li>
+<li><a class="reference internal" href="#vector-str-stack-depth">vector_str_stack_depth</a></li>
+<li><a class="reference internal" href="#vector-str-yank">vector_str_yank</a></li>
+<li><a class="reference internal" href="#vector-str-yank-dup">vector_str_yank_dup</a></li>
+<li><a class="reference internal" href="#vector-str-shove">vector_str_shove</a></li>
+<li><a class="reference internal" href="#vector-str-shove-dup">vector_str_shove_dup</a></li>
+<li><a class="reference internal" href="#vector-str-is-empty">vector_str_is_empty</a></li>
+<li><a class="reference internal" href="#vector-bool-pop">vector_bool_pop</a></li>
+<li><a class="reference internal" href="#vector-bool-dup">vector_bool_dup</a></li>
+<li><a class="reference internal" href="#vector-bool-dup-times">vector_bool_dup_times</a></li>
+<li><a class="reference internal" href="#vector-bool-swap">vector_bool_swap</a></li>
+<li><a class="reference internal" href="#vector-bool-rot">vector_bool_rot</a></li>
+<li><a class="reference internal" href="#vector-bool-flush">vector_bool_flush</a></li>
+<li><a class="reference internal" href="#vector-bool-eq">vector_bool_eq</a></li>
+<li><a class="reference internal" href="#vector-bool-stack-depth">vector_bool_stack_depth</a></li>
+<li><a class="reference internal" href="#vector-bool-yank">vector_bool_yank</a></li>
+<li><a class="reference internal" href="#vector-bool-yank-dup">vector_bool_yank_dup</a></li>
+<li><a class="reference internal" href="#vector-bool-shove">vector_bool_shove</a></li>
+<li><a class="reference internal" href="#vector-bool-shove-dup">vector_bool_shove_dup</a></li>
+<li><a class="reference internal" href="#vector-bool-is-empty">vector_bool_is_empty</a></li>
+<li><a class="reference internal" href="#vector-char-pop">vector_char_pop</a></li>
+<li><a class="reference internal" href="#vector-char-dup">vector_char_dup</a></li>
+<li><a class="reference internal" href="#vector-char-dup-times">vector_char_dup_times</a></li>
+<li><a class="reference internal" href="#vector-char-swap">vector_char_swap</a></li>
+<li><a class="reference internal" href="#vector-char-rot">vector_char_rot</a></li>
+<li><a class="reference internal" href="#vector-char-flush">vector_char_flush</a></li>
+<li><a class="reference internal" href="#vector-char-eq">vector_char_eq</a></li>
+<li><a class="reference internal" href="#vector-char-stack-depth">vector_char_stack_depth</a></li>
+<li><a class="reference internal" href="#vector-char-yank">vector_char_yank</a></li>
+<li><a class="reference internal" href="#vector-char-yank-dup">vector_char_yank_dup</a></li>
+<li><a class="reference internal" href="#vector-char-shove">vector_char_shove</a></li>
+<li><a class="reference internal" href="#vector-char-shove-dup">vector_char_shove_dup</a></li>
+<li><a class="reference internal" href="#vector-char-is-empty">vector_char_is_empty</a></li>
 <li><a class="reference internal" href="#code-pop">code_pop</a></li>
 <li><a class="reference internal" href="#code-dup">code_dup</a></li>
 <li><a class="reference internal" href="#code-dup-times">code_dup_times</a></li>
@@ -1610,6 +2760,11 @@ equal and -1 otherwise.</p>
 <li><a class="reference internal" href="#code-from-char">code_from_char</a></li>
 <li><a class="reference internal" href="#code-from-float">code_from_float</a></li>
 <li><a class="reference internal" href="#code-from-str">code_from_str</a></li>
+<li><a class="reference internal" href="#code-from-vector-int">code_from_vector_int</a></li>
+<li><a class="reference internal" href="#code-from-vector-float">code_from_vector_float</a></li>
+<li><a class="reference internal" href="#code-from-vector-str">code_from_vector_str</a></li>
+<li><a class="reference internal" href="#code-from-vector-bool">code_from_vector_bool</a></li>
+<li><a class="reference internal" href="#code-from-vector-char">code_from_vector_char</a></li>
 <li><a class="reference internal" href="#code-from-exec">code_from_exec</a></li>
 </ul>
 </li>
@@ -1658,12 +2813,13 @@ equal and -1 otherwise.</p>
           <a href="instructions.html" title="Push Instructions"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="instructions.html" >Push Instructions</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="instructions.html" >Push Instructions</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PyshGP Core Instruction Set</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Push API &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -32,7 +33,8 @@
         <li class="right" >
           <a href="index.html" title="PyshGP Documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Push API</a></li> 
       </ul>
     </div>  
 
@@ -413,7 +415,7 @@ simplification process.</p>
 
 <dl class="py class">
 <dt id="pyshgp.utils.Token">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.utils.</code><code class="sig-name descname">Token</code><a class="reference internal" href="_modules/pyshgp/utils.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Token" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.utils.</code><code class="sig-name descname">Token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/utils.html#Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.utils.Token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>Enum class of all Tokens.</p>
 <dl class="py attribute">
@@ -482,14 +484,14 @@ simplification process.</p>
 
 <dl class="py function">
 <dt id="pyshgp.validation.check_1d">
-<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span></em><span class="sig-paren">)</span> &#x2192; Sequence<a class="reference internal" href="_modules/pyshgp/validation.html#check_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_1d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check given seq is one-dimensional. Raise error if can’t be easily transformed.</p>
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">MutableSequence</span></em><span class="sig-paren">)</span> &#x2192; Sequence<a class="reference internal" href="_modules/pyshgp/validation.html#check_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check given data is one-dimensional. Raise error if can’t be easily transformed.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="pyshgp.validation.check_2d">
-<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>list<span class="p">, </span>numpy.ndarray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="_modules/pyshgp/validation.html#check_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check given seq is two-dimensional. Raise error if can’t be easily transformed.</p>
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyshgp/validation.html#check_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check given data is two-dimensional. Raise error if can’t be easily transformed.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -502,7 +504,7 @@ simplification process.</p>
 
 <dl class="py function">
 <dt id="pyshgp.validation.check_column_types">
-<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_column_types</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span></em>, <em class="sig-param"><span class="n">certainty_proportion</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.2</span></em><span class="sig-paren">)</span> &#x2192; Sequence<span class="p">[</span>type<span class="p">]</span><a class="reference internal" href="_modules/pyshgp/validation.html#check_column_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_column_types" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_column_types</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">certainty_proportion</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.2</span></em><span class="sig-paren">)</span> &#x2192; Sequence<span class="p">[</span>type<span class="p">]</span><a class="reference internal" href="_modules/pyshgp/validation.html#check_column_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_column_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check all elements of each column are of the same type.</p>
 </dd></dl>
 
@@ -516,7 +518,7 @@ simplification process.</p>
 
 <dl class="py function">
 <dt id="pyshgp.validation.check_num_columns">
-<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_num_columns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="p">:</span> <span class="n">Sequence</span></em>, <em class="sig-param"><span class="n">certainty_proportion</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.2</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/pyshgp/validation.html#check_num_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_num_columns" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyshgp.validation.</code><code class="sig-name descname">check_num_columns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Sequence</span></em>, <em class="sig-param"><span class="n">certainty_proportion</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.2</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/pyshgp/validation.html#check_num_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.validation.check_num_columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of columns of in the dataset.</p>
 </dd></dl>
 
@@ -525,6 +527,7 @@ simplification process.</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -585,12 +588,13 @@ simplification process.</p>
         <li class="right" >
           <a href="index.html" title="PyshGP Documentation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Push API</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

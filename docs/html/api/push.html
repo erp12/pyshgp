@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyshgp.push package &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -33,7 +34,8 @@
           <a href="../api.html" title="Push API"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">Push API</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">Push API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.push package</a></li> 
       </ul>
     </div>  
 
@@ -69,7 +71,7 @@ logic of our Push programs is stored.</p>
 
 <dl class="py class">
 <dt id="pyshgp.push.atoms.Closer">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Closer</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Closer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Closer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Closer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Closer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Closer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._pclass.PClass</span></code></p>
 <p>An Atom dedicated to denoting the close of a CodeBlock in a <cite>Genomes</cite> representation.</p>
 <dl class="py method">
@@ -82,7 +84,7 @@ logic of our Push programs is stored.</p>
 
 <dl class="py class">
 <dt id="pyshgp.push.atoms.CodeBlock">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">CodeBlock</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#CodeBlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.CodeBlock" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">CodeBlock</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#CodeBlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.CodeBlock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._checked_types.CheckedPVector</span></code></p>
 <p>An <cite>Atom</cite> which holds a sequence of other atoms in order to express a nested code block.</p>
 <dl class="py method">
@@ -119,7 +121,7 @@ logic of our Push programs is stored.</p>
 
 <dl class="py class">
 <dt id="pyshgp.push.atoms.Input">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Input</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Input" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Input</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._pclass.PClass</span></code></p>
 <p>A reference to a positional argument of the <cite>PushProgram</cite> which the atom is part of.</p>
 <dl class="py attribute">
@@ -148,7 +150,7 @@ logic of our Push programs is stored.</p>
 
 <dl class="py class">
 <dt id="pyshgp.push.atoms.InstructionMeta">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">InstructionMeta</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#InstructionMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.InstructionMeta" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">InstructionMeta</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#InstructionMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.InstructionMeta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._pclass.PClass</span></code></p>
 <p>An identifier of a Push Instruction.</p>
 <p>The <cite>InstructionMeta</cite> is a placeholder atom. When a PushInterpreter evaluates
@@ -196,7 +198,7 @@ name in its <cite>InstructionSet</cite>. If found, this instruction is evaluated
 
 <dl class="py class">
 <dt id="pyshgp.push.atoms.Literal">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Literal</code><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Literal" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.atoms.</code><code class="sig-name descname">Literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/atoms.html#Literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.atoms.Literal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyshgp.push.atoms.Atom" title="pyshgp.push.atoms.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.atoms.Atom</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._pclass.PClass</span></code></p>
 <p>An Atom which holds a constant value.</p>
 <dl class="py attribute">
@@ -349,7 +351,7 @@ TakesStateInstruction.</p>
 <dt id="pyshgp.push.instruction.ProducesManyOfTypeInstruction">
 <em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.instruction.</code><code class="sig-name descname">ProducesManyOfTypeInstruction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">input_stacks</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">output_stack</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">code_blocks</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">docstring</span><span class="o">=</span><span class="default_value">'Write me!'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/instruction.html#ProducesManyOfTypeInstruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.instruction.ProducesManyOfTypeInstruction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyshgp.push.instruction.Instruction" title="pyshgp.push.instruction.Instruction"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.instruction.Instruction</span></code></a></p>
-<p>Instruction that produces arbitarily many values of a given PushType.</p>
+<p>Instruction that produces arbitrarily many values of a given PushType.</p>
 <p>ProducesManyOfTypeInstructions pop their arguments in the same was as
 SimpleInstructions. Items are popped from the stacks corresponding the
 types denoted in the <code class="docutils literal notranslate"><span class="pre">input_stacks</span></code> list. If multiple occurences of the
@@ -960,7 +962,7 @@ pyshgp.utils.Token.no_stack_item if output stacks are empty.</p>
 
 <dl class="py class">
 <dt id="pyshgp.push.interpreter.PushInterpreterStatus">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.interpreter.</code><code class="sig-name descname">PushInterpreterStatus</code><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreterStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.interpreter.</code><code class="sig-name descname">PushInterpreterStatus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/interpreter.html#PushInterpreterStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.interpreter.PushInterpreterStatus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>Enum class of all potential statuses of a PushInterpreter.</p>
 <dl class="py attribute">
@@ -1186,6 +1188,7 @@ that the <code class="docutils literal notranslate"><span class="pre">d</span></
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>d</strong> (<em>dict</em>) – Dict that is converted into a Push state.</p></li>
 <li><p><strong>type_library</strong> (<a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary"><em>PushTypeLibrary</em></a>) – A Push type library.</p></li>
+<li><p><strong>push_config</strong> (<em>PushConfig</em>) – The configuration of the current program being executed.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1310,7 +1313,7 @@ the stacks.</p>
 
 <dl class="py method">
 <dt id="pyshgp.push.type_library.PushTypeLibrary.create_and_register">
-<code class="sig-name descname">create_and_register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">underlying_types</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>type<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">is_collection</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_numeric</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">coercion_func</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">force</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.create_and_register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.create_and_register" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_and_register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">python_types</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>type<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">is_collection</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_numeric</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">force</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#PushTypeLibrary.create_and_register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.PushTypeLibrary.create_and_register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a PushType and register it into the library.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1318,7 +1321,7 @@ the stacks.</p>
 <li><p><strong>name</strong> (<em>str</em>) – A name for the type. Used when referencing the PushType in Instruction
 definitions and will be the key in the PushState for the corresponding
 PushStack.</p></li>
-<li><p><strong>underlying_types</strong> (<em>Tuple</em><em>[</em><em>type</em><em>]</em>) – A tuple of python types that correspond to the underlying
+<li><p><strong>python_types</strong> (<em>Tuple</em><em>[</em><em>type</em><em>]</em>) – A tuple of python types that correspond to the underlying
 native types which the PushType is representing.</p></li>
 <li><p><strong>is_collection</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if the PushType is a collection. Default is False.</p></li>
 <li><p><strong>is_numeric</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if the PushType is a number. Default is False.</p></li>
@@ -1327,7 +1330,7 @@ into the PushTypes canonical type (the first type in <code class="docutils liter
 If None, the constructor of the canonical type is used. Default is None.</p></li>
 <li><p><strong>force</strong> (<em>bool</em>) – If True, will register the type even if it will overwrite an
 existing reserved stack typed (eg. exec, stdout, untyped). Default
-is False. It is not reccomended this argument be changed unless
+is False. It is not recommended this argument be changed unless
 you have a very good reason to do so.</p></li>
 </ul>
 </dd>
@@ -1492,6 +1495,12 @@ you have a very good reason to do so.</p></li>
 can be used to determine if multiple items should be considered the same type
 during Push program execution.</p>
 <dl class="py class">
+<dt id="pyshgp.push.types.BoolVector">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">BoolVector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#BoolVector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.BoolVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._checked_types.CheckedPVector</span></code></p>
+</dd></dl>
+
+<dl class="py class">
 <dt id="pyshgp.push.types.Char">
 <em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">Char</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">char</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#Char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.Char" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -1512,25 +1521,58 @@ interpretation.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt id="pyshgp.push.types.CharVector">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">CharVector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#CharVector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.CharVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._checked_types.CheckedPVector</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.FloatVector">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">FloatVector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#FloatVector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.FloatVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._checked_types.CheckedPVector</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.IntVector">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">IntVector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#IntVector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.IntVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._checked_types.CheckedPVector</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.PushBoolType">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">PushBoolType</code><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushBoolType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushBoolType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.types.PushType</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.PushCharType">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">PushCharType</code><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushCharType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushCharType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.types.PushType</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.PushFloatType">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">PushFloatType</code><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushFloatType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushFloatType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.types.PushType</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.PushIntType">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">PushIntType</code><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushIntType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushIntType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.types.PushType</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.PushStrType">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">PushStrType</code><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushStrType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushStrType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.types.PushType</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
 <dt id="pyshgp.push.types.PushType">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">PushType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">underlying</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>type<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">is_collection</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_numeric</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">coercion_func</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">PushType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">python_types</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>type<span class="p">, </span><span class="p">…</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">is_collection</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_numeric</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Type information for values used by Push programs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – A name for the type. Used when referencing the PushType in Instruction
-definitions and will be the key in the PushState for the corresponding
-PushStack.</p></li>
-<li><p><strong>underlying</strong> (<em>Sequence</em><em>[</em><em>type</em><em>]</em>) – A tuple of python (or numpy) types that correspond to the underlying
-native types which the PushType is representing.</p></li>
-<li><p><strong>is_collection</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indication that the PushType is a collection.</p></li>
-<li><p><strong>coercion_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Any</em><em>]</em><em>, </em><em>Any</em><em>]</em><em>, </em><em>optional</em>) – A function which takes a single argument and returns argument coerced
-into the PushTypes canonical type (the first type in <code class="docutils literal notranslate"><span class="pre">underlying</span></code>).
-If None, the constructor of the canonical type is used. Default is None.</p></li>
-</ul>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt id="pyshgp.push.types.PushType.name">
 <code class="sig-name descname">name</code><a class="headerlink" href="#pyshgp.push.types.PushType.name" title="Permalink to this definition">¶</a></dt>
@@ -1540,18 +1582,6 @@ PushStack.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pyshgp.push.types.PushType.underlying">
-<code class="sig-name descname">underlying</code><a class="headerlink" href="#pyshgp.push.types.PushType.underlying" title="Permalink to this definition">¶</a></dt>
-<dd><p>A tuple of python (or numpy) types that correspond to the underlying
-native types which the PushType is representing.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>Sequence[type]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1568,31 +1598,49 @@ native types which the PushType is representing.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyshgp.push.types.PushType.coercion_func">
-<code class="sig-name descname">coercion_func</code><a class="headerlink" href="#pyshgp.push.types.PushType.coercion_func" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function which takes a single argument and returns argument coerced
-into the PushTypes canonical type (the first type in <code class="docutils literal notranslate"><span class="pre">underlying</span></code>).
-If None, the constructor of the canonical type is used. Default is None.</p>
+<dt id="pyshgp.push.types.PushType.is_numeric">
+<code class="sig-name descname">is_numeric</code><a class="headerlink" href="#pyshgp.push.types.PushType.is_numeric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates if that the PushType is a numeric type. Default is False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>Callable[[Any], Any], optional</p>
+<dd class="field-odd"><p>bool, optional</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pyshgp.push.types.PushType.coerce">
-<code class="sig-name descname">coerce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thing</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType.coerce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType.coerce" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert thing into PushTypes underlying type.</p>
-</dd></dl>
+<code class="sig-name descname">coerce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType.coerce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType.coerce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="pyshgp.push.types.PushType.is_instance">
-<code class="sig-name descname">is_instance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">thing</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType.is_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType.is_instance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return true if thing is instance of PushTypes underlying type(s).</p>
-</dd></dl>
+<code class="sig-name descname">is_instance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/pyshgp/push/types.html#PushType.is_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushType.is_instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.PushVectorType">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">PushVectorType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">p_vec_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushVectorType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushVectorType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyshgp.push.types.PushType</span></code></a></p>
+<dl class="py method">
+<dt id="pyshgp.push.types.PushVectorType.coerce">
+<code class="sig-name descname">coerce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#PushVectorType.coerce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.PushVectorType.coerce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pyshgp.push.types.StrVector">
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">StrVector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#StrVector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.StrVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._checked_types.CheckedPVector</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pyshgp.push.types.make_vector_type">
+<code class="sig-prename descclassname">pyshgp.push.types.</code><code class="sig-name descname">make_vector_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scalar_type</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.types.PushType" title="pyshgp.push.types.PushType">pyshgp.push.types.PushType</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/push/types.html#make_vector_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.types.make_vector_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-pyshgp.push">
@@ -1609,6 +1657,7 @@ see the following links</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -1673,12 +1722,13 @@ see the following links</p>
           <a href="../api.html" title="Push API"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" >Push API</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../api.html" >Push API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.push package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

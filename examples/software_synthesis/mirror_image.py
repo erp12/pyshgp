@@ -44,7 +44,7 @@ X_train_edge = [
     [IntVector([5, 8]), IntVector([5, 8])],
     [IntVector([34, 12]), IntVector([34, 12])],
     [IntVector([456, 456]), IntVector([456, 456])],
-    [IntVector([-431 -680]), IntVector([40, 831])],
+    [IntVector([-431, -680]), IntVector([40, 831])],
     [IntVector([1, 2, 1]), IntVector([1, 2, 1])],
     [IntVector([1, 2, 3, 4, 5, 4, 3, 2, 1]), IntVector([1, 2, 3, 4, 5, 4, 3, 2, 1])],
     [IntVector([45, 99, 0, 12, 44, 7, 7, 44, 12, 0, 99, 45]), IntVector([45, 99, 0, 12, 44, 7, 7, 44, 12, 0, 99, 45])],

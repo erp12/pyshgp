@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyshgp.push.stack &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -25,7 +26,8 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.push.stack</a></li> 
       </ul>
     </div>  
 
@@ -45,6 +47,7 @@
 <span class="kn">from</span> <span class="nn">pyshgp.push.config</span> <span class="kn">import</span> <span class="n">constrain_collection</span><span class="p">,</span> <span class="n">constrain_number</span><span class="p">,</span> <span class="n">PushConfig</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.types</span> <span class="kn">import</span> <span class="n">PushType</span>
 <span class="kn">from</span> <span class="nn">pyshgp.utils</span> <span class="kn">import</span> <span class="n">Token</span>
+<span class="kn">from</span> <span class="nn">pyshgp.validation</span> <span class="kn">import</span> <span class="n">PushError</span>
 
 
 <div class="viewcode-block" id="PushStack"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.stack.PushStack">[docs]</a><span class="k">class</span> <span class="nc">PushStack</span><span class="p">(</span><span class="n">List</span><span class="p">):</span>
@@ -78,17 +81,20 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
 
     <span class="k">def</span> <span class="nf">_coerce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="c1"># Collection sizes and string lengths are bounded to avoid utilizing too many resources.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">is_collection</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">constrain_collection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">push_config</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="c1"># Numbers are clamped to a constrained range to avoid utilizing too many resources.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">constrain_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">push_config</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="c1"># Coercion happens a second time in case the constraining changes type.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="c1"># Collection sizes and string lengths are bounded to avoid utilizing too many resources.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">is_collection</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">constrain_collection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">push_config</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="c1"># Numbers are clamped to a constrained range to avoid utilizing too many resources.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">constrain_number</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">push_config</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="c1"># Coercion happens a second time in case the constraining changes type.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PushError</span><span class="o">.</span><span class="n">failed_coerce</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="PushStack.push"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.stack.PushStack.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -225,6 +231,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">push_type</span> <span class="ow">and</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -254,12 +261,13 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.push.stack</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

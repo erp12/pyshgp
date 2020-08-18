@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyshgp.gp package &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -33,7 +34,8 @@
           <a href="push.html" title="pyshgp.push package"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">Push API</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">Push API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.gp package</a></li> 
       </ul>
     </div>  
 
@@ -455,7 +457,7 @@ size in the range of the two integers.</p>
 
 <dl class="py class">
 <dt id="pyshgp.gp.genome.GeneTypes">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.gp.genome.</code><code class="sig-name descname">GeneTypes</code><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GeneTypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GeneTypes" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.gp.genome.</code><code class="sig-name descname">GeneTypes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#GeneTypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.GeneTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>An <code class="docutils literal notranslate"><span class="pre">Enum</span></code> denoting the different types of genes that can appear in a Genome.</p>
 <dl class="py attribute">
@@ -487,7 +489,7 @@ size in the range of the two integers.</p>
 
 <dl class="py class">
 <dt id="pyshgp.gp.genome.Genome">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.gp.genome.</code><code class="sig-name descname">Genome</code><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.gp.genome.</code><code class="sig-name descname">Genome</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span><span class="o">=</span><span class="default_value">()</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Genome"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Genome" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._checked_types.CheckedPVector</span></code></p>
 <p>A linear sequence of genes (aka any atom that isn’t a <code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code>).</p>
 <p>PyshGP uses the Plushy genome representation.</p>
@@ -542,7 +544,7 @@ ACM, New York, NY, USA, 937-944. DOI: <a class="reference external" href="https:
 
 <dl class="py class">
 <dt id="pyshgp.gp.genome.Opener">
-<em class="property">class </em><code class="sig-prename descclassname">pyshgp.gp.genome.</code><code class="sig-name descname">Opener</code><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Opener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Opener" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyshgp.gp.genome.</code><code class="sig-name descname">Opener</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/genome.html#Opener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.genome.Opener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrsistent._precord.PRecord</span></code></p>
 <p>Marks the start of one or more CodeBlock.</p>
 <dl class="py method">
@@ -774,6 +776,11 @@ selection and variation (producing children).</p>
 <em class="property">class </em><code class="sig-prename descclassname">pyshgp.gp.search.</code><code class="sig-name descname">ParallelContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">spawner</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.gp.genome.GeneSpawner" title="pyshgp.gp.genome.GeneSpawner">pyshgp.gp.genome.GeneSpawner</a></span></em>, <em class="sig-param"><span class="n">evaluator</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.gp.evaluation.Evaluator" title="pyshgp.gp.evaluation.Evaluator">pyshgp.gp.evaluation.Evaluator</a></span></em>, <em class="sig-param"><span class="n">n_proc</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#ParallelContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.ParallelContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Holds the objects needed to coordinate parallelism.</p>
+<dl class="py method">
+<dt id="pyshgp.gp.search.ParallelContext.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#ParallelContext.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.ParallelContext.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -865,7 +872,6 @@ assign a new Population to the population attribute.</p>
 <em class="property">class </em><code class="sig-prename descclassname">pyshgp.gp.search.</code><code class="sig-name descname">SearchConfiguration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">signature</span><span class="p">:</span> <span class="n">pyshgp.push.program.ProgramSignature</span></em>, <em class="sig-param"><span class="n">evaluator</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.gp.evaluation.Evaluator" title="pyshgp.gp.evaluation.Evaluator">pyshgp.gp.evaluation.Evaluator</a></span></em>, <em class="sig-param"><span class="n">spawner</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.gp.genome.GeneSpawner" title="pyshgp.gp.genome.GeneSpawner">pyshgp.gp.genome.GeneSpawner</a></span></em>, <em class="sig-param"><span class="n">selection</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#pyshgp.gp.selection.Selector" title="pyshgp.gp.selection.Selector">pyshgp.gp.selection.Selector</a><span class="p">, </span><a class="reference internal" href="../api.html#pyshgp.utils.DiscreteProbDistrib" title="pyshgp.utils.DiscreteProbDistrib">pyshgp.utils.DiscreteProbDistrib</a><span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'lexicase'</span></em>, <em class="sig-param"><span class="n">variation</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#pyshgp.gp.variation.VariationOperator" title="pyshgp.gp.variation.VariationOperator">pyshgp.gp.variation.VariationOperator</a><span class="p">, </span><a class="reference internal" href="../api.html#pyshgp.utils.DiscreteProbDistrib" title="pyshgp.utils.DiscreteProbDistrib">pyshgp.utils.DiscreteProbDistrib</a><span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">'umad'</span></em>, <em class="sig-param"><span class="n">population_size</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">500</span></em>, <em class="sig-param"><span class="n">max_generations</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">100</span></em>, <em class="sig-param"><span class="n">error_threshold</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">initial_genome_size</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">10, 50</span></em>, <em class="sig-param"><span class="n">simplification_steps</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2000</span></em>, <em class="sig-param"><span class="n">parallelism</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchConfiguration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchConfiguration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Configuration of an search algorithm.</p>
-<p>&#64;todo change to a PClass</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -904,6 +910,11 @@ is no verbosity.</p></li>
 <code class="sig-name descname">get_variation_op</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchConfiguration.get_variation_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchConfiguration.get_variation_op" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a VariationOperator.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt id="pyshgp.gp.search.SearchConfiguration.tear_down">
+<code class="sig-name descname">tear_down</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyshgp/gp/search.html#SearchConfiguration.tear_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.gp.search.SearchConfiguration.tear_down" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1206,11 +1217,9 @@ the tournament. Default is 7.</p>
 <dt id="pyshgp.gp.selection.choice">
 <code class="sig-prename descclassname">pyshgp.gp.selection.</code><code class="sig-name descname">choice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.gp.selection.choice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a random sample from a given 1-D array</p>
-<blockquote>
-<div><div class="versionadded">
+<div class="versionadded">
 <p><span class="versionmodified added">New in version 1.7.0.</span></p>
 </div>
-</div></blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>New code should use the <code class="docutils literal notranslate"><span class="pre">choice</span></code> method of a <code class="docutils literal notranslate"><span class="pre">default_rng()</span></code>
@@ -1252,6 +1261,9 @@ entries in a.</p></li>
 </dd>
 </dl>
 </div>
+<p class="rubric">Notes</p>
+<p>Sampling random rows from a 2-D array is not possible with this function,
+but is possible with <cite>Generator.choice</cite> through its <code class="docutils literal notranslate"><span class="pre">axis</span></code> keyword.</p>
 <p class="rubric">Examples</p>
 <p>Generate a uniform random sample from np.arange(5) of size 3:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -1822,11 +1834,9 @@ operators that have been added to the VariationStrategy.</p></li>
 <dt id="pyshgp.gp.variation.choice">
 <code class="sig-prename descclassname">pyshgp.gp.variation.</code><code class="sig-name descname">choice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyshgp.gp.variation.choice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a random sample from a given 1-D array</p>
-<blockquote>
-<div><div class="versionadded">
+<div class="versionadded">
 <p><span class="versionmodified added">New in version 1.7.0.</span></p>
 </div>
-</div></blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>New code should use the <code class="docutils literal notranslate"><span class="pre">choice</span></code> method of a <code class="docutils literal notranslate"><span class="pre">default_rng()</span></code>
@@ -1868,6 +1878,9 @@ entries in a.</p></li>
 </dd>
 </dl>
 </div>
+<p class="rubric">Notes</p>
+<p>Sampling random rows from a 2-D array is not possible with this function,
+but is possible with <cite>Generator.choice</cite> through its <code class="docutils literal notranslate"><span class="pre">axis</span></code> keyword.</p>
 <p class="rubric">Examples</p>
 <p>Generate a uniform random sample from np.arange(5) of size 3:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -1924,6 +1937,7 @@ instead of just integers. For instance:</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -1988,12 +2002,13 @@ instead of just integers. For instance:</p>
           <a href="push.html" title="pyshgp.push package"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" >Push API</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../api.html" >Push API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.gp package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

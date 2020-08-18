@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyshgp.push.type_library &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -25,7 +26,8 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.push.type_library</a></li> 
       </ul>
     </div>  
 
@@ -70,8 +72,8 @@
         <span class="k">if</span> <span class="n">register_core</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">register_core</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">register_list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_and_register</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="p">),</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_and_register</span><span class="p">(</span><span class="s2">&quot;exec&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="p">),</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_and_register</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,),</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_and_register</span><span class="p">(</span><span class="s2">&quot;exec&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,),</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PushTypeLibrary.register"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_type</span><span class="p">:</span> <span class="n">PushType</span><span class="p">,</span> <span class="n">_force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Register a PushType object.</span>
@@ -97,10 +99,9 @@
 
 <div class="viewcode-block" id="PushTypeLibrary.create_and_register"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.create_and_register">[docs]</a>    <span class="k">def</span> <span class="nf">create_and_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                             <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                            <span class="n">underlying_types</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">],</span>
+                            <span class="n">python_types</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
                             <span class="n">is_collection</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                             <span class="n">is_numeric</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                            <span class="n">coercion_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                             <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a PushType and register it into the library.</span>
 
@@ -110,7 +111,7 @@
 <span class="sd">            A name for the type. Used when referencing the PushType in Instruction</span>
 <span class="sd">            definitions and will be the key in the PushState for the corresponding</span>
 <span class="sd">            PushStack.</span>
-<span class="sd">        underlying_types : Tuple[type]</span>
+<span class="sd">        python_types : Tuple[type]</span>
 <span class="sd">            A tuple of python types that correspond to the underlying</span>
 <span class="sd">            native types which the PushType is representing.</span>
 <span class="sd">        is_collection : bool, optional</span>
@@ -124,7 +125,7 @@
 <span class="sd">        force : bool</span>
 <span class="sd">            If True, will register the type even if it will overwrite an</span>
 <span class="sd">            existing reserved stack typed (eg. exec, stdout, untyped). Default</span>
-<span class="sd">            is False. It is not reccomended this argument be changed unless</span>
+<span class="sd">            is False. It is not recommended this argument be changed unless</span>
 <span class="sd">            you have a very good reason to do so.</span>
 
 <span class="sd">        Returns</span>
@@ -133,7 +134,8 @@
 <span class="sd">            A reference to the PushTypeLibrary.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">PushType</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">underlying_types</span><span class="p">,</span> <span class="n">is_collection</span><span class="p">,</span> <span class="n">is_numeric</span><span class="p">,</span> <span class="n">coercion_func</span><span class="o">=</span><span class="n">coercion_func</span><span class="p">),</span> <span class="n">force</span><span class="p">)</span>
+        <span class="n">p_type</span> <span class="o">=</span> <span class="n">PushType</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">python_types</span><span class="p">,</span> <span class="n">is_collection</span><span class="o">=</span><span class="n">is_collection</span><span class="p">,</span> <span class="n">is_numeric</span><span class="o">=</span><span class="n">is_numeric</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">p_type</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="PushTypeLibrary.unregister"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.unregister">[docs]</a>    <span class="k">def</span> <span class="nf">unregister</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">push_type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -212,7 +214,11 @@
 <span class="sd">            The corresponding PushType of the thing. If no corresponding type, returns None.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">push_type_for_type</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">thing</span><span class="p">),</span> <span class="n">error_on_not_found</span><span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">push_type</span><span class="o">.</span><span class="n">is_instance</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">push_type</span>
+        <span class="k">if</span> <span class="n">error_on_not_found</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PushError</span><span class="o">.</span><span class="n">no_type</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PushTypeLibrary.push_type_for_type"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.type_library.PushTypeLibrary.push_type_for_type">[docs]</a>    <span class="k">def</span> <span class="nf">push_type_for_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">error_on_not_found</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PushType</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return the PushType of the given python (or numpy) type.</span>
@@ -231,7 +237,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">push_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">push_type</span><span class="o">.</span><span class="n">underlying</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">push_type</span><span class="o">.</span><span class="n">python_types</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">push_type</span>
         <span class="k">if</span> <span class="n">error_on_not_found</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PushError</span><span class="o">.</span><span class="n">no_type</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span></div></div>
@@ -256,6 +262,7 @@
     <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">val</span><span class="p">,</span> <span class="n">push_type</span><span class="o">=</span><span class="n">type_library</span><span class="o">.</span><span class="n">push_type_of</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">error_on_not_found</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -285,12 +292,13 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.push.type_library</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

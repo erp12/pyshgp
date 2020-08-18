@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyshgp.push.types &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -25,7 +26,8 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.push.types</a></li> 
       </ul>
     </div>  
 
@@ -42,92 +44,12 @@
 <span class="sd">during Push program execution.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyrsistent</span> <span class="kn">import</span> <span class="n">CheckedPVector</span>
 
 <span class="kn">from</span> <span class="nn">pyshgp.validation</span> <span class="kn">import</span> <span class="n">PushError</span>
-
-
-<div class="viewcode-block" id="PushType"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushType">[docs]</a><span class="k">class</span> <span class="nc">PushType</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Type information for values used by Push programs.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        A name for the type. Used when referencing the PushType in Instruction</span>
-<span class="sd">        definitions and will be the key in the PushState for the corresponding</span>
-<span class="sd">        PushStack.</span>
-<span class="sd">    underlying : Sequence[type]</span>
-<span class="sd">        A tuple of python (or numpy) types that correspond to the underlying</span>
-<span class="sd">        native types which the PushType is representing.</span>
-<span class="sd">    is_collection : bool, optional</span>
-<span class="sd">        Indication that the PushType is a collection.</span>
-<span class="sd">    coercion_func : Callable[[Any], Any], optional</span>
-<span class="sd">        A function which takes a single argument and returns argument coerced</span>
-<span class="sd">        into the PushTypes canonical type (the first type in ``underlying``).</span>
-<span class="sd">        If None, the constructor of the canonical type is used. Default is None.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    name : str</span>
-<span class="sd">        A name for the type. Used when referencing the PushType in Instruction</span>
-<span class="sd">        definitions and will be the key in the PushState for the corresponding</span>
-<span class="sd">        PushStack.</span>
-<span class="sd">    underlying : Sequence[type]</span>
-<span class="sd">        A tuple of python (or numpy) types that correspond to the underlying</span>
-<span class="sd">        native types which the PushType is representing.</span>
-<span class="sd">    is_collection : bool, optional</span>
-<span class="sd">        Indicates if that the PushType is a collection. Default is False.</span>
-<span class="sd">    coercion_func : Callable[[Any], Any], optional</span>
-<span class="sd">        A function which takes a single argument and returns argument coerced</span>
-<span class="sd">        into the PushTypes canonical type (the first type in ``underlying``).</span>
-<span class="sd">        If None, the constructor of the canonical type is used. Default is None.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                 <span class="n">underlying</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">type</span><span class="p">],</span>
-                 <span class="n">is_collection</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                 <span class="n">is_numeric</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                 <span class="n">coercion_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">underlying</span> <span class="o">=</span> <span class="n">underlying</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_collection</span> <span class="o">=</span> <span class="n">is_collection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_numeric</span> <span class="o">=</span> <span class="n">is_numeric</span>
-        <span class="k">if</span> <span class="n">coercion_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coercion_func</span> <span class="o">=</span> <span class="n">underlying</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">coercion_func</span> <span class="o">=</span> <span class="n">coercion_func</span>
-
-<div class="viewcode-block" id="PushType.is_instance"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushType.is_instance">[docs]</a>    <span class="k">def</span> <span class="nf">is_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thing</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return true if thing is instance of PushTypes underlying type(s).&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">underlying</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="PushType.coerce"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushType.coerce">[docs]</a>    <span class="k">def</span> <span class="nf">coerce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thing</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert thing into PushTypes underlying type.&quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coercion_func</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">err_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">PushError</span><span class="p">(</span>
-                <span class="s2">&quot;</span><span class="si">{t}</span><span class="s2"> while coerceing </span><span class="si">{x}</span><span class="s2"> of </span><span class="si">{typ1}</span><span class="s2"> to </span><span class="si">{typ2}</span><span class="s2">. Origional mesage: </span><span class="se">\&quot;</span><span class="si">{m}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">t</span><span class="o">=</span><span class="n">err_type</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">thing</span><span class="p">,</span> <span class="n">typ1</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">thing</span><span class="p">),</span> <span class="n">typ2</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">err_msg</span>
-                <span class="p">)</span>
-            <span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;PushType(&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">PushType</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">underlying</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">underlying</span>
-
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">underlying</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Char"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.Char">[docs]</a><span class="k">class</span> <span class="nc">Char</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
@@ -144,6 +66,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">char</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PushError</span><span class="o">.</span><span class="n">empty_character</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -153,18 +76,154 @@
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Char</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
 
 
-<span class="c1"># @TODO: Add vector type(s)</span>
+<div class="viewcode-block" id="PushType"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushType">[docs]</a><span class="k">class</span> <span class="nc">PushType</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Type information for values used by Push programs.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        A name for the type. Used when referencing the PushType in Instruction</span>
+<span class="sd">        definitions and will be the key in the PushState for the corresponding</span>
+<span class="sd">        PushStack.</span>
+<span class="sd">    is_collection : bool, optional</span>
+<span class="sd">        Indicates if that the PushType is a collection. Default is False.</span>
+<span class="sd">    is_numeric : bool, optional</span>
+<span class="sd">        Indicates if that the PushType is a numeric type. Default is False.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">python_types</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                 <span class="n">is_collection</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">is_numeric</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">python_types</span> <span class="o">=</span> <span class="n">python_types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_collection</span> <span class="o">=</span> <span class="n">is_collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_numeric</span> <span class="o">=</span> <span class="n">is_numeric</span>
+
+<div class="viewcode-block" id="PushType.is_instance"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushType.is_instance">[docs]</a>    <span class="k">def</span> <span class="nf">is_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">python_types</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PushType.coerce"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushType.coerce">[docs]</a>    <span class="k">def</span> <span class="nf">coerce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">python_types</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">value</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Char</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span></div>
 
 
-<span class="n">PushInt</span> <span class="o">=</span> <span class="n">PushType</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span> <span class="n">is_numeric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">PushFloat</span> <span class="o">=</span> <span class="n">PushType</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">),</span> <span class="n">is_numeric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">PushStr</span> <span class="o">=</span> <span class="n">PushType</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">))</span>
-<span class="n">PushBool</span> <span class="o">=</span> <span class="n">PushType</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span>
-<span class="n">PushChar</span> <span class="o">=</span> <span class="n">PushType</span><span class="p">(</span><span class="s2">&quot;char&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Char</span><span class="p">,</span> <span class="p">))</span>
+<div class="viewcode-block" id="PushBoolType"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushBoolType">[docs]</a><span class="k">class</span> <span class="nc">PushBoolType</span><span class="p">(</span><span class="n">PushType</span><span class="p">):</span>
 
-<span class="n">CORE_PUSH_TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="n">PushBool</span><span class="p">,</span> <span class="n">PushInt</span><span class="p">,</span> <span class="n">PushChar</span><span class="p">,</span> <span class="n">PushFloat</span><span class="p">,</span> <span class="n">PushStr</span><span class="p">]</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="PushIntType"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushIntType">[docs]</a><span class="k">class</span> <span class="nc">PushIntType</span><span class="p">(</span><span class="n">PushType</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span> <span class="n">is_numeric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PushFloatType"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushFloatType">[docs]</a><span class="k">class</span> <span class="nc">PushFloatType</span><span class="p">(</span><span class="n">PushType</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">),</span> <span class="n">is_numeric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PushCharType"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushCharType">[docs]</a><span class="k">class</span> <span class="nc">PushCharType</span><span class="p">(</span><span class="n">PushType</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;char&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Char</span><span class="p">,))</span></div>
+
+
+<div class="viewcode-block" id="PushStrType"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushStrType">[docs]</a><span class="k">class</span> <span class="nc">PushStrType</span><span class="p">(</span><span class="n">PushType</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="PushVectorType"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushVectorType">[docs]</a><span class="k">class</span> <span class="nc">PushVectorType</span><span class="p">(</span><span class="n">PushType</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">p_vec_type</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">p_vec_type</span><span class="p">,),</span> <span class="n">is_collection</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p_vec_type</span> <span class="o">=</span> <span class="n">p_vec_type</span>
+
+<div class="viewcode-block" id="PushVectorType.coerce"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.PushVectorType.coerce">[docs]</a>    <span class="k">def</span> <span class="nf">coerce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">el_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_vec_type</span><span class="o">.</span><span class="n">__type__</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_vec_type</span><span class="p">([</span><span class="n">el_type</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="BoolVector"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.BoolVector">[docs]</a><span class="k">class</span> <span class="nc">BoolVector</span><span class="p">(</span><span class="n">CheckedPVector</span><span class="p">):</span>
+    <span class="n">__type__</span> <span class="o">=</span> <span class="nb">bool</span></div>
+
+
+<div class="viewcode-block" id="IntVector"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.IntVector">[docs]</a><span class="k">class</span> <span class="nc">IntVector</span><span class="p">(</span><span class="n">CheckedPVector</span><span class="p">):</span>
+    <span class="n">__type__</span> <span class="o">=</span> <span class="nb">int</span></div>
+
+
+<div class="viewcode-block" id="FloatVector"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.FloatVector">[docs]</a><span class="k">class</span> <span class="nc">FloatVector</span><span class="p">(</span><span class="n">CheckedPVector</span><span class="p">):</span>
+    <span class="n">__type__</span> <span class="o">=</span> <span class="nb">float</span></div>
+
+
+<div class="viewcode-block" id="CharVector"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.CharVector">[docs]</a><span class="k">class</span> <span class="nc">CharVector</span><span class="p">(</span><span class="n">CheckedPVector</span><span class="p">):</span>
+    <span class="n">__type__</span> <span class="o">=</span> <span class="n">Char</span></div>
+
+
+<div class="viewcode-block" id="StrVector"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.StrVector">[docs]</a><span class="k">class</span> <span class="nc">StrVector</span><span class="p">(</span><span class="n">CheckedPVector</span><span class="p">):</span>
+    <span class="n">__type__</span> <span class="o">=</span> <span class="nb">str</span></div>
+
+
+<span class="n">_py2vec</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">bool</span><span class="p">:</span> <span class="n">BoolVector</span><span class="p">,</span>
+    <span class="nb">int</span><span class="p">:</span> <span class="n">IntVector</span><span class="p">,</span>
+    <span class="nb">float</span><span class="p">:</span> <span class="n">FloatVector</span><span class="p">,</span>
+    <span class="n">Char</span><span class="p">:</span> <span class="n">CharVector</span><span class="p">,</span>
+    <span class="nb">str</span><span class="p">:</span> <span class="n">StrVector</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="make_vector_type"><a class="viewcode-back" href="../../../api/push.html#pyshgp.push.types.make_vector_type">[docs]</a><span class="k">def</span> <span class="nf">make_vector_type</span><span class="p">(</span><span class="n">scalar_type</span><span class="p">:</span> <span class="n">PushType</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">PushVectorType</span><span class="p">(</span><span class="s2">&quot;vector_&quot;</span> <span class="o">+</span> <span class="n">scalar_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">_py2vec</span><span class="p">[</span><span class="n">scalar_type</span><span class="o">.</span><span class="n">python_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span></div>
+
+
+<span class="n">PushInt</span> <span class="o">=</span> <span class="n">PushIntType</span><span class="p">()</span>
+<span class="n">PushFloat</span> <span class="o">=</span> <span class="n">PushFloatType</span><span class="p">()</span>
+<span class="n">PushStr</span> <span class="o">=</span> <span class="n">PushStrType</span><span class="p">()</span>
+<span class="n">PushBool</span> <span class="o">=</span> <span class="n">PushBoolType</span><span class="p">()</span>
+<span class="n">PushChar</span> <span class="o">=</span> <span class="n">PushCharType</span><span class="p">()</span>
+
+<span class="n">PushIntVector</span> <span class="o">=</span> <span class="n">make_vector_type</span><span class="p">(</span><span class="n">PushInt</span><span class="p">)</span>
+<span class="n">PushFloatVector</span> <span class="o">=</span> <span class="n">make_vector_type</span><span class="p">(</span><span class="n">PushFloat</span><span class="p">)</span>
+<span class="n">PushStrVector</span> <span class="o">=</span> <span class="n">make_vector_type</span><span class="p">(</span><span class="n">PushStr</span><span class="p">)</span>
+<span class="n">PushBoolVector</span> <span class="o">=</span> <span class="n">make_vector_type</span><span class="p">(</span><span class="n">PushBool</span><span class="p">)</span>
+<span class="n">PushCharVector</span> <span class="o">=</span> <span class="n">make_vector_type</span><span class="p">(</span><span class="n">PushChar</span><span class="p">)</span>
+
+
+<span class="n">CORE_SCALAR_PUSH_TYPES</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PushType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">PushBool</span><span class="p">,</span>
+    <span class="n">PushInt</span><span class="p">,</span>
+    <span class="n">PushChar</span><span class="p">,</span>
+    <span class="n">PushFloat</span><span class="p">,</span>
+    <span class="n">PushStr</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="n">CORE_VECTOR_PUSH_TYPES</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PushVectorType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">PushIntVector</span><span class="p">,</span>
+    <span class="n">PushFloatVector</span><span class="p">,</span>
+    <span class="n">PushStrVector</span><span class="p">,</span>
+    <span class="n">PushBoolVector</span><span class="p">,</span>
+    <span class="n">PushCharVector</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="n">CORE_PUSH_TYPES</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PushType</span><span class="p">]</span> <span class="o">=</span> <span class="n">CORE_SCALAR_PUSH_TYPES</span> <span class="o">+</span> <span class="n">CORE_VECTOR_PUSH_TYPES</span>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -194,12 +253,13 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.push.types</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

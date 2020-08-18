@@ -1,6 +1,7 @@
-***************************
+****************************
 PyshGP Core Instruction Set
-***************************
+****************************
+
 int_add
 =======
 *Takes: [int, int] - Produces: [int]*
@@ -29,7 +30,7 @@ int_mod
 =======
 *Takes: [int, int] - Produces: [int]*
 
-Computes the modulous of the top two ints and pushes the result.
+Computes the modulus of the top two ints and pushes the result.
 
 int_min
 =======
@@ -107,7 +108,7 @@ float_mod
 =========
 *Takes: [float, float] - Produces: [float]*
 
-Computes the modulous of the top two floats and pushes the result.
+Computes the modulus of the top two floats and pushes the result.
 
 float_min
 =========
@@ -532,8 +533,8 @@ char_from_ascii_int
 
 Pushes the top int converted into a Character by using the int mod 128 as an ascii value.
 
-_char_from_float
-================
+char_from_float
+===============
 *Takes: [float] - Produces: [char]*
 
 Pushes the top float converted into a Character by flooring
@@ -685,7 +686,7 @@ code_do_then_pop
 ================
 *Takes: PushState - Produces: PushState*
 
-Pushes a `code_pop` JitInstructionRef and the top item of the
+Pushes a `code_pop` InstructionMeta and the top item of the
         code stack to the exec stack. Result is the top code item executing before
         it is removed from the code stack.
 
@@ -851,8 +852,644 @@ code_reverse
 Pushes the top code item reversed. No effect if top code
         item is not a CodeBlock.
 
+vector_int_concat
+=================
+*Takes: [vector_int, vector_int] - Produces: [vector_int]*
+
+Concatenates the top two vector_int.
+
+vector_int_conj
+===============
+*Takes: [vector_int, int] - Produces: [vector_int]*
+
+Appends the top int to the top vector_int.
+
+vector_int_take
+===============
+*Takes: [vector_int, int] - Produces: [vector_int]*
+
+Creates a new vector_int from the first N elements of the top vector_int. N is top int.
+
+vector_int_subvec
+=================
+*Takes: [vector_int, int, int] - Produces: [vector_int]*
+
+Creates a new vector_int from a slice of the top vector_int. Start and end indices are the top two ints.
+
+vector_int_first
+================
+*Takes: [vector_int] - Produces: [int]*
+
+Takes the first element of the top vector_int and pushes it to the int stack.
+
+vector_int_last
+===============
+*Takes: [vector_int] - Produces: [int]*
+
+Takes the last element of the top vector_int and pushes it to the int stack.
+
+vector_int_nth
+==============
+*Takes: [vector_int, int] - Produces: [int]*
+
+Takes the nth element of the top vector_int and pushes it to the int stack. N is the top int.
+
+vector_int_rest
+===============
+*Takes: [vector_int] - Produces: [vector_int]*
+
+Drops the first element of the top vector_int.
+
+vector_int_but_last
+===================
+*Takes: [vector_int] - Produces: [vector_int]*
+
+Drops the last element of the top vector_int.
+
+vector_int_length
+=================
+*Takes: [vector_int] - Produces: [int]*
+
+Pushes the length of the top vector_int to the int stack.
+
+vector_int_reverse
+==================
+*Takes: [vector_int] - Produces: [vector_int]*
+
+Reverses the top vector_int.
+
+vector_int_push_all
+===================
+*Takes: [vector_int] - Produces: Arbitrary number of int values.*
+
+Pushes all elements of the top vector_int to the int.
+
+vector_int_empty_vector
+=======================
+*Takes: [vector_int] - Produces: [bool]*
+
+Pushes True to the bool stack if the top vector_int is empty. Pushes False otherwise.
+
+vector_int_contains
+===================
+*Takes: [vector_int, int] - Produces: [bool]*
+
+Pushes True to the bool stack if the top int is found in the top vector_int. Pushes False otherwise.
+
+vector_int_index_of
+===================
+*Takes: [vector_int, int] - Produces: [int]*
+
+Pushes the index top int is top vector_int to int stack. Pushes -1 if not found.
+
+vector_int_occurrences_of
+=========================
+*Takes: [vector_int, int] - Produces: [int]*
+
+Pushes the number of time the top int is found in the top vector_int to int stack.
+
+vector_int_set_nth
+==================
+*Takes: [vector_int, int, int] - Produces: [vector_int]*
+
+Sets the nth element of the top vector_int to be the top int. N is the top int.
+
+vector_int_replace
+==================
+*Takes: [vector_int, int, int] - Produces: [vector_int]*
+
+Replaces all instances of the top int from the top vector_int.
+
+vector_int_replace_first
+========================
+*Takes: [vector_int, int, int] - Produces: [vector_int]*
+
+Replaces the first instance of the top int from the top vector_int.
+
+vector_int_remove
+=================
+*Takes: [vector_int, int] - Produces: [vector_int]*
+
+Removes all instances of the top int from the top vector_int.
+
+vector_int_iterate
+==================
+*Takes: PushState - Produces: PushState - Opens 1 code blocks*
+
+Iterates over the top vector_int using the code on top of the exec stack.
+
+vector_float_concat
+===================
+*Takes: [vector_float, vector_float] - Produces: [vector_float]*
+
+Concatenates the top two vector_float.
+
+vector_float_conj
+=================
+*Takes: [vector_float, float] - Produces: [vector_float]*
+
+Appends the top float to the top vector_float.
+
+vector_float_take
+=================
+*Takes: [vector_float, int] - Produces: [vector_float]*
+
+Creates a new vector_float from the first N elements of the top vector_float. N is top int.
+
+vector_float_subvec
+===================
+*Takes: [vector_float, int, int] - Produces: [vector_float]*
+
+Creates a new vector_float from a slice of the top vector_float. Start and end indices are the top two ints.
+
+vector_float_first
+==================
+*Takes: [vector_float] - Produces: [float]*
+
+Takes the first element of the top vector_float and pushes it to the float stack.
+
+vector_float_last
+=================
+*Takes: [vector_float] - Produces: [float]*
+
+Takes the last element of the top vector_float and pushes it to the float stack.
+
+vector_float_nth
+================
+*Takes: [vector_float, int] - Produces: [float]*
+
+Takes the nth element of the top vector_float and pushes it to the float stack. N is the top int.
+
+vector_float_rest
+=================
+*Takes: [vector_float] - Produces: [vector_float]*
+
+Drops the first element of the top vector_float.
+
+vector_float_but_last
+=====================
+*Takes: [vector_float] - Produces: [vector_float]*
+
+Drops the last element of the top vector_float.
+
+vector_float_length
+===================
+*Takes: [vector_float] - Produces: [int]*
+
+Pushes the length of the top vector_float to the int stack.
+
+vector_float_reverse
+====================
+*Takes: [vector_float] - Produces: [vector_float]*
+
+Reverses the top vector_float.
+
+vector_float_push_all
+=====================
+*Takes: [vector_float] - Produces: Arbitrary number of float values.*
+
+Pushes all elements of the top vector_float to the float.
+
+vector_float_empty_vector
+=========================
+*Takes: [vector_float] - Produces: [bool]*
+
+Pushes True to the bool stack if the top vector_float is empty. Pushes False otherwise.
+
+vector_float_contains
+=====================
+*Takes: [vector_float, float] - Produces: [bool]*
+
+Pushes True to the bool stack if the top float is found in the top vector_float. Pushes False otherwise.
+
+vector_float_index_of
+=====================
+*Takes: [vector_float, float] - Produces: [int]*
+
+Pushes the index top float is top vector_float to int stack. Pushes -1 if not found.
+
+vector_float_occurrences_of
+===========================
+*Takes: [vector_float, float] - Produces: [int]*
+
+Pushes the number of time the top float is found in the top vector_float to int stack.
+
+vector_float_set_nth
+====================
+*Takes: [vector_float, int, float] - Produces: [vector_float]*
+
+Sets the nth element of the top vector_float to be the top float. N is the top int.
+
+vector_float_replace
+====================
+*Takes: [vector_float, float, float] - Produces: [vector_float]*
+
+Replaces all instances of the top float from the top vector_float.
+
+vector_float_replace_first
+==========================
+*Takes: [vector_float, float, float] - Produces: [vector_float]*
+
+Replaces the first instance of the top float from the top vector_float.
+
+vector_float_remove
+===================
+*Takes: [vector_float, float] - Produces: [vector_float]*
+
+Removes all instances of the top float from the top vector_float.
+
+vector_float_iterate
+====================
+*Takes: PushState - Produces: PushState - Opens 1 code blocks*
+
+Iterates over the top vector_float using the code on top of the exec stack.
+
+vector_str_concat
+=================
+*Takes: [vector_str, vector_str] - Produces: [vector_str]*
+
+Concatenates the top two vector_str.
+
+vector_str_conj
+===============
+*Takes: [vector_str, str] - Produces: [vector_str]*
+
+Appends the top str to the top vector_str.
+
+vector_str_take
+===============
+*Takes: [vector_str, int] - Produces: [vector_str]*
+
+Creates a new vector_str from the first N elements of the top vector_str. N is top int.
+
+vector_str_subvec
+=================
+*Takes: [vector_str, int, int] - Produces: [vector_str]*
+
+Creates a new vector_str from a slice of the top vector_str. Start and end indices are the top two ints.
+
+vector_str_first
+================
+*Takes: [vector_str] - Produces: [str]*
+
+Takes the first element of the top vector_str and pushes it to the str stack.
+
+vector_str_last
+===============
+*Takes: [vector_str] - Produces: [str]*
+
+Takes the last element of the top vector_str and pushes it to the str stack.
+
+vector_str_nth
+==============
+*Takes: [vector_str, int] - Produces: [str]*
+
+Takes the nth element of the top vector_str and pushes it to the str stack. N is the top int.
+
+vector_str_rest
+===============
+*Takes: [vector_str] - Produces: [vector_str]*
+
+Drops the first element of the top vector_str.
+
+vector_str_but_last
+===================
+*Takes: [vector_str] - Produces: [vector_str]*
+
+Drops the last element of the top vector_str.
+
+vector_str_length
+=================
+*Takes: [vector_str] - Produces: [int]*
+
+Pushes the length of the top vector_str to the int stack.
+
+vector_str_reverse
+==================
+*Takes: [vector_str] - Produces: [vector_str]*
+
+Reverses the top vector_str.
+
+vector_str_push_all
+===================
+*Takes: [vector_str] - Produces: Arbitrary number of str values.*
+
+Pushes all elements of the top vector_str to the str.
+
+vector_str_empty_vector
+=======================
+*Takes: [vector_str] - Produces: [bool]*
+
+Pushes True to the bool stack if the top vector_str is empty. Pushes False otherwise.
+
+vector_str_contains
+===================
+*Takes: [vector_str, str] - Produces: [bool]*
+
+Pushes True to the bool stack if the top str is found in the top vector_str. Pushes False otherwise.
+
+vector_str_index_of
+===================
+*Takes: [vector_str, str] - Produces: [int]*
+
+Pushes the index top str is top vector_str to int stack. Pushes -1 if not found.
+
+vector_str_occurrences_of
+=========================
+*Takes: [vector_str, str] - Produces: [int]*
+
+Pushes the number of time the top str is found in the top vector_str to int stack.
+
+vector_str_set_nth
+==================
+*Takes: [vector_str, int, str] - Produces: [vector_str]*
+
+Sets the nth element of the top vector_str to be the top str. N is the top int.
+
+vector_str_replace
+==================
+*Takes: [vector_str, str, str] - Produces: [vector_str]*
+
+Replaces all instances of the top str from the top vector_str.
+
+vector_str_replace_first
+========================
+*Takes: [vector_str, str, str] - Produces: [vector_str]*
+
+Replaces the first instance of the top str from the top vector_str.
+
+vector_str_remove
+=================
+*Takes: [vector_str, str] - Produces: [vector_str]*
+
+Removes all instances of the top str from the top vector_str.
+
+vector_str_iterate
+==================
+*Takes: PushState - Produces: PushState - Opens 1 code blocks*
+
+Iterates over the top vector_str using the code on top of the exec stack.
+
+vector_bool_concat
+==================
+*Takes: [vector_bool, vector_bool] - Produces: [vector_bool]*
+
+Concatenates the top two vector_bool.
+
+vector_bool_conj
+================
+*Takes: [vector_bool, bool] - Produces: [vector_bool]*
+
+Appends the top bool to the top vector_bool.
+
+vector_bool_take
+================
+*Takes: [vector_bool, int] - Produces: [vector_bool]*
+
+Creates a new vector_bool from the first N elements of the top vector_bool. N is top int.
+
+vector_bool_subvec
+==================
+*Takes: [vector_bool, int, int] - Produces: [vector_bool]*
+
+Creates a new vector_bool from a slice of the top vector_bool. Start and end indices are the top two ints.
+
+vector_bool_first
+=================
+*Takes: [vector_bool] - Produces: [bool]*
+
+Takes the first element of the top vector_bool and pushes it to the bool stack.
+
+vector_bool_last
+================
+*Takes: [vector_bool] - Produces: [bool]*
+
+Takes the last element of the top vector_bool and pushes it to the bool stack.
+
+vector_bool_nth
+===============
+*Takes: [vector_bool, int] - Produces: [bool]*
+
+Takes the nth element of the top vector_bool and pushes it to the bool stack. N is the top int.
+
+vector_bool_rest
+================
+*Takes: [vector_bool] - Produces: [vector_bool]*
+
+Drops the first element of the top vector_bool.
+
+vector_bool_but_last
+====================
+*Takes: [vector_bool] - Produces: [vector_bool]*
+
+Drops the last element of the top vector_bool.
+
+vector_bool_length
+==================
+*Takes: [vector_bool] - Produces: [int]*
+
+Pushes the length of the top vector_bool to the int stack.
+
+vector_bool_reverse
+===================
+*Takes: [vector_bool] - Produces: [vector_bool]*
+
+Reverses the top vector_bool.
+
+vector_bool_push_all
+====================
+*Takes: [vector_bool] - Produces: Arbitrary number of bool values.*
+
+Pushes all elements of the top vector_bool to the bool.
+
+vector_bool_empty_vector
+========================
+*Takes: [vector_bool] - Produces: [bool]*
+
+Pushes True to the bool stack if the top vector_bool is empty. Pushes False otherwise.
+
+vector_bool_contains
+====================
+*Takes: [vector_bool, bool] - Produces: [bool]*
+
+Pushes True to the bool stack if the top bool is found in the top vector_bool. Pushes False otherwise.
+
+vector_bool_index_of
+====================
+*Takes: [vector_bool, bool] - Produces: [int]*
+
+Pushes the index top bool is top vector_bool to int stack. Pushes -1 if not found.
+
+vector_bool_occurrences_of
+==========================
+*Takes: [vector_bool, bool] - Produces: [int]*
+
+Pushes the number of time the top bool is found in the top vector_bool to int stack.
+
+vector_bool_set_nth
+===================
+*Takes: [vector_bool, int, bool] - Produces: [vector_bool]*
+
+Sets the nth element of the top vector_bool to be the top bool. N is the top int.
+
+vector_bool_replace
+===================
+*Takes: [vector_bool, bool, bool] - Produces: [vector_bool]*
+
+Replaces all instances of the top bool from the top vector_bool.
+
+vector_bool_replace_first
+=========================
+*Takes: [vector_bool, bool, bool] - Produces: [vector_bool]*
+
+Replaces the first instance of the top bool from the top vector_bool.
+
+vector_bool_remove
+==================
+*Takes: [vector_bool, bool] - Produces: [vector_bool]*
+
+Removes all instances of the top bool from the top vector_bool.
+
+vector_bool_iterate
+===================
+*Takes: PushState - Produces: PushState - Opens 1 code blocks*
+
+Iterates over the top vector_bool using the code on top of the exec stack.
+
+vector_char_concat
+==================
+*Takes: [vector_char, vector_char] - Produces: [vector_char]*
+
+Concatenates the top two vector_char.
+
+vector_char_conj
+================
+*Takes: [vector_char, char] - Produces: [vector_char]*
+
+Appends the top char to the top vector_char.
+
+vector_char_take
+================
+*Takes: [vector_char, int] - Produces: [vector_char]*
+
+Creates a new vector_char from the first N elements of the top vector_char. N is top int.
+
+vector_char_subvec
+==================
+*Takes: [vector_char, int, int] - Produces: [vector_char]*
+
+Creates a new vector_char from a slice of the top vector_char. Start and end indices are the top two ints.
+
+vector_char_first
+=================
+*Takes: [vector_char] - Produces: [char]*
+
+Takes the first element of the top vector_char and pushes it to the char stack.
+
+vector_char_last
+================
+*Takes: [vector_char] - Produces: [char]*
+
+Takes the last element of the top vector_char and pushes it to the char stack.
+
+vector_char_nth
+===============
+*Takes: [vector_char, int] - Produces: [char]*
+
+Takes the nth element of the top vector_char and pushes it to the char stack. N is the top int.
+
+vector_char_rest
+================
+*Takes: [vector_char] - Produces: [vector_char]*
+
+Drops the first element of the top vector_char.
+
+vector_char_but_last
+====================
+*Takes: [vector_char] - Produces: [vector_char]*
+
+Drops the last element of the top vector_char.
+
+vector_char_length
+==================
+*Takes: [vector_char] - Produces: [int]*
+
+Pushes the length of the top vector_char to the int stack.
+
+vector_char_reverse
+===================
+*Takes: [vector_char] - Produces: [vector_char]*
+
+Reverses the top vector_char.
+
+vector_char_push_all
+====================
+*Takes: [vector_char] - Produces: Arbitrary number of char values.*
+
+Pushes all elements of the top vector_char to the char.
+
+vector_char_empty_vector
+========================
+*Takes: [vector_char] - Produces: [bool]*
+
+Pushes True to the bool stack if the top vector_char is empty. Pushes False otherwise.
+
+vector_char_contains
+====================
+*Takes: [vector_char, char] - Produces: [bool]*
+
+Pushes True to the bool stack if the top char is found in the top vector_char. Pushes False otherwise.
+
+vector_char_index_of
+====================
+*Takes: [vector_char, char] - Produces: [int]*
+
+Pushes the index top char is top vector_char to int stack. Pushes -1 if not found.
+
+vector_char_occurrences_of
+==========================
+*Takes: [vector_char, char] - Produces: [int]*
+
+Pushes the number of time the top char is found in the top vector_char to int stack.
+
+vector_char_set_nth
+===================
+*Takes: [vector_char, int, char] - Produces: [vector_char]*
+
+Sets the nth element of the top vector_char to be the top char. N is the top int.
+
+vector_char_replace
+===================
+*Takes: [vector_char, char, char] - Produces: [vector_char]*
+
+Replaces all instances of the top char from the top vector_char.
+
+vector_char_replace_first
+=========================
+*Takes: [vector_char, char, char] - Produces: [vector_char]*
+
+Replaces the first instance of the top char from the top vector_char.
+
+vector_char_remove
+==================
+*Takes: [vector_char, char] - Produces: [vector_char]*
+
+Removes all instances of the top char from the top vector_char.
+
+vector_char_iterate
+===================
+*Takes: PushState - Produces: PushState - Opens 1 code blocks*
+
+Iterates over the top vector_char using the code on top of the exec stack.
+
 print_bool
 ==========
+*Takes: [bool] - Produces: [stdout]*
+
+Prints the top bool.
+
+println_bool
+============
 *Takes: [bool] - Produces: [stdout]*
 
 Prints the top bool.
@@ -863,8 +1500,20 @@ print_int
 
 Prints the top int.
 
+println_int
+===========
+*Takes: [int] - Produces: [stdout]*
+
+Prints the top int.
+
 print_char
 ==========
+*Takes: [char] - Produces: [stdout]*
+
+Prints the top char.
+
+println_char
+============
 *Takes: [char] - Produces: [stdout]*
 
 Prints the top char.
@@ -875,11 +1524,83 @@ print_float
 
 Prints the top float.
 
+println_float
+=============
+*Takes: [float] - Produces: [stdout]*
+
+Prints the top float.
+
 print_str
 =========
 *Takes: [str] - Produces: [stdout]*
 
 Prints the top str.
+
+println_str
+===========
+*Takes: [str] - Produces: [stdout]*
+
+Prints the top str.
+
+print_vector_int
+================
+*Takes: [vector_int] - Produces: [stdout]*
+
+Prints the top vector_int.
+
+println_vector_int
+==================
+*Takes: [vector_int] - Produces: [stdout]*
+
+Prints the top vector_int.
+
+print_vector_float
+==================
+*Takes: [vector_float] - Produces: [stdout]*
+
+Prints the top vector_float.
+
+println_vector_float
+====================
+*Takes: [vector_float] - Produces: [stdout]*
+
+Prints the top vector_float.
+
+print_vector_str
+================
+*Takes: [vector_str] - Produces: [stdout]*
+
+Prints the top vector_str.
+
+println_vector_str
+==================
+*Takes: [vector_str] - Produces: [stdout]*
+
+Prints the top vector_str.
+
+print_vector_bool
+=================
+*Takes: [vector_bool] - Produces: [stdout]*
+
+Prints the top vector_bool.
+
+println_vector_bool
+===================
+*Takes: [vector_bool] - Produces: [stdout]*
+
+Prints the top vector_bool.
+
+print_vector_char
+=================
+*Takes: [vector_char] - Produces: [stdout]*
+
+Prints the top vector_char.
+
+println_vector_char
+===================
+*Takes: [vector_char] - Produces: [stdout]*
+
+Prints the top vector_char.
 
 print_code
 ==========
@@ -887,8 +1608,20 @@ print_code
 
 Prints the top code.
 
+println_code
+============
+*Takes: [code] - Produces: [stdout]*
+
+Prints the top code.
+
 print_exec
 ==========
+*Takes: [exec] - Produces: [stdout]*
+
+Prints the top exec.
+
+println_exec
+============
 *Takes: [exec] - Produces: [stdout]*
 
 Prints the top exec.
@@ -1283,6 +2016,396 @@ str_is_empty
 
 Pushes True if the str stack is empty. Pushes False otherwise.
 
+vector_int_pop
+==============
+*Takes: [vector_int] - Produces: []*
+
+Pops the top vector_int.
+
+vector_int_dup
+==============
+*Takes: [vector_int] - Produces: [vector_int, vector_int]*
+
+Duplicates the top vector_int.
+
+vector_int_dup_times
+====================
+*Takes: [int, vector_int] - Produces: Arbitrary number of vector_int values.*
+
+Duplicates the top vector_int `n` times where `n` is from the int stack.
+
+vector_int_swap
+===============
+*Takes: [vector_int, vector_int] - Produces: [vector_int, vector_int]*
+
+Swaps the top two vector_ints.
+
+vector_int_rot
+==============
+*Takes: [vector_int, vector_int, vector_int] - Produces: [vector_int, vector_int, vector_int]*
+
+Rotates the top three vector_ints.
+
+vector_int_flush
+================
+*Takes: PushState - Produces: PushState*
+
+Empties the vector_int stack.
+
+vector_int_eq
+=============
+*Takes: [vector_int, vector_int] - Produces: [bool]*
+
+Pushes True if the top two vector_int are equal. Otherwise pushes False.
+
+vector_int_stack_depth
+======================
+*Takes: PushState - Produces: [int]*
+
+Pushes the size of the vector_int stack to the int stack.
+
+vector_int_yank
+===============
+*Takes: PushState - Produces: PushState*
+
+Yanks a vector_int from deep in the stack based on an index from the int stack and puts it on top.
+
+vector_int_yank_dup
+===================
+*Takes: PushState - Produces: PushState*
+
+Yanks a copy of a vector_int deep in the stack based on an index from the int stack and puts it on top.
+
+vector_int_shove
+================
+*Takes: PushState - Produces: PushState*
+
+Shoves the top vector_int deep in the stack based on an index from the int stack.
+
+vector_int_shove_dup
+====================
+*Takes: PushState - Produces: PushState*
+
+Shoves a copy of the top vector_int deep in the stack based on an index from the int stack.
+
+vector_int_is_empty
+===================
+*Takes: PushState - Produces: [bool]*
+
+Pushes True if the vector_int stack is empty. Pushes False otherwise.
+
+vector_float_pop
+================
+*Takes: [vector_float] - Produces: []*
+
+Pops the top vector_float.
+
+vector_float_dup
+================
+*Takes: [vector_float] - Produces: [vector_float, vector_float]*
+
+Duplicates the top vector_float.
+
+vector_float_dup_times
+======================
+*Takes: [int, vector_float] - Produces: Arbitrary number of vector_float values.*
+
+Duplicates the top vector_float `n` times where `n` is from the int stack.
+
+vector_float_swap
+=================
+*Takes: [vector_float, vector_float] - Produces: [vector_float, vector_float]*
+
+Swaps the top two vector_floats.
+
+vector_float_rot
+================
+*Takes: [vector_float, vector_float, vector_float] - Produces: [vector_float, vector_float, vector_float]*
+
+Rotates the top three vector_floats.
+
+vector_float_flush
+==================
+*Takes: PushState - Produces: PushState*
+
+Empties the vector_float stack.
+
+vector_float_eq
+===============
+*Takes: [vector_float, vector_float] - Produces: [bool]*
+
+Pushes True if the top two vector_float are equal. Otherwise pushes False.
+
+vector_float_stack_depth
+========================
+*Takes: PushState - Produces: [int]*
+
+Pushes the size of the vector_float stack to the int stack.
+
+vector_float_yank
+=================
+*Takes: PushState - Produces: PushState*
+
+Yanks a vector_float from deep in the stack based on an index from the int stack and puts it on top.
+
+vector_float_yank_dup
+=====================
+*Takes: PushState - Produces: PushState*
+
+Yanks a copy of a vector_float deep in the stack based on an index from the int stack and puts it on top.
+
+vector_float_shove
+==================
+*Takes: PushState - Produces: PushState*
+
+Shoves the top vector_float deep in the stack based on an index from the int stack.
+
+vector_float_shove_dup
+======================
+*Takes: PushState - Produces: PushState*
+
+Shoves a copy of the top vector_float deep in the stack based on an index from the int stack.
+
+vector_float_is_empty
+=====================
+*Takes: PushState - Produces: [bool]*
+
+Pushes True if the vector_float stack is empty. Pushes False otherwise.
+
+vector_str_pop
+==============
+*Takes: [vector_str] - Produces: []*
+
+Pops the top vector_str.
+
+vector_str_dup
+==============
+*Takes: [vector_str] - Produces: [vector_str, vector_str]*
+
+Duplicates the top vector_str.
+
+vector_str_dup_times
+====================
+*Takes: [int, vector_str] - Produces: Arbitrary number of vector_str values.*
+
+Duplicates the top vector_str `n` times where `n` is from the int stack.
+
+vector_str_swap
+===============
+*Takes: [vector_str, vector_str] - Produces: [vector_str, vector_str]*
+
+Swaps the top two vector_strs.
+
+vector_str_rot
+==============
+*Takes: [vector_str, vector_str, vector_str] - Produces: [vector_str, vector_str, vector_str]*
+
+Rotates the top three vector_strs.
+
+vector_str_flush
+================
+*Takes: PushState - Produces: PushState*
+
+Empties the vector_str stack.
+
+vector_str_eq
+=============
+*Takes: [vector_str, vector_str] - Produces: [bool]*
+
+Pushes True if the top two vector_str are equal. Otherwise pushes False.
+
+vector_str_stack_depth
+======================
+*Takes: PushState - Produces: [int]*
+
+Pushes the size of the vector_str stack to the int stack.
+
+vector_str_yank
+===============
+*Takes: PushState - Produces: PushState*
+
+Yanks a vector_str from deep in the stack based on an index from the int stack and puts it on top.
+
+vector_str_yank_dup
+===================
+*Takes: PushState - Produces: PushState*
+
+Yanks a copy of a vector_str deep in the stack based on an index from the int stack and puts it on top.
+
+vector_str_shove
+================
+*Takes: PushState - Produces: PushState*
+
+Shoves the top vector_str deep in the stack based on an index from the int stack.
+
+vector_str_shove_dup
+====================
+*Takes: PushState - Produces: PushState*
+
+Shoves a copy of the top vector_str deep in the stack based on an index from the int stack.
+
+vector_str_is_empty
+===================
+*Takes: PushState - Produces: [bool]*
+
+Pushes True if the vector_str stack is empty. Pushes False otherwise.
+
+vector_bool_pop
+===============
+*Takes: [vector_bool] - Produces: []*
+
+Pops the top vector_bool.
+
+vector_bool_dup
+===============
+*Takes: [vector_bool] - Produces: [vector_bool, vector_bool]*
+
+Duplicates the top vector_bool.
+
+vector_bool_dup_times
+=====================
+*Takes: [int, vector_bool] - Produces: Arbitrary number of vector_bool values.*
+
+Duplicates the top vector_bool `n` times where `n` is from the int stack.
+
+vector_bool_swap
+================
+*Takes: [vector_bool, vector_bool] - Produces: [vector_bool, vector_bool]*
+
+Swaps the top two vector_bools.
+
+vector_bool_rot
+===============
+*Takes: [vector_bool, vector_bool, vector_bool] - Produces: [vector_bool, vector_bool, vector_bool]*
+
+Rotates the top three vector_bools.
+
+vector_bool_flush
+=================
+*Takes: PushState - Produces: PushState*
+
+Empties the vector_bool stack.
+
+vector_bool_eq
+==============
+*Takes: [vector_bool, vector_bool] - Produces: [bool]*
+
+Pushes True if the top two vector_bool are equal. Otherwise pushes False.
+
+vector_bool_stack_depth
+=======================
+*Takes: PushState - Produces: [int]*
+
+Pushes the size of the vector_bool stack to the int stack.
+
+vector_bool_yank
+================
+*Takes: PushState - Produces: PushState*
+
+Yanks a vector_bool from deep in the stack based on an index from the int stack and puts it on top.
+
+vector_bool_yank_dup
+====================
+*Takes: PushState - Produces: PushState*
+
+Yanks a copy of a vector_bool deep in the stack based on an index from the int stack and puts it on top.
+
+vector_bool_shove
+=================
+*Takes: PushState - Produces: PushState*
+
+Shoves the top vector_bool deep in the stack based on an index from the int stack.
+
+vector_bool_shove_dup
+=====================
+*Takes: PushState - Produces: PushState*
+
+Shoves a copy of the top vector_bool deep in the stack based on an index from the int stack.
+
+vector_bool_is_empty
+====================
+*Takes: PushState - Produces: [bool]*
+
+Pushes True if the vector_bool stack is empty. Pushes False otherwise.
+
+vector_char_pop
+===============
+*Takes: [vector_char] - Produces: []*
+
+Pops the top vector_char.
+
+vector_char_dup
+===============
+*Takes: [vector_char] - Produces: [vector_char, vector_char]*
+
+Duplicates the top vector_char.
+
+vector_char_dup_times
+=====================
+*Takes: [int, vector_char] - Produces: Arbitrary number of vector_char values.*
+
+Duplicates the top vector_char `n` times where `n` is from the int stack.
+
+vector_char_swap
+================
+*Takes: [vector_char, vector_char] - Produces: [vector_char, vector_char]*
+
+Swaps the top two vector_chars.
+
+vector_char_rot
+===============
+*Takes: [vector_char, vector_char, vector_char] - Produces: [vector_char, vector_char, vector_char]*
+
+Rotates the top three vector_chars.
+
+vector_char_flush
+=================
+*Takes: PushState - Produces: PushState*
+
+Empties the vector_char stack.
+
+vector_char_eq
+==============
+*Takes: [vector_char, vector_char] - Produces: [bool]*
+
+Pushes True if the top two vector_char are equal. Otherwise pushes False.
+
+vector_char_stack_depth
+=======================
+*Takes: PushState - Produces: [int]*
+
+Pushes the size of the vector_char stack to the int stack.
+
+vector_char_yank
+================
+*Takes: PushState - Produces: PushState*
+
+Yanks a vector_char from deep in the stack based on an index from the int stack and puts it on top.
+
+vector_char_yank_dup
+====================
+*Takes: PushState - Produces: PushState*
+
+Yanks a copy of a vector_char deep in the stack based on an index from the int stack and puts it on top.
+
+vector_char_shove
+=================
+*Takes: PushState - Produces: PushState*
+
+Shoves the top vector_char deep in the stack based on an index from the int stack.
+
+vector_char_shove_dup
+=====================
+*Takes: PushState - Produces: PushState*
+
+Shoves a copy of the top vector_char deep in the stack based on an index from the int stack.
+
+vector_char_is_empty
+====================
+*Takes: PushState - Produces: [bool]*
+
+Pushes True if the vector_char stack is empty. Pushes False otherwise.
+
 code_pop
 ========
 *Takes: [code] - Produces: []*
@@ -1469,9 +2592,38 @@ code_from_str
 
 Moves the top str to the code stack.
 
+code_from_vector_int
+====================
+*Takes: [vector_int] - Produces: [code]*
+
+Moves the top vector_int to the code stack.
+
+code_from_vector_float
+======================
+*Takes: [vector_float] - Produces: [code]*
+
+Moves the top vector_float to the code stack.
+
+code_from_vector_str
+====================
+*Takes: [vector_str] - Produces: [code]*
+
+Moves the top vector_str to the code stack.
+
+code_from_vector_bool
+=====================
+*Takes: [vector_bool] - Produces: [code]*
+
+Moves the top vector_bool to the code stack.
+
+code_from_vector_char
+=====================
+*Takes: [vector_char] - Produces: [code]*
+
+Moves the top vector_char to the code stack.
+
 code_from_exec
 ==============
 *Takes: [exec] - Produces: [code] - Opens 1 code blocks*
 
 Moves the top exec to the code stack.
-

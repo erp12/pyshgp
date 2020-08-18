@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pyshgp.gp.estimators &#8212; PyshGP 0.1.6 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -25,7 +26,8 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.gp.estimators</a></li> 
       </ul>
     </div>  
 
@@ -45,7 +47,7 @@
 <span class="kn">import</span> <span class="nn">pyshgp.gp.variation</span> <span class="k">as</span> <span class="nn">vr</span>
 <span class="kn">from</span> <span class="nn">pyshgp.gp.evaluation</span> <span class="kn">import</span> <span class="n">DatasetEvaluator</span>
 <span class="kn">from</span> <span class="nn">pyshgp.gp.genome</span> <span class="kn">import</span> <span class="n">GeneSpawner</span>
-<span class="kn">from</span> <span class="nn">pyshgp.push.interpreter</span> <span class="kn">import</span> <span class="n">PushInterpreter</span><span class="p">,</span> <span class="n">DEFAULT_INTERPRETER</span>
+<span class="kn">from</span> <span class="nn">pyshgp.push.interpreter</span> <span class="kn">import</span> <span class="n">PushInterpreter</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.config</span> <span class="kn">import</span> <span class="n">PushConfig</span>
 <span class="kn">from</span> <span class="nn">pyshgp.push.program</span> <span class="kn">import</span> <span class="n">ProgramSignature</span>
 <span class="kn">from</span> <span class="nn">pyshgp.tap</span> <span class="kn">import</span> <span class="n">tap</span><span class="p">,</span> <span class="n">set_verbosity</span>
@@ -136,7 +138,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">interpreter</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span> <span class="o">=</span> <span class="n">DEFAULT_INTERPRETER</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span> <span class="o">=</span> <span class="n">PushInterpreter</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span> <span class="o">=</span> <span class="n">interpreter</span>
 
@@ -182,6 +184,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">arity</span><span class="p">,</span> <span class="n">y_types</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">y_types</span><span class="p">)</span>
         <span class="n">output_types</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="o">.</span><span class="n">type_library</span><span class="o">.</span><span class="n">push_type_for_type</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">y_types</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_str_from_stdout</span><span class="p">:</span>
             <span class="n">ndx</span> <span class="o">=</span> <span class="n">list_rindex</span><span class="p">(</span><span class="n">output_types</span><span class="p">,</span> <span class="s2">&quot;str&quot;</span><span class="p">)</span>
@@ -191,8 +194,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="n">DatasetEvaluator</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">interpreter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interpreter</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_search_algo</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parallel_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">parallel_context</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">tear_down</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="PushEstimator.predict"><a class="viewcode-back" href="../../../api/gp.html#pyshgp.gp.estimators.PushEstimator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute the synthesized push program on a dataset.</span>
@@ -257,6 +259,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span> <span class="o">=</span> <span class="n">Individual</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span></div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -286,12 +289,13 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyshgp.gp.estimators</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Edward Pantridge.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>
 </html>

@@ -73,7 +73,7 @@ class PushType:
         return isinstance(other, self.__class__) and self.name == other.name
 
     def __hash__(self):
-        return (str(Char("c").__class__) + self.name).__hash__()
+        return (str(self.__class__) + self.name).__hash__()
 
 
 class PushBoolType(PushType):

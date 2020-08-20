@@ -355,7 +355,7 @@ class Alternation(VariationOperator):
         if not use_parent_1:
             loop_times = len(gn2)
         i = 0
-        while (i < loop_times):
+        while i < loop_times:
             if random() < self.rate:
                 # Switch which parent we are pulling genes from
                 i += round(self.alignment_deviation * _gaussian_noise_factor())
@@ -464,7 +464,7 @@ def get_variation_operator(name: str, **kwargs) -> VariationOperator:
     }
     op = name_to_cls.get(name, None)
     if op is None:
-        raise ValueError("No varition operator '{nm}'. Supported names: {lst}.".format(
+        raise ValueError("No variation operator '{nm}'. Supported names: {lst}.".format(
             nm=name,
             lst=list(name_to_cls.keys())
         ))

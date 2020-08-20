@@ -21,20 +21,21 @@ class PushEstimator:
 
     Parameters
     ----------
+    spawner : Union[GeneSpawner, str], optional
+        The GeneSpawner to use when producing Genomes during initialization and
+        variation. Default is all core instructions, no literals, and no ERC Generators.
     search : Union[SearchAlgorithm, str], optional
         The search algorithm, or its abbreviation, to use to when synthesizing
         Push programs.
-    spawner : Union[GeneSpawner, str], optional
-        The GeneSpawner to use when producing Genomes during initialization and
-        variation. Default is all core intructions, no literals, and no ERC Generators.
     selector : Union[Selector, str], optional
         The selector, or name of selector, to use when selecting parents.
         The default is lexicase selection.
     variation_strategy : Union[VariationStrategy, dict, str]
         A VariationStrategy describing a collection of VariationOperators and how
         frequently to use them. If a dict is supplied, keys should be operator
-        names and values should be the probability distirution. If a string is
+        names and values should be the probability distribution. If a string is
         provided, the VariationOperators with that name will always be used.
+        Default is ``"umad""``.
     population_size : int, optional
         The number of individuals hold in the population each generation. Default
         is 300.
@@ -45,7 +46,7 @@ class PushEstimator:
         (20, 100)
     simplification_steps : int
         The number of simplification iterations to apply to the best Push program
-        produced by the search algorithm.
+        produced by the search algorithm. Default 2000.
     interpreter : PushInterpreter, optional
         The PushInterpreter to use when making predictions. Also holds the instruction
         set to use

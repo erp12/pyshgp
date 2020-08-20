@@ -41,7 +41,7 @@ def to_point(thing):
 # The target function we would like to synthesize.
 # Also the function used to define of one of our custom instructions.
 def point_distance(p1, p2):
-    """Return the distance between two points."""
+    """Return a tuple containing the distance between two points."""
     delta_x = p2.x - p1.x
     delta_y = p2.y - p1.y
     return sqrt(pow(delta_x, 2.0) + pow(delta_y, 2.0)),
@@ -49,7 +49,7 @@ def point_distance(p1, p2):
 
 # Another function used to define of one of our custom instructions.
 def point_from_floats(f1, f2):
-    """Return a tuple containint a Point made from two floats."""
+    """Return a tuple containing a Point made from two floats."""
     return Point(f1, f2),
 
 

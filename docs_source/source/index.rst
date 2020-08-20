@@ -16,8 +16,9 @@ Guides
    :maxdepth: 2
 
    overview
+   configuration
    instructions
-   push_types
+   guides/extending_push
    contributing
 
 Release Notes

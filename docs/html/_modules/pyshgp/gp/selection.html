@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pyshgp.gp.selection &#8212; PyshGP 0.1.6 documentation</title>
+    <title>pyshgp.gp.selection &#8212; PyshGP 0.1.8 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,7 +25,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyshgp.gp.selection</a></li> 
       </ul>
@@ -378,15 +378,18 @@
         <span class="s2">&quot;roulette&quot;</span><span class="p">:</span> <span class="n">FitnessProportionate</span><span class="p">,</span>
         <span class="s2">&quot;tournament&quot;</span><span class="p">:</span> <span class="n">Tournament</span><span class="p">,</span>
         <span class="s2">&quot;lexicase&quot;</span><span class="p">:</span> <span class="n">Lexicase</span><span class="p">,</span>
+        <span class="s2">&quot;epsilon-lexicase&quot;</span><span class="p">:</span> <span class="n">Lexicase</span><span class="p">(</span><span class="n">epsilon</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
         <span class="s2">&quot;elite&quot;</span><span class="p">:</span> <span class="n">Elite</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">_cls</span> <span class="o">=</span> <span class="n">name_to_cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">_cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">selector</span> <span class="o">=</span> <span class="n">name_to_cls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No selector &#39;</span><span class="si">{nm}</span><span class="s2">&#39;. Supported names: </span><span class="si">{lst}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">nm</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">lst</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">name_to_cls</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="p">))</span>
-    <span class="k">return</span> <span class="n">instantiate_using</span><span class="p">(</span><span class="n">_cls</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">instantiate_using</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">selector</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -418,13 +421,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyshgp.gp.selection</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Edward Pantridge.
+        &#169; Copyright 2020, Edward Pantridge.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>

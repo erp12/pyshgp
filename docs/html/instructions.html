@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Push Instructions &#8212; PyshGP 0.1.6 documentation</title>
+    <title>Push Instructions &#8212; PyshGP 0.1.8 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="PyshGP Core Instruction Set" href="core_instructions.html" />
-    <link rel="prev" title="PyshGP" href="overview.html" /> 
+    <link rel="prev" title="Configuring PushGP Runs" href="configuration.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -31,9 +31,9 @@
           <a href="core_instructions.html" title="PyshGP Core Instruction Set"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="overview.html" title="PyshGP"
+          <a href="configuration.html" title="Configuring PushGP Runs"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Push Instructions</a></li> 
       </ul>
     </div>  
@@ -44,7 +44,7 @@
           <div class="body" role="main">
             
   <div class="section" id="push-instructions">
-<h1>Push Instructions<a class="headerlink" href="#push-instructions" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Push Instructions<a class="headerlink" href="#push-instructions" title="Permalink to this headline">¶</a></h1>
 <p>A Push instruction is object that can manipulate the typed stacks of a <code class="docutils literal notranslate"><span class="pre">PushState</span></code>. Typically, an instruction is defined by some function. When evaluated, the arguments to the instruction’s function are taken from the stacks of the <code class="docutils literal notranslate"><span class="pre">PushInterpreter</span></code>’s PushState and the returned values are pushed to back to the stacks.</p>
 <p>In PyshGP, there are a variety of classes that concretely implement the concept of an instruction. These definitions capture all the required information about an instruction. For example, the <code class="docutils literal notranslate"><span class="pre">SimpleInstruction</span></code> class automatically handles the popping of arguments and pushing of returned values for functions that only require access to the top items of some stacks. Meanwhile, the more flexible <code class="docutils literal notranslate"><span class="pre">StateToStateInstruction</span></code> only requires a function which takes the entire PushState and returns a PushState.</p>
 <p>Every instruction must contain information on which stacks it manipulates. This is so that the <code class="docutils literal notranslate"><span class="pre">PushInterpreter</span></code> will know which stacks are required to ensure a given collection of Instruction will be supportable. It also aids in filtering collections of instructions based on what types they manipulate.</p>
@@ -62,10 +62,12 @@
 </div>
 </div>
 <div class="section" id="example-instruction-definitions">
-<h2>Example Instruction Definitions<a class="headerlink" href="#example-instruction-definitions" title="Permalink to this headline">¶</a></h2>
+<span id="push-instruction-definition"></span><h2>Example Instruction Definitions<a class="headerlink" href="#example-instruction-definitions" title="Permalink to this headline">¶</a></h2>
+<p>One way to extend the functionality of PyshGP`s Push interpreter is to define custom instructions.
+The following sections describe the variety of ways which Push instructions can be defined.</p>
 <div class="section" id="simple-instruction">
 <h3>Simple Instruction<a class="headerlink" href="#simple-instruction" title="Permalink to this headline">¶</a></h3>
-<p>Used when the exact function is known. In other words, how many argument are needed and their types, as well as the number of returned values and their types.</p>
+<p>Used when the exact function signature is known. In other words, how many argument are needed and their types, as well as the number of returned values and their types.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">protected_divison</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Token</span><span class="o">.</span><span class="n">revert</span>
@@ -197,8 +199,8 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="overview.html"
-                        title="previous chapter">PyshGP</a></p>
+  <p class="topless"><a href="configuration.html"
+                        title="previous chapter">Configuring PushGP Runs</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core_instructions.html"
                         title="next chapter">PyshGP Core Instruction Set</a></p>
@@ -236,14 +238,14 @@
           <a href="core_instructions.html" title="PyshGP Core Instruction Set"
              >next</a> |</li>
         <li class="right" >
-          <a href="overview.html" title="PyshGP"
+          <a href="configuration.html" title="Configuring PushGP Runs"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Push Instructions</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Edward Pantridge.
+        &#169; Copyright 2020, Edward Pantridge.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>

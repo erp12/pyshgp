@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuring PushGP Runs &#8212; PyshGP 0.1.8 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Push Instructions" href="instructions.html" />
+    <link rel="prev" title="PyshGP" href="overview.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="instructions.html" title="Push Instructions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="PyshGP"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Configuring PushGP Runs</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuring-pushgp-runs">
+<h1>Configuring PushGP Runs<a class="headerlink" href="#configuring-pushgp-runs" title="Permalink to this headline">¶</a></h1>
+<p>The primary abstraction for starting PushGP runs with PyshGP is to instantiate a
+<code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code> and call the <code class="docutils literal notranslate"><span class="pre">fit()</span></code> method with a dataset of training cases. The
+estimator can be configured to use different search algorithms, selection methods,
+variation operators, and other hyperparameters. This guide demonstrates a variety
+of different ways a <code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code> could be configured to change the way
+programs are synthesized in PyshGP.</p>
+<p>At a minimum, a <code class="docutils literal notranslate"><span class="pre">GeneSpawner</span></code> must be provided when creating a <code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code>. The
+spawner is used to generate random genomes during the initialization of an evolutionary
+population and random genes during mutation operations. The genes might be produced by
+the spawner are samples from a set of inputs, literals, ephemeral random constant
+generators, and the <code class="docutils literal notranslate"><span class="pre">InstructionSet</span></code>.</p>
+<p>If only a <code class="docutils literal notranslate"><span class="pre">GeneSpawner</span></code> is provided, the hyperparameters of the <code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code>
+will be the defaults listed in the API. See <a class="reference internal" href="api/gp.html#api-gp"><span class="std std-ref">pyshgp.gp package</span></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyshgp.gp.estimators</span> <span class="kn">import</span> <span class="n">PushEstimator</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.genome</span> <span class="kn">import</span> <span class="n">GeneSpawner</span>
+
+<span class="n">spawner</span> <span class="o">=</span> <span class="n">GeneSpawner</span><span class="p">(</span>
+    <span class="n">n_inputs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">instruction_set</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+    <span class="n">literals</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">erc_generators</span><span class="o">=</span><span class="p">[</span><span class="k">lambda</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+<span class="p">)</span>
+
+<span class="n">est</span> <span class="o">=</span> <span class="n">PushEstimator</span><span class="p">(</span><span class="n">spawner</span><span class="o">=</span><span class="n">spawner</span><span class="p">)</span>
+<span class="n">est</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code> can be further configured with the top-level hyperparameters
+that apply directly to the estimator. Examples include <code class="docutils literal notranslate"><span class="pre">populaiton_size</span></code>,
+<code class="docutils literal notranslate"><span class="pre">max_generations</span></code>, and <code class="docutils literal notranslate"><span class="pre">initial_genome_size</span></code>. More information about these
+hyperparameters can be found in the API. See <a class="reference internal" href="api/gp.html#api-gp"><span class="std std-ref">pyshgp.gp package</span></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyshgp.gp.estimators</span> <span class="kn">import</span> <span class="n">PushEstimator</span>
+
+<span class="n">est</span> <span class="o">=</span> <span class="n">PushEstimator</span><span class="p">(</span>
+    <span class="n">spawner</span><span class="o">=</span><span class="n">spawner</span><span class="p">,</span>
+    <span class="n">populaiton_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">max_generations</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+    <span class="n">initial_genome_size</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+    <span class="n">simplification_steps</span><span class="o">=</span><span class="mi">1000</span>
+<span class="p">)</span>
+<span class="n">est</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="evolutionary-components">
+<h2>Evolutionary Components<a class="headerlink" href="#evolutionary-components" title="Permalink to this headline">¶</a></h2>
+<p>PyshGP aims to be extensive as much as possible. It is expected that users will want
+to implement their own components (selection methods, variation operators, etc) and
+use them in coordination with the abstractions provided by PyshGP. To accomplish this,
+the <code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code> accepts instances of various abstract base classes. Users can
+choose to use instances of concrete sub-classes provided by PyshGP, or implement their own.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyshgp.gp.estimators</span> <span class="kn">import</span> <span class="n">PushEstimator</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.selection</span> <span class="kn">import</span> <span class="n">Lexicase</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.variation</span> <span class="kn">import</span> <span class="n">VariationOperator</span>
+
+<span class="k">class</span> <span class="nc">ReverseMutation</span><span class="p">(</span><span class="n">VariationOperator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A mutation that reverses the parent genome.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parents</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Genome</span><span class="p">],</span> <span class="n">spawner</span><span class="p">:</span> <span class="n">GeneSpawner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genome</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Genome</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+
+<span class="n">est</span> <span class="o">=</span> <span class="n">PushEstimator</span><span class="p">(</span>
+    <span class="n">spawner</span><span class="o">=</span><span class="n">spawner</span><span class="p">,</span>
+    <span class="n">selector</span><span class="o">=</span><span class="n">Lexicase</span><span class="p">(</span><span class="n">epsilon</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>      <span class="c1"># This selector has its own configuration.</span>
+    <span class="n">variation_strategy</span><span class="o">=</span><span class="n">ReverseMutation</span><span class="p">(),</span>
+    <span class="n">population_size</span><span class="o">=</span><span class="mi">300</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This design is in direct conflict with the sci-kit learn philosophy of designing estimators,
+where hyperparameters are simple values and all of the configuration exists in the estimator.
+In order to bring the <code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code> back into towards a simpler (and narrower) API, most
+the evolutionary components can be set with a string that corresponds to the name of a
+reasonable “preset” value. For example, <code class="docutils literal notranslate"><span class="pre">selector=&quot;lexicase&quot;</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">selector=Lexicase()</span></code>.</p>
+<p>The following sections describe common ways of configuring the different components
+of evolution.</p>
+<div class="section" id="parent-selection">
+<h3>Parent Selection<a class="headerlink" href="#parent-selection" title="Permalink to this headline">¶</a></h3>
+<p>Parent selection is controlled by an instance of a <code class="docutils literal notranslate"><span class="pre">Selector</span></code> type, and it’s used to
+select one or more individuals from evolutionary population. Different selectors apply
+different “selection pressure” which guides evolution differently.</p>
+<p>The preset selectors that can be referenced by name are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;roulette&quot;</span></code> : Fitness proportionate selection, also known as roulette wheel selection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;tournament&quot;</span></code> : Tournament selection. Default tournament size is 7.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;lexicase&quot;</span></code> : Lexicase selection. Default <code class="docutils literal notranslate"><span class="pre">epsilon=False</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;epsilon-lexicase&quot;</span></code> : Epsilon lexicase selection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;elite&quot;</span></code> : Selects the best <code class="docutils literal notranslate"><span class="pre">n</span></code> individuals by total error.</p></li>
+</ul>
+</div>
+<div class="section" id="variation-strategy">
+<h3>Variation Strategy<a class="headerlink" href="#variation-strategy" title="Permalink to this headline">¶</a></h3>
+<p>A variation operator is a transformation from parent genomes to a child genome. A
+variation pipeline is a variation operator composed of other variation operators
+that are applied in a sequence. A variation strategy is a variation operator that
+composed of other variation operators that are each associated with a probability.</p>
+<p>The preset variation operators that can be referenced by name are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;deletion&quot;</span></code> : Deletes random genes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;addition&quot;</span></code> : Adds random genes at random points.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;alternation&quot;</span></code> : Pulls genes from a parent and randomly switches which parent it is pulling from.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;genesis&quot;</span></code> : Creates entirely new random genomes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;cloning&quot;</span></code> : Returns the parent’s genome unchanged.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;umad&quot;</span></code> : Uniform mutation by addition and deletion.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;umad-shrink&quot;</span></code> : Variant of UMAD that biases towards more deletion than addition.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;umad-grow&quot;</span></code> : Variant of UMAD that biases towards more addition than deletion.</p></li>
+</ul>
+<p>For a reference on UMAD, see <a class="reference external" href="https://dl.acm.org/citation.cfm?id=3205455.3205603">this paper</a>.</p>
+<p>When configuring a <code class="docutils literal notranslate"><span class="pre">PushEstimator</span></code>, you can specify a variation strategy containing multiple
+possible operators to apply with some probability. For example, the following configuration will
+use <code class="docutils literal notranslate"><span class="pre">Alternation</span></code> 70% of the time and <code class="docutils literal notranslate"><span class="pre">Genesis</span></code> the other 30% of the time.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyshgp.gp.estimators</span> <span class="kn">import</span> <span class="n">PushEstimator</span>
+<span class="kn">from</span> <span class="nn">pyshgp.gp.variation</span> <span class="kn">import</span> <span class="n">VariationOperator</span><span class="p">,</span> <span class="n">Alternation</span>
+
+<span class="n">est</span> <span class="o">=</span> <span class="n">PushEstimator</span><span class="p">(</span>
+    <span class="n">spawner</span><span class="o">=</span><span class="n">spawner</span><span class="p">,</span>
+    <span class="n">variation_strategy</span><span class="o">=</span><span class="p">(</span>
+      <span class="n">VariationStrategy</span><span class="p">()</span>
+      <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Alternation</span><span class="p">(</span><span class="n">alternation_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">alignment_deviation</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span> <span class="mf">0.7</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Genesis</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">100</span><span class="p">)),</span> <span class="mf">0.3</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="search-algorithms">
+<h3>Search Algorithms<a class="headerlink" href="#search-algorithms" title="Permalink to this headline">¶</a></h3>
+<p>Documentation TBD.</p>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configuring PushGP Runs</a><ul>
+<li><a class="reference internal" href="#evolutionary-components">Evolutionary Components</a><ul>
+<li><a class="reference internal" href="#parent-selection">Parent Selection</a></li>
+<li><a class="reference internal" href="#variation-strategy">Variation Strategy</a></li>
+<li><a class="reference internal" href="#search-algorithms">Search Algorithms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">PyshGP</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="instructions.html"
+                        title="next chapter">Push Instructions</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/configuration.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="instructions.html" title="Push Instructions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="PyshGP"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Configuring PushGP Runs</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Edward Pantridge.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+    </div>
+  </body>
+</html>

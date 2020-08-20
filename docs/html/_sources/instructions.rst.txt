@@ -1,3 +1,5 @@
+.. _push-instructions:
+
 *****************
 Push Instructions
 *****************
@@ -28,13 +30,18 @@ To read about all the core instructions provided by PyshGP, see the following pa
     core_instructions
 
 
+.. _push-instruction-definition:
+
 Example Instruction Definitions
 ===============================
+
+One way to extend the functionality of PyshGP`s Push interpreter is to define custom instructions.
+The following sections describe the variety of ways which Push instructions can be defined.
 
 Simple Instruction
 ------------------
 
-Used when the exact function is known. In other words, how many argument are needed and their types, as well as the number of returned values and their types.
+Used when the exact function signature is known. In other words, how many argument are needed and their types, as well as the number of returned values and their types.
 
 .. code-block:: python
 

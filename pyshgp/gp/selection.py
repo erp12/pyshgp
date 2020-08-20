@@ -339,12 +339,15 @@ def get_selector(name: str, **kwargs) -> Selector:
         "roulette": FitnessProportionate,
         "tournament": Tournament,
         "lexicase": Lexicase,
+        "epsilon-lexicase": Lexicase(epsilon=True),
         "elite": Elite,
     }
-    _cls = name_to_cls.get(name, None)
-    if _cls is None:
+    selector = name_to_cls.get(name, None)
+    if selector is None:
         raise ValueError("No selector '{nm}'. Supported names: {lst}.".format(
             nm=name,
             lst=list(name_to_cls.keys())
         ))
-    return instantiate_using(_cls, kwargs)
+    if isinstance(selector, type):
+        selector = instantiate_using(selector, kwargs)
+    return selector

@@ -79,10 +79,6 @@ class PushTypeLibrary(dict):
             Indicates if the PushType is a collection. Default is False.
         is_numeric : bool, optional
             Indicates if the PushType is a number. Default is False.
-        coercion_func : Callable[[Any], Any], optional
-            A function which takes a single argument and returns argument coerced
-            into the PushTypes canonical type (the first type in ``underlying``).
-            If None, the constructor of the canonical type is used. Default is None.
         force : bool
             If True, will register the type even if it will overwrite an
             existing reserved stack typed (eg. exec, stdout, untyped). Default
@@ -180,6 +176,7 @@ class PushTypeLibrary(dict):
                 return push_type
         if error_on_not_found:
             raise PushError.no_type(thing)
+        return None
 
     def push_type_for_type(self, typ: type, error_on_not_found: bool = False) -> Optional[PushType]:
         """Return the PushType of the given python (or numpy) type.
@@ -202,10 +199,11 @@ class PushTypeLibrary(dict):
                 return push_type
         if error_on_not_found:
             raise PushError.no_type(typ)
+        return None
 
 
 def infer_literal(val: Any, type_library: PushTypeLibrary) -> Literal:
-    """Make a literal by infering the PushType of the value.
+    """Make a literal by inferring the PushType of the value.
 
     Parameters
     ----------

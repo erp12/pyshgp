@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pyshgp.gp.estimators &#8212; PyshGP 0.1.6 documentation</title>
+    <title>pyshgp.gp.estimators &#8212; PyshGP 0.1.8 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,7 +25,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyshgp.gp.estimators</a></li> 
       </ul>
@@ -60,20 +60,21 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    spawner : Union[GeneSpawner, str], optional</span>
+<span class="sd">        The GeneSpawner to use when producing Genomes during initialization and</span>
+<span class="sd">        variation. Default is all core instructions, no literals, and no ERC Generators.</span>
 <span class="sd">    search : Union[SearchAlgorithm, str], optional</span>
 <span class="sd">        The search algorithm, or its abbreviation, to use to when synthesizing</span>
 <span class="sd">        Push programs.</span>
-<span class="sd">    spawner : Union[GeneSpawner, str], optional</span>
-<span class="sd">        The GeneSpawner to use when producing Genomes during initialization and</span>
-<span class="sd">        variation. Default is all core intructions, no literals, and no ERC Generators.</span>
 <span class="sd">    selector : Union[Selector, str], optional</span>
 <span class="sd">        The selector, or name of selector, to use when selecting parents.</span>
 <span class="sd">        The default is lexicase selection.</span>
 <span class="sd">    variation_strategy : Union[VariationStrategy, dict, str]</span>
 <span class="sd">        A VariationStrategy describing a collection of VariationOperators and how</span>
 <span class="sd">        frequently to use them. If a dict is supplied, keys should be operator</span>
-<span class="sd">        names and values should be the probability distirution. If a string is</span>
+<span class="sd">        names and values should be the probability distribution. If a string is</span>
 <span class="sd">        provided, the VariationOperators with that name will always be used.</span>
+<span class="sd">        Default is ``&quot;umad&quot;&quot;``.</span>
 <span class="sd">    population_size : int, optional</span>
 <span class="sd">        The number of individuals hold in the population each generation. Default</span>
 <span class="sd">        is 300.</span>
@@ -84,7 +85,7 @@
 <span class="sd">        (20, 100)</span>
 <span class="sd">    simplification_steps : int</span>
 <span class="sd">        The number of simplification iterations to apply to the best Push program</span>
-<span class="sd">        produced by the search algorithm.</span>
+<span class="sd">        produced by the search algorithm. Default 2000.</span>
 <span class="sd">    interpreter : PushInterpreter, optional</span>
 <span class="sd">        The PushInterpreter to use when making predictions. Also holds the instruction</span>
 <span class="sd">        set to use</span>
@@ -288,13 +289,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyshgp.gp.estimators</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Edward Pantridge.
+        &#169; Copyright 2020, Edward Pantridge.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>

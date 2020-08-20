@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pyshgp.push package &#8212; PyshGP 0.1.6 documentation</title>
+    <title>pyshgp.push package &#8212; PyshGP 0.1.8 documentation</title>
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pyshgp.gp package" href="gp.html" />
-    <link rel="prev" title="Push API" href="../api.html" /> 
+    <link rel="prev" title="PyshGP API" href="../api.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -31,10 +31,10 @@
           <a href="gp.html" title="pyshgp.gp package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../api.html" title="Push API"
+          <a href="../api.html" title="PyshGP API"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">Push API</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">PyshGP API</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyshgp.push package</a></li> 
       </ul>
     </div>  
@@ -1325,9 +1325,6 @@ PushStack.</p></li>
 native types which the PushType is representing.</p></li>
 <li><p><strong>is_collection</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if the PushType is a collection. Default is False.</p></li>
 <li><p><strong>is_numeric</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates if the PushType is a number. Default is False.</p></li>
-<li><p><strong>coercion_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Any</em><em>]</em><em>, </em><em>Any</em><em>]</em><em>, </em><em>optional</em>) – A function which takes a single argument and returns argument coerced
-into the PushTypes canonical type (the first type in <code class="docutils literal notranslate"><span class="pre">underlying</span></code>).
-If None, the constructor of the canonical type is used. Default is None.</p></li>
 <li><p><strong>force</strong> (<em>bool</em>) – If True, will register the type even if it will overwrite an
 existing reserved stack typed (eg. exec, stdout, untyped). Default
 is False. It is not recommended this argument be changed unless
@@ -1470,7 +1467,7 @@ you have a very good reason to do so.</p></li>
 <dl class="py function">
 <dt id="pyshgp.push.type_library.infer_literal">
 <code class="sig-prename descclassname">pyshgp.push.type_library.</code><code class="sig-name descname">infer_literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">type_library</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pyshgp.push.type_library.PushTypeLibrary" title="pyshgp.push.type_library.PushTypeLibrary">pyshgp.push.type_library.PushTypeLibrary</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pyshgp.push.atoms.Literal" title="pyshgp.push.atoms.Literal">pyshgp.push.atoms.Literal</a><a class="reference internal" href="../_modules/pyshgp/push/type_library.html#infer_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyshgp.push.type_library.infer_literal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a literal by infering the PushType of the value.</p>
+<dd><p>Make a literal by inferring the PushType of the value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1681,7 +1678,7 @@ see the following links</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../api.html"
-                        title="previous chapter">Push API</a></p>
+                        title="previous chapter">PyshGP API</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="gp.html"
                         title="next chapter">pyshgp.gp package</a></p>
@@ -1719,15 +1716,15 @@ see the following links</p>
           <a href="gp.html" title="pyshgp.gp package"
              >next</a> |</li>
         <li class="right" >
-          <a href="../api.html" title="Push API"
+          <a href="../api.html" title="PyshGP API"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../api.html" >Push API</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PyshGP 0.1.8 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >PyshGP API</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyshgp.push package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Edward Pantridge.
+        &#169; Copyright 2020, Edward Pantridge.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
     </div>
   </body>

@@ -1,6 +1,8 @@
-========
-Push API
-========
+.. _api:
+
+==========
+PyshGP API
+==========
 
 There are two main sub-packages that make up PyshGP's functionality.
 

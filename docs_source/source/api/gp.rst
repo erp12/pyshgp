@@ -1,3 +1,5 @@
+.. _api-gp:
+
 pyshgp.gp package
 =================
 

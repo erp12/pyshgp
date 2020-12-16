@@ -236,7 +236,7 @@ class TakesStateInstruction(Instruction):
     The function of a TakesStateInstruction accepts an entire PushState as input
     and produces either a ``Token.revert`` or a tuple of outputs values. It is
     crucial that the instruction's function produce a tuple of outputs, even if
-    it only conains a single element.
+    it only contains a single element.
 
     The elements of the tuple are then routed to the corresponding stacks
     specified in the instruction's ``output_stacks``.
@@ -252,7 +252,7 @@ class TakesStateInstruction(Instruction):
     output_stacks : Sequence[str]
         A list of PushType names to use when pushing function results to the PushState.
     other_stacks : Sequence[str]
-        A list of additional PushType names used by the Insturction's function.
+        A list of additional PushType names used by the Instruction's function.
     code_blocks : int
         The number of CodeBlocks to open following the instruction in a Genome.
     docstring : str, optional
@@ -315,14 +315,14 @@ class ProducesManyOfTypeInstruction(Instruction):
 
     ProducesManyOfTypeInstructions pop their arguments in the same was as
     SimpleInstructions. Items are popped from the stacks corresponding the
-    types denoted in the ``input_stacks`` list. If multiple occurences of the
+    types denoted in the ``input_stacks`` list. If multiple occurrences of the
     same type are in ``input_stacks``, items are taken from progressively deeper
-    in that stack. If the stacks of the PushState do not contain a sufficent
+    in that stack. If the stacks of the PushState do not contain a sufficient
     number of items, the instruction does not modify the PushState.
 
     The popped arguments are then passed to the instruction's function to produce
     a tuple of outputs. It is crucial that the instruction's function produce a
-    tuple of outputs, even if it only conains a single element. All elements of
+    tuple of outputs, even if it only contains a single element. All elements of
     the tuple are pushed individually to the stack denoted in ``output_stack``.
 
     Parameters

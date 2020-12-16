@@ -145,8 +145,8 @@ class PushEstimator:
             regression). Shape = [n_samples] or [n_samples, n_outputs]
 
         """
+        # arity is the number of inputs that the program takes.
         X, y, arity, y_types = check_X_y(X, y)
-        print(y_types)
         output_types = [self.interpreter.type_library.push_type_for_type(t).name for t in y_types]
         if self.last_str_from_stdout:
             ndx = list_rindex(output_types, "str")

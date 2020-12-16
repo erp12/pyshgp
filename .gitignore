@@ -76,3 +76,7 @@ venv.bak/
 
 # Editor Files
 .idea
+
+examples/santa*
+examples/artificial*
+examples/final_individual

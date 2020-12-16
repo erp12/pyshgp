@@ -177,7 +177,7 @@ man_pages = [
 
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
-#  dir menu entry, description, category)
+#  direction menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'PyshGP', 'PyshGP Documentation',
      author, 'PyshGP', 'One line description of project.',

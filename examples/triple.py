@@ -33,10 +33,10 @@ testy = [[target_function(tx)] for tx in testX]
 """
 Next we have to declare our `GeneSpawner`. 
 A spawner holds all the instructions, literals, erc generators, 
-    and inputs that we want to appear in our genomes/programs.
+and inputs that we want to appear in our genomes/programs.
 It will be used by evolution to generate random genomes for our initial population and random genes for mutation.
-A spawner has many parameters that can be filled and changed, but here we make use of as many of the default 
-    values as possible and filled in only what is necessary.
+A spawner has many parameters that can be filled and changed, 
+but here we make use of as many of the default values as possible and filled in only what is necessary.
 """
 
 spawner = GeneSpawner(

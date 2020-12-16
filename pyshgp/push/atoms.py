@@ -10,7 +10,8 @@ logic of our Push programs is stored.
 
 An `Input` atom is a reference to one of the Push program's inputs (aka arguments). Inputs are referenced by position.
 
-A `CodeBlock` is a sequence of other Atoms is used to express nested block of code. They cannot appear in `Genomes`.
+A `CodeBlock` is a sequence of other Atoms, which is used to express nested block of code. They cannot appear in
+`Genomes`.
 
 """
 from __future__ import annotations

@@ -1,6 +1,6 @@
 """The **string_demo** problem solved with a genetic algorithm.
 
-A simple benchmark that is designed to deomonstrate a PushGP's string manipulation
+A simple benchmark that is designed to demonstrate a PushGP's string manipulation
 capabilities. The goal of the problem is as follows:
 
 Take the input string, remove the last 2 characters, and then concat this
@@ -10,7 +10,7 @@ By default, the error function will be the Damerau-Levenshtein Distance.
 
 NOTICE: This problem file is run during PyshGP's CI tests as validation tests.
 For this reason, the hyperparameters that contribute the most to runtime are kept
-aritifically low. To see the best search performance, consider increasing
+artificially low. To see the best search performance, consider increasing
 population size, max generations, and initial_genome_size.
 
 """

@@ -115,7 +115,7 @@ class PushTypeLibrary(dict):
         return self
 
     def register_list(self, list_of_push_types: Sequence[PushType]):
-        """Register a list of PushType ojbects.
+        """Register a list of PushType objects.
 
         Parameters
         ----------

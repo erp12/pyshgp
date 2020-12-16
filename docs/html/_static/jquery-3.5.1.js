@@ -1944,7 +1944,7 @@ Expr = Sizzle.selectors = {
 									}
 								}
 
-								// Reverse DIRECTIONS for :only-* (if we haven't yet done so)
+								// Reverse directions for :only-* (if we haven't yet done so)
 								start = dir = type === "only" && !start && "nextSibling";
 							}
 							return true;

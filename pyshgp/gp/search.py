@@ -46,6 +46,8 @@ class SearchConfiguration:
 
     Parameters
     ----------
+    signature : ProgramSignature
+        The signature of the type of program that we want to evolve.
     evaluator : Evaluator
         The Evaluator to use when evaluating individuals.
     spawning : GeneSpawner
@@ -152,7 +154,7 @@ class SearchAlgorithm(ABC):
     Parameters
     ----------
     config : SearchConfiguration
-        The configuation of the search algorithm.
+        The configuration of the search algorithm.
 
     Attributes
     ----------
@@ -251,7 +253,7 @@ class GeneticAlgorithm(SearchAlgorithm):
 
     An initial Population of random Individuals is created. Each generation
     begins by evaluating all Individuals in the population. Then the current
-    Popluation is replaced with children produced by selecting parents from
+    Population is replaced with children produced by selecting parents from
     the Population and applying VariationOperators to them.
 
     """
@@ -288,7 +290,7 @@ class SimulatedAnnealing(SearchAlgorithm):
     rejecting the child. If the child is accepted, it becomes the new current
     Individual.
 
-    After each step, the simmulated annealing system cools its temperature.
+    After each step, the simulated annealing system cools its temperature.
     As the temperature lowers, the probability of accepting a child that does
     not have a lower total error than the current Individual decreases.
 
@@ -297,7 +299,7 @@ class SimulatedAnnealing(SearchAlgorithm):
     def __init__(self, config: SearchConfiguration):
         config.population_size = 1
         for op in config.variation.elements:
-            assert op.num_parents <= 1, "SimulatedAnnealing cannot take multiple parant variation operators."
+            assert op.num_parents <= 1, "SimulatedAnnealing cannot take multiple parent variation operators."
         super().__init__(config)
 
     def _get_temp(self, ):
@@ -353,7 +355,7 @@ def get_search_algo(name: str, **kwargs) -> SearchAlgorithm:
     }
     _cls = name_to_cls.get(name, None)
     if _cls is None:
-        raise ValueError("No search algo '{nm}'. Supported names: {lst}.".format(
+        raise ValueError("No search algorithm '{nm}'. Supported names: {lst}.".format(
             nm=name,
             lst=list(name_to_cls.keys())
         ))

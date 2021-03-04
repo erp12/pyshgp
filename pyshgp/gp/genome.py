@@ -4,7 +4,7 @@ A ``Genome`` is a persistent collection of gene Atoms (any `Atom` that isn't a `
 into a ``CodeBlock``.
 
 The ``GeneSpawner`` is a factory capable of generating random genes and random genomes. It is used for initializing a
-population as well producing new genes used by variation operators (ie. mutation).
+population as well producing new genes used by variation operators (i.e. mutation).
 
 The genome simplification process is useful for removing superfluous genes from a genome without negatively impacting
 the behavior of the program produced by the genome. This process has many benefits including: improving generalization,

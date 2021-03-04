@@ -1,4 +1,4 @@
-"""The :mod:`program` module defines an abstraction to represent Push programs and their the specification.
+"""The :mod:`program` module defines an abstraction to represent Push programs and their specification.
 
 Program objects encapsulate everything required to execute the program on a Push interpreter with the exception
 of instruction definitions. Programs are serializable, and thus can be saved and reused. There is the possibility

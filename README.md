@@ -82,7 +82,6 @@ The full `pyshgp` API can be found on [official website](http://erp12.github.io/
 
 PyshGP is nearly ready for its 1.0 release. The main outstanding items ares:
 
-- Support for vector types. This is present in Clojush and required for many standard benchmarks.
 - Extensive benchmarking to make sure pyshgp has the program-finding capabilities we expect from a contemporary PushGP system.
 - More feedback on the API must be gathered before we commit to not making any breaking changes.
 

@@ -1,7 +1,7 @@
-"""The :mod:`individual` module defines an Individaul in an evolutionary population.
+"""The :mod:`individual` module defines an Individual in an evolutionary population.
 
 Individuals are made up of Genomes, which are the linear Push program
-representations which can be manipulated by seach algorithms.
+representations which can be manipulated by search algorithms.
 
 """
 from typing import Union
@@ -24,9 +24,9 @@ class Individual(Saveable, Copyable):
     error_vector : np.array
         An array of error values produced by evaluating the Individual's program.
     total_error : float
-        The sum of all error values in the Individaul's error_vector.
+        The sum of all error values in the Individual's error_vector.
     error_vector_bytes:
-        Hashable Byte representation of the individual's error vector.
+        Hashable Byte representation of the Individual's error vector.
 
     """
 
@@ -46,7 +46,7 @@ class Individual(Saveable, Copyable):
 
     @property
     def program(self) -> Program:
-        """Push program of individual. Taken from Plush genome."""
+        """Push program associated with this Individual. Taken from Plush genome."""
         if self._program is None:
             cb = genome_to_code(self.genome)
             self._program = Program(code=cb, signature=self.signature)
@@ -77,7 +77,7 @@ class Individual(Saveable, Copyable):
 
     @property
     def error_vector_bytes(self):
-        """Hashable Byte representation of the individual's error vector."""
+        """Hashable Byte representation of the Individual's error vector."""
         if self._error_vector_bytes is None:
             self._error_vector_bytes = self._error_vector.data.tobytes()
         return self._error_vector_bytes

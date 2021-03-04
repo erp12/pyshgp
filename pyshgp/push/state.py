@@ -94,7 +94,7 @@ class PushState(dict):
     def observe_stacks(self, types: Sequence[str]) -> list:
         """Return a list of output values based on the given types indicated.
 
-        Items are take from the tops of each stack. If multiple occurences of
+        Items are take from the tops of each stack. If multiple occurrences of
         the same type are in ``output_types``, the returned values are taken
         from progressively deeper in that stack. Does not pop the values off
         the stacks.

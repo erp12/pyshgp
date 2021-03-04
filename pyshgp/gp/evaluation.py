@@ -11,10 +11,10 @@ from pyshgp.utils import Token
 
 
 def damerau_levenshtein_distance(a: Union[str, Sequence], b: Union[str, Sequence]) -> int:
-    """Damerau Levenshtein Distance that works for both strings and lists.
+    """Damerau-Levenshtein Distance that works for both strings and lists.
 
     https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance.
-    This implemenation is heavily inspired by the implementation in the
+    This implementation is heavily inspired by the implementation in the
     jellyfish package. https://github.com/jamesturk/jellyfish
     """
     a_is_str = isinstance(a, str)
@@ -204,8 +204,8 @@ class FunctionEvaluator(Evaluator):
         CodeBlock and then return an np.ndarray of numeric errors. These errors
         will be used as the program's error vector.
 
-        The error functions will typically instansiate its own PushInterpreter
-        an run the given program as needed.
+        The error functions will typically instantiate its own PushInterpreter
+        and run the given program as needed.
 
         Parameters
         ----------

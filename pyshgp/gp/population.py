@@ -38,7 +38,7 @@ class Population(Sequence):
         return self.unevaluated[key - len(self.evaluated)]
 
     def add(self, individual: Individual):
-        """Add an Individaul to the population."""
+        """Add an Individual to the population."""
         if individual.total_error is None:
             self.unevaluated.append(individual)
         else:

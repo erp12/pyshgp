@@ -97,12 +97,7 @@ class InstructionSet(Dict[str, Instruction]):
             self.register(i)
         return self
 
-    def register_core_by_stack(
-        self,
-        include_stacks: Set[str],
-        *,
-        exclude_stacks: Set[str] = None
-    ):
+    def register_core_by_stack(self, include_stacks: Set[str], *, exclude_stacks: Set[str] = None):
         """Register all instructions that make use of the given type name.
 
         Parameters
@@ -164,7 +159,7 @@ class InstructionSet(Dict[str, Instruction]):
         Parameters
         ----------
         instruction_name
-            The name of the instruciton to unregister.
+            The name of the instruction to unregister.
 
         Returns
         -------

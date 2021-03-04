@@ -450,7 +450,7 @@ class Cloning(VariationOperator):
 
 
 def get_variation_operator(name: str, **kwargs) -> VariationOperator:
-    """Get the variaton operator class with the given name."""
+    """Get the variation operator class with the given name."""
     name_to_cls = {
         "deletion": DeletionMutation,
         "addition": AdditionMutation,

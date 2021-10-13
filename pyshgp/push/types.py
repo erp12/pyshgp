@@ -103,7 +103,15 @@ class PushCharType(PushType):
 class PushStrType(PushType):
 
     def __init__(self):
-        super().__init__("str", (str, np.str_, np.object_))
+        # Fix MemoryError in string operators
+        # ----------------
+        # by Yifan He on Oct. 11, 2021
+        # add `is_collection=True`, so that `PushStrType` will have a length limit
+        # set by `_coerce()` method in `PushStack` class in `stack.py`
+        super().__init__("str", (str, np.str_, np.object_), is_collection=True)
+        # original code below
+        # ----------------
+        # super().__init__("str", (str, np.str_, np.object_))
 
 
 class PushVectorType(PushType):

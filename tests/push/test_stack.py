@@ -1,3 +1,9 @@
+'''
+Author: He,Yifan
+Date: 2021-10-14 11:50:28
+LastEditors: He,Yifan
+LastEditTime: 2021-10-14 11:56:26
+'''
 import pytest
 
 from pyshgp.push.stack import PushStack
@@ -65,3 +71,8 @@ class TestPushStack:
     def test_flush(self, int_stack: PushStack):
         int_stack.push(1).push(-1).flush()
         assert len(int_stack) == 0
+
+    def test_large_str(self, str_stack: PushStack):
+        s = "largestr"*1000
+        str_stack.push(s)
+        assert len(str_stack.pop()) != len(s)

@@ -1,9 +1,3 @@
-'''
-Author: He,Yifan
-Date: 2021-10-14 11:50:28
-LastEditors: He,Yifan
-LastEditTime: 2021-10-14 11:56:26
-'''
 import pytest
 
 from pyshgp.push.stack import PushStack

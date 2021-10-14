@@ -65,3 +65,8 @@ class TestPushStack:
     def test_flush(self, int_stack: PushStack):
         int_stack.push(1).push(-1).flush()
         assert len(int_stack) == 0
+
+    def test_large_str(self, str_stack: PushStack):
+        s = "largestr"*1000
+        str_stack.push(s)
+        assert len(str_stack.pop()) != len(s)

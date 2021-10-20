@@ -72,6 +72,7 @@ class PushEstimator:
                  population_size: int = 300,
                  max_generations: int = 100,
                  initial_genome_size: Tuple[int, int] = (20, 100),
+                 max_genome_size: int = 100,
                  simplification_steps: int = 2000,
                  last_str_from_stdout: bool = False,
                  interpreter: PushInterpreter = "default",
@@ -86,6 +87,7 @@ class PushEstimator:
         self.population_size = population_size
         self.max_generations = max_generations
         self.initial_genome_size = initial_genome_size
+        self.max_genome_size = max_genome_size
         self.simplification_steps = simplification_steps
         self.last_str_from_stdout = last_str_from_stdout
         self.parallelism = parallelism
@@ -126,6 +128,7 @@ class PushEstimator:
             population_size=self.population_size,
             max_generations=self.max_generations,
             initial_genome_size=self.initial_genome_size,
+            max_genome_size=self.max_genome_size,
             simplification_steps=self.simplification_steps,
             parallelism=self.parallelism,
             push_config=self.push_config

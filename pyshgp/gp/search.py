@@ -95,6 +95,7 @@ class SearchConfiguration:
                  max_generations: int = 100,
                  error_threshold: float = 0.0,
                  initial_genome_size: Tuple[int, int] = (10, 50),
+                 max_genome_size: int = 100,
                  simplification_steps: int = 2000,
                  parallelism: Union[int, bool] = True,
                  **kwargs):
@@ -105,6 +106,7 @@ class SearchConfiguration:
         self.max_generations = max_generations
         self.error_threshold = error_threshold
         self.initial_genome_size = initial_genome_size
+        self.max_genome_size = max_genome_size
         self.simplification_steps = simplification_steps
         self.ext = kwargs
 
@@ -265,7 +267,7 @@ class GeneticAlgorithm(SearchAlgorithm):
         op = self.config.get_variation_op()
         selector = self.config.get_selector()
         parent_genomes = [p.genome for p in selector.select(self.population, n=op.num_parents)]
-        child_genome = op.produce(parent_genomes, self.config.spawner)
+        child_genome = op.produce_and_fix(parent_genomes, self.config.spawner, self.config.max_genome_size)
         return Individual(child_genome, self.config.signature)
 
     @tap
@@ -329,9 +331,10 @@ class SimulatedAnnealing(SearchAlgorithm):
             return
 
         candidate = Individual(
-            self.config.get_variation_op().produce(
+            self.config.get_variation_op().produce_and_fix(
                 [self.population.best().genome],
-                self.config.spawner
+                self.config.spawner,
+                self.config.max_genome_length
             ),
             self.config.signature
         )

@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "pyshgp"
+version = "0.1.8"
+description = "Push Genetic Programming in Python"
+authors = ["erp12"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "1.23.4"
+pandas = "1.5.0"
+pyrsistent = "0.18.1"
+
+[tool.poetry.dev-dependencies]
+black = "^22.10"
+flake8 = "^5.0"
+mypy = "^0.982"
+pytest = "^7.1"
+scalene = "^1.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -67,6 +67,14 @@ class VariationOperator(ABC):
         """
         pass
 
+    def fix(self, child: Genome, max_genome_size: int) -> Genome:
+        if len(child) > max_genome_size:
+            child = child[:max_genome_size]
+        return child
+
+    def produce_and_fix(self, parents: Sequence[Genome], spawner: GeneSpawner, max_genome_size: int) -> Genome:
+        return self.fix(self.produce(parents, spawner), max_genome_size)
+
 
 class VariationStrategy(DiscreteProbDistrib):
     """A collection of VariationOperator and how frequently to use them."""
